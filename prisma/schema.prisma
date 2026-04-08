@@ -1,0 +1,181 @@
+// schema.prisma — CrossFit Turnos (multi-tenant B2B2C)
+// Decisión: un Gym es el root tenant. Cada gym tiene usuarios, clases y coaches.
+// Soft-delete en GymClass y Booking para conservar historial sin perder datos.
+// Booking es por fecha concreta (classDate), no recurrente — el alumno reserva
+// para UN día específico, no "todos los lunes".
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Decisión Prisma v7: la URL se configura en prisma.config.ts, no aquí.
+// Ver: https://pris.ly/d/config-datasource
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMS ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  COACH
+  STUDENT
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  WAITLISTED
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+// ─── GYM (root del tenant) ────────────────────────────────────────────────────
+
+model Gym {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique // "crossfit-norte" → subdomain o path
+  logoUrl   String?
+  address   String?
+  phone     String?
+  timezone  String   @default("America/Argentina/Buenos_Aires")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users   User[]
+  classes GymClass[]
+
+  @@map("gyms")
+}
+
+// ─── USER ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(STUDENT)
+  passwordHash  String?   // null si usa OAuth (Google, etc.)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  gymId String?
+  gym   Gym?    @relation(fields: [gymId], references: [id], onDelete: SetNull)
+
+  bookings      Booking[]
+  taughtClasses GymClass[] @relation("CoachClasses")
+
+  // NextAuth adapters
+  accounts Account[]
+  sessions Session[]
+
+  @@map("users")
+}
+
+// ─── NEXTAUTH ─────────────────────────────────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─── GYM CLASS ────────────────────────────────────────────────────────────────
+
+model GymClass {
+  id          String    @id @default(cuid())
+  name        String    // "CrossFit WOD", "Open Box", "Weightlifting"
+  description String?
+  dayOfWeek   DayOfWeek
+  startTime   String    // "07:00" HH:mm en timezone del gym
+  endTime     String    // "08:00"
+  maxCapacity Int       @default(12)
+  color       String?   // hex para UI — diferencia tipos de clase visualmente
+  isActive    Boolean   @default(true)
+  deletedAt   DateTime? // soft delete — preserva historial de bookings
+
+  gymId   String
+  gym     Gym    @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  coachId String?
+  coach   User?  @relation("CoachClasses", fields: [coachId], references: [id], onDelete: SetNull)
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gymId, dayOfWeek])
+  @@index([gymId, isActive])
+  @@map("gym_classes")
+}
+
+// ─── BOOKING ──────────────────────────────────────────────────────────────────
+
+model Booking {
+  id          String        @id @default(cuid())
+  status      BookingStatus @default(CONFIRMED)
+  classDate   DateTime      // fecha del turno (se guarda a medianoche UTC del día)
+  waitlistPos Int?          // posición en espera si status=WAITLISTED; null si CONFIRMED
+  cancelledAt DateTime?     // timestamp de cancelación
+  deletedAt   DateTime?     // soft delete
+
+  userId  String
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  classId String
+  class   GymClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Restricción: un usuario no puede tener dos bookings para la misma clase el mismo día
+  @@unique([userId, classId, classDate])
+  @@index([classId, classDate, status]) // consulta frecuente: cupos disponibles
+  @@index([userId, classDate])          // consulta frecuente: mis turnos del día
+  @@map("bookings")
+}
