@@ -2,7 +2,7 @@
 // Ejecutar: npm run db:seed
 // Prisma v7: requiere adapter Neon para conectar
 import "dotenv/config";
-import { PrismaClient } from "../node_modules/@prisma/client/index.js";
+import { PrismaClient } from "@prisma/client";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import bcrypt from "bcryptjs";
 
