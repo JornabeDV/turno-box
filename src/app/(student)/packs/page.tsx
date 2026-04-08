@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PackCard } from "@/components/billing/PackCard";
 import { CreditsBadge } from "@/components/billing/CreditsBadge";
+import type { Pack } from "@prisma/client";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Comprar clases" };
@@ -58,7 +59,7 @@ export default async function PacksPage({
         </div>
       ) : (
         <div className="space-y-3">
-          {packs.map((pack) => (
+          {packs.map((pack: Pack) => (
             <PackCard key={pack.id} pack={pack} />
           ))}
         </div>
