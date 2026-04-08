@@ -1,15 +1,22 @@
-// Singleton de PrismaClient para Next.js (evita múltiples conexiones en dev)
-// Prisma v7: requiere adapter para conectar a la BD (ya no usa engine binario)
-// Usamos @prisma/adapter-neon para Neon PostgreSQL
 import { PrismaClient } from "@prisma/client";
-import { PrismaNeon } from "@prisma/adapter-neon";
 
 function createPrismaClient() {
-  const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! });
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
+  const url = process.env.DATABASE_URL!;
+  const log = process.env.NODE_ENV === "development"
+    ? ["error" as const, "warn" as const]
+    : ["error" as const];
+
+  if (url.includes("neon.tech")) {
+    // Producción / Neon: usa el adapter serverless (HTTP/WebSocket)
+    const { PrismaNeon } = require("@prisma/adapter-neon") as typeof import("@prisma/adapter-neon");
+    const adapter = new PrismaNeon({ connectionString: url });
+    return new PrismaClient({ adapter, log });
+  }
+
+  // Desarrollo local: Postgres estándar via TCP usando adapter-pg
+  const { PrismaPg } = require("@prisma/adapter-pg") as typeof import("@prisma/adapter-pg");
+  const adapter = new PrismaPg(url);
+  return new PrismaClient({ adapter, log });
 }
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
