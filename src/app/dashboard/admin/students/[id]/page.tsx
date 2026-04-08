@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { toClassDate, formatDate, formatTime } from "@/lib/utils";
 import { ToggleStudentButton } from "@/components/admin/ToggleStudentButton";
+import { AdjustCreditsForm } from "@/components/admin/AdjustCreditsForm";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
@@ -35,7 +36,7 @@ export default async function StudentDetailPage({ params }: Props) {
   const thirtyDaysAgo = new Date(today);
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const [upcoming, recent] = await Promise.all([
+  const [upcoming, recent, creditBalance] = await Promise.all([
     prisma.booking.findMany({
       where: {
         userId: id,
@@ -62,6 +63,10 @@ export default async function StudentDetailPage({ params }: Props) {
       },
       orderBy: { classDate: "desc" },
       take: 30,
+    }),
+    prisma.userCreditBalance.findUnique({
+      where: { userId_gymId: { userId: id, gymId: user.gymId } },
+      select: { availableCredits: true },
     }),
   ]);
 
@@ -125,6 +130,12 @@ export default async function StudentDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Créditos */}
+      <AdjustCreditsForm
+        studentId={student.id}
+        currentBalance={creditBalance?.availableCredits ?? 0}
+      />
 
       {/* Próximos turnos */}
       <div>

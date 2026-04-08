@@ -119,7 +119,7 @@ export async function duplicateDayAction(
       where: { gymId, dayOfWeek: targetDay, deletedAt: null },
       select: { name: true, startTime: true },
     });
-    const existingKeys = new Set(existing.map((c) => `${c.name}|${c.startTime}`));
+    const existingKeys = new Set(existing.map((c: { name: string; startTime: string }) => `${c.name}|${c.startTime}`));
 
     for (const cls of sourceClasses) {
       if (existingKeys.has(`${cls.name}|${cls.startTime}`)) {
