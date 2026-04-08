@@ -92,6 +92,32 @@ async function main() {
     });
   }
 
+  // Packs del gym
+  const packDefs = [
+    { name: "Pack 8 clases",  credits: 8,  price: 14000, sortOrder: 0, validityDays: 30 },
+    { name: "Pack 12 clases", credits: 12, price: 19000, sortOrder: 1, validityDays: 45 },
+    { name: "Pack 16 clases", credits: 16, price: 24000, sortOrder: 2, validityDays: 60 },
+  ];
+
+  for (const p of packDefs) {
+    await prisma.pack.upsert({
+      where: { id: `pack-${p.credits}-${gym.id}` },
+      update: { price: p.price, validityDays: p.validityDays },
+      create: { id: `pack-${p.credits}-${gym.id}`, gymId: gym.id, ...p },
+    });
+  }
+
+  // Dar créditos de demo al alumno (simula una compra aprobada)
+  const student = await prisma.user.findUnique({ where: { email: "alumno@crossfit.demo" } });
+  if (student) {
+    await prisma.userCreditBalance.upsert({
+      where: { userId_gymId: { userId: student.id, gymId: gym.id } },
+      update: { availableCredits: 10 },
+      create: { userId: student.id, gymId: gym.id, availableCredits: 10 },
+    });
+    console.log("  Créditos demo: alumno@crossfit.demo → 10 créditos");
+  }
+
   console.log("✓ Seed completado");
   console.log(`  Admin:   admin@crossfit.demo / admin123`);
   console.log(`  Coach:   coach@crossfit.demo / coach123`);

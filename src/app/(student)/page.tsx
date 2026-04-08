@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getClassSlotsForDay } from "@/lib/queries/classes";
 import { ClassList } from "@/components/booking/ClassList";
+import { CreditsBadge } from "@/components/billing/CreditsBadge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Clases" };
@@ -37,18 +38,28 @@ export default async function HomePage() {
   }
 
   const today = new Date();
-  const slots = await getClassSlotsForDay(user.gymId, today, session.user.id);
+  const [slots, balance] = await Promise.all([
+    getClassSlotsForDay(user.gymId, today, session.user.id),
+    prisma.userCreditBalance.findUnique({
+      where: { userId_gymId: { userId: session.user.id, gymId: user.gymId } },
+      select: { availableCredits: true },
+    }),
+  ]);
+  const credits = balance?.availableCredits ?? 0;
 
   return (
     <section>
       {/* Saludo */}
-      <div className="px-4 pt-5 pb-3">
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
-          Bienvenido
-        </p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
-          {user.name?.split(" ")[0] ?? "Atleta"}
-        </h2>
+      <div className="px-4 pt-5 pb-3 flex items-center justify-between">
+        <div>
+          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
+            Bienvenido
+          </p>
+          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
+            {user.name?.split(" ")[0] ?? "Atleta"}
+          </h2>
+        </div>
+        <CreditsBadge credits={credits} />
       </div>
 
       <ClassList

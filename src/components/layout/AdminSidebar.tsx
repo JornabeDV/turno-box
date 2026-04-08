@@ -7,6 +7,7 @@ import {
   CalendarBlank,
   Users,
   Barbell,
+  CurrencyCircleDollar,
   Gear,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/admin/classes",  label: "Clases",      Icon: CalendarBlank },
   { href: "/dashboard/admin/students", label: "Alumnos",     Icon: Users },
   { href: "/dashboard/admin/coaches",  label: "Coaches",     Icon: Barbell },
+  { href: "/dashboard/admin/packs",    label: "Packs",       Icon: CurrencyCircleDollar },
   { href: "/dashboard/admin/settings", label: "Configuración", Icon: Gear },
 ];
 

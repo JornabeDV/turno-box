@@ -28,6 +28,22 @@ enum BookingStatus {
   WAITLISTED
 }
 
+enum PaymentStatus {
+  PENDING    // preferencia creada, esperando pago
+  APPROVED   // webhook confirmó pago
+  REJECTED   // pago rechazado
+  CANCELLED  // usuario canceló en checkout
+  REFUNDED   // devolución procesada
+}
+
+enum CreditTxType {
+  PURCHASE    // +N al comprar un pack
+  CONSUME     // -1 al confirmar una reserva
+  REFUND      // +1 al cancelar dentro de ventana
+  EXPIRY      // -N al vencer (cron job)
+  ADJUSTMENT  // corrección manual por admin
+}
+
 enum DayOfWeek {
   MONDAY
   TUESDAY
@@ -54,6 +70,12 @@ model Gym {
   users   User[]
   classes GymClass[]
 
+  // Billing
+  cancelWindowHours Int @default(2) // ventana para cancelar con reembolso de crédito
+  packs          Pack[]
+  payments       Payment[]
+  creditBalances UserCreditBalance[]
+
   @@map("gyms")
 }
 
@@ -76,6 +98,11 @@ model User {
 
   bookings      Booking[]
   taughtClasses GymClass[] @relation("CoachClasses")
+
+  // Billing
+  payments        Payment[]
+  creditBalances  UserCreditBalance[]
+  creditTxs       CreditTransaction[]
 
   // NextAuth adapters
   accounts Account[]
@@ -170,6 +197,8 @@ model Booking {
   classId String
   class   GymClass @relation(fields: [classId], references: [id], onDelete: Cascade)
 
+  creditTxs CreditTransaction[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -178,4 +207,102 @@ model Booking {
   @@index([classId, classDate, status]) // consulta frecuente: cupos disponibles
   @@index([userId, classDate])          // consulta frecuente: mis turnos del día
   @@map("bookings")
+}
+
+// ─── BILLING ──────────────────────────────────────────────────────────────────
+
+// Pack — el gym define sus packs y precios (multi-tenant)
+model Pack {
+  id           String   @id @default(cuid())
+  gymId        String
+  gym          Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  name         String   // "Pack 8 clases"
+  credits      Int      // 8 | 12 | 16
+  price        Decimal  @db.Decimal(10, 2)
+  currency     String   @default("ARS")
+  validityDays Int?     // días desde compra; null = sin vencimiento
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  payments Payment[]
+
+  @@index([gymId, isActive])
+  @@map("packs")
+}
+
+// Payment — registro de cada intento/compra de pack
+model Payment {
+  id                String        @id @default(cuid())
+  gymId             String
+  userId            String
+  packId            String
+
+  creditsGranted    Int           // snapshot del pack al momento de compra
+  amountPaid        Decimal       @db.Decimal(10, 2)
+  currency          String        @default("ARS")
+
+  provider          String        @default("MERCADOPAGO")
+  providerPaymentId String?       @unique  // payment_id de MP — garantiza idempotencia
+  providerOrderId   String?                // preference_id (URL de checkout)
+
+  status            PaymentStatus @default(PENDING)
+  expiresAt         DateTime?     // cuándo vencen los créditos de este pago
+
+  rawWebhook        Json?         // payload del webhook (auditoría)
+  failureReason     String?
+  paidAt            DateTime?
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  gym          Gym               @relation(fields: [gymId], references: [id])
+  user         User              @relation(fields: [userId], references: [id])
+  pack         Pack              @relation(fields: [packId], references: [id])
+  creditTxs    CreditTransaction[]
+
+  @@index([userId, gymId])
+  @@index([providerPaymentId])
+  @@index([gymId, status])
+  @@map("payments")
+}
+
+// UserCreditBalance — balance materializado para reads O(1)
+// SIEMPRE se actualiza dentro de la misma transacción que el CreditTransaction
+model UserCreditBalance {
+  id               String   @id @default(cuid())
+  userId           String
+  gymId            String
+  availableCredits Int      @default(0)
+  version          Int      @default(0) // optimistic locking
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gym  Gym  @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gymId])
+  @@map("user_credit_balances")
+}
+
+// CreditTransaction — ledger append-only, fuente de verdad para auditoría
+model CreditTransaction {
+  id        String       @id @default(cuid())
+  userId    String
+  gymId     String
+  type      CreditTxType
+  amount    Int          // positivo = acreditar, negativo = consumir
+  paymentId String?      // presente en PURCHASE
+  bookingId String?      // presente en CONSUME y REFUND
+  expiresAt DateTime?    // copia de Payment.expiresAt para queries de vencimiento
+  note      String?      // obligatorio en ADJUSTMENT
+  createdAt DateTime     @default(now())
+
+  user    User     @relation(fields: [userId], references: [id])
+  payment Payment? @relation(fields: [paymentId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  @@index([userId, gymId, createdAt])
+  @@index([bookingId])
+  @@map("credit_transactions")
 }
