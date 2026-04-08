@@ -6,6 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
 
+type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
+
 async function requireAdmin() {
   const session = await auth();
   const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
@@ -61,7 +63,7 @@ export async function adjustCreditsAction(
 
   const { amount, note } = parsed.data;
 
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Tx) => {
     // UPSERT atómico del balance
     await tx.$executeRaw`
       INSERT INTO user_credit_balances (id, user_id, gym_id, available_credits, version, updated_at)
