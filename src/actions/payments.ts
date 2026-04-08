@@ -123,6 +123,29 @@ export async function togglePackActiveAction(packId: string): Promise<ActionResu
   return { success: true, data: { isActive: updated.isActive } };
 }
 
+// ── Editar pack (admin) ───────────────────────────────────────────────────────
+export async function updatePackAction(packId: string, formData: FormData): Promise<void> {
+  const session = await auth();
+  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  if (!user?.id || user.role !== "ADMIN" || !user.gymId) return;
+
+  const name        = String(formData.get("name") ?? "").trim();
+  const credits     = Number(formData.get("credits"));
+  const price       = Number(formData.get("price"));
+  const validityDays = formData.get("validityDays") ? Number(formData.get("validityDays")) : null;
+  const sortOrder   = formData.get("sortOrder") ? Number(formData.get("sortOrder")) : undefined;
+
+  if (!name || credits < 1 || price < 0) return;
+
+  await prisma.pack.updateMany({
+    where: { id: packId, gymId: user.gymId },
+    data: { name, credits, price, validityDays, ...(sortOrder !== undefined && { sortOrder }) },
+  });
+
+  revalidatePath("/dashboard/admin/packs");
+  redirect("/dashboard/admin/packs");
+}
+
 // ── Créditos disponibles del usuario ─────────────────────────────────────────
 export async function getUserCreditsAction(): Promise<number> {
   const session = await auth();

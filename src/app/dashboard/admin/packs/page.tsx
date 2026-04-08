@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { PackToggleButton } from "@/components/admin/PackToggleButton";
-import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
+import { PlusIcon, PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -107,6 +107,13 @@ export default async function AdminPacksPage() {
                 <p className="text-[10px] text-zinc-600">ventas</p>
               </div>
 
+              <Link
+                href={`/dashboard/admin/packs/${pack.id}/edit`}
+                className="p-2 rounded-lg text-zinc-600 hover:text-zinc-300 hover:bg-white/[0.04] transition-colors"
+                title="Editar"
+              >
+                <PencilSimpleIcon size={15} />
+              </Link>
               <PackToggleButton packId={pack.id} initialIsActive={pack.isActive} />
             </div>
           ))}
