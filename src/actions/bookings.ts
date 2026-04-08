@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { toClassDate } from "@/lib/utils";
 import type { ActionResult } from "@/types";
+type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 
 export async function bookClassAction(
   classId: string,
@@ -26,7 +27,7 @@ export async function bookClassAction(
   if (!gymClass) return { success: false, error: "Clase no encontrada." };
 
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Tx) => {
       // ── 1. Bloquear fila de balance y verificar créditos (FOR UPDATE) ──────
       const balanceRows = await tx.$queryRaw<{ available_credits: number }[]>`
         SELECT available_credits
@@ -126,7 +127,7 @@ export async function cancelBookingAction(
   const windowHours   = booking.class.gym?.cancelWindowHours ?? 2;
   const canRefund     = hoursUntil >= windowHours && booking.status === "CONFIRMED";
 
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Tx) => {
     // Cancelar reserva
     await tx.booking.update({
       where: { id: bookingId },
