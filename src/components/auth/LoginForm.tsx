@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Eye, EyeSlash, WarningCircle } from "@phosphor-icons/react";
 
-export function LoginForm() {
+function LoginFormInner() {
   const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/";
@@ -93,5 +93,13 @@ export function LoginForm() {
         Ingresar
       </Button>
     </form>
+  );
+}
+
+export function LoginForm() {
+  return (
+    <Suspense>
+      <LoginFormInner />
+    </Suspense>
   );
 }
