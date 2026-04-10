@@ -1,11 +1,8 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { PackToggleButton } from "@/components/admin/PackToggleButton";
-import { PlusIcon, PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr";
-import { cn } from "@/lib/utils";
+import { AddPackButton } from "@/components/admin/AddPackButton";
+import { PacksListClient } from "./PacksListClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Abonos" };
@@ -39,12 +36,7 @@ export default async function AdminPacksPage() {
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
           <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Abonos</h2>
         </div>
-        <Link href="/dashboard/admin/packs/new">
-          <Button size="sm" variant="brand">
-            <PlusIcon size={14} weight="bold" />
-            Nuevo abono
-          </Button>
-        </Link>
+        <AddPackButton />
       </div>
 
       {/* Métrica de ingresos */}
@@ -64,60 +56,16 @@ export default async function AdminPacksPage() {
         </div>
       )}
 
-      {/* Lista de packs */}
+      {/* Lista de abonos */}
       {packs.length === 0 ? (
         <div className="glass-card rounded-2xl px-4 py-16 text-center">
           <p className="text-sm text-zinc-500 mb-4">No hay abonos creados todavía.</p>
-          <Link href="/dashboard/admin/packs/new">
-            <Button variant="brand" size="md">Crear primer abono</Button>
-          </Link>
+          <AddPackButton />
         </div>
       ) : (
-        <div className="glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.04]">
-          {packs.map((pack) => (
-            <div key={pack.id} className="flex items-center gap-3 px-4 py-3.5">
-              {/* Credits circle */}
-              <div className={cn(
-                "size-10 rounded-xl border flex flex-col items-center justify-center shrink-0",
-                pack.isActive
-                  ? "bg-orange-500/10 border-orange-500/20"
-                  : "bg-zinc-900 border-white/[0.04]"
-              )}>
-                <span className={cn("text-base font-black leading-none", pack.isActive ? "text-orange-400" : "text-zinc-600")}>
-                  {pack.credits}
-                </span>
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <p className={cn("text-sm font-medium truncate", pack.isActive ? "text-zinc-100" : "text-zinc-500")}>
-                  {pack.name}
-                </p>
-                <p className="text-xs text-zinc-600 font-mono tabular-nums">
-                  {new Intl.NumberFormat("es-AR", { style: "currency", currency: pack.currency, maximumFractionDigits: 0 }).format(Number(pack.price))}
-                  {pack.validityDays ? ` · ${pack.validityDays}d` : " · sin vencimiento"}
-                </p>
-              </div>
-
-              {/* Ventas */}
-              <div className="text-right shrink-0 hidden sm:block">
-                <p className="text-xs font-mono font-bold text-zinc-300 tabular-nums">
-                  {pack._count.payments}
-                </p>
-                <p className="text-[10px] text-zinc-600">ventas</p>
-              </div>
-
-              <Link
-                href={`/dashboard/admin/packs/${pack.id}/edit`}
-                className="p-2 rounded-lg text-zinc-600 hover:text-zinc-300 hover:bg-white/[0.04] transition-colors"
-                title="Editar"
-              >
-                <PencilSimpleIcon size={15} />
-              </Link>
-              <PackToggleButton packId={pack.id} initialIsActive={pack.isActive} />
-            </div>
-          ))}
-        </div>
+        <PacksListClient
+          packs={packs.map((p) => ({ ...p, price: Number(p.price) }))}
+        />
       )}
     </div>
   );
