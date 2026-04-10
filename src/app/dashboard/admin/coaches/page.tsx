@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { toClassDate } from "@/lib/utils";
 import { ToggleCoachButton } from "@/components/admin/ToggleCoachButton";
+import { AddCoachButton } from "@/components/admin/AddCoachButton";
 import { MetricCard } from "@/components/admin/MetricCard";
 import Link from "next/link";
 import { ArrowRightIcon } from "@phosphor-icons/react/dist/ssr";
@@ -56,9 +57,12 @@ export default async function CoachesPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Coaches</h2>
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
+          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Coaches</h2>
+        </div>
+        <AddCoachButton />
       </div>
 
       <div className="grid grid-cols-3 gap-3">
