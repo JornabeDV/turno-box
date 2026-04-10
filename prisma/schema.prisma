@@ -94,6 +94,8 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  birthDate     DateTime? // fecha de nacimiento (para próximos cumpleaños)
+
   gymId String?
   gym   Gym?    @relation(fields: [gymId], references: [id], onDelete: SetNull)
 

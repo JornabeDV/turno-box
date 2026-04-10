@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Editar pack" };
+export const metadata: Metadata = { title: "Editar abono" };
 
 export default async function EditPackPage({
   params,
@@ -36,10 +36,10 @@ export default async function EditPackPage({
           className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors mb-4"
         >
           <ArrowLeftIcon size={13} />
-          Packs
+          Abonos
         </Link>
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Editar pack</h2>
+        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Editar abono</h2>
       </div>
 
       <form action={action} className="glass-card rounded-2xl p-5 space-y-4">
@@ -49,7 +49,7 @@ export default async function EditPackPage({
             name="name"
             required
             defaultValue={pack.name}
-            placeholder="Pack 8 clases"
+            placeholder="Abono 8 clases"
             className="w-full h-11 bg-zinc-900 border border-white/[0.08] rounded-xl px-4 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 transition-colors"
           />
         </div>

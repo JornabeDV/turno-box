@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/admin/disciplines", label: "Disciplinas",   Icon: Tag },
   { href: "/dashboard/admin/students",    label: "Alumnos",       Icon: Users },
   { href: "/dashboard/admin/coaches",     label: "Coaches",       Icon: Barbell },
-  { href: "/dashboard/admin/packs",       label: "Packs",         Icon: CurrencyCircleDollar },
+  { href: "/dashboard/admin/packs",       label: "Abonos",        Icon: CurrencyCircleDollar },
   { href: "/dashboard/admin/settings",    label: "Configuración", Icon: Gear },
 ];
 

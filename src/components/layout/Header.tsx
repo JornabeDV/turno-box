@@ -11,7 +11,7 @@ export async function Header({ title, showSignOut = false }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#0f0f0f]/90 backdrop-blur-xl">
-      <div className="flex h-14 items-center justify-between px-4 max-w-5xl mx-auto">
+      <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-5xl mx-auto">
         <div className="flex items-center gap-2.5">
           {/* Logo / marca */}
           <span className="size-7 rounded-lg bg-orange-500 flex items-center justify-center">

@@ -38,7 +38,7 @@ export async function bookClassAction(
 
       const balance = balanceRows[0];
       if (!balance || balance.available_credits < 1) {
-        throw Object.assign(new Error("Sin créditos disponibles. Comprá un pack para reservar."), { code: "NO_CREDITS" });
+        throw Object.assign(new Error("Sin créditos disponibles. Comprá un abono para reservar."), { code: "NO_CREDITS" });
       }
 
       // ── 2. Verificar cupo ────────────────────────────────────────────────
