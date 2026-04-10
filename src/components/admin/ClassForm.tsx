@@ -25,12 +25,13 @@ const CLASS_COLORS = [
 ];
 
 type Coach = { id: string; name: string | null };
+type Discipline = { id: string; name: string; color: string | null };
 
 type Props = {
   coaches: Coach[];
+  disciplines: Discipline[];
   action: (formData: FormData) => Promise<ActionResult | void>;
   defaultValues?: {
-    name?: string;
     description?: string;
     dayOfWeek?: string;
     startTime?: string;
@@ -38,6 +39,7 @@ type Props = {
     maxCapacity?: number;
     color?: string;
     coachId?: string;
+    disciplineId?: string;
   };
 };
 
@@ -46,7 +48,7 @@ const inputClass =
 
 const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
 
-export function ClassForm({ coaches, action, defaultValues }: Props) {
+export function ClassForm({ coaches, disciplines, action, defaultValues }: Props) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState(defaultValues?.color ?? CLASS_COLORS[0]);
@@ -66,17 +68,6 @@ export function ClassForm({ coaches, action, defaultValues }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 space-y-5">
-      {/* Nombre */}
-      <div className="space-y-1.5">
-        <label htmlFor="name" className={labelClass}>Nombre</label>
-        <input
-          id="name" name="name" type="text" required
-          defaultValue={defaultValues?.name}
-          placeholder="CrossFit WOD"
-          className={inputClass}
-        />
-      </div>
-
       {/* Descripción */}
       <div className="space-y-1.5">
         <label htmlFor="description" className={labelClass}>Descripción <span className="text-zinc-600 normal-case">(opcional)</span></label>
@@ -149,6 +140,21 @@ export function ClassForm({ coaches, action, defaultValues }: Props) {
           </select>
         </div>
       )}
+
+      {/* Disciplina */}
+      <div className="space-y-1.5">
+        <label htmlFor="disciplineId" className={labelClass}>Disciplina</label>
+        <select
+          id="disciplineId" name="disciplineId" required
+          defaultValue={defaultValues?.disciplineId ?? ""}
+          className={inputClass}
+        >
+          <option value="" disabled>Selcciona una disciplina</option>
+          {disciplines.map((d) => (
+            <option key={d.id} value={d.id}>{d.name}</option>
+          ))}
+        </select>
+      </div>
 
       {/* Color */}
       <div className="space-y-2">

@@ -23,6 +23,10 @@ export type ClassSlot = {
   maxCapacity: number;
   color: string | null;
   coachName: string | null;
+  disciplineName: string | null;
+  description: string | null;
+  coachId: string | null;
+  disciplineId: string;
   // calculados al momento del query
   confirmedCount: number;
   availableSpots: number;

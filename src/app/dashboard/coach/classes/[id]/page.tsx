@@ -12,8 +12,8 @@ type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ date?: s
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const gymClass = await prisma.gymClass.findUnique({ where: { id }, select: { name: true } });
-  return { title: gymClass?.name ?? "Detalle de clase" };
+  const gymClass = await prisma.gymClass.findUnique({ where: { id }, select: { discipline: { select: { name: true } } } });
+  return { title: gymClass?.discipline?.name ?? "Detalle de clase" };
 }
 
 export default async function CoachClassDetailPage({ params, searchParams }: Props) {
@@ -38,13 +38,13 @@ export default async function CoachClassDetailPage({ params, searchParams }: Pro
     },
     select: {
       id: true,
-      name: true,
       startTime: true,
       endTime: true,
       maxCapacity: true,
       color: true,
       description: true,
       coach: { select: { name: true } },
+      discipline: { select: { name: true } },
     },
   });
 
@@ -83,7 +83,7 @@ export default async function CoachClassDetailPage({ params, searchParams }: Pro
             style={{ backgroundColor: gymClass.color ?? "#f97316" }}
           />
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-zinc-100 tracking-tight">{gymClass.name}</h2>
+            <h2 className="text-xl font-bold text-zinc-100 tracking-tight">{gymClass.discipline?.name ?? "Sin disciplina"}</h2>
             <p className="text-sm text-zinc-500 mt-0.5">
               {formatDate(targetDate)} · {formatTime(gymClass.startTime)} – {formatTime(gymClass.endTime)}
               {gymClass.coach?.name && ` · ${gymClass.coach.name}`}

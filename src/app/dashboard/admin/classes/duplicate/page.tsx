@@ -18,7 +18,7 @@ export default async function DuplicateClassesPage() {
 
   const classes = await prisma.gymClass.findMany({
     where: { gymId: user.gymId, isActive: true, deletedAt: null },
-    select: { name: true, startTime: true, endTime: true, color: true, dayOfWeek: true },
+    select: { startTime: true, endTime: true, color: true, dayOfWeek: true, discipline: { select: { name: true } } },
     orderBy: { startTime: "asc" },
   });
 
@@ -27,7 +27,7 @@ export default async function DuplicateClassesPage() {
   >((acc, day) => {
     acc[day] = classes
       .filter((c) => c.dayOfWeek === day)
-      .map(({ name, startTime, endTime, color }) => ({ name, startTime, endTime, color }));
+      .map(({ discipline, startTime, endTime, color }) => ({ name: discipline?.name ?? "Sin disciplina", startTime, endTime, color }));
     return acc;
   }, {});
 

@@ -34,8 +34,16 @@ export async function registerAction(
 
   const passwordHash = await bcrypt.hash(password, 12);
 
+  // Obtener el gym por defecto (el primero activo)
+  const defaultGym = await prisma.gym.findFirst({
+    orderBy: { createdAt: "asc" },
+  });
+
+  // Si no hay gym, el usuario queda sin gymId
+  const gymId = defaultGym?.id ?? null;
+
   await prisma.user.create({
-    data: { name, email, passwordHash, role: "STUDENT" },
+    data: { name, email, passwordHash, role: "STUDENT", gymId },
   });
 
   return { success: true, data: undefined };

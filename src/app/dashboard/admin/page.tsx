@@ -26,11 +26,11 @@ export default async function AdminDashboardPage() {
     where: { gymId, isActive: true, deletedAt: null, dayOfWeek: dayOfWeek as never },
     select: {
       id: true,
-      name: true,
       startTime: true,
       maxCapacity: true,
       color: true,
       coach: { select: { name: true } },
+      discipline: { select: { name: true } },
       bookings: {
         where: { classDate, deletedAt: null },
         select: { status: true },
@@ -39,8 +39,13 @@ export default async function AdminDashboardPage() {
     orderBy: { startTime: "asc" },
   });
 
+  const classesTodayWithName = classesToday.map((c) => ({
+    ...c,
+    name: c.discipline?.name ?? "Sin disciplina",
+  }));
+
   // Métricas
-  const totalConfirmed = classesToday.reduce(
+  const totalConfirmed = classesTodayWithName.reduce(
     (acc: number, c) => acc + c.bookings.filter((b: { status: string }) => b.status === "CONFIRMED").length,
     0
   );
@@ -106,7 +111,7 @@ export default async function AdminDashboardPage() {
         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">
           Clases de hoy
         </h3>
-        <TodayClassesTable classes={classesToday} classDate={classDate} gymId={gymId} />
+        <TodayClassesTable classes={classesTodayWithName} classDate={classDate} gymId={gymId} />
       </div>
     </div>
   );

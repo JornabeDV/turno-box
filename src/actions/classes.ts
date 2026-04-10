@@ -1,14 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
 
 const classSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido"),
   description: z.string().optional(),
   dayOfWeek: z.enum(["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"]),
   startTime: z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:MM requerido"),
@@ -16,78 +14,76 @@ const classSchema = z.object({
   maxCapacity: z.coerce.number().int().min(1).max(100),
   color: z.string().optional(),
   coachId: z.string().optional(),
+  disciplineId: z.string().min(1, "La disciplina es requerida"),
 });
 
 async function requireAdmin() {
   const session = await auth();
   const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
   if (!user?.id || user.role !== "ADMIN" || !user.gymId) {
-    throw new Error("Unauthorized");
+    throw new Error("No autorizado");
   }
   return { userId: user.id, gymId: user.gymId };
 }
 
-export async function createClassAction(formData: FormData): Promise<ActionResult> {
+export async function createClassAction(formData: FormData) {
   const { gymId } = await requireAdmin();
 
+  // Verificar que el gym existe
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) throw new Error("Gym no encontrado. Contacta al administrador.");
+
   const raw = {
-    name:        formData.get("name"),
     description: formData.get("description"),
-    dayOfWeek:   formData.get("dayOfWeek"),
-    startTime:   formData.get("startTime"),
-    endTime:     formData.get("endTime"),
+    dayOfWeek: formData.get("dayOfWeek"),
+    startTime: formData.get("startTime"),
+    endTime: formData.get("endTime"),
     maxCapacity: formData.get("maxCapacity"),
-    color:       formData.get("color"),
-    coachId:     formData.get("coachId") || undefined,
+    color: formData.get("color"),
+    coachId: formData.get("coachId") || undefined,
+    disciplineId: formData.get("disciplineId"),
   };
 
-  const parsed = classSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0].message };
-  }
+  const parsed = classSchema.parse(raw);
 
   await prisma.gymClass.create({
-    data: { ...parsed.data, gymId },
+    data: { ...parsed, gymId },
   });
 
   revalidatePath("/dashboard/admin/classes");
-  redirect("/dashboard/admin/classes");
 }
 
-export async function updateClassAction(
-  classId: string,
-  formData: FormData
-): Promise<ActionResult> {
+export async function updateClassAction(classId: string, formData: FormData) {
   const { gymId } = await requireAdmin();
+
+  // Verificar que el gym existe
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) throw new Error("Gym no encontrado. Contacta al administrador.");
 
   const existing = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, deletedAt: null },
   });
-  if (!existing) return { success: false, error: "Clase no encontrada." };
+  if (!existing) throw new Error("Clase no encontrada.");
 
   const raw = {
-    name:        formData.get("name"),
     description: formData.get("description"),
-    dayOfWeek:   formData.get("dayOfWeek"),
-    startTime:   formData.get("startTime"),
-    endTime:     formData.get("endTime"),
+    dayOfWeek: formData.get("dayOfWeek"),
+    startTime: formData.get("startTime"),
+    endTime: formData.get("endTime"),
     maxCapacity: formData.get("maxCapacity"),
-    color:       formData.get("color"),
-    coachId:     formData.get("coachId") || undefined,
+    color: formData.get("color"),
+    coachId: formData.get("coachId") || undefined,
+    disciplineId: formData.get("disciplineId"),
   };
 
-  const parsed = classSchema.safeParse(raw);
-  if (!parsed.success) {
-    return { success: false, error: parsed.error.issues[0].message };
-  }
+  const parsed = classSchema.parse(raw);
 
   await prisma.gymClass.update({
     where: { id: classId },
-    data: parsed.data,
+    data: parsed,
   });
 
   revalidatePath("/dashboard/admin/classes");
-  redirect("/dashboard/admin/classes");
 }
 
 export async function duplicateDayAction(
@@ -95,6 +91,10 @@ export async function duplicateDayAction(
   targetDays: string[]
 ): Promise<ActionResult<{ created: number; skipped: number }>> {
   const { gymId } = await requireAdmin();
+
+  // Verificar que el gym existe
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) return { success: false, error: "Gym no encontrado. Contacta al administrador." };
 
   const dayEnum = z.enum(["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"]);
 
@@ -106,7 +106,7 @@ export async function duplicateDayAction(
 
   const sourceClasses = await prisma.gymClass.findMany({
     where: { gymId, dayOfWeek: parsedSource.data, isActive: true, deletedAt: null },
-    select: { name: true, description: true, startTime: true, endTime: true, maxCapacity: true, color: true, coachId: true },
+    select: { description: true, startTime: true, endTime: true, maxCapacity: true, color: true, coachId: true, disciplineId: true },
   });
 
   if (sourceClasses.length === 0) return { success: false, error: "El día origen no tiene clases." };
@@ -117,12 +117,12 @@ export async function duplicateDayAction(
   for (const targetDay of parsedTargets.data) {
     const existing = await prisma.gymClass.findMany({
       where: { gymId, dayOfWeek: targetDay, deletedAt: null },
-      select: { name: true, startTime: true },
+      select: { disciplineId: true, startTime: true },
     });
-    const existingKeys = new Set(existing.map((c: { name: string; startTime: string }) => `${c.name}|${c.startTime}`));
+    const existingKeys = new Set(existing.map((c: { disciplineId: string; startTime: string }) => `${c.disciplineId}|${c.startTime}`));
 
     for (const cls of sourceClasses) {
-      if (existingKeys.has(`${cls.name}|${cls.startTime}`)) {
+      if (existingKeys.has(`${cls.disciplineId}|${cls.startTime}`)) {
         skipped++;
         continue;
       }
@@ -137,7 +137,11 @@ export async function duplicateDayAction(
 
 // Soft delete — preserva historial de bookings
 export async function deleteClassAction(classId: string): Promise<void> {
-  await requireAdmin();
+  const { gymId } = await requireAdmin();
+
+  // Verificar que el gym existe
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) throw new Error("Gym no encontrado. Contacta al administrador.");
 
   await prisma.gymClass.update({
     where: { id: classId },

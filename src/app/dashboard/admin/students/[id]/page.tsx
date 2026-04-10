@@ -46,7 +46,7 @@ export default async function StudentDetailPage({ params }: Props) {
       },
       select: {
         id: true, status: true, classDate: true, waitlistPos: true,
-        class: { select: { id: true, name: true, startTime: true, color: true } },
+        class: { select: { id: true, startTime: true, color: true, discipline: { select: { name: true } } } },
       },
       orderBy: { classDate: "asc" },
       take: 20,
@@ -59,7 +59,7 @@ export default async function StudentDetailPage({ params }: Props) {
       },
       select: {
         id: true, status: true, classDate: true,
-        class: { select: { name: true, startTime: true, color: true } },
+        class: { select: { startTime: true, color: true, discipline: { select: { name: true } } } },
       },
       orderBy: { classDate: "desc" },
       take: 30,
@@ -160,7 +160,7 @@ export default async function StudentDetailPage({ params }: Props) {
                     style={{ backgroundColor: b.class.color ?? "#f97316" }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-zinc-100 truncate">{b.class.name}</p>
+                    <p className="text-sm font-medium text-zinc-100 truncate">{b.class.discipline?.name ?? "Sin disciplina"}</p>
                     <p className="text-xs text-zinc-600">
                       {formatDate(b.classDate)} · {formatTime(b.class.startTime)}
                     </p>
@@ -204,7 +204,7 @@ export default async function StudentDetailPage({ params }: Props) {
                   />
                   <div className="flex-1 min-w-0">
                     <p className={cn("text-sm truncate", b.status === "CANCELLED" ? "text-zinc-600 line-through" : "text-zinc-300")}>
-                      {b.class.name}
+                      {b.class.discipline?.name ?? "Sin disciplina"}
                     </p>
                     <p className="text-xs text-zinc-700">
                       {formatDate(b.classDate)} · {formatTime(b.class.startTime)}

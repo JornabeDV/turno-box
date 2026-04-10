@@ -29,11 +29,11 @@ export default async function CoachDashboardPage() {
     },
     select: {
       id: true,
-      name: true,
       startTime: true,
       maxCapacity: true,
       color: true,
       coach: { select: { name: true } },
+      discipline: { select: { name: true } },
       bookings: {
         where: { classDate, deletedAt: null },
         select: { status: true },
@@ -42,7 +42,12 @@ export default async function CoachDashboardPage() {
     orderBy: { startTime: "asc" },
   });
 
-  const totalConfirmed = classes.reduce(
+  const classesWithName = classes.map((c) => ({
+    ...c,
+    name: c.discipline?.name ?? "Sin disciplina",
+  }));
+
+  const totalConfirmed = classesWithName.reduce(
     (acc: number, c) => acc + c.bookings.filter((b: { status: string }) => b.status === "CONFIRMED").length,
     0
   );

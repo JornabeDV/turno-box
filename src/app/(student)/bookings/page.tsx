@@ -26,11 +26,11 @@ export default async function BookingsPage() {
       class: {
         select: {
           id: true,
-          name: true,
           startTime: true,
           endTime: true,
           dayOfWeek: true,
           coach: { select: { name: true } },
+          discipline: { select: { name: true } },
         },
       },
     },
@@ -65,7 +65,7 @@ export default async function BookingsPage() {
                 waitlistPos: b.waitlistPos,
                 class: {
                   id: b.class.id,
-                  name: b.class.name,
+                  name: b.class.discipline?.name ?? "Sin disciplina",
                   startTime: b.class.startTime,
                   endTime: b.class.endTime,
                   dayOfWeek: b.class.dayOfWeek,
