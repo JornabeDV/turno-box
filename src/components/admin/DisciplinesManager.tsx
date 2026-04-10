@@ -7,9 +7,10 @@ type Discipline = { id: string; name: string; color: string | null };
 interface Props {
   disciplines: Discipline[];
   weekParam: string;
+  basePath?: string;
 }
 
-export function DisciplinesManager({ disciplines, weekParam }: Props) {
+export function DisciplinesManager({ disciplines, weekParam, basePath = "/dashboard/admin/classes" }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentDiscipline = searchParams.get("discipline") ?? "";
@@ -18,7 +19,7 @@ export function DisciplinesManager({ disciplines, weekParam }: Props) {
     const params = new URLSearchParams();
     params.set("week", weekParam);
     if (discipline) params.set("discipline", discipline);
-    router.push(`/dashboard/admin/classes?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   }
 
   return (
