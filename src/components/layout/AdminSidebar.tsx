@@ -8,17 +8,19 @@ import {
   Users,
   Barbell,
   CurrencyCircleDollar,
+  Tag,
   Gear,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard/admin",          label: "Dashboard",   Icon: ChartBar },
-  { href: "/dashboard/admin/classes",  label: "Clases",      Icon: CalendarBlank },
-  { href: "/dashboard/admin/students", label: "Alumnos",     Icon: Users },
-  { href: "/dashboard/admin/coaches",  label: "Coaches",     Icon: Barbell },
-  { href: "/dashboard/admin/packs",    label: "Packs",       Icon: CurrencyCircleDollar },
-  { href: "/dashboard/admin/settings", label: "Configuración", Icon: Gear },
+  { href: "/dashboard/admin",             label: "Dashboard",     Icon: ChartBar },
+  { href: "/dashboard/admin/classes",     label: "Clases",        Icon: CalendarBlank },
+  { href: "/dashboard/admin/disciplines", label: "Disciplinas",   Icon: Tag },
+  { href: "/dashboard/admin/students",    label: "Alumnos",       Icon: Users },
+  { href: "/dashboard/admin/coaches",     label: "Coaches",       Icon: Barbell },
+  { href: "/dashboard/admin/packs",       label: "Packs",         Icon: CurrencyCircleDollar },
+  { href: "/dashboard/admin/settings",    label: "Configuración", Icon: Gear },
 ];
 
 export function AdminSidebar() {
