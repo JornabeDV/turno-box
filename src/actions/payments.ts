@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { MercadoPagoConfig, Preference } from "mercadopago";
@@ -79,24 +78,26 @@ export async function createCheckoutAction(
 }
 
 // ── Crear pack (admin) ────────────────────────────────────────────────────────
-export async function createPackAction(formData: FormData): Promise<void> {
+export async function createPackAction(formData: FormData): Promise<ActionResult> {
   const session = await auth();
   const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
-  if (!user?.id || user.role !== "ADMIN" || !user.gymId) return;
+  if (!user?.id || user.role !== "ADMIN" || !user.gymId)
+    return { success: false, error: "No autorizado." };
 
   const name    = String(formData.get("name") ?? "").trim();
   const credits = Number(formData.get("credits"));
   const price   = Number(formData.get("price"));
   const validityDays = formData.get("validityDays") ? Number(formData.get("validityDays")) : null;
 
-  if (!name || credits < 1 || price < 0) return;
+  if (!name || credits < 1 || price < 0)
+    return { success: false, error: "Datos inválidos." };
 
   await prisma.pack.create({
     data: { gymId: user.gymId, name, credits, price, validityDays },
   });
 
   revalidatePath("/dashboard/admin/packs");
-  redirect("/dashboard/admin/packs");
+  return { success: true, data: undefined };
 }
 
 // ── Activar / desactivar pack (admin) ────────────────────────────────────────
@@ -124,10 +125,11 @@ export async function togglePackActiveAction(packId: string): Promise<ActionResu
 }
 
 // ── Editar pack (admin) ───────────────────────────────────────────────────────
-export async function updatePackAction(packId: string, formData: FormData): Promise<void> {
+export async function updatePackAction(packId: string, formData: FormData): Promise<ActionResult> {
   const session = await auth();
   const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
-  if (!user?.id || user.role !== "ADMIN" || !user.gymId) return;
+  if (!user?.id || user.role !== "ADMIN" || !user.gymId)
+    return { success: false, error: "No autorizado." };
 
   const name        = String(formData.get("name") ?? "").trim();
   const credits     = Number(formData.get("credits"));
@@ -135,7 +137,8 @@ export async function updatePackAction(packId: string, formData: FormData): Prom
   const validityDays = formData.get("validityDays") ? Number(formData.get("validityDays")) : null;
   const sortOrder   = formData.get("sortOrder") ? Number(formData.get("sortOrder")) : undefined;
 
-  if (!name || credits < 1 || price < 0) return;
+  if (!name || credits < 1 || price < 0)
+    return { success: false, error: "Datos inválidos." };
 
   await prisma.pack.updateMany({
     where: { id: packId, gymId: user.gymId },
@@ -143,7 +146,7 @@ export async function updatePackAction(packId: string, formData: FormData): Prom
   });
 
   revalidatePath("/dashboard/admin/packs");
-  redirect("/dashboard/admin/packs");
+  return { success: true, data: undefined };
 }
 
 // ── Créditos disponibles del usuario ─────────────────────────────────────────
