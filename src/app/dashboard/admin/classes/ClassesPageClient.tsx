@@ -4,10 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { formatTime } from "@/lib/utils";
-import { deleteClassAction } from "@/actions/classes";
-import { PlusIcon, CopySimpleIcon, CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
+import { PlusIcon, CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { DisciplinesManager } from "@/components/admin/DisciplinesManager";
-import { ClassModal, type ClassData } from "@/components/admin/ClassModal";
+import { ClassModal } from "@/components/admin/ClassModal";
 import type { ClassSlot } from "@/types";
 
 const DAY_LABELS: Record<string, string> = {
@@ -18,7 +17,6 @@ const DAY_ORDER = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATU
 
 type Coach = { id: string; name: string | null };
 type Discipline = { id: string; name: string; color: string | null; description: string | null };
-
 
 interface Props {
   disciplines: Discipline[];
@@ -44,7 +42,6 @@ export function ClassesPageClient({
   discipline,
 }: Props) {
   const [showClassModal, setShowClassModal] = useState(false);
-  const [editingClass, setEditingClass] = useState<ClassData | undefined>(undefined);
   const today = new Date();
   const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
@@ -58,24 +55,8 @@ export function ClassesPageClient({
     return d;
   }
 
-  function handleEditClass(slot: ClassSlot) {
-    setEditingClass({
-      id: slot.id,
-      description: slot.description,
-      dayOfWeek: slot.dayOfWeek as any,
-      startTime: slot.startTime,
-      endTime: slot.endTime,
-      maxCapacity: slot.maxCapacity,
-      color: slot.color,
-      coachId: slot.coachId,
-      disciplineId: slot.disciplineId,
-    });
-    setShowClassModal(true);
-  }
-
-  function handleCloseModal() {
-    setShowClassModal(false);
-    setEditingClass(undefined);
+  function isoDate(date: Date): string {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   }
 
   const weekDays = DAY_ORDER.map((dayKey, i) => ({
@@ -91,21 +72,13 @@ export function ClassesPageClient({
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
           <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Clases</h2>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href="/dashboard/admin/classes/duplicate">
-            <Button size="sm" variant="ghost">
-              <CopySimpleIcon size={14} />
-              Duplicar
-            </Button>
-          </Link>
-          <Button size="sm" variant="brand" onClick={() => setShowClassModal(true)}>
-            <PlusIcon size={14} weight="bold" />
-            Nueva clase
-          </Button>
-        </div>
+        <Button size="sm" variant="brand" onClick={() => setShowClassModal(true)}>
+          <PlusIcon size={14} weight="bold" />
+          Nueva clase
+        </Button>
       </div>
 
-      {/* Badges de disciplinas con gestión */}
+      {/* Badges de disciplinas */}
       <DisciplinesManager disciplines={disciplines} weekParam={weekParam} />
 
       {/* Navegación de semana */}
@@ -131,7 +104,9 @@ export function ClassesPageClient({
       {totalClasses === 0 && disciplines.length === 0 ? (
         <div className="glass-card rounded-2xl px-4 py-16 text-center">
           <p className="text-sm text-zinc-500 mb-4">No hay clases creadas todavía.</p>
-          <Button variant="brand" size="md" onClick={() => setShowClassModal(true)}>Crear primera clase</Button>
+          <Button variant="brand" size="md" onClick={() => setShowClassModal(true)}>
+            Crear primera clase
+          </Button>
         </div>
       ) : (
         <div className="overflow-x-auto -mx-4 px-4 pb-2">
@@ -163,7 +138,11 @@ export function ClassesPageClient({
                       const pct = Math.min(100, (slot.confirmedCount / slot.maxCapacity) * 100);
                       const isFull = slot.availableSpots === 0;
                       return (
-                        <div key={slot.id} className="glass-card rounded-xl p-2.5 flex flex-col gap-2">
+                        <Link
+                          key={slot.id}
+                          href={`/dashboard/admin/classes/${slot.id}?date=${isoDate(date)}`}
+                          className="glass-card rounded-xl p-2.5 flex flex-col gap-2 hover:bg-white/[0.04] transition-colors"
+                        >
                           {/* Color + nombre */}
                           <div className="flex items-start gap-1.5">
                             <span
@@ -174,11 +153,6 @@ export function ClassesPageClient({
                               {slot.name}
                             </p>
                           </div>
-
-                          {/* Disciplina */}
-                          {slot.disciplineName && (
-                            <p className="text-[10px] text-zinc-600 leading-none">{slot.disciplineName}</p>
-                          )}
 
                           {/* Horario */}
                           <p className="text-[10px] text-zinc-500 font-mono tabular-nums leading-none">
@@ -194,7 +168,7 @@ export function ClassesPageClient({
                           <div className="space-y-1">
                             <div className="flex items-center justify-between">
                               <span className="text-[10px] text-zinc-400 tabular-nums">
-                                {slot.confirmedCount}/{slot.maxCapacity} ocup.
+                                {slot.confirmedCount}/{slot.maxCapacity}
                               </span>
                               <span className={`text-[10px] font-medium ${isFull ? "text-rose-400" : "text-emerald-400"}`}>
                                 {isFull ? "Lleno" : `${slot.availableSpots} lib.`}
@@ -207,19 +181,7 @@ export function ClassesPageClient({
                               />
                             </div>
                           </div>
-
-                          {/* Acciones */}
-                          <div className="flex gap-1 pt-0.5">
-                            <Button variant="ghost" size="sm" onClick={() => handleEditClass(slot)} className="flex-1 text-[10px] h-7 px-2">
-                              Editar
-                            </Button>
-                            <form action={deleteClassAction.bind(null, slot.id)}>
-                              <Button variant="danger" size="sm" type="submit" className="text-[10px] h-7 px-2">
-                                ×
-                              </Button>
-                            </form>
-                          </div>
-                        </div>
+                        </Link>
                       );
                     })
                   )}
@@ -232,8 +194,7 @@ export function ClassesPageClient({
 
       <ClassModal
         open={showClassModal}
-        onClose={handleCloseModal}
-        class={editingClass}
+        onClose={() => setShowClassModal(false)}
         coaches={coaches}
         disciplines={disciplines}
       />

@@ -42,6 +42,7 @@ export async function createDisciplineAction(formData: FormData) {
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath("/dashboard/admin/disciplines");
 }
 
 export async function updateDisciplineAction(disciplineId: string, formData: FormData) {
@@ -68,6 +69,7 @@ export async function updateDisciplineAction(disciplineId: string, formData: For
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath("/dashboard/admin/disciplines");
 }
 
 export async function deleteDisciplineAction(disciplineId: string) {
@@ -84,4 +86,5 @@ export async function deleteDisciplineAction(disciplineId: string) {
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath("/dashboard/admin/disciplines");
 }
