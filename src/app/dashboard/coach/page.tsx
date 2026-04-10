@@ -1,82 +1,83 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { toClassDate, formatDate } from "@/lib/utils";
-import { TodayClassesTable } from "@/components/admin/TodayClassesTable";
-import { MetricCard } from "@/components/admin/MetricCard";
+import { getClassSlotsForDay } from "@/lib/queries/classes";
+import { CoachWeeklyClient } from "./CoachWeeklyClient";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Coach — Mis clases" };
+export const metadata: Metadata = { title: "Mis clases" };
 
-export default async function CoachDashboardPage() {
+const DAY_ORDER = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+
+function getWeekStart(dateStr?: string): Date {
+  let base: Date;
+  if (dateStr) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    base = new Date(y, m - 1, d);
+  } else {
+    const now = new Date();
+    base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  }
+  const day = base.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  base.setDate(base.getDate() + diff);
+  return base;
+}
+
+function addDays(date: Date, days: number): Date {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+
+function toWeekParam(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+export default async function CoachDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ week?: string; discipline?: string }>;
+}) {
   const session = await auth();
   const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
-
   if (!user?.id || !["ADMIN", "COACH"].includes(user.role ?? "")) redirect("/");
   if (!user.gymId) redirect("/");
 
-  const today = new Date();
-  const classDate = toClassDate(today);
-  const dayOfWeek = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"][today.getDay()];
+  const { week, discipline } = await searchParams;
+  const weekStart = getWeekStart(week);
+  const weekParam = toWeekParam(weekStart);
+  const prevWeek = toWeekParam(addDays(weekStart, -7));
+  const nextWeek = toWeekParam(addDays(weekStart, 7));
 
-  const classes = await prisma.gymClass.findMany({
-    where: {
-      gymId: user.gymId,
-      coachId: user.id,
-      isActive: true,
-      deletedAt: null,
-      dayOfWeek: dayOfWeek as never,
-    },
-    select: {
-      id: true,
-      startTime: true,
-      maxCapacity: true,
-      color: true,
-      coach: { select: { name: true } },
-      discipline: { select: { name: true } },
-      bookings: {
-        where: { classDate, deletedAt: null },
-        select: { status: true },
-      },
-    },
-    orderBy: { startTime: "asc" },
-  });
+  const weekDays = DAY_ORDER.map((_, i) => addDays(weekStart, i));
 
-  const classesWithName = classes.map((c) => ({
-    ...c,
-    name: c.discipline?.name ?? "Sin disciplina",
-  }));
+  const [disciplines, slotsPerDay] = await Promise.all([
+    prisma.discipline.findMany({
+      where: { gymId: user.gymId, isActive: true },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true, color: true },
+    }),
+    Promise.all(
+      weekDays.map((date) =>
+        getClassSlotsForDay(user.gymId!, date, user.id!, user.id!)
+      )
+    ),
+  ]);
 
-  const totalConfirmed = classesWithName.reduce(
-    (acc: number, c) => acc + c.bookings.filter((b: { status: string }) => b.status === "CONFIRMED").length,
-    0
-  );
-  const totalWaitlisted = classes.reduce(
-    (acc: number, c) => acc + c.bookings.filter((b: { status: string }) => b.status === "WAITLISTED").length,
-    0
+  const filteredSlotsPerDay = slotsPerDay.map((slots) =>
+    discipline ? slots.filter((s) => s.disciplineName === discipline) : slots
   );
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
-          {formatDate(today)}
-        </p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Mis clases hoy</h2>
-      </div>
-
-      <div className="grid grid-cols-3 gap-3">
-        <MetricCard label="Clases" value={classes.length} icon="calendar" />
-        <MetricCard label="Confirmados" value={totalConfirmed} icon="check" accent="emerald" />
-        <MetricCard label="En espera" value={totalWaitlisted} icon="x" accent="orange" />
-      </div>
-
-      <TodayClassesTable
-        classes={classes}
-        classDate={classDate}
-        gymId={user.gymId}
-        basePath="/dashboard/coach/classes"
-      />
-    </div>
+    <CoachWeeklyClient
+      disciplines={disciplines}
+      weekParam={weekParam}
+      prevWeek={prevWeek}
+      nextWeek={nextWeek}
+      filteredSlotsPerDay={filteredSlotsPerDay}
+      weekStart={weekStart}
+      discipline={discipline}
+    />
   );
 }

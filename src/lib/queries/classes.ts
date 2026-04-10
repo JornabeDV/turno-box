@@ -13,7 +13,8 @@ import type { ClassSlot } from "@/types";
 export async function getClassSlotsForDay(
   gymId: string,
   date: Date,
-  userId: string
+  userId: string,
+  filterCoachId?: string
 ): Promise<ClassSlot[]> {
   const dayOfWeek = [
     "SUNDAY",
@@ -33,6 +34,7 @@ export async function getClassSlotsForDay(
       dayOfWeek,
       isActive: true,
       deletedAt: null,
+      ...(filterCoachId ? { coachId: filterCoachId } : {}),
     },
     orderBy: { startTime: "asc" },
     select: {
