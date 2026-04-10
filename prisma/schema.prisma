@@ -67,8 +67,9 @@ model Gym {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users   User[]
-  classes GymClass[]
+  users       User[]
+  classes     GymClass[]
+  disciplines Discipline[]
 
   // Billing
   cancelWindowHours Int @default(2) // ventana para cancelar con reembolso de crédito
@@ -153,11 +154,32 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+// ─── DISCIPLINE ───────────────────────────────────────────────────────────────
+
+model Discipline {
+  id          String  @id @default(cuid())
+  name        String  // "CrossFit", "Weightlifting", "Open Box"
+  color       String? // hex para UI
+  description String?
+  isActive    Boolean @default(true)
+
+  gymId String
+  gym   Gym    @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  classes GymClass[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([gymId, name])
+  @@index([gymId, isActive])
+  @@map("disciplines")
+}
+
 // ─── GYM CLASS ────────────────────────────────────────────────────────────────
 
 model GymClass {
   id          String    @id @default(cuid())
-  name        String    // "CrossFit WOD", "Open Box", "Weightlifting"
   description String?
   dayOfWeek   DayOfWeek
   startTime   String    // "07:00" HH:mm en timezone del gym
@@ -167,10 +189,12 @@ model GymClass {
   isActive    Boolean   @default(true)
   deletedAt   DateTime? // soft delete — preserva historial de bookings
 
-  gymId   String
-  gym     Gym    @relation(fields: [gymId], references: [id], onDelete: Cascade)
-  coachId String?
-  coach   User?  @relation("CoachClasses", fields: [coachId], references: [id], onDelete: SetNull)
+  gymId        String
+  gym          Gym         @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  coachId      String?
+  coach        User?       @relation("CoachClasses", fields: [coachId], references: [id], onDelete: SetNull)
+  disciplineId String
+  discipline   Discipline  @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 
   bookings Booking[]
 

@@ -44,7 +44,7 @@ export default async function CoachDetailPage({ params }: Props) {
     where: { coachId: id, gymId: user.gymId, isActive: true, deletedAt: null },
     select: {
       id: true,
-      name: true,
+      discipline: { select: { name: true } },
       dayOfWeek: true,
       startTime: true,
       endTime: true,
@@ -184,7 +184,7 @@ export default async function CoachDetailPage({ params }: Props) {
                             style={{ backgroundColor: c.color ?? "#f97316" }}
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-zinc-100 truncate">{c.name}</p>
+                            <p className="text-sm font-medium text-zinc-100 truncate">{c.discipline?.name ?? "Sin disciplina"}</p>
                             <p className="text-xs text-zinc-500 font-mono tabular-nums">
                               {formatTime(c.startTime)} – {formatTime(c.endTime)}
                             </p>

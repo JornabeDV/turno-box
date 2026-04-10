@@ -37,13 +37,16 @@ export async function getClassSlotsForDay(
     orderBy: { startTime: "asc" },
     select: {
       id: true,
-      name: true,
+      description: true,
       dayOfWeek: true,
       startTime: true,
       endTime: true,
       maxCapacity: true,
       color: true,
+      coachId: true,
+      disciplineId: true,
       coach: { select: { name: true } },
+      discipline: { select: { name: true } },
       bookings: {
         where: {
           classDate,
@@ -68,13 +71,17 @@ export async function getClassSlotsForDay(
 
     return {
       id: c.id,
-      name: c.name,
+      name: c.discipline?.name ?? "Sin disciplina",
+      description: c.description,
       dayOfWeek: c.dayOfWeek,
       startTime: c.startTime,
       endTime: c.endTime,
       maxCapacity: c.maxCapacity,
       color: c.color,
+      coachId: c.coachId,
+      disciplineId: c.disciplineId,
       coachName: c.coach?.name ?? null,
+      disciplineName: c.discipline?.name ?? null,
       confirmedCount,
       availableSpots,
       isFull: availableSpots === 0,

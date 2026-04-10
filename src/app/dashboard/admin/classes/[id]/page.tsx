@@ -7,15 +7,15 @@ import { toClassDate, formatTime, formatDate } from "@/lib/utils";
 import { AttendeesList } from "@/components/admin/AttendeesList";
 import { OccupancyBar } from "@/components/admin/OccupancyBar";
 import Link from "next/link";
-import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ date?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const gymClass = await prisma.gymClass.findUnique({ where: { id }, select: { name: true } });
-  return { title: gymClass?.name ?? "Detalle de clase" };
+  const gymClass = await prisma.gymClass.findUnique({ where: { id }, select: { discipline: { select: { name: true } } } });
+  return { title: gymClass?.discipline?.name ?? "Detalle de clase" };
 }
 
 export default async function ClassDetailPage({ params, searchParams }: Props) {
@@ -35,13 +35,13 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
     where: { id, gymId: user.gymId, deletedAt: null },
     select: {
       id: true,
-      name: true,
       startTime: true,
       endTime: true,
       maxCapacity: true,
       color: true,
       description: true,
       coach: { select: { name: true } },
+      discipline: { select: { name: true } },
     },
   });
 
@@ -69,7 +69,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         href="/dashboard/admin"
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
       >
-        <ArrowLeft size={13} />
+        <ArrowLeftIcon size={13} />
         Dashboard
       </Link>
 
@@ -81,7 +81,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
             style={{ backgroundColor: gymClass.color ?? "#f97316" }}
           />
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-zinc-100 tracking-tight">{gymClass.name}</h2>
+            <h2 className="text-xl font-bold text-zinc-100 tracking-tight">{gymClass.discipline?.name ?? "Sin disciplina"}</h2>
             <p className="text-sm text-zinc-500 mt-0.5">
               {formatDate(targetDate)} · {formatTime(gymClass.startTime)} – {formatTime(gymClass.endTime)}
               {gymClass.coach?.name && ` · ${gymClass.coach.name}`}
