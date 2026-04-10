@@ -10,7 +10,7 @@ export function PackToggleButton({ packId, initialIsActive }: Props) {
     <ToggleActiveButton
       userId={packId}
       initialIsActive={initialIsActive}
-      entityLabel="pack"
+      entityLabel="abono"
       action={togglePackActiveAction}
     />
   );

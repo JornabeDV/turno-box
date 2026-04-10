@@ -8,7 +8,7 @@ import { PlusIcon, PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Packs de clases" };
+export const metadata: Metadata = { title: "Abonos" };
 
 export default async function AdminPacksPage() {
   const session = await auth();
@@ -37,12 +37,12 @@ export default async function AdminPacksPage() {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
-          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Packs de clases</h2>
+          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Abonos</h2>
         </div>
         <Link href="/dashboard/admin/packs/new">
           <Button size="sm" variant="brand">
             <PlusIcon size={14} weight="bold" />
-            Nuevo pack
+            Nuevo abono
           </Button>
         </Link>
       </div>
@@ -67,9 +67,9 @@ export default async function AdminPacksPage() {
       {/* Lista de packs */}
       {packs.length === 0 ? (
         <div className="glass-card rounded-2xl px-4 py-16 text-center">
-          <p className="text-sm text-zinc-500 mb-4">No hay packs creados todavía.</p>
+          <p className="text-sm text-zinc-500 mb-4">No hay abonos creados todavía.</p>
           <Link href="/dashboard/admin/packs/new">
-            <Button variant="brand" size="md">Crear primer pack</Button>
+            <Button variant="brand" size="md">Crear primer abono</Button>
           </Link>
         </div>
       ) : (

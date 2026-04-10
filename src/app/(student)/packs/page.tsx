@@ -54,7 +54,7 @@ export default async function PacksPage({
 
       {packs.length === 0 ? (
         <div className="glass-card rounded-2xl px-4 py-16 text-center">
-          <p className="text-sm text-zinc-500">No hay packs disponibles en este momento.</p>
+          <p className="text-sm text-zinc-500">No hay abonos disponibles en este momento.</p>
         </div>
       ) : (
         <div className="space-y-3">

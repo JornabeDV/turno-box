@@ -71,7 +71,7 @@ export default async function PaymentSuccessPage({
             href="/packs"
             className="px-6 py-3 bg-zinc-800 text-zinc-200 rounded-xl font-semibold text-sm hover:bg-zinc-700 transition-colors"
           >
-            Volver a packs
+            Volver a abonos
           </Link>
         </>
       )}

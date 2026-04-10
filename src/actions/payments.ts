@@ -23,7 +23,7 @@ export async function createCheckoutAction(
   const pack = await prisma.pack.findFirst({
     where: { id: packId, gymId, isActive: true },
   });
-  if (!pack) return { success: false, error: "Pack no encontrado." };
+  if (!pack) return { success: false, error: "Abono no encontrado." };
 
   const expiresAt = pack.validityDays
     ? new Date(Date.now() + pack.validityDays * 86_400_000)
@@ -111,7 +111,7 @@ export async function togglePackActiveAction(packId: string): Promise<ActionResu
     where: { id: packId, gymId: user.gymId },
     select: { isActive: true },
   });
-  if (!pack) return { success: false, error: "Pack no encontrado." };
+  if (!pack) return { success: false, error: "Abono no encontrado." };
 
   const updated = await prisma.pack.update({
     where: { id: packId },
