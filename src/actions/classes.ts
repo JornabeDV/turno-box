@@ -149,4 +149,5 @@ export async function deleteClassAction(classId: string): Promise<void> {
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath(`/dashboard/admin/classes/${classId}`);
 }
