@@ -38,7 +38,7 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
     <div>
       <DaySelector initialDate={date} onChange={handleDateChange} />
 
-      <div className="px-4 py-4 space-y-3">
+      <div className="py-4 space-y-3">
         {loading ? (
           // Skeleton loader con las mismas dimensiones que las cards
           Array.from({ length: 3 }).map((_, i) => (
