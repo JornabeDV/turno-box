@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Clock, User, CheckCircle, Hourglass, X } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { ClockIcon, UserIcon, CheckCircleIcon, HourglassIcon } from "@phosphor-icons/react/dist/ssr";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn, formatTime, spotsVariant } from "@/lib/utils";
@@ -10,51 +11,63 @@ import type { ClassSlot } from "@/types";
 
 type Props = {
   slot: ClassSlot;
-  dateStr: string; // "2025-04-07"
-  index: number;   // para stagger
+  dateStr: string;
+  index: number;
 };
 
-type FeedbackState = "idle" | "confirmed" | "waitlisted" | "cancelled" | "error";
+type LocalBooking = {
+  id: string;
+  status: "CONFIRMED" | "WAITLISTED";
+  waitlistPos: number | null;
+} | null;
 
 export function ClassCard({ slot, dateStr, index }: Props) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [feedback, setFeedback] = useState<FeedbackState>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // Estado local del booking — se actualiza optimistamente sin esperar re-render del server
+  const [localBooking, setLocalBooking] = useState<LocalBooking>(
+    slot.userBooking as LocalBooking ?? null
+  );
+  // Banner de feedback post-acción (sólo éxito — el error va en errorMsg)
+  const [justBooked, setJustBooked] = useState(false);
 
   const staggerClass = `stagger-${Math.min(index + 1, 6)}` as string;
   const spotsV = spotsVariant(slot.availableSpots, slot.maxCapacity);
 
-  const badgeVariant = slot.userBooking?.status === "CONFIRMED"
+  const badgeVariant = localBooking?.status === "CONFIRMED"
     ? "confirmed"
-    : slot.userBooking?.status === "WAITLISTED"
+    : localBooking?.status === "WAITLISTED"
     ? "waitlist"
     : slot.isFull
     ? "full"
     : spotsV;
 
   function handleBook() {
+    setErrorMsg(null);
+    setJustBooked(false);
     startTransition(async () => {
-      setFeedback("idle");
-      setErrorMsg(null);
       const result = await bookClassAction(slot.id, dateStr);
       if (result.success) {
-        setFeedback(result.data.status === "CONFIRMED" ? "confirmed" : "waitlisted");
+        setLocalBooking({ id: result.data.bookingId, status: result.data.status, waitlistPos: null });
+        setJustBooked(true);
+        router.refresh();
       } else {
-        setFeedback("error");
         setErrorMsg(result.error);
       }
     });
   }
 
   function handleCancel() {
-    if (!slot.userBooking) return;
+    if (!localBooking) return;
+    setErrorMsg(null);
+    setJustBooked(false);
     startTransition(async () => {
-      setFeedback("idle");
-      const result = await cancelBookingAction(slot.userBooking!.id);
+      const result = await cancelBookingAction(localBooking.id);
       if (result.success) {
-        setFeedback("cancelled");
+        setLocalBooking(null);
+        router.refresh();
       } else {
-        setFeedback("error");
         setErrorMsg(result.error);
       }
     });
@@ -65,14 +78,13 @@ export function ClassCard({ slot, dateStr, index }: Props) {
       className={cn(
         "glass-card rounded-2xl p-4 press-scale animate-in",
         staggerClass,
-        slot.userBooking?.status === "CONFIRMED" && "border-emerald-500/20",
-        slot.userBooking?.status === "WAITLISTED" && "border-orange-500/20"
+        localBooking?.status === "CONFIRMED" && "border-emerald-500/20",
+        localBooking?.status === "WAITLISTED" && "border-orange-500/20"
       )}
     >
       {/* Fila superior: hora + badge de estado */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          {/* Pastilla de color de la clase */}
           <span
             className="size-2.5 rounded-full shrink-0"
             style={{ backgroundColor: slot.color ?? "#f97316" }}
@@ -97,12 +109,12 @@ export function ClassCard({ slot, dateStr, index }: Props) {
       <div className="flex items-center gap-3 text-xs text-zinc-500 mb-4">
         {slot.coachName && (
           <span className="flex items-center gap-1">
-            <User size={12} />
+            <UserIcon size={12} />
             {slot.coachName}
           </span>
         )}
         <span className="flex items-center gap-1">
-          <Clock size={12} />
+          <ClockIcon size={12} />
           <span className={cn(
             "tabular-nums",
             slot.availableSpots === 0 && "text-rose-400",
@@ -113,73 +125,43 @@ export function ClassCard({ slot, dateStr, index }: Props) {
         </span>
       </div>
 
-      {/* Feedback inline */}
-      {feedback === "confirmed" && (
+      {/* Banner de reserva exitosa (desaparece al cancelar) */}
+      {justBooked && localBooking?.status === "CONFIRMED" && (
         <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 mb-3">
-          <CheckCircle size={14} className="text-emerald-400" />
+          <CheckCircleIcon size={14} className="text-emerald-400" />
           <span className="text-xs text-emerald-400 font-medium">Turno reservado</span>
         </div>
       )}
-      {feedback === "waitlisted" && (
+      {justBooked && localBooking?.status === "WAITLISTED" && (
         <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 border border-orange-500/20 px-3 py-2 mb-3">
-          <Hourglass size={14} className="text-orange-400" />
+          <HourglassIcon size={14} className="text-orange-400" />
           <span className="text-xs text-orange-400 font-medium">En lista de espera</span>
         </div>
       )}
-      {feedback === "cancelled" && (
-        <div className="flex items-center gap-2 rounded-xl bg-zinc-800 border border-zinc-700 px-3 py-2 mb-3">
-          <X size={14} className="text-zinc-400" />
-          <span className="text-xs text-zinc-400 font-medium">Turno cancelado</span>
-        </div>
-      )}
-      {feedback === "error" && errorMsg && (
+      {errorMsg && (
         <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2 mb-3">
           <span className="text-xs text-rose-400">{errorMsg}</span>
         </div>
       )}
 
       {/* Acción */}
-      {slot.userBooking?.status === "CONFIRMED" || feedback === "confirmed" ? (
-        <Button
-          variant="danger"
-          size="sm"
-          fullWidth
-          loading={isPending}
-          onClick={handleCancel}
-        >
+      {localBooking?.status === "CONFIRMED" ? (
+        <Button variant="danger" size="sm" fullWidth loading={isPending} onClick={handleCancel}>
           Cancelar turno
         </Button>
-      ) : slot.userBooking?.status === "WAITLISTED" || feedback === "waitlisted" ? (
-        <Button
-          variant="ghost"
-          size="sm"
-          fullWidth
-          loading={isPending}
-          onClick={handleCancel}
-        >
+      ) : localBooking?.status === "WAITLISTED" ? (
+        <Button variant="ghost" size="sm" fullWidth loading={isPending} onClick={handleCancel}>
           Salir de la lista
         </Button>
-      ) : slot.isFull && feedback === "idle" ? (
-        <Button
-          variant="outline"
-          size="md"
-          fullWidth
-          loading={isPending}
-          onClick={handleBook}
-        >
+      ) : slot.isFull ? (
+        <Button variant="outline" size="md" fullWidth loading={isPending} onClick={handleBook}>
           Unirme a lista de espera
         </Button>
-      ) : feedback === "idle" ? (
-        <Button
-          variant="brand"
-          size="lg"
-          fullWidth
-          loading={isPending}
-          onClick={handleBook}
-        >
+      ) : (
+        <Button variant="brand" size="lg" fullWidth loading={isPending} onClick={handleBook}>
           Reservar
         </Button>
-      ) : null}
+      )}
     </div>
   );
 }

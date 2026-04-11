@@ -10,7 +10,7 @@ type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 export async function bookClassAction(
   classId: string,
   dateStr: string
-): Promise<ActionResult<{ status: "CONFIRMED" | "WAITLISTED" }>> {
+): Promise<ActionResult<{ status: "CONFIRMED" | "WAITLISTED"; bookingId: string }>> {
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "No autenticado." };
 
@@ -26,18 +26,30 @@ export async function bookClassAction(
   });
   if (!gymClass) return { success: false, error: "Clase no encontrada." };
 
+  const existingBooking = await prisma.booking.findFirst({
+    where: { userId, classId, classDate, deletedAt: null },
+    select: { id: true, status: true },
+  });
+
+  if (existingBooking && existingBooking.status !== "CANCELLED") {
+    return { success: false, error: "Ya tenés una reserva para esta clase." };
+  }
+
+  // existingBookingId presente solo cuando se reactiva uno cancelado
+  const existingBookingId = existingBooking?.id ?? null;
+
   try {
     const result = await prisma.$transaction(async (tx: Tx) => {
       // ── 1. Bloquear fila de balance y verificar créditos (FOR UPDATE) ──────
-      const balanceRows = await tx.$queryRaw<{ available_credits: number }[]>`
-        SELECT available_credits
+      const balanceRows = await tx.$queryRaw<{ availableCredits: number }[]>`
+        SELECT "availableCredits"
         FROM user_credit_balances
-        WHERE user_id = ${userId} AND gym_id = ${gymId}
+        WHERE "userId" = ${userId} AND "gymId" = ${gymId}
         FOR UPDATE
       `;
 
       const balance = balanceRows[0];
-      if (!balance || balance.available_credits < 1) {
+      if (!balance || balance.availableCredits < 1) {
         throw Object.assign(new Error("Sin créditos disponibles. Comprá un abono para reservar."), { code: "NO_CREDITS" });
       }
 
@@ -58,19 +70,24 @@ export async function bookClassAction(
 
       const status = isFull ? "WAITLISTED" : "CONFIRMED";
 
-      // ── 3. Crear reserva ─────────────────────────────────────────────────
-      const booking = await tx.booking.create({
-        data: { userId, classId, classDate, status, waitlistPos },
-      });
+      // ── 3. Crear o reactivar reserva ────────────────────────────────────
+      const booking = existingBookingId
+        ? await tx.booking.update({
+            where: { id: existingBookingId },
+            data: { status, waitlistPos, cancelledAt: null },
+          })
+        : await tx.booking.create({
+            data: { userId, classId, classDate, status, waitlistPos },
+          });
 
       // ── 4. Descontar crédito sólo si CONFIRMED (no waitlisted) ──────────
       if (status === "CONFIRMED") {
         await tx.$executeRaw`
           UPDATE user_credit_balances
-          SET available_credits = available_credits - 1,
-              version           = version + 1,
-              updated_at        = now()
-          WHERE user_id = ${userId} AND gym_id = ${gymId}
+          SET "availableCredits" = "availableCredits" - 1,
+              "version"           = "version" + 1,
+              "updatedAt"        = now()
+          WHERE "userId" = ${userId} AND "gymId" = ${gymId}
         `;
 
         await tx.creditTransaction.create({
@@ -84,18 +101,18 @@ export async function bookClassAction(
         });
       }
 
-      return status;
+      return { status, bookingId: booking.id };
     });
 
     revalidatePath("/");
     revalidatePath("/bookings");
-    return { success: true, data: { status: result as "CONFIRMED" | "WAITLISTED" } };
+    return { success: true, data: { status: result.status as "CONFIRMED" | "WAITLISTED", bookingId: result.bookingId } };
 
   } catch (e: unknown) {
     const err = e as { code?: string; message?: string };
     if (err.code === "NO_CREDITS") return { success: false, error: err.message! };
     if (err.code === "P2002")       return { success: false, error: "Ya tenés una reserva para esta clase." };
-    console.error("[bookClassAction]", e);
+    // console.error("[bookClassAction]", e);
     return { success: false, error: "Error al reservar. Intentá de nuevo." };
   }
 }
@@ -104,7 +121,9 @@ export async function cancelBookingAction(
   bookingId: string
 ): Promise<ActionResult> {
   const session = await auth();
-  if (!session?.user?.id) return { success: false, error: "No autenticado." };
+  if (!session?.user?.id) {
+    return { success: false, error: "No autenticado." };
+  }
 
   const userId = session.user.id;
   const gymId  = (session.user as { gymId?: string }).gymId ?? "";
@@ -118,6 +137,11 @@ export async function cancelBookingAction(
   });
   if (!booking) return { success: false, error: "Reserva no encontrada." };
 
+  // No permitir cancelar si ya está cancelada
+  if (booking.status === "CANCELLED") {
+    return { success: true, data: undefined }; // No es error, ya está cancelada
+  }
+
   // ── Calcular si está dentro de la ventana de cancelación con reembolso ──
   const [startHour, startMin] = booking.class.startTime.split(":").map(Number);
   const classStart = new Date(booking.classDate);
@@ -127,7 +151,8 @@ export async function cancelBookingAction(
   const windowHours   = booking.class.gym?.cancelWindowHours ?? 2;
   const canRefund     = hoursUntil >= windowHours && booking.status === "CONFIRMED";
 
-  await prisma.$transaction(async (tx: Tx) => {
+  try {
+    await prisma.$transaction(async (tx: Tx) => {
     // Cancelar reserva
     await tx.booking.update({
       where: { id: bookingId },
@@ -138,10 +163,10 @@ export async function cancelBookingAction(
     if (canRefund) {
       await tx.$executeRaw`
         UPDATE user_credit_balances
-        SET available_credits = available_credits + 1,
-            version           = version + 1,
-            updated_at        = now()
-        WHERE user_id = ${userId} AND gym_id = ${gymId}
+        SET "availableCredits" = "availableCredits" + 1,
+            "version"           = "version" + 1,
+            "updatedAt"        = now()
+        WHERE "userId" = ${userId} AND "gymId" = ${gymId}
       `;
 
       await tx.creditTransaction.create({
@@ -166,12 +191,12 @@ export async function cancelBookingAction(
 
       for (const candidate of waitlisted) {
         // Verificar que el candidato tenga créditos antes de promover
-        const rows = await tx.$queryRaw<{ available_credits: number }[]>`
-          SELECT available_credits FROM user_credit_balances
-          WHERE user_id = ${candidate.userId} AND gym_id = ${gymId}
+        const rows = await tx.$queryRaw<{ availableCredits: number }[]>`
+          SELECT "availableCredits" FROM user_credit_balances
+          WHERE "userId" = ${candidate.userId} AND "gymId" = ${gymId}
           FOR UPDATE
         `;
-        const creds = rows[0]?.available_credits ?? 0;
+        const creds = rows[0]?.availableCredits ?? 0;
         if (creds < 1) continue; // saltear — sin créditos
 
         // Promover
@@ -183,10 +208,10 @@ export async function cancelBookingAction(
         // Descontar crédito al promovido
         await tx.$executeRaw`
           UPDATE user_credit_balances
-          SET available_credits = available_credits - 1,
-              version           = version + 1,
-              updated_at        = now()
-          WHERE user_id = ${candidate.userId} AND gym_id = ${gymId}
+          SET "availableCredits" = "availableCredits" - 1,
+              "version"           = "version" + 1,
+              "updatedAt"        = now()
+          WHERE "userId" = ${candidate.userId} AND "gymId" = ${gymId}
         `;
         await tx.creditTransaction.create({
           data: {
@@ -205,4 +230,7 @@ export async function cancelBookingAction(
   revalidatePath("/");
   revalidatePath("/bookings");
   return { success: true, data: undefined };
+  } catch (e: unknown) {
+    return { success: false, error: "Error al cancelar." };
+  }
 }
