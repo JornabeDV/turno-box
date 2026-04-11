@@ -1,13 +1,28 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/layout/SignOutButton";
+import { CreditsBadge } from "@/components/billing/CreditsBadge";
 
 type HeaderProps = {
   title: string;
   showSignOut?: boolean;
+  showCredits?: boolean;
 };
 
-export async function Header({ title, showSignOut = false }: HeaderProps) {
+export async function Header({ title, showSignOut = false, showCredits = false }: HeaderProps) {
   const session = await auth();
+
+  let credits: number | null = null;
+  if (showCredits && session?.user?.id) {
+    const user = session.user as { id: string; gymId?: string };
+    if (user.gymId) {
+      const balance = await prisma.userCreditBalance.findUnique({
+        where: { userId_gymId: { userId: user.id, gymId: user.gymId } },
+        select: { availableCredits: true },
+      });
+      credits = balance?.availableCredits ?? 0;
+    }
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#0f0f0f]/90 backdrop-blur-xl">
@@ -23,6 +38,7 @@ export async function Header({ title, showSignOut = false }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-3">
+          {credits !== null && <CreditsBadge credits={credits} />}
           {session?.user && (
             <span className="text-xs text-zinc-500 hidden sm:block">
               {session.user.name ?? session.user.email}
