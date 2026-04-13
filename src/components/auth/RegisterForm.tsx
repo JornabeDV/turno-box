@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { WarningCircle, CheckCircle } from "@phosphor-icons/react";
+import { WarningCircle, CheckCircle, Eye, EyeSlash } from "@phosphor-icons/react";
 import { registerAction } from "@/actions/auth";
 
 export function RegisterForm() {
@@ -11,6 +11,8 @@ export function RegisterForm() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,7 +30,14 @@ export function RegisterForm() {
       return;
     }
 
-    const result = await registerAction(formData);
+    let result;
+    try {
+      result = await registerAction(formData);
+    } catch {
+      setPending(false);
+      setError("Ocurrió un error inesperado. Intentá de nuevo.");
+      return;
+    }
 
     setPending(false);
 
@@ -69,22 +78,40 @@ export function RegisterForm() {
         <label htmlFor="password" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
           Contraseña
         </label>
-        <input
-          id="password" name="password" type="password" required minLength={6}
-          placeholder="Mínimo 6 caracteres"
-          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-        />
+        <div className="relative">
+          <input
+            id="password" name="password" type={showPassword ? "text" : "password"} required minLength={6}
+            placeholder="Mínimo 6 caracteres"
+            className="w-full h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 pr-10 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="confirmPassword" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
           Repetir contraseña
         </label>
-        <input
-          id="confirmPassword" name="confirmPassword" type="password" required minLength={6}
-          placeholder="Repetí tu contraseña"
-          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-        />
+        <div className="relative">
+          <input
+            id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? "text" : "password"} required minLength={6}
+            placeholder="Repetí tu contraseña"
+            className="w-full h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 pr-10 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((v) => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            {showConfirmPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
