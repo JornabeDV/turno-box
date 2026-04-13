@@ -37,12 +37,27 @@ export default async function HomePage() {
   }
 
   const today = new Date();
-  const slots = await getClassSlotsForDay(user.gymId, today, session.user.id);
-
+  const [slots, activeSubscriptions] = await Promise.all([
+    getClassSlotsForDay(user.gymId, today, session.user.id),
+    prisma.payment.findMany({
+      where: {
+        userId: session.user.id,
+        gymId: user.gymId,
+        status: "APPROVED",
+        expiresAt: { gt: today },
+      },
+      select: {
+        expiresAt: true,
+        creditsGranted: true,
+        creditTxs: { select: { amount: true } },
+      },
+      orderBy: { expiresAt: "asc" },
+    }),
+  ]);
   return (
     <section>
       {/* Saludo */}
-      <div className="px-4 pt-5 pb-3 flex items-center justify-between">
+      <div className="pt-5 pb-3 flex items-center justify-between">
         <div>
           <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
             Bienvenido
@@ -50,6 +65,39 @@ export default async function HomePage() {
           <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
             {user.name?.split(" ")[0] ?? "Atleta"}
           </h2>
+          {(() => {
+            const subs = activeSubscriptions
+              .map((sub) => ({
+                expiresAt: sub.expiresAt!,
+                remaining: sub.creditsGranted + sub.creditTxs.reduce((s, t) => s + t.amount, 0),
+              }))
+              .filter((sub) => sub.remaining > 0);
+            if (subs.length === 0) return null;
+            const sub = subs[0];
+            const daysLeft = Math.ceil(
+              (sub.expiresAt.getTime() - today.getTime()) / 86_400_000
+            );
+            const isCritical = daysLeft <= 3;
+            const isUrgent   = daysLeft <= 7;
+            const dateStr    = sub.expiresAt.toLocaleDateString("es-AR", {
+              day: "numeric",
+              month: "short",
+            });
+            return (
+              <span
+                className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full mt-2 ${
+                  isCritical
+                    ? "bg-red-500/15 text-red-400"
+                    : isUrgent
+                    ? "bg-amber-500/15 text-amber-400"
+                    : "bg-zinc-800 text-zinc-400"
+                }`}
+              >
+                {sub.remaining} {sub.remaining === 1 ? "clase vence" : "clases vencen"} {dateStr}
+                {isUrgent && ` · ${daysLeft}d`}
+              </span>
+            );
+          })()}
         </div>
       </div>
 

@@ -2,9 +2,17 @@
 
 import { useTransition } from "react";
 import { createCheckoutAction } from "@/actions/payments";
-import type { Pack } from "@prisma/client";
 
-type Props = { pack: Pack };
+type SerializedPack = {
+  id: string;
+  name: string;
+  credits: number;
+  price: number;
+  currency: string;
+  validityDays: number | null;
+};
+
+type Props = { pack: SerializedPack };
 
 export function PackCard({ pack }: Props) {
   const [isPending, startTransition] = useTransition();

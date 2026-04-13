@@ -99,7 +99,7 @@ export default async function ProfilePage() {
   ] ?? "Alumno";
 
   return (
-    <section className="px-4 pt-5 pb-8 space-y-6">
+    <section className="pt-5 space-y-6">
       {/* Header */}
       <div>
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Cuenta</p>
@@ -207,6 +207,9 @@ export default async function ProfilePage() {
           </div>
         </div>
       )}
+
+      {/* ── Cerrar sesión ────────────────────────────────────────────────── */}
+      <SignOutButton />
     </section>
   );
 }
