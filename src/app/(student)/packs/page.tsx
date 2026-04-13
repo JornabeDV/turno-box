@@ -2,7 +2,6 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PackCard } from "@/components/billing/PackCard";
-import { CreditsBadge } from "@/components/billing/CreditsBadge";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Comprar clases" };
@@ -18,27 +17,16 @@ export default async function PacksPage({
 
   const { error, info } = await searchParams;
 
-  const [packs, balance] = await Promise.all([
-    prisma.pack.findMany({
-      where: { gymId: user.gymId, isActive: true },
-      orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
-    }),
-    prisma.userCreditBalance.findUnique({
-      where: { userId_gymId: { userId: user.id, gymId: user.gymId } },
-      select: { availableCredits: true },
-    }),
-  ]);
-
-  const credits = balance?.availableCredits ?? 0;
+  const packs = await prisma.pack.findMany({
+    where: { gymId: user.gymId, isActive: true },
+    orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
+  });
 
   return (
     <section className="px-4 pt-5 pb-24">
-      <div className="mb-5 flex items-start justify-between">
-        <div>
-          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Turnos</p>
-          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Comprar clases</h2>
-        </div>
-        <CreditsBadge credits={credits} />
+      <div className="mb-5">
+        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Turnos</p>
+        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Comprar abonos</h2>
       </div>
 
       {error === "rejected" && (
