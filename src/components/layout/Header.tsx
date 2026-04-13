@@ -10,7 +10,12 @@ type HeaderProps = {
   mobileMenuSlot?: React.ReactNode;
 };
 
-export async function Header({ title, showSignOut = false, showCredits = false, mobileMenuSlot }: HeaderProps) {
+export async function Header({
+  title,
+  showSignOut = false,
+  showCredits = false,
+  mobileMenuSlot,
+}: HeaderProps) {
   const session = await auth();
 
   let credits: number | null = null;
@@ -31,11 +36,11 @@ export async function Header({ title, showSignOut = false, showCredits = false, 
         <div className="flex items-center gap-2.5">
           {mobileMenuSlot}
           {/* Logo / marca */}
-          <span className="size-7 rounded-lg bg-orange-500 flex items-center justify-center">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4"/>
-            </svg>
-          </span>
+          <img
+            src="/icons/logo-favicon.png"
+            alt="Bee Box"
+            className="h-8 w-auto"
+          />
           <h1 className="text-sm font-semibold text-zinc-100">{title}</h1>
         </div>
 

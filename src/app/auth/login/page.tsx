@@ -17,14 +17,9 @@ export default function LoginPage() {
       <div className="w-full max-w-sm relative">
         {/* Logo */}
         <div className="flex flex-col items-center my-8">
-          <span className="size-12 rounded-2xl bg-orange-500 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(249,115,22,.3)]">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4"/>
-            </svg>
+          <span className="bg-white rounded-2xl px-4 py-3 flex items-center mb-6">
+            <img src="/icons/Logo-header.png" alt="Bee Box" className="h-14 w-auto" />
           </span>
-          <h1 className="text-2xl font-bold text-zinc-100 tracking-tight">
-            Bee Box
-          </h1>
           <p className="text-sm text-zinc-500 mt-1">Ingresá a tu cuenta</p>
         </div>
 

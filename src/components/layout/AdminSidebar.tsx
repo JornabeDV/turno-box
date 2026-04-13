@@ -29,16 +29,10 @@ export function AdminSidebar() {
   return (
     <aside className="hidden md:flex flex-col w-56 min-h-dvh border-r border-white/[0.06] bg-[#0f0f0f] p-4 gap-1">
       {/* Brand */}
-      <div className="flex items-center gap-2.5 px-2 py-3 mb-4">
-        <span className="size-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4"/>
-          </svg>
+      <div className="flex justify-center gap-1 px-2 py-3 mb-4">
+        <span className="bg-white rounded-xl px-2 py-1.5 flex items-center self-start">
+          <img src="/icons/Logo-header.png" alt="Bee Box" className="h-20 w-auto" />
         </span>
-        <div>
-          <p className="text-xs font-bold text-zinc-100 leading-tight">CrossFit</p>
-          <p className="text-[10px] text-zinc-500 leading-tight">Admin Panel</p>
-        </div>
       </div>
 
       {NAV_ITEMS.map(({ href, label, Icon }) => {
