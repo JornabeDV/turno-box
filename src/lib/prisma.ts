@@ -11,9 +11,9 @@ function createPrismaClient() {
   }
 
   if (url.includes("neon.tech")) {
-    // Producción / Neon: usa el adapter serverless (HTTP/WebSocket)
-    const { PrismaNeon } = require("@prisma/adapter-neon") as typeof import("@prisma/adapter-neon");
-    const adapter = new PrismaNeon({ connectionString: url });
+    // Producción / Neon: usa HTTP (no WebSocket) — recomendado para serverless
+    const { PrismaNeonHttp } = require("@prisma/adapter-neon") as typeof import("@prisma/adapter-neon");
+    const adapter = new PrismaNeonHttp(url, {});
     return new PrismaClient({ adapter, log });
   }
 
