@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Trash } from "@phosphor-icons/react";
+import { toast } from "sonner";
 import { cancelBookingAction } from "@/actions/bookings";
 
 export function RemoveAttendeeButton({ bookingId }: { bookingId: string }) {
@@ -16,7 +17,12 @@ export function RemoveAttendeeButton({ bookingId }: { bookingId: string }) {
         if (!confirm("¿Eliminar esta reserva?")) return;
         startTransition(async () => {
           const result = await cancelBookingAction(bookingId);
-          if (result.success) setRemoved(true);
+          if (result.success) {
+            setRemoved(true);
+            toast.success("Reserva eliminada");
+          } else {
+            toast.error(result.error);
+          }
         });
       }}
       disabled={isPending}

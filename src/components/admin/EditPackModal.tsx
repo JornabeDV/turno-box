@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { updatePackAction } from "@/actions/payments";
@@ -45,6 +46,7 @@ export function EditPackModal({ pack, onClose }: Props) {
     startTransition(async () => {
       const result = await updatePackAction(pack.id, formData);
       if (result.success) {
+        toast.success("Abono guardado");
         handleClose();
       } else {
         setError(result.error ?? "Error al guardar.");

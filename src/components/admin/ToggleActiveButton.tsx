@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types";
 
@@ -22,7 +23,12 @@ export function ToggleActiveButton({ userId, initialIsActive, entityLabel, actio
 
     startTransition(async () => {
       const res = await action(userId);
-      if (res.success) setIsActive(res.data.isActive);
+      if (res.success) {
+        setIsActive(res.data.isActive);
+        toast.success(res.data.isActive ? `${entityLabel} activado` : `${entityLabel} desactivado`);
+      } else {
+        toast.error(res.error);
+      }
     });
   }
 

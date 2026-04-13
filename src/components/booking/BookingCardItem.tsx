@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { CalendarBlank, Clock, User, CheckCircle, Hourglass } from "@phosphor-icons/react";
+import { CalendarBlank, Clock, User, Hourglass } from "@phosphor-icons/react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn, formatTime, formatDate } from "@/lib/utils";
@@ -16,7 +17,6 @@ type Props = {
 export function BookingCardItem({ booking, index }: Props) {
   const [isPending, startTransition] = useTransition();
   const [cancelled, setCancelled] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const staggerClass = `stagger-${Math.min(index + 1, 6)}`;
 
@@ -27,8 +27,9 @@ export function BookingCardItem({ booking, index }: Props) {
       const result = await cancelBookingAction(booking.id);
       if (result.success) {
         setCancelled(true);
+        toast.success("Turno cancelado");
       } else {
-        setError(result.error);
+        toast.error(result.error);
       }
     });
   }
@@ -80,10 +81,6 @@ export function BookingCardItem({ booking, index }: Props) {
             Posición {booking.waitlistPos} en lista de espera
           </span>
         </div>
-      )}
-
-      {error && (
-        <p className="text-xs text-rose-400 mb-3">{error}</p>
       )}
 
       <Button

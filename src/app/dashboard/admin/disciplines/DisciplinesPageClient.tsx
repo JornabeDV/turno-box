@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { PlusIcon, PencilSimpleIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { DisciplineModal, type DisciplineData } from "@/components/admin/DisciplineModal";
@@ -23,6 +24,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
     startTransition(async () => {
       try {
         await deleteDisciplineAction(deleteModal.discipline!.id);
+        toast.success(`Disciplina "${deleteModal.discipline!.name}" eliminada`);
         setDeleteModal({ open: false });
       } catch {
         setDeleteError("No se pudo eliminar la disciplina");

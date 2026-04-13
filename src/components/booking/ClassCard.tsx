@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ClockIcon, UserIcon, CheckCircleIcon, HourglassIcon } from "@phosphor-icons/react/dist/ssr";
+import { ClockIcon, UserIcon } from "@phosphor-icons/react/dist/ssr";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn, formatTime, spotsVariant } from "@/lib/utils";
@@ -24,13 +25,10 @@ type LocalBooking = {
 export function ClassCard({ slot, dateStr, index }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   // Estado local del booking — se actualiza optimistamente sin esperar re-render del server
   const [localBooking, setLocalBooking] = useState<LocalBooking>(
     slot.userBooking as LocalBooking ?? null
   );
-  // Banner de feedback post-acción (sólo éxito — el error va en errorMsg)
-  const [justBooked, setJustBooked] = useState(false);
 
   const staggerClass = `stagger-${Math.min(index + 1, 6)}` as string;
   const spotsV = spotsVariant(slot.availableSpots, slot.maxCapacity);
@@ -44,31 +42,32 @@ export function ClassCard({ slot, dateStr, index }: Props) {
     : spotsV;
 
   function handleBook() {
-    setErrorMsg(null);
-    setJustBooked(false);
     startTransition(async () => {
       const result = await bookClassAction(slot.id, dateStr);
       if (result.success) {
         setLocalBooking({ id: result.data.bookingId, status: result.data.status, waitlistPos: null });
-        setJustBooked(true);
+        if (result.data.status === "CONFIRMED") {
+          toast.success("Turno reservado");
+        } else {
+          toast("En lista de espera", { icon: "⏳" });
+        }
         router.refresh();
       } else {
-        setErrorMsg(result.error);
+        toast.error(result.error);
       }
     });
   }
 
   function handleCancel() {
     if (!localBooking) return;
-    setErrorMsg(null);
-    setJustBooked(false);
     startTransition(async () => {
       const result = await cancelBookingAction(localBooking.id);
       if (result.success) {
         setLocalBooking(null);
+        toast.success("Turno cancelado");
         router.refresh();
       } else {
-        setErrorMsg(result.error);
+        toast.error(result.error);
       }
     });
   }
@@ -124,25 +123,6 @@ export function ClassCard({ slot, dateStr, index }: Props) {
           </span>
         </span>
       </div>
-
-      {/* Banner de reserva exitosa (desaparece al cancelar) */}
-      {justBooked && localBooking?.status === "CONFIRMED" && (
-        <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 mb-3">
-          <CheckCircleIcon size={14} className="text-emerald-400" />
-          <span className="text-xs text-emerald-400 font-medium">Turno reservado</span>
-        </div>
-      )}
-      {justBooked && localBooking?.status === "WAITLISTED" && (
-        <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 border border-orange-500/20 px-3 py-2 mb-3">
-          <HourglassIcon size={14} className="text-orange-400" />
-          <span className="text-xs text-orange-400 font-medium">En lista de espera</span>
-        </div>
-      )}
-      {errorMsg && (
-        <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2 mb-3">
-          <span className="text-xs text-rose-400">{errorMsg}</span>
-        </div>
-      )}
 
       {/* Acción */}
       {localBooking?.status === "CONFIRMED" ? (

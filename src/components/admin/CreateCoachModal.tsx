@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { createCoachAction } from "@/actions/coaches";
@@ -34,6 +35,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
     startTransition(async () => {
       const result = await createCoachAction(formData);
       if (result.success) {
+        toast.success("Coach creado");
         handleClose();
       } else {
         setError(result.error);

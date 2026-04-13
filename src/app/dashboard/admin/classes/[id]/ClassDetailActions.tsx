@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { PencilSimpleIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { ClassModal, type ClassData } from "@/components/admin/ClassModal";
@@ -29,6 +30,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
     startTransition(async () => {
       try {
         await deleteClassAction(classData.id);
+        toast.success("Clase eliminada");
         router.push("/dashboard/admin/classes");
       } catch {
         setDeleteError("No se pudo eliminar la clase");
