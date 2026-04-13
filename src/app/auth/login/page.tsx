@@ -23,7 +23,7 @@ export default function LoginPage() {
             </svg>
           </span>
           <h1 className="text-2xl font-bold text-zinc-100 tracking-tight">
-            CrossFit Turnos
+            Bee Box
           </h1>
           <p className="text-sm text-zinc-500 mt-1">Ingresá a tu cuenta</p>
         </div>
