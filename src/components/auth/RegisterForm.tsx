@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { DateInput } from "@/components/ui/DatePicker";
 import { WarningCircle, CheckCircle, Eye, EyeSlash } from "@phosphor-icons/react";
 import { registerAction } from "@/actions/auth";
 
@@ -13,6 +14,7 @@ export function RegisterForm() {
   const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [birthDate, setBirthDate] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -115,13 +117,10 @@ export function RegisterForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="birthDate" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
           Fecha de nacimiento
         </label>
-        <input
-          id="birthDate" name="birthDate" type="date" required
-          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-        />
+        <DateInput name="birthDate" value={birthDate} onChange={setBirthDate} minAge={10} />
       </div>
 
       {error && (

@@ -4,6 +4,8 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
+import { TimePicker } from "@/components/ui/TimePicker";
+import { SelectInput } from "@/components/ui/Select";
 import { createClassAction, updateClassAction } from "@/actions/classes";
 
 const DAYS = [
@@ -16,14 +18,6 @@ const DAYS = [
   { value: "SUNDAY",    label: "Domingo" },
 ];
 
-const CLASS_COLORS = [
-  "#f97316", // naranja — CrossFit WOD
-  "#10b981", // verde — Weightlifting
-  "#3b82f6", // azul — Open Box
-  "#8b5cf6", // violeta — Yoga / Mobility
-  "#f43f5e", // rosa — HIIT
-  "#f59e0b", // amber — Cardio
-];
 
 type Coach = { id: string; name: string | null };
 type Discipline = { id: string; name: string; color: string | null; description: string | null };
@@ -58,7 +52,11 @@ const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
 
 export function ClassModal({ open, onClose, class: gymClass, coaches, disciplines }: Props) {
   const isEditing = !!gymClass;
-  const [color, setColor] = useState(gymClass?.color ?? CLASS_COLORS[0]);
+  const [disciplineId, setDisciplineId] = useState(gymClass?.disciplineId ?? "");
+  const [dayOfWeek, setDayOfWeek] = useState(gymClass?.dayOfWeek ?? "MONDAY");
+  const [coachId, setCoachId] = useState(gymClass?.coachId ?? "");
+  const [startTime, setStartTime] = useState(gymClass?.startTime ?? "07:00");
+  const [endTime, setEndTime] = useState(gymClass?.endTime ?? "08:00");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -72,7 +70,11 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
     e.preventDefault();
     setError(null);
     const formData = new FormData(e.currentTarget);
-    formData.set("color", color);
+    formData.set("disciplineId", disciplineId);
+    formData.set("dayOfWeek", dayOfWeek);
+    formData.set("coachId", coachId);
+    formData.set("startTime", startTime);
+    formData.set("endTime", endTime);
 
     startTransition(async () => {
       try {
@@ -84,7 +86,9 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
           toast.success("Clase creada");
         }
         formRef.current?.reset();
-        setColor(CLASS_COLORS[0]);
+        setDisciplineId(disciplines[0]?.id ?? "");
+        setDayOfWeek("MONDAY");
+        setCoachId("");
         handleClose();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error inesperado");
@@ -101,61 +105,39 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         {/* Disciplina */}
-        <div className="space-y-1.5">
-          <label htmlFor="disciplineId" className={labelClass}>Disciplina</label>
-          <select
-            id="disciplineId"
-            name="disciplineId"
-            required
-            defaultValue={gymClass?.disciplineId}
-            className={selectClass}
-          >
-            {disciplines.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select>
-        </div>
+        <SelectInput
+          name="disciplineId"
+          value={disciplineId}
+          onChange={setDisciplineId}
+          options={disciplines.map(d => ({ value: d.id, label: d.name }))}
+          label="Disciplina"
+          required
+        />
 
         {/* Día */}
-        <div className="space-y-1.5">
-          <label htmlFor="dayOfWeek" className={labelClass}>Día</label>
-          <select
-            id="dayOfWeek"
-            name="dayOfWeek"
-            required
-            defaultValue={gymClass?.dayOfWeek ?? "MONDAY"}
-            className={selectClass}
-          >
-            {DAYS.map((d) => (
-              <option key={d.value} value={d.value}>{d.label}</option>
-            ))}
-          </select>
-        </div>
+        <SelectInput
+          name="dayOfWeek"
+          value={dayOfWeek}
+          onChange={setDayOfWeek}
+          options={DAYS}
+          label="Día"
+          required
+        />
 
         {/* Horario */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <label htmlFor="startTime" className={labelClass}>Inicio</label>
-            <input
-              id="startTime"
-              name="startTime"
-              type="time"
-              required
-              defaultValue={gymClass?.startTime ?? "07:00"}
-              className={inputClass}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label htmlFor="endTime" className={labelClass}>Fin</label>
-            <input
-              id="endTime"
-              name="endTime"
-              type="time"
-              required
-              defaultValue={gymClass?.endTime ?? "08:00"}
-              className={inputClass}
-            />
-          </div>
+          <TimePicker
+            label="Inicio"
+            value={startTime}
+            onChange={setStartTime}
+          />
+          <TimePicker
+            label="Fin"
+            value={endTime}
+            onChange={setEndTime}
+          />
+          <input type="hidden" name="startTime" value={startTime} />
+          <input type="hidden" name="endTime" value={endTime} />
         </div>
 
         {/* Cupo */}
@@ -175,22 +157,13 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
 
         {/* Coach */}
         {coaches.length > 0 && (
-          <div className="space-y-1.5">
-            <label htmlFor="coachId" className={labelClass}>
-              Coach <span className="text-zinc-600 normal-case">(opcional)</span>
-            </label>
-            <select
-              id="coachId"
-              name="coachId"
-              defaultValue={gymClass?.coachId ?? ""}
-              className={selectClass}
-            >
-              <option value="">Sin asignar</option>
-              {coaches.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-          </div>
+          <SelectInput
+            name="coachId"
+            value={coachId}
+            onChange={setCoachId}
+            options={[{ value: "", label: "Sin asignar" }, ...coaches.map(c => ({ value: c.id, label: c.name || "Sin nombre" }))]}
+            label="Coach (opcional)"
+          />
         )}
 
         {/* Descripción */}
@@ -208,25 +181,6 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
           />
         </div>
 
-        {/* Color */}
-        <div className="space-y-2">
-          <span className={labelClass}>Color identificador</span>
-          <div className="flex flex-wrap gap-2">
-            {CLASS_COLORS.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setColor(c)}
-                className="size-7 rounded-full transition-all"
-                style={{
-                  backgroundColor: c,
-                  boxShadow: color === c ? `0 0 0 2px #18181b, 0 0 0 4px ${c}` : undefined,
-                  transform: color === c ? "scale(1.15)" : undefined,
-                }}
-              />
-            ))}
-          </div>
-        </div>
 
         {error && (
           <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">

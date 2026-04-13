@@ -21,7 +21,14 @@ const sizeClass = {
   lg: "max-w-lg",
 };
 
-export function Dialog({ open, onOpenChange, title, description, children, size = "md" }: DialogProps) {
+export function Dialog({
+  open,
+  onOpenChange,
+  title,
+  description,
+  children,
+  size = "md",
+}: DialogProps) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal forceMount>
@@ -43,10 +50,10 @@ export function Dialog({ open, onOpenChange, title, description, children, size 
               <RadixDialog.Content asChild>
                 <motion.div
                   className={cn(
-                    "fixed left-1/2 top-1/2 z-50 w-[calc(100vw-2rem)]",
+                    "fixed left-1/2 top-1/2 z-50 max-md:h-full max-md:w-full md:w-[calc(100vw-2rem)]",
                     sizeClass[size],
-                    "glass-card rounded-2xl p-6 shadow-2xl",
-                    "focus:outline-none"
+                    "glass-card md:rounded-2xl p-6 shadow-2xl",
+                    "focus:outline-none",
                   )}
                   initial={{ opacity: 0, x: "-50%", y: "-46%", scale: 0.97 }}
                   animate={{ opacity: 1, x: "-50%", y: "-50%", scale: 1 }}
@@ -54,7 +61,7 @@ export function Dialog({ open, onOpenChange, title, description, children, size 
                   transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 >
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-5">
+                  <div className="flex items-start justify-between md:mb-5">
                     <div>
                       <RadixDialog.Title className="text-base font-semibold text-zinc-100">
                         {title}
