@@ -24,7 +24,7 @@ export default async function PacksPage({
   });
 
   return (
-    <section className="px-4 pt-5 pb-24">
+    <section className="pt-5">
       <PaymentToast error={error} info={info} />
       <div className="mb-5">
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Turnos</p>
@@ -38,7 +38,10 @@ export default async function PacksPage({
       ) : (
         <div className="space-y-3">
           {packs.map((pack) => (
-            <PackCard key={pack.id} pack={pack} />
+            <PackCard
+              key={pack.id}
+              pack={{ ...pack, price: Number(pack.price) }}
+            />
           ))}
         </div>
       )}

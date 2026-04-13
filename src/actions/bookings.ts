@@ -90,6 +90,33 @@ export async function bookClassAction(
           WHERE "userId" = ${userId} AND "gymId" = ${gymId}
         `;
 
+        // FIFO: consumir del payment con vencimiento más próximo primero
+        // PostgreSQL ordena ASC con NULLs al final → sin vencimiento se usa último
+        const now = new Date();
+        const activePayments = await tx.payment.findMany({
+          where: {
+            userId,
+            gymId,
+            status: "APPROVED",
+            OR: [{ expiresAt: { gt: now } }, { expiresAt: null }],
+          },
+          select: {
+            id: true,
+            creditsGranted: true,
+            creditTxs: { select: { amount: true } },
+          },
+          orderBy: { expiresAt: "asc" },
+        });
+
+        let targetPaymentId: string | null = null;
+        for (const p of activePayments) {
+          const remaining = p.creditsGranted + p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          if (remaining > 0) {
+            targetPaymentId = p.id;
+            break;
+          }
+        }
+
         await tx.creditTransaction.create({
           data: {
             userId,
@@ -97,6 +124,7 @@ export async function bookClassAction(
             type:      "CONSUME",
             amount:    -1,
             bookingId: booking.id,
+            ...(targetPaymentId ? { paymentId: targetPaymentId } : {}),
           },
         });
       }
@@ -169,6 +197,12 @@ export async function cancelBookingAction(
         WHERE "userId" = ${userId} AND "gymId" = ${gymId}
       `;
 
+      // Recuperar el paymentId del CONSUME original para mantener trazabilidad
+      const consumeTx = await tx.creditTransaction.findFirst({
+        where: { bookingId: booking.id, type: "CONSUME" },
+        select: { paymentId: true },
+      });
+
       await tx.creditTransaction.create({
         data: {
           userId,
@@ -176,6 +210,7 @@ export async function cancelBookingAction(
           type:      "REFUND",
           amount:    +1,
           bookingId: booking.id,
+          ...(consumeTx?.paymentId ? { paymentId: consumeTx.paymentId } : {}),
         },
       });
     }
@@ -205,7 +240,7 @@ export async function cancelBookingAction(
           data: { status: "CONFIRMED", waitlistPos: null },
         });
 
-        // Descontar crédito al promovido
+        // Descontar crédito al promovido (FIFO)
         await tx.$executeRaw`
           UPDATE user_credit_balances
           SET "availableCredits" = "availableCredits" - 1,
@@ -213,6 +248,29 @@ export async function cancelBookingAction(
               "updatedAt"        = now()
           WHERE "userId" = ${candidate.userId} AND "gymId" = ${gymId}
         `;
+
+        const candidateNow = new Date();
+        const candidatePayments = await tx.payment.findMany({
+          where: {
+            userId: candidate.userId,
+            gymId,
+            status: "APPROVED",
+            OR: [{ expiresAt: { gt: candidateNow } }, { expiresAt: null }],
+          },
+          select: {
+            id: true,
+            creditsGranted: true,
+            creditTxs: { select: { amount: true } },
+          },
+          orderBy: { expiresAt: "asc" },
+        });
+
+        let candidatePaymentId: string | null = null;
+        for (const p of candidatePayments) {
+          const remaining = p.creditsGranted + p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          if (remaining > 0) { candidatePaymentId = p.id; break; }
+        }
+
         await tx.creditTransaction.create({
           data: {
             userId:    candidate.userId,
@@ -220,6 +278,7 @@ export async function cancelBookingAction(
             type:      "CONSUME",
             amount:    -1,
             bookingId: candidate.id,
+            ...(candidatePaymentId ? { paymentId: candidatePaymentId } : {}),
           },
         });
         break; // sólo promover uno

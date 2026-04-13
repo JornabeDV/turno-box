@@ -37,7 +37,7 @@ export default async function BookingsPage() {
   });
 
   return (
-    <section className="px-4 pt-5">
+    <section className="pt-5">
       <div className="mb-5">
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Próximos</p>
         <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Mis turnos</h2>
