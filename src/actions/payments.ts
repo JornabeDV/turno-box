@@ -64,7 +64,8 @@ export async function createCheckoutAction(
         failure: `${process.env.NEXT_PUBLIC_URL}/packs?error=rejected`,
         pending: `${process.env.NEXT_PUBLIC_URL}/packs?info=pending`,
       },
-      auto_return: "approved",
+      // auto_return requiere HTTPS público — solo aplica en producción
+      ...(process.env.NEXT_PUBLIC_URL?.startsWith("https") ? { auto_return: "approved" as const } : {}),
       notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhooks/mercadopago`,
     },
   });
