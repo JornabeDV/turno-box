@@ -16,13 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "CrossFit Turnos", template: "%s · CrossFit Turnos" },
-  description: "Reservá tu turno en segundos. App de gestión de clases para tu CrossFit.",
+  title: { default: "Bee Box", template: "%s · Bee Box" },
+  description: "Reservá tu turno en segundos. App de gestión de clases para tu gimnasio.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "CrossFit Turnos",
+    title: "Bee Box",
   },
   icons: {
     icon: [

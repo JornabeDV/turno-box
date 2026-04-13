@@ -1,7 +1,7 @@
 {
-  "name": "CrossFit Turnos",
-  "short_name": "CF Turnos",
-  "description": "Reservá tu turno de CrossFit en segundos",
+  "name": "Bee Box",
+  "short_name": "Bee Box",
+  "description": "Reservá tu turno en segundos",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f0f",
