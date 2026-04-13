@@ -75,6 +75,8 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
     formData.set("coachId", coachId);
     formData.set("startTime", startTime);
     formData.set("endTime", endTime);
+    const selectedDiscipline = disciplines.find(d => d.id === disciplineId);
+    if (selectedDiscipline?.color) formData.set("color", selectedDiscipline.color);
 
     startTransition(async () => {
       try {

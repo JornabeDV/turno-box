@@ -39,7 +39,7 @@ export async function createClassAction(formData: FormData) {
     startTime: formData.get("startTime"),
     endTime: formData.get("endTime"),
     maxCapacity: formData.get("maxCapacity"),
-    color: formData.get("color"),
+    color: formData.get("color") || undefined,
     coachId: formData.get("coachId") || undefined,
     disciplineId: formData.get("disciplineId"),
   };
@@ -71,7 +71,7 @@ export async function updateClassAction(classId: string, formData: FormData) {
     startTime: formData.get("startTime"),
     endTime: formData.get("endTime"),
     maxCapacity: formData.get("maxCapacity"),
-    color: formData.get("color"),
+    color: formData.get("color") || undefined,
     coachId: formData.get("coachId") || undefined,
     disciplineId: formData.get("disciplineId"),
   };
