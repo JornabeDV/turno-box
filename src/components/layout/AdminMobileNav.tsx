@@ -75,16 +75,10 @@ export function AdminMobileNav() {
             >
               {/* Header del drawer */}
               <div className="flex items-center justify-between px-2 py-3 mb-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="size-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4"/>
-                    </svg>
+                <div className="flex flex-col gap-1">
+                  <span className="bg-white rounded-xl px-2 py-1.5 flex items-center self-start">
+                    <img src="/icons/Logo-header.png" alt="Bee Box" className="h-14 w-auto" />
                   </span>
-                  <div>
-                    <p className="text-xs font-bold text-zinc-100 leading-tight">CrossFit</p>
-                    <p className="text-[10px] text-zinc-500 leading-tight">Admin Panel</p>
-                  </div>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
