@@ -26,7 +26,7 @@ export default async function PacksPage({
     <section className="px-4 pt-5 pb-24">
       <div className="mb-5">
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Turnos</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Comprar clases</h2>
+        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Comprar abonos</h2>
       </div>
 
       {error === "rejected" && (
