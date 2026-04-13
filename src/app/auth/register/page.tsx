@@ -14,7 +14,7 @@ export default function RegisterPage() {
       </div>
 
       <div className="w-full max-w-sm relative">
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center my-8">
           <span className="size-12 rounded-2xl bg-orange-500 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(249,115,22,.3)]">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4"/>
@@ -28,7 +28,7 @@ export default function RegisterPage() {
           <RegisterForm />
         </div>
 
-        <p className="text-center text-xs text-zinc-600 mt-6">
+        <p className="text-center text-xs text-zinc-600 my-6">
           ¿Ya tenés cuenta?{" "}
           <a href="/auth/login" className="text-orange-500 hover:text-orange-400 transition-colors">
             Iniciá sesión

@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { DateInput } from "@/components/ui/DatePicker";
 import { updateProfileAction } from "@/actions/profile";
 
 const inputClass =
@@ -20,8 +21,7 @@ export function EditProfileForm({ name, birthDate }: Props) {
   const [isPending, startTransition] = useTransition();
   const [error, setError]   = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-
-  const birthValue = birthDate ?? "";
+  const [birthDateValue, setBirthDateValue] = useState(birthDate ?? "");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -56,14 +56,8 @@ export function EditProfileForm({ name, birthDate }: Props) {
       </div>
 
       <div className="space-y-1.5">
-        <label htmlFor="profile-birth" className={labelClass}>Fecha de nacimiento</label>
-        <input
-          id="profile-birth"
-          name="birthDate"
-          type="date"
-          defaultValue={birthValue}
-          className={inputClass}
-        />
+        <label className={labelClass}>Fecha de nacimiento</label>
+        <DateInput name="birthDate" value={birthDateValue} onChange={setBirthDateValue} />
       </div>
 
       {error && (
