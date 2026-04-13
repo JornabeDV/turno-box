@@ -7,9 +7,10 @@ type HeaderProps = {
   title: string;
   showSignOut?: boolean;
   showCredits?: boolean;
+  mobileMenuSlot?: React.ReactNode;
 };
 
-export async function Header({ title, showSignOut = false, showCredits = false }: HeaderProps) {
+export async function Header({ title, showSignOut = false, showCredits = false, mobileMenuSlot }: HeaderProps) {
   const session = await auth();
 
   let credits: number | null = null;
@@ -28,6 +29,7 @@ export async function Header({ title, showSignOut = false, showCredits = false }
     <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#0f0f0f]/90 backdrop-blur-xl">
       <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-5xl mx-auto">
         <div className="flex items-center gap-2.5">
+          {mobileMenuSlot}
           {/* Logo / marca */}
           <span className="size-7 rounded-lg bg-orange-500 flex items-center justify-center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
