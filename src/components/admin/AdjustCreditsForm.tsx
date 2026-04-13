@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { adjustCreditsAction } from "@/actions/students";
 import { cn } from "@/lib/utils";
 
@@ -28,8 +29,11 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         setBalance(res.data.newBalance);
         setAmount("");
         setNote("");
+        const delta = Number(amount);
+        toast.success(delta > 0 ? `+${delta} créditos acreditados` : `${delta} créditos descontados`);
       } else {
         setError(res.error);
+        toast.error(res.error);
       }
     });
   }

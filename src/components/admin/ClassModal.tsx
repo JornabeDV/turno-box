@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { createClassAction, updateClassAction } from "@/actions/classes";
@@ -77,8 +78,10 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
       try {
         if (isEditing) {
           await updateClassAction(gymClass.id, formData);
+          toast.success("Clase guardada");
         } else {
           await createClassAction(formData);
+          toast.success("Clase creada");
         }
         formRef.current?.reset();
         setColor(CLASS_COLORS[0]);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { createDisciplineAction, updateDisciplineAction } from "@/actions/disciplines";
@@ -56,8 +57,10 @@ export function DisciplineModal({ open, onClose, discipline }: Props) {
       try {
         if (isEditing) {
           await updateDisciplineAction(discipline.id, formData);
+          toast.success("Disciplina guardada");
         } else {
           await createDisciplineAction(formData);
+          toast.success("Disciplina creada");
         }
         formRef.current?.reset();
         setColor(COLORS[0]);

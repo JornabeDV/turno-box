@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { createPackAction } from "@/actions/payments";
@@ -34,6 +35,7 @@ export function CreatePackModal({ open, onClose }: Props) {
     startTransition(async () => {
       const result = await createPackAction(formData);
       if (result.success) {
+        toast.success("Abono creado");
         handleClose();
       } else {
         setError(result.error ?? "Error al crear el abono.");

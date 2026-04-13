@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PackCard } from "@/components/billing/PackCard";
+import { PaymentToast } from "@/components/billing/PaymentToast";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Comprar clases" };
@@ -24,21 +25,11 @@ export default async function PacksPage({
 
   return (
     <section className="px-4 pt-5 pb-24">
+      <PaymentToast error={error} info={info} />
       <div className="mb-5">
         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Turnos</p>
         <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Comprar abonos</h2>
       </div>
-
-      {error === "rejected" && (
-        <div className="mb-4 px-4 py-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-sm text-rose-400">
-          El pago fue rechazado. Podés intentar con otro método de pago.
-        </div>
-      )}
-      {info === "pending" && (
-        <div className="mb-4 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-amber-400">
-          Tu pago está siendo procesado. Los créditos se acreditarán automáticamente.
-        </div>
-      )}
 
       {packs.length === 0 ? (
         <div className="glass-card rounded-2xl px-4 py-16 text-center">
