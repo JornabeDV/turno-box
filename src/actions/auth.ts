@@ -9,6 +9,8 @@ const registerSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  confirmPassword: z.string().min(6, "Debes repetir la contraseña"),
+  birthDate: z.string().min(1, "La fecha de nacimiento es requerida"),
 });
 
 export async function registerAction(
@@ -18,6 +20,8 @@ export async function registerAction(
     name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+    birthDate: formData.get("birthDate"),
   };
 
   const parsed = registerSchema.safeParse(raw);
@@ -25,7 +29,11 @@ export async function registerAction(
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { name, email, password } = parsed.data;
+  const { name, email, password, confirmPassword, birthDate } = parsed.data;
+
+  if (password !== confirmPassword) {
+    return { success: false, error: "Las contraseñas no coinciden" };
+  }
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -34,16 +42,14 @@ export async function registerAction(
 
   const passwordHash = await bcrypt.hash(password, 12);
 
-  // Obtener el gym por defecto (el primero activo)
   const defaultGym = await prisma.gym.findFirst({
     orderBy: { createdAt: "asc" },
   });
 
-  // Si no hay gym, el usuario queda sin gymId
   const gymId = defaultGym?.id ?? null;
 
   await prisma.user.create({
-    data: { name, email, passwordHash, role: "STUDENT", gymId },
+    data: { name, email, passwordHash, role: "STUDENT", gymId, birthDate: new Date(birthDate) },
   });
 
   return { success: true, data: undefined };

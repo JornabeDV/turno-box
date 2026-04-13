@@ -18,6 +18,16 @@ export function RegisterForm() {
     setPending(true);
 
     const formData = new FormData(e.currentTarget);
+    
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
+    
+    if (password !== confirmPassword) {
+      setPending(false);
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
     const result = await registerAction(formData);
 
     setPending(false);
@@ -63,6 +73,27 @@ export function RegisterForm() {
           id="password" name="password" type="password" required minLength={6}
           placeholder="Mínimo 6 caracteres"
           className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="confirmPassword" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+          Repetir contraseña
+        </label>
+        <input
+          id="confirmPassword" name="confirmPassword" type="password" required minLength={6}
+          placeholder="Repetí tu contraseña"
+          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="birthDate" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+          Fecha de nacimiento
+        </label>
+        <input
+          id="birthDate" name="birthDate" type="date" required
+          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
         />
       </div>
 

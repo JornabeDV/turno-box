@@ -11,7 +11,7 @@ const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
 
 interface Props {
   name: string | null;
-  birthDate: Date | null;
+  birthDate: string | null; // "YYYY-MM-DD" ya serializado desde el server
 }
 
 export function EditProfileForm({ name, birthDate }: Props) {
@@ -21,9 +21,7 @@ export function EditProfileForm({ name, birthDate }: Props) {
   const [error, setError]   = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const birthValue = birthDate
-    ? birthDate.toISOString().split("T")[0]
-    : "";
+  const birthValue = birthDate ?? "";
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
