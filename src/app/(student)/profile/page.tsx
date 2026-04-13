@@ -123,7 +123,10 @@ export default async function ProfilePage() {
         </div>
 
         <div className="border-t border-white/[0.06] pt-4">
-          <EditProfileForm name={user.name} birthDate={user.birthDate} />
+          <EditProfileForm
+          name={user.name}
+          birthDate={user.birthDate ? user.birthDate.toISOString().split("T")[0] : null}
+        />
         </div>
       </div>
 
