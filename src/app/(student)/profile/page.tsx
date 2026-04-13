@@ -207,11 +207,6 @@ export default async function ProfilePage() {
           </div>
         </div>
       )}
-
-      {/* ── Cerrar sesión ────────────────────────────────────────────────── */}
-      <div className="glass-card rounded-2xl p-4">
-        <SignOutButton />
-      </div>
     </section>
   );
 }
