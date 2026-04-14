@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
   logging: {
     fetches: { fullUrl: false },
   },
+  serverExternalPackages: [
+    "ws",
+    "bufferutil",
+    "utf-8-validate",
+    "@neondatabase/serverless",
+    "@prisma/adapter-neon",
+  ],
 };
 
 export default withSerwist(nextConfig);
