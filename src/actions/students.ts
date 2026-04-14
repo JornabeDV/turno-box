@@ -64,16 +64,19 @@ export async function adjustCreditsAction(
   const { amount, note } = parsed.data;
 
   const result = await prisma.$transaction(async (tx: Tx) => {
-    // UPSERT atómico del balance
-    await tx.$executeRaw`
-      INSERT INTO user_credit_balances (id, user_id, gym_id, available_credits, version, updated_at)
-      VALUES (gen_random_uuid(), ${studentId}, ${gymId}, ${Math.max(0, amount)}, 1, now())
-      ON CONFLICT (user_id, gym_id)
-      DO UPDATE SET
-        available_credits = GREATEST(0, user_credit_balances.available_credits + ${amount}),
-        version           = user_credit_balances.version + 1,
-        updated_at        = now()
-    `;
+    // Leer balance actual para calcular el nuevo valor
+    const current = await tx.userCreditBalance.findUnique({
+      where: { userId_gymId: { userId: studentId, gymId } },
+      select: { availableCredits: true, version: true },
+    });
+
+    const newBalance = Math.max(0, (current?.availableCredits ?? 0) + amount);
+
+    await tx.userCreditBalance.upsert({
+      where: { userId_gymId: { userId: studentId, gymId } },
+      create: { userId: studentId, gymId, availableCredits: newBalance, version: 1 },
+      update: { availableCredits: newBalance, version: { increment: 1 } },
+    });
 
     await tx.creditTransaction.create({
       data: {
@@ -85,11 +88,7 @@ export async function adjustCreditsAction(
       },
     });
 
-    const bal = await tx.userCreditBalance.findUnique({
-      where: { userId_gymId: { userId: studentId, gymId } },
-      select: { availableCredits: true },
-    });
-    return bal?.availableCredits ?? 0;
+    return newBalance;
   });
 
   revalidatePath(`/dashboard/admin/students/${studentId}`);
