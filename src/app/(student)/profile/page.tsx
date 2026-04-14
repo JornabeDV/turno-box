@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/layout/SignOutButton";
 import { EditProfileForm } from "@/components/profile/EditProfileForm";
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
+import Link from "next/link";
+import { CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Perfil" };
@@ -18,7 +20,6 @@ function calcStreak(dates: Date[]): number {
   const todayStr = today.toISOString().split("T")[0];
   const yesterdayStr = new Date(today.getTime() - 86_400_000).toISOString().split("T")[0];
 
-  // La racha solo está activa si hay clase hoy o ayer
   if (unique[0] !== todayStr && unique[0] !== yesterdayStr) return 0;
 
   let streak   = 0;
@@ -42,45 +43,24 @@ export default async function ProfilePage() {
   if (!session?.user?.id) redirect("/auth/login");
 
   const userId = session.user.id;
-  const gymId  = (session.user as { gymId?: string }).gymId ?? "";
 
   const now        = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  // Todas las queries en paralelo (AGENTS.md §1.5)
-  const [user, statsThisMonth, statsTotal, recentPayments, allBookingDates] = await Promise.all([
+  const [user, statsThisMonth, statsTotal, allBookingDates] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
       select: { name: true, email: true, birthDate: true, passwordHash: true },
     }),
 
-    // Clases confirmadas este mes
     prisma.booking.count({
       where: { userId, status: "CONFIRMED", deletedAt: null, classDate: { gte: monthStart } },
     }),
 
-    // Total histórico
     prisma.booking.count({
       where: { userId, status: "CONFIRMED", deletedAt: null },
     }),
 
-    // Historial de abonos pagados
-    prisma.payment.findMany({
-      where: { userId, status: "APPROVED" },
-      orderBy: { paidAt: "desc" },
-      take: 10,
-      select: {
-        id: true,
-        amountPaid: true,
-        currency: true,
-        paidAt: true,
-        expiresAt: true,
-        creditsGranted: true,
-        pack: { select: { name: true } },
-      },
-    }),
-
-    // Fechas de bookings confirmados para calcular racha
     prisma.booking.findMany({
       where: { userId, status: "CONFIRMED", deletedAt: null },
       select: { classDate: true },
@@ -91,7 +71,7 @@ export default async function ProfilePage() {
 
   if (!user) redirect("/auth/login");
 
-  const streak   = calcStreak(allBookingDates.map((b) => b.classDate));
+  const streak      = calcStreak(allBookingDates.map((b) => b.classDate));
   const hasPassword = !!user.passwordHash;
 
   const roleLabel = { ADMIN: "Administrador", COACH: "Coach", STUDENT: "Alumno" }[
@@ -108,7 +88,6 @@ export default async function ProfilePage() {
 
       {/* ── Bloque 1: Datos personales ───────────────────────────────────── */}
       <div className="glass-card rounded-2xl p-5 space-y-5 animate-in">
-        {/* Avatar + info */}
         <div className="flex items-center gap-4">
           <div className="size-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-xl font-bold text-orange-500 shrink-0">
             {user.name?.[0]?.toUpperCase() ?? user.email?.[0]?.toUpperCase() ?? "?"}
@@ -124,9 +103,9 @@ export default async function ProfilePage() {
 
         <div className="border-t border-white/[0.06] pt-4">
           <EditProfileForm
-          name={user.name}
-          birthDate={user.birthDate ? user.birthDate.toISOString().split("T")[0] : null}
-        />
+            name={user.name}
+            birthDate={user.birthDate ? user.birthDate.toISOString().split("T")[0] : null}
+          />
         </div>
       </div>
 
@@ -155,46 +134,17 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Bloque 3: Historial de abonos ────────────────────────────────── */}
-      <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-          Historial de abonos
-        </h3>
-        {recentPayments.length === 0 ? (
-          <div className="glass-card rounded-2xl px-4 py-10 text-center">
-            <p className="text-sm text-zinc-600">Aún no compraste ningún abono.</p>
-          </div>
-        ) : (
-          <div className="glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.04]">
-            {recentPayments.map((p) => (
-              <div key={p.id} className="flex items-center gap-3 px-4 py-3.5">
-                {/* Créditos */}
-                <div className="size-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center shrink-0">
-                  <span className="text-sm font-black text-orange-400 leading-none">{p.creditsGranted}</span>
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-zinc-100 truncate">{p.pack.name}</p>
-                  <p className="text-[11px] text-zinc-600 tabular-nums">
-                    {p.paidAt?.toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" }) ?? "—"}
-                    {p.expiresAt && (
-                      <span className="ml-2 text-zinc-700">
-                        · vence {p.expiresAt.toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" })}
-                      </span>
-                    )}
-                  </p>
-                </div>
-
-                {/* Monto */}
-                <span className="text-xs font-mono font-semibold text-zinc-300 tabular-nums shrink-0">
-                  {new Intl.NumberFormat("es-AR", { style: "currency", currency: p.currency, maximumFractionDigits: 0 }).format(Number(p.amountPaid))}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* ── Bloque 3: Link al historial ──────────────────────────────────── */}
+      <Link
+        href="/profile/history"
+        className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between hover:bg-white/[0.03] transition-colors"
+      >
+        <div>
+          <p className="text-sm font-medium text-zinc-100">Historial de abonos</p>
+          <p className="text-xs text-zinc-500 mt-0.5">Abonos comprados y ajustes de créditos</p>
+        </div>
+        <CaretRightIcon size={16} className="text-zinc-600 shrink-0" />
+      </Link>
 
       {/* ── Cambio de contraseña ─────────────────────────────────────────── */}
       {hasPassword && (
