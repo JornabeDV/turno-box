@@ -50,7 +50,7 @@ export function Dialog({
               <RadixDialog.Content asChild>
                 <motion.div
                   className={cn(
-                    "fixed left-1/2 top-1/2 z-50 max-md:h-full max-md:w-full md:w-[calc(100vw-2rem)]",
+                    "fixed left-1/2 top-1/2 z-50 max-md:w-full md:w-[calc(100vw-2rem)] max-md:h-auto",
                     sizeClass[size],
                     "glass-card md:rounded-2xl p-6 shadow-2xl",
                     "focus:outline-none",

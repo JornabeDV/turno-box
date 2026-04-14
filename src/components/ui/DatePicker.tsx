@@ -15,6 +15,8 @@ interface DatePickerProps {
   label?: string;
   className?: string;
   minAge?: number;
+  allowFuture?: boolean;
+  showYearPicker?: boolean;
 }
 
 export function DatePicker({
@@ -23,12 +25,15 @@ export function DatePicker({
   label,
   className,
   minAge,
+  allowFuture = false,
+  showYearPicker = true,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const [viewDate, setViewDate] = useState(() =>
     value ? new Date(value) : new Date(),
   );
   const ref = useRef<HTMLDivElement>(null);
+  const [yearOpen, setYearOpen] = useState(false);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -90,16 +95,15 @@ export function DatePicker({
   }
 
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 80 }, (_, i) => currentYear - i);
-
-  const [yearOpen, setYearOpen] = useState(false);
-  const yearRef = useRef<HTMLDivElement>(null);
+  const years = allowFuture
+    ? Array.from({ length: 85 }, (_, i) => currentYear + 5 - i)
+    : Array.from({ length: 80 }, (_, i) => currentYear - i);
 
   function isDisabled(day: number): boolean {
     const date = new Date(year, month, day);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (date > today) return true;
+    if (!allowFuture && date > today) return true;
     if (minAge !== undefined) {
       const minDate = new Date(
         today.getFullYear() - minAge,
@@ -147,12 +151,10 @@ export function DatePicker({
       {open && (
         <div className="absolute z-50 mt-1 w-full bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl p-3">
           {/* Year picker overlay */}
-          {yearOpen && (
+          {showYearPicker && yearOpen && (
             <div className="absolute inset-0 z-10 bg-zinc-800 rounded-xl flex flex-col overflow-hidden">
               <div className="flex items-center justify-between px-3 pt-3 pb-2 border-b border-zinc-700 shrink-0">
-                <span className="text-sm font-medium text-zinc-300">
-                  Seleccionar año
-                </span>
+                <span className="text-sm font-medium text-zinc-300">Seleccionar año</span>
                 <button
                   type="button"
                   onClick={() => setYearOpen(false)}
@@ -166,15 +168,10 @@ export function DatePicker({
                   <button
                     key={y}
                     type="button"
-                    onClick={() => {
-                      setViewDate(new Date(y, month, 1));
-                      setYearOpen(false);
-                    }}
+                    onClick={() => { setViewDate(new Date(y, month, 1)); setYearOpen(false); }}
                     className={cn(
                       "w-full py-2 text-sm hover:bg-zinc-700 transition-colors text-center",
-                      y === year
-                        ? "text-orange-500 bg-orange-500/10"
-                        : "text-zinc-200",
+                      y === year ? "text-orange-500 bg-orange-500/10" : "text-zinc-200",
                     )}
                   >
                     {y}
@@ -194,25 +191,19 @@ export function DatePicker({
               <CaretLeftIcon size={16} className="text-zinc-400" />
             </button>
             <div className="flex items-center gap-1">
-              {/* Month label */}
-              <span className="text-sm font-medium text-zinc-100 min-w-auto text-center">
-                {months[month]}
-              </span>
-              <span className="text-zinc-100">-</span>
-              {/* Year picker */}
-              <div ref={yearRef}>
+              <span className="text-sm font-medium text-zinc-100">{months[month]}</span>
+              {showYearPicker ? (
                 <button
                   type="button"
                   onClick={() => setYearOpen(!yearOpen)}
                   className="text-sm font-medium text-zinc-100 hover:text-orange-400 transition-colors flex items-center gap-1"
                 >
                   {year}
-                  <CaretDownIcon
-                    size={12}
-                    className={cn(yearOpen && "rotate-180")}
-                  />
+                  <CaretDownIcon size={12} className={cn(yearOpen && "rotate-180")} />
                 </button>
-              </div>
+              ) : (
+                <span className="text-sm font-medium text-zinc-100">{year}</span>
+              )}
             </div>
             <button
               type="button"
@@ -281,6 +272,8 @@ interface DateInputProps {
   label?: string;
   className?: string;
   minAge?: number;
+  allowFuture?: boolean;
+  showYearPicker?: boolean;
 }
 
 export function DateInput({
@@ -290,6 +283,8 @@ export function DateInput({
   label,
   className,
   minAge,
+  allowFuture,
+  showYearPicker,
 }: DateInputProps) {
   return (
     <>
@@ -299,6 +294,8 @@ export function DateInput({
         label={label}
         className={className}
         minAge={minAge}
+        allowFuture={allowFuture}
+        showYearPicker={showYearPicker}
       />
       <input type="hidden" name={name} value={value} />
     </>

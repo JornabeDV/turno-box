@@ -77,6 +77,8 @@ model Gym {
   payments       Payment[]
   creditBalances UserCreditBalance[]
 
+  announcements Announcement[]
+
   @@map("gyms")
 }
 
@@ -331,4 +333,22 @@ model CreditTransaction {
   @@index([userId, gymId, createdAt])
   @@index([bookingId])
   @@map("credit_transactions")
+}
+
+// Announcement — noticias / avisos del gym para sus alumnos
+model Announcement {
+  id        String    @id @default(cuid())
+  gymId     String
+  title     String
+  body      String
+  pinned    Boolean   @default(false)
+  publishAt DateTime  @default(now())
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@index([gymId, publishAt])
+  @@map("announcements")
 }

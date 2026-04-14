@@ -23,22 +23,30 @@ export default async function HomePage() {
     return (
       <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
         <div className="size-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-4">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="1.5">
-            <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4"/>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#f97316"
+            strokeWidth="1.5"
+          >
+            <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4" />
           </svg>
         </div>
         <h2 className="text-lg font-semibold text-zinc-100 mb-2">
           Sin gym asignado
         </h2>
         <p className="text-sm text-zinc-500 max-w-xs">
-          Tu cuenta está activa, pero aún no fuiste asignado a ningún gimnasio. Contactá al administrador.
+          Tu cuenta está activa, pero aún no fuiste asignado a ningún gimnasio.
+          Contactá al administrador.
         </p>
       </div>
     );
   }
 
   const today = new Date();
-  const [slots, activeSubscriptions] = await Promise.all([
+  const [slots, activeSubscriptions, announcements] = await Promise.all([
     getClassSlotsForDay(user.gymId, today, session.user.id),
     prisma.payment.findMany({
       where: {
@@ -53,6 +61,22 @@ export default async function HomePage() {
         creditTxs: { select: { amount: true } },
       },
       orderBy: { expiresAt: "asc" },
+    }),
+    prisma.announcement.findMany({
+      where: {
+        gymId: user.gymId,
+        publishAt: { lte: today },
+        OR: [{ expiresAt: null }, { expiresAt: { gt: today } }],
+      },
+      orderBy: [{ pinned: "desc" }, { publishAt: "desc" }],
+      take: 3,
+      select: {
+        id: true,
+        title: true,
+        body: true,
+        pinned: true,
+        publishAt: true,
+      },
     }),
   ]);
   return (
@@ -70,17 +94,19 @@ export default async function HomePage() {
             const subs = activeSubscriptions
               .map((sub) => ({
                 expiresAt: sub.expiresAt!,
-                remaining: sub.creditsGranted + sub.creditTxs.reduce((s, t) => s + t.amount, 0),
+                remaining:
+                  sub.creditsGranted +
+                  sub.creditTxs.reduce((s, t) => s + t.amount, 0),
               }))
               .filter((sub) => sub.remaining > 0);
             if (subs.length === 0) return null;
             const sub = subs[0];
             const daysLeft = Math.ceil(
-              (sub.expiresAt.getTime() - today.getTime()) / 86_400_000
+              (sub.expiresAt.getTime() - today.getTime()) / 86_400_000,
             );
             const isCritical = daysLeft <= 3;
-            const isUrgent   = daysLeft <= 7;
-            const dateStr    = sub.expiresAt.toLocaleDateString("es-AR", {
+            const isUrgent = daysLeft <= 7;
+            const dateStr = sub.expiresAt.toLocaleDateString("es-AR", {
               day: "numeric",
               month: "short",
             });
@@ -90,17 +116,44 @@ export default async function HomePage() {
                   isCritical
                     ? "bg-red-500/15 text-red-400"
                     : isUrgent
-                    ? "bg-amber-500/15 text-amber-400"
-                    : "bg-zinc-800 text-zinc-400"
+                      ? "bg-amber-500/15 text-amber-400"
+                      : "bg-zinc-800 text-zinc-400"
                 }`}
               >
-                {sub.remaining} {sub.remaining === 1 ? "clase vence" : "clases vencen"} {dateStr}
+                {sub.remaining}{" "}
+                {sub.remaining === 1 ? "clase vence" : "clases vencen"}{" "}
+                {dateStr}
                 {isUrgent && ` · ${daysLeft}d`}
               </span>
             );
           })()}
         </div>
       </div>
+
+      {/* Noticias */}
+      {announcements.length > 0 && (
+        <div className="px-0 pb-4 space-y-2">
+          {announcements.map((a) => (
+            <div
+              key={a.id}
+              className={`rounded-2xl px-4 py-3.5 border ${
+                a.pinned
+                  ? "bg-amber-500/5 border-amber-500/20"
+                  : "bg-zinc-800/40 border-white/[0.06]"
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <p
+                  className={`text-xs font-semibold ${a.pinned ? "text-amber-300" : "text-zinc-200"}`}
+                >
+                  {a.title}
+                </p>
+              </div>
+              <p className="text-xs text-zinc-400 leading-relaxed">{a.body}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <ClassList
         initialSlots={slots}
