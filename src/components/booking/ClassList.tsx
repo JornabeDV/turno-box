@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ClassCard } from "@/components/booking/ClassCard";
+import { ClassCardCompact } from "@/components/booking/ClassCardCompact";
 import { DaySelector } from "@/components/booking/DaySelector";
 import type { ClassSlot } from "@/types";
 
@@ -44,7 +44,7 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="glass-card rounded-2xl p-4 h-[148px] animate-pulse"
+              className="glass-card rounded-2xl h-[56px] animate-pulse"
             />
           ))
         ) : slots.length === 0 ? (
@@ -62,7 +62,7 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
           </div>
         ) : (
           slots.map((slot, i) => (
-            <ClassCard key={slot.id} slot={slot} dateStr={dateStr} index={i} />
+            <ClassCardCompact key={slot.id} slot={slot} dateStr={dateStr} index={i} />
           ))
         )}
       </div>
