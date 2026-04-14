@@ -2,12 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import {
-  Calendar,
-  CaretDown,
-  CaretLeft,
-  CaretRight,
-  Check,
-} from "@phosphor-icons/react";
+  CalendarIcon,
+  CaretDownIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+} from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 
 interface DatePickerProps {
@@ -90,10 +89,6 @@ export function DatePicker({
     setViewDate(new Date(year, month + 1, 1));
   }
 
-  function handleYearChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    setViewDate(new Date(Number(e.target.value), month, 1));
-  }
-
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 80 }, (_, i) => currentYear - i);
 
@@ -111,7 +106,7 @@ export function DatePicker({
         today.getMonth(),
         today.getDate(),
       );
-      if (date < minDate) return true;
+      if (date > minDate) return true;
     }
     return false;
   }
@@ -137,10 +132,10 @@ export function DatePicker({
         )}
       >
         <span className="flex items-center gap-2">
-          <Calendar size={16} className="text-zinc-500" />
+          <CalendarIcon size={16} className="text-zinc-500" />
           {value ? formatDisplay(new Date(value)) : "Seleccionar fecha"}
         </span>
-        <CaretRight
+        <CaretRightIcon
           size={14}
           className={cn(
             "text-zinc-500 rotate-90 transition-transform",
@@ -196,7 +191,7 @@ export function DatePicker({
               onClick={prevMonth}
               className="p-1 hover:bg-zinc-700 rounded-lg transition-colors"
             >
-              <CaretLeft size={16} className="text-zinc-400" />
+              <CaretLeftIcon size={16} className="text-zinc-400" />
             </button>
             <div className="flex items-center gap-1">
               {/* Month label */}
@@ -212,7 +207,7 @@ export function DatePicker({
                   className="text-sm font-medium text-zinc-100 hover:text-orange-400 transition-colors flex items-center gap-1"
                 >
                   {year}
-                  <CaretDown
+                  <CaretDownIcon
                     size={12}
                     className={cn(yearOpen && "rotate-180")}
                   />
@@ -224,7 +219,7 @@ export function DatePicker({
               onClick={nextMonth}
               className="p-1 hover:bg-zinc-700 rounded-lg transition-colors"
             >
-              <CaretRight size={16} className="text-zinc-400" />
+              <CaretRightIcon size={16} className="text-zinc-400" />
             </button>
           </div>
 

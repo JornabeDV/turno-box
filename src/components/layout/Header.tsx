@@ -51,7 +51,7 @@ export async function Header({
               {session.user.name ?? session.user.email}
             </span>
           )}
-          {showSignOut && <SignOutButton />}
+          {showSignOut && <SignOutButton iconOnly />}
         </div>
       </div>
     </header>

@@ -3,7 +3,19 @@
 import { signOut } from "next-auth/react";
 import { SignOut } from "@phosphor-icons/react";
 
-export function SignOutButton() {
+export function SignOutButton({ iconOnly = false }: { iconOnly?: boolean }) {
+  if (iconOnly) {
+    return (
+      <button
+        onClick={() => signOut({ callbackUrl: "/auth/login" })}
+        className="flex items-center justify-center text-rose-400 hover:text-rose-300 active:scale-95 transition-all duration-150 cursor-pointer"
+        aria-label="Cerrar sesión"
+      >
+        <SignOut size={18} />
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={() => signOut({ callbackUrl: "/auth/login" })}
