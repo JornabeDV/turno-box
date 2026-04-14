@@ -45,7 +45,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 font-medium",
+        "inline-flex items-center justify-center gap-2 font-medium cursor-pointer",
         "transition-all duration-150 ease-out",
         "active:scale-[0.97]",                    // tactile press
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900",

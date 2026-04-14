@@ -10,6 +10,7 @@ import {
   CurrencyCircleDollar,
   Tag,
   Gear,
+  Megaphone,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/admin/students",    label: "Alumnos",       Icon: Users },
   { href: "/dashboard/admin/coaches",     label: "Coaches",       Icon: Barbell },
   { href: "/dashboard/admin/packs",       label: "Abonos",        Icon: CurrencyCircleDollar },
+  { href: "/dashboard/admin/news",        label: "Noticias",      Icon: Megaphone },
   { href: "/dashboard/admin/settings",    label: "Configuración", Icon: Gear },
 ];
 
