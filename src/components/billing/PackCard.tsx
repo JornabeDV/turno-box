@@ -37,7 +37,11 @@ export function PackCard({ pack }: Props) {
   const pricePerClass = (Number(pack.price) / pack.credits).toFixed(0);
 
   return (
-    <div className="glass-card rounded-2xl p-5 flex items-center gap-4">
+    <button
+      onClick={handleBuy}
+      disabled={isPending}
+      className="cursor-pointer glass-card rounded-2xl p-5 flex items-center gap-4 w-full text-left active:scale-[0.99] transition-all disabled:opacity-50"
+    >
       {/* Clases count */}
       <div className="size-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex flex-col items-center justify-center shrink-0">
         <span className="text-2xl font-black text-orange-400 leading-none">{pack.credits}</span>
@@ -47,23 +51,15 @@ export function PackCard({ pack }: Props) {
       {/* Info */}
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-zinc-100 text-sm">{pack.name}</p>
-        <p className="text-xs text-zinc-500 mt-0.5">
-          {priceFormatted}
-          <span className="text-zinc-700"> · ${pricePerClass}/clase</span>
-        </p>
         {pack.validityDays && (
-          <p className="text-xs text-zinc-600 mt-1">
+          <p className="text-xs md:text-sm text-zinc-600 mt-1">
             Válido {pack.validityDays} días desde la compra
           </p>
         )}
       </div>
 
       {/* CTA */}
-      <button
-        onClick={handleBuy}
-        disabled={isPending}
-        className="px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-bold hover:bg-orange-400 active:scale-95 transition-all disabled:opacity-50 shrink-0"
-      >
+      <div className="px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-bold shrink-0">
         {isPending ? (
           <span className="flex items-center gap-2">
             <span className="size-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
@@ -72,7 +68,7 @@ export function PackCard({ pack }: Props) {
         ) : (
           priceFormatted
         )}
-      </button>
-    </div>
+      </div>
+    </button>
   );
 }
