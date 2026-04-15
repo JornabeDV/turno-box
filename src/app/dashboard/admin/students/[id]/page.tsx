@@ -77,7 +77,7 @@ export default async function StudentDetailPage({ params }: Props) {
   const confirmedCount = upcoming.filter((b) => b.status === "CONFIRMED").length;
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <Link
         href="/dashboard/admin/students"
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"

@@ -49,7 +49,7 @@ export default async function PaymentSuccessPage({
             <p className="text-zinc-500 mt-2">
               Se acreditaron{" "}
               <span className="text-emerald-400 font-bold">{payment.creditsGranted} clases</span>
-              {" "}de {payment.pack.name} a tu cuenta.
+              {payment.pack ? ` de ${payment.pack.name}` : ""} a tu cuenta.
             </p>
           </div>
           <Link

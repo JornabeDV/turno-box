@@ -266,7 +266,7 @@ model Payment {
   id                String        @id @default(cuid())
   gymId             String
   userId            String
-  packId            String
+  packId            String?
 
   creditsGranted    Int           // snapshot del pack al momento de compra
   amountPaid        Decimal       @db.Decimal(10, 2)
@@ -288,7 +288,7 @@ model Payment {
 
   gym          Gym               @relation(fields: [gymId], references: [id])
   user         User              @relation(fields: [userId], references: [id])
-  pack         Pack              @relation(fields: [packId], references: [id])
+  pack         Pack?             @relation(fields: [packId], references: [id], onDelete: SetNull)
   creditTxs    CreditTransaction[]
 
   @@index([userId, gymId])

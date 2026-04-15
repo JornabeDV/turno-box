@@ -15,6 +15,7 @@ type Props = {
   icon: "calendar" | "check" | "chart" | "x" | "users";
   accent?: Accent;
   large?: boolean;
+  className?: string;
 };
 
 const icons: Record<Props["icon"], React.ReactNode> = {
@@ -45,11 +46,12 @@ const icons: Record<Props["icon"], React.ReactNode> = {
   ),
 };
 
-export function MetricCard({ label, value, icon, accent = "zinc", large = false }: Props) {
+export function MetricCard({ label, value, icon, accent = "zinc", large = false, className }: Props) {
   return (
     <div className={cn(
-      "glass-card rounded-2xl p-4 animate-in",
-      large && "col-span-2 md:col-span-4 flex items-center gap-4"
+      "glass-card rounded-2xl p-3 md:p-4 animate-in md:flex items-center justify-start gap-3",
+      large && "col-span-2 md:col-span-4 flex items-center gap-4",
+      className
     )}>
       <div className={cn(
         "size-9 rounded-xl flex items-center justify-center shrink-0",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { PlusIcon, PencilSimpleIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
+import { PlusIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
@@ -58,7 +58,11 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         ) : (
           <div className="glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.04]">
             {disciplines.map((d) => (
-              <div key={d.id} className="flex items-center gap-4 px-4 py-3.5">
+              <div
+                key={d.id}
+                onClick={() => setFormModal({ open: true, discipline: d })}
+                className="flex items-center gap-4 px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors"
+              >
                 {/* Color dot + nombre */}
                 <span
                   className="size-3 rounded-full shrink-0"
@@ -70,23 +74,14 @@ export function DisciplinesPageClient({ disciplines }: Props) {
                     <p className="text-xs text-zinc-500 mt-0.5 truncate">{d.description}</p>
                   )}
                 </div>
-                {/* Acciones */}
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => setFormModal({ open: true, discipline: d })}
-                    className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all"
-                    title="Editar"
-                  >
-                    <PencilSimpleIcon size={14} weight="bold" />
-                  </button>
-                  <button
-                    onClick={() => setDeleteModal({ open: true, discipline: d })}
-                    className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 transition-all"
-                    title="Eliminar"
-                  >
-                    <TrashIcon size={14} weight="bold" />
-                  </button>
-                </div>
+                {/* Eliminar */}
+                <button
+                  onClick={(e) => { e.stopPropagation(); setDeleteModal({ open: true, discipline: d }); }}
+                  className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 transition-all shrink-0"
+                >
+                  <TrashIcon size={14} className="md:hidden" weight="bold" />
+                  <TrashIcon size={18} className="hidden md:block" weight="bold" />
+                </button>
               </div>
             ))}
           </div>

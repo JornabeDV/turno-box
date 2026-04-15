@@ -102,7 +102,7 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-zinc-100 truncate">{p.pack.name}</p>
+                      <p className="text-sm font-medium text-zinc-100 truncate">{p.pack?.name ?? "Abono eliminado"}</p>
                       <p className="text-[11px] text-zinc-600 tabular-nums">
                         {p.paidAt?.toLocaleDateString("es-AR", {
                           day: "numeric", month: "short", year: "numeric",

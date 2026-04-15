@@ -73,7 +73,7 @@ export default async function CoachDetailPage({ params }: Props) {
     .reduce((acc, c) => acc + c.bookings.filter((b) => b.status === "CONFIRMED").length, 0);
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <Link
         href="/dashboard/admin/coaches"
         className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
@@ -207,7 +207,7 @@ export default async function CoachDetailPage({ params }: Props) {
                             </span>
                           )}
                           <Link
-                            href={`/dashboard/admin/classes/${c.id}/edit`}
+                            href={`/dashboard/admin/classes/${c.id}`}
                             className="size-6 rounded-md flex items-center justify-center text-zinc-700 hover:text-zinc-400 hover:bg-white/[0.04] transition-all shrink-0"
                           >
                             <PencilSimpleIcon size={12} />

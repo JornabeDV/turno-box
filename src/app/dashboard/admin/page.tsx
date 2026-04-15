@@ -12,14 +12,20 @@ export const metadata: Metadata = { title: "Dashboard Admin" };
 
 /** Días hasta el próximo cumpleaños (0 = hoy, ≤30). */
 function daysUntilBirthday(birthDate: Date, today: Date): number {
-  const thisYear = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+  const thisYear = new Date(
+    today.getFullYear(),
+    birthDate.getMonth(),
+    birthDate.getDate(),
+  );
   if (thisYear < today) thisYear.setFullYear(today.getFullYear() + 1);
   return Math.round((thisYear.getTime() - today.getTime()) / 86_400_000);
 }
 
 export default async function AdminDashboardPage() {
   const session = await auth();
-  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  const user = session?.user as
+    | { id?: string; role?: string; gymId?: string }
+    | undefined;
 
   if (!user?.id || user.role !== "ADMIN") redirect("/");
 
@@ -27,15 +33,32 @@ export default async function AdminDashboardPage() {
   if (!gymId) redirect("/");
 
   const today = new Date();
-  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const todayMidnight = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
   const tomorrowMidnight = new Date(todayMidnight.getTime() + 86_400_000);
   const classDate = toClassDate(today);
-  const dayOfWeek = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"][today.getDay()];
+  const dayOfWeek = [
+    "SUNDAY",
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+  ][today.getDay()];
 
   const [classesToday, paymentsToday, usersWithBirthday] = await Promise.all([
     // Clases de hoy con sus bookings
     prisma.gymClass.findMany({
-      where: { gymId, isActive: true, deletedAt: null, dayOfWeek: dayOfWeek as never },
+      where: {
+        gymId,
+        isActive: true,
+        deletedAt: null,
+        dayOfWeek: dayOfWeek as never,
+      },
       select: {
         id: true,
         startTime: true,
@@ -69,7 +92,12 @@ export default async function AdminDashboardPage() {
 
     // Alumnos activos con fecha de nacimiento
     prisma.user.findMany({
-      where: { gymId, role: "STUDENT", isActive: true, birthDate: { not: null } },
+      where: {
+        gymId,
+        role: "STUDENT",
+        isActive: true,
+        birthDate: { not: null },
+      },
       select: { id: true, name: true, email: true, birthDate: true },
     }),
   ]);
@@ -81,10 +109,16 @@ export default async function AdminDashboardPage() {
 
   // Métricas
   const totalConfirmed = classesTodayWithName.reduce(
-    (acc: number, c) => acc + c.bookings.filter((b: { status: string }) => b.status === "CONFIRMED").length,
-    0
+    (acc: number, c) =>
+      acc +
+      c.bookings.filter((b: { status: string }) => b.status === "CONFIRMED")
+        .length,
+    0,
   );
-  const totalCapacity = classesToday.reduce((acc: number, c) => acc + c.maxCapacity, 0);
+  const totalCapacity = classesToday.reduce(
+    (acc: number, c) => acc + c.maxCapacity,
+    0,
+  );
   const [totalCancelled, activeStudents] = await Promise.all([
     prisma.booking.count({
       where: { class: { gymId }, classDate, status: "CANCELLED" },
@@ -94,44 +128,77 @@ export default async function AdminDashboardPage() {
     }),
   ]);
 
-  const occupancyRate = totalCapacity > 0
-    ? Math.round((totalConfirmed / totalCapacity) * 100)
-    : 0;
+  const occupancyRate =
+    totalCapacity > 0 ? Math.round((totalConfirmed / totalCapacity) * 100) : 0;
 
   // Próximos cumpleaños (30 días)
   const upcomingBirthdays = usersWithBirthday
-    .map((u) => ({ ...u, birthDate: u.birthDate!, daysUntil: daysUntilBirthday(u.birthDate!, todayMidnight) }))
+    .map((u) => ({
+      ...u,
+      birthDate: u.birthDate!,
+      daysUntil: daysUntilBirthday(u.birthDate!, todayMidnight),
+    }))
     .filter((u) => u.daysUntil <= 30)
     .sort((a, b) => a.daysUntil - b.daysUntil);
 
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Hoy</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Dashboard</h2>
+        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
+          Hoy
+        </p>
+        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
+          Dashboard
+        </h2>
       </div>
 
       {/* Métricas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MetricCard label="Clases hoy" value={classesToday.length} icon="calendar" />
-        <MetricCard label="Confirmados" value={totalConfirmed} icon="check" accent="emerald" />
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <MetricCard
+          label="Clases hoy"
+          value={classesToday.length}
+          icon="calendar"
+          className="flex"
+        />
+        <MetricCard
+          label="Confirmados"
+          value={totalConfirmed}
+          icon="check"
+          accent="emerald"
+          className="flex"
+        />
         <MetricCard
           label="Ocupación"
           value={`${occupancyRate}%`}
           icon="chart"
           accent={occupancyRate > 80 ? "orange" : "zinc"}
+          className="flex"
         />
-        <MetricCard label="Cancelaciones" value={totalCancelled} icon="x" accent="rose" />
+        <MetricCard
+          label="Cancelaciones"
+          value={totalCancelled}
+          icon="x"
+          accent="rose"
+          className="flex"
+        />
+        <MetricCard
+          label="Alumnos activos"
+          value={activeStudents}
+          icon="users"
+          className="flex"
+        />
       </div>
-
-      <MetricCard label="Alumnos activos" value={activeStudents} icon="users" large />
 
       {/* Clases de hoy */}
       <div>
         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">
           Clases de hoy
         </h3>
-        <TodayClassesTable classes={classesTodayWithName} classDate={classDate} gymId={gymId} />
+        <TodayClassesTable
+          classes={classesTodayWithName}
+          classDate={classDate}
+          gymId={gymId}
+        />
       </div>
 
       {/* Abonos pagados hoy */}
