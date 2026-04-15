@@ -50,6 +50,11 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
+      <head>
+        <link rel="icon" href="/icons/icon-512.png" sizes="32x32" />
+        <link rel="icon" href="/icons/icon-512.png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+      </head>
       <body className="min-h-dvh bg-[#0f0f0f] text-zinc-100 antialiased">
         {children}
         <Toaster
