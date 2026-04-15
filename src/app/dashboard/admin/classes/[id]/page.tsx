@@ -89,7 +89,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   const isAdmin = user.role === "ADMIN";
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       {/* Back */}
       <Link
         href="/dashboard/admin/classes"

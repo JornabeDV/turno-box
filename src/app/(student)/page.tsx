@@ -139,13 +139,11 @@ export default async function HomePage() {
               className={`rounded-2xl px-4 py-3.5 border ${
                 a.pinned
                   ? "bg-amber-500/5 border-amber-500/20"
-                  : "bg-zinc-800/40 border-white/[0.06]"
+                  : "bg-violet-500/5 border-violet-500/20"
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <p
-                  className={`text-xs font-semibold ${a.pinned ? "text-amber-300" : "text-zinc-200"}`}
-                >
+                <p className={`text-xs font-semibold ${a.pinned ? "text-amber-300" : "text-violet-300"}`}>
                   {a.title}
                 </p>
               </div>

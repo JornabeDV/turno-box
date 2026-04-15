@@ -1,7 +1,7 @@
 type PaymentRow = {
   id: string;
   user: { name: string | null; email: string };
-  pack: { name: string };
+  pack: { name: string } | null;
   expiresAt: Date | null;
 };
 
@@ -35,7 +35,7 @@ export function TodayPaymentsTable({ payments }: Props) {
 
             {/* Abono */}
             <span className="text-xs font-medium text-zinc-300 shrink-0 hidden sm:block">
-              {p.pack.name}
+              {p.pack?.name ?? "—"}
             </span>
 
             {/* Vigencia */}

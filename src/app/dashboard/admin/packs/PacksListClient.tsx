@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { TrashIcon } from "@phosphor-icons/react/dist/ssr";
 import { PackToggleButton } from "@/components/admin/PackToggleButton";
 import { EditPackModal, type PackData } from "@/components/admin/EditPackModal";
+import { Dialog } from "@/components/ui/Dialog";
+import { Button } from "@/components/ui/Button";
+import { deletePackAction } from "@/actions/payments";
 import { cn } from "@/lib/utils";
 
 type PackRow = PackData & {
@@ -15,8 +20,25 @@ interface Props {
   packs: PackRow[];
 }
 
-export function PacksListClient({ packs }: Props) {
+export function PacksListClient({ packs: initial }: Props) {
+  const [packs, setPacks] = useState(initial);
   const [editing, setEditing] = useState<PackData | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function handleDelete() {
+    if (!confirmDeleteId) return;
+    startTransition(async () => {
+      const res = await deletePackAction(confirmDeleteId);
+      if (res.success) {
+        setPacks((prev) => prev.filter((p) => p.id !== confirmDeleteId));
+        setConfirmDeleteId(null);
+        toast.success("Abono eliminado");
+      } else {
+        toast.error(res.error);
+      }
+    });
+  }
 
   return (
     <>
@@ -58,15 +80,40 @@ export function PacksListClient({ packs }: Props) {
               <p className="text-[10px] text-zinc-600">ventas</p>
             </div>
 
-            {/* Toggle — stopPropagation para que no abra el modal al togglear */}
+            {/* Toggle */}
             <div onClick={(e) => e.stopPropagation()}>
               <PackToggleButton packId={pack.id} initialIsActive={pack.isActive} />
             </div>
+
+            {/* Eliminar */}
+            <button
+              onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(pack.id); }}
+              className="size-8 rounded-lg flex items-center justify-center text-zinc-500 cursor-pointer hover:text-rose-400 hover:bg-zinc-800 transition-all shrink-0"
+            >
+              <TrashIcon size={16} weight="bold" />
+            </button>
           </div>
         ))}
       </div>
 
       <EditPackModal pack={editing} onClose={() => setEditing(null)} />
+
+      <Dialog
+        open={!!confirmDeleteId}
+        onOpenChange={(o) => !o && setConfirmDeleteId(null)}
+        title="Eliminar abono"
+        description="Esta acción no se puede deshacer."
+        size="sm"
+      >
+        <div className="flex gap-2 pt-1">
+          <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={() => setConfirmDeleteId(null)}>
+            Cancelar
+          </Button>
+          <Button type="button" variant="danger" size="sm" className="flex-1" loading={isPending} onClick={handleDelete}>
+            Eliminar
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 }

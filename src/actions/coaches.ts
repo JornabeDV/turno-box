@@ -48,6 +48,15 @@ export async function createCoachAction(formData: FormData): Promise<ActionResul
   return { success: true, data: undefined };
 }
 
+export async function deleteCoachAction(coachId: string): Promise<ActionResult> {
+  const { gymId } = await requireAdmin();
+
+  await prisma.user.deleteMany({ where: { id: coachId, gymId, role: "COACH" } });
+
+  revalidatePath("/dashboard/admin/coaches");
+  return { success: true, data: undefined };
+}
+
 export async function toggleCoachActiveAction(
   coachId: string
 ): Promise<ActionResult<{ isActive: boolean }>> {

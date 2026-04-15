@@ -150,6 +150,19 @@ export async function updatePackAction(packId: string, formData: FormData): Prom
   return { success: true, data: undefined };
 }
 
+// ── Eliminar pack (admin) ─────────────────────────────────────────────────────
+export async function deletePackAction(packId: string): Promise<ActionResult> {
+  const session = await auth();
+  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  if (!user?.id || user.role !== "ADMIN" || !user.gymId)
+    return { success: false, error: "No autorizado." };
+
+  await prisma.pack.deleteMany({ where: { id: packId, gymId: user.gymId } });
+
+  revalidatePath("/dashboard/admin/packs");
+  return { success: true, data: undefined };
+}
+
 // ── Créditos disponibles del usuario ─────────────────────────────────────────
 export async function getUserCreditsAction(): Promise<number> {
   const session = await auth();

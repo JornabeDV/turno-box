@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ToggleStudentButton } from "@/components/admin/ToggleStudentButton";
-import { ArrowRightIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 type Student = {
@@ -18,6 +18,7 @@ type Student = {
 type Props = { students: Student[] };
 
 export function StudentsList({ students }: Props) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
 
   const filtered = query.trim()
@@ -65,7 +66,8 @@ export function StudentsList({ students }: Props) {
               return (
                 <div
                   key={s.id}
-                  className={cn("flex items-center gap-3 px-4 py-3 animate-in", `stagger-${Math.min(i + 1, 6)}`)}
+                  onClick={() => router.push(`/dashboard/admin/students/${s.id}`)}
+                  className={cn("flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in", `stagger-${Math.min(i + 1, 6)}`)}
                 >
                   {/* Avatar */}
                   <div className={cn(
@@ -101,14 +103,9 @@ export function StudentsList({ students }: Props) {
                   )}
 
                   {/* Acciones */}
-                  <ToggleStudentButton studentId={s.id} initialIsActive={s.isActive} />
-
-                  <Link
-                    href={`/dashboard/admin/students/${s.id}`}
-                    className="size-7 rounded-lg flex items-center justify-center text-zinc-700 hover:text-zinc-400 hover:bg-white/[0.04] transition-all shrink-0"
-                  >
-                    <ArrowRightIcon size={13} />
-                  </Link>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <ToggleStudentButton studentId={s.id} initialIsActive={s.isActive} />
+                  </div>
                 </div>
               );
             })}

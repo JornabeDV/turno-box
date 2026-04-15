@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { PushPinIcon, PlusIcon, PencilSimpleIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
+import { PushPinIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import { DateInput } from "@/components/ui/DatePicker";
 import { Dialog } from "@/components/ui/Dialog";
@@ -33,6 +33,7 @@ const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
 export function NewsListClient({ announcements: initial }: Props) {
   const router = useRouter();
   const [items, setItems] = useState(initial);
+  useEffect(() => { setItems(initial); }, [initial]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Announcement | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
@@ -125,7 +126,11 @@ export function NewsListClient({ announcements: initial }: Props) {
           {items.map((item) => {
             const { label, cls } = statusLabel(item);
             return (
-              <div key={item.id} className="flex items-start gap-3 px-4 py-4">
+              <div
+                key={item.id}
+                onClick={() => openEdit(item)}
+                className="flex items-center gap-3 px-4 py-4 cursor-pointer hover:bg-white/[0.03] transition-colors group"
+              >
                 {/* Pin indicator */}
                 <div className="mt-0.5 shrink-0">
                   {item.pinned ? (
@@ -161,20 +166,13 @@ export function NewsListClient({ announcements: initial }: Props) {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => openEdit(item)}
-                    className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all"
-                  >
-                    <PencilSimpleIcon size={14} weight="bold" />
-                  </button>
-                  <button
-                    onClick={() => setConfirmDeleteId(item.id)}
-                    className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 transition-all"
-                  >
-                    <TrashIcon size={14} weight="bold" />
-                  </button>
-                </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(item.id); }}
+                  className="size-8 rounded-lg flex cursor-pointer items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 transition-all shrink-0"
+                >
+                  <TrashIcon size={14} className="md:hidden" weight="bold" />
+                  <TrashIcon size={18} className="hidden md:block" weight="bold" />
+                </button>
               </div>
             );
           })}
