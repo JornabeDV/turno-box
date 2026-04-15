@@ -72,7 +72,8 @@ model Gym {
   disciplines Discipline[]
 
   // Billing
-  cancelWindowHours Int @default(2) // ventana para cancelar con reembolso de crédito
+  cancelWindowHours Float   @default(2)    // ventana para cancelar con reembolso de crédito (0.5 = 30min, 1, 2)
+  waitlistEnabled   Boolean @default(true) // permite lista de espera cuando la clase está llena
   packs          Pack[]
   payments       Payment[]
   creditBalances UserCreditBalance[]

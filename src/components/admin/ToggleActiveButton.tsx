@@ -37,7 +37,7 @@ export function ToggleActiveButton({ userId, initialIsActive, entityLabel, actio
       onClick={handleClick}
       disabled={isPending}
       className={cn(
-        "text-xs font-medium px-3 py-1.5 rounded-lg border transition-all active:scale-95 disabled:opacity-40 shrink-0",
+        "text-xs cursor-pointer font-medium px-3 py-1.5 rounded-lg border transition-all active:scale-95 disabled:opacity-40 shrink-0",
         isActive
           ? "border-rose-500/30 text-rose-400 hover:bg-rose-500/10"
           : "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
