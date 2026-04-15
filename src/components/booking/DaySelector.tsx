@@ -26,7 +26,8 @@ export function DaySelector({ initialDate, onChange }: Props) {
     <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/50 border-b border-white/[0.04]">
       <button
         onClick={() => shift(-1)}
-        className="size-9 rounded-xl flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all active:scale-90"
+        disabled={isToday}
+        className="size-9 rounded-xl flex items-center justify-center transition-all active:scale-90 disabled:opacity-20 disabled:pointer-events-none text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
       >
         <CaretLeft size={16} weight="bold" />
       </button>

@@ -137,7 +137,7 @@ export default async function ProfilePage() {
       {/* ── Bloque 3: Link al historial ──────────────────────────────────── */}
       <Link
         href="/profile/history"
-        className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between hover:bg-white/[0.03] transition-colors"
+        className="glass-card glass-interactive rounded-2xl px-4 py-3.5 flex items-center justify-between"
       >
         <div>
           <p className="text-sm font-medium text-zinc-100">Historial de abonos</p>

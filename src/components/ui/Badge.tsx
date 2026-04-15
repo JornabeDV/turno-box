@@ -4,7 +4,7 @@ type Variant = "available" | "full" | "few" | "waitlist" | "cancelled" | "confir
 
 const variantStyles: Record<Variant, string> = {
   available: "bg-emerald-950 text-emerald-400 border-emerald-900",
-  confirmed:  "bg-emerald-950 text-emerald-400 border-emerald-900",
+  confirmed:  "bg-blue-950 text-blue-400 border-blue-900",
   few:        "bg-amber-950  text-amber-400  border-amber-900",
   full:       "bg-rose-950   text-rose-400   border-rose-900",
   waitlist:   "bg-orange-950 text-orange-400 border-orange-900",

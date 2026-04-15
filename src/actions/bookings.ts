@@ -22,7 +22,7 @@ export async function bookClassAction(
 
   const gymClass = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, isActive: true, deletedAt: null },
-    select: { id: true, maxCapacity: true },
+    select: { id: true, maxCapacity: true, gym: { select: { waitlistEnabled: true } } },
   });
   if (!gymClass) return { success: false, error: "Clase no encontrada." };
 
@@ -58,6 +58,13 @@ export async function bookClassAction(
         where: { classId, classDate, status: "CONFIRMED", deletedAt: null },
       });
       const isFull = confirmedCount >= gymClass.maxCapacity;
+
+      if (isFull && !gymClass.gym?.waitlistEnabled) {
+        throw Object.assign(
+          new Error("La clase está completa y la lista de espera no está habilitada."),
+          { code: "CLASS_FULL_NO_WAITLIST" }
+        );
+      }
 
       let waitlistPos: number | null = null;
       if (isFull) {
@@ -138,8 +145,9 @@ export async function bookClassAction(
 
   } catch (e: unknown) {
     const err = e as { code?: string; message?: string };
-    if (err.code === "NO_CREDITS") return { success: false, error: err.message! };
-    if (err.code === "P2002")       return { success: false, error: "Ya tenés una reserva para esta clase." };
+    if (err.code === "NO_CREDITS")              return { success: false, error: err.message! };
+    if (err.code === "CLASS_FULL_NO_WAITLIST")  return { success: false, error: err.message! };
+    if (err.code === "P2002")                   return { success: false, error: "Ya tenés una reserva para esta clase." };
     // console.error("[bookClassAction]", e);
     return { success: false, error: "Error al reservar. Intentá de nuevo." };
   }

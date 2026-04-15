@@ -34,13 +34,12 @@ export function PackCard({ pack }: Props) {
     maximumFractionDigits: 0,
   }).format(Number(pack.price));
 
-  const pricePerClass = (Number(pack.price) / pack.credits).toFixed(0);
 
   return (
     <button
       onClick={handleBuy}
       disabled={isPending}
-      className="cursor-pointer glass-card rounded-2xl p-5 flex items-center gap-4 w-full text-left active:scale-[0.99] transition-all disabled:opacity-50"
+      className="glass-card glass-interactive rounded-2xl p-5 flex items-center gap-4 w-full text-left"
     >
       {/* Clases count */}
       <div className="size-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex flex-col items-center justify-center shrink-0">

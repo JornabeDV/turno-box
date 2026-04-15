@@ -27,9 +27,9 @@ export function ClassCardCompact({ slot, dateStr, index }: Props) {
     <Link
       href={`/classes/${slot.id}?date=${dateStr}`}
       className={cn(
-        "glass-card rounded-2xl px-4 py-3.5 flex items-center gap-3 press-scale animate-in",
+        "glass-card glass-interactive rounded-2xl px-4 py-3.5 flex items-center gap-3 press-scale animate-in",
         staggerClass,
-        slot.userBooking?.status === "CONFIRMED" && "border-emerald-500/20",
+        slot.userBooking?.status === "CONFIRMED" && "border-blue-500/20",
         slot.userBooking?.status === "WAITLISTED" && "border-orange-500/20"
       )}
     >
