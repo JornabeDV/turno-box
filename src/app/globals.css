@@ -111,7 +111,19 @@ body {
   border: 1px solid rgba(255,255,255,.06);
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), var(--shadow-card);
 }
-button.glass-card:hover:not(:disabled) {
+.glass-interactive {
+  transition: background 150ms ease, border-color 150ms ease;
+  cursor: pointer;
+}
+.glass-interactive:hover {
   background: #1d1d1d;
   border-color: rgba(255,255,255,.14);
+}
+.glass-interactive:active {
+  transform: scale(0.99);
+}
+.glass-interactive:disabled,
+.glass-interactive[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
 }

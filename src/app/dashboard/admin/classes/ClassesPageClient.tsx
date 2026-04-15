@@ -154,7 +154,7 @@ export function ClassesPageClient({
                         <Link
                           key={slot.id}
                           href={`/dashboard/admin/classes/${slot.id}?date=${isoDate(date)}`}
-                          className="glass-card rounded-xl p-3 flex flex-col gap-2.5 hover:bg-white/[0.04] transition-colors"
+                          className="glass-card glass-interactive rounded-xl p-3 flex flex-col gap-2.5"
                         >
                           {/* Color + nombre */}
                           <div className="flex items-start gap-2">

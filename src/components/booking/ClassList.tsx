@@ -33,6 +33,16 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
   }
 
   const dateStr = date.toISOString().split("T")[0];
+  const todayStr = new Date().toISOString().split("T")[0];
+  const isToday  = dateStr === todayStr;
+
+  const visibleSlots = isToday
+    ? slots.filter((slot) => {
+        const [h, m] = slot.startTime.split(":").map(Number);
+        const now = new Date();
+        return h > now.getHours() || (h === now.getHours() && m >= now.getMinutes());
+      })
+    : slots;
 
   return (
     <div>
@@ -47,7 +57,7 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
               className="glass-card rounded-2xl h-[56px] animate-pulse"
             />
           ))
-        ) : slots.length === 0 ? (
+        ) : visibleSlots.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="size-14 rounded-2xl bg-zinc-800 flex items-center justify-center mb-4">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600">
@@ -61,7 +71,7 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
             <p className="text-xs text-zinc-600 mt-1">Probá con otro día de la semana</p>
           </div>
         ) : (
-          slots.map((slot, i) => (
+          visibleSlots.map((slot, i) => (
             <ClassCardCompact key={slot.id} slot={slot} dateStr={dateStr} index={i} />
           ))
         )}
