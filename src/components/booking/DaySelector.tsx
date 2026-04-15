@@ -23,16 +23,16 @@ export function DaySelector({ initialDate, onChange }: Props) {
     current.toDateString() === new Date().toDateString();
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/50 border-b border-white/[0.04]">
+    <div className="flex items-center min-h-[60px] justify-between  bg-zinc-900/50 border-b border-white/[0.04]">
       <button
         onClick={() => shift(-1)}
         disabled={isToday}
-        className="size-9 rounded-xl flex items-center justify-center transition-all active:scale-90 disabled:opacity-20 disabled:pointer-events-none text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
+        className="size-9 rounded-xl ml-4 my-3 flex items-center justify-center transition-all active:scale-90 disabled:opacity-20 disabled:pointer-events-none text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
       >
         <CaretLeft size={16} weight="bold" />
       </button>
 
-      <div className="text-center">
+      <div className="text-center my-2">
         <p className="text-sm font-semibold text-zinc-100 capitalize">
           {formatDate(current)}
         </p>
@@ -46,7 +46,7 @@ export function DaySelector({ initialDate, onChange }: Props) {
       <button
         onClick={() => shift(1)}
         className={cn(
-          "size-9 rounded-xl flex items-center justify-center transition-all active:scale-90",
+          "size-9 rounded-xl mr-4 my-2 flex items-center justify-center transition-all active:scale-90",
           "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
         )}
       >

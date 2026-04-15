@@ -29,8 +29,13 @@ export function DatePicker({
   showYearPicker = true,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
+  const parseLocalDate = (dateStr: string) => {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+
   const [viewDate, setViewDate] = useState(() =>
-    value ? new Date(value) : new Date(),
+    value ? parseLocalDate(value) : new Date(),
   );
   const ref = useRef<HTMLDivElement>(null);
   const [yearOpen, setYearOpen] = useState(false);
@@ -69,7 +74,10 @@ export function DatePicker({
   }, []);
 
   function formatDate(d: Date): string {
-    return d.toISOString().split("T")[0];
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
   }
 
   function formatDisplay(d: Date): string {
@@ -115,7 +123,7 @@ export function DatePicker({
     return false;
   }
 
-  const selectedDate = value ? new Date(value) : null;
+  const selectedDate = value ? parseLocalDate(value) : null;
 
   return (
     <div className={cn("relative", className)} ref={ref}>
@@ -137,7 +145,7 @@ export function DatePicker({
       >
         <span className="flex items-center gap-2">
           <CalendarIcon size={16} className="text-zinc-500" />
-          {value ? formatDisplay(new Date(value)) : "Seleccionar fecha"}
+          {value ? formatDisplay(parseLocalDate(value)) : "Seleccionar fecha"}
         </span>
         <CaretRightIcon
           size={14}
