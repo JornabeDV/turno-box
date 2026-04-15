@@ -134,17 +134,30 @@ export default async function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Bloque 3: Link al historial ──────────────────────────────────── */}
-      <Link
-        href="/profile/history"
-        className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between"
-      >
-        <div>
-          <p className="text-sm font-medium text-zinc-100">Historial de abonos</p>
-          <p className="text-xs text-zinc-500 mt-0.5">Abonos comprados y ajustes de créditos</p>
-        </div>
-        <CaretRightIcon size={16} className="text-zinc-600 shrink-0" />
-      </Link>
+      {/* ── Bloque 3: Links al historial ─────────────────────────────────────── */}
+      <div className="space-y-3">
+        <Link
+          href="/profile/bookings"
+          className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between"
+        >
+          <div>
+            <p className="text-sm font-medium text-zinc-100">Historial de turnos</p>
+            <p className="text-xs text-zinc-500 mt-0.5">Todas tus reservas pasadas y próximas</p>
+          </div>
+          <CaretRightIcon size={16} className="text-zinc-600 shrink-0" />
+        </Link>
+
+        <Link
+          href="/profile/history"
+          className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between"
+        >
+          <div>
+            <p className="text-sm font-medium text-zinc-100">Historial de abonos</p>
+            <p className="text-xs text-zinc-500 mt-0.5">Abonos comprados y ajustes de créditos</p>
+          </div>
+          <CaretRightIcon size={16} className="text-zinc-600 shrink-0" />
+        </Link>
+      </div>
 
       {/* ── Cambio de contraseña ─────────────────────────────────────────── */}
       {hasPassword && (
