@@ -202,7 +202,8 @@ export async function cancelBookingAction(
   const canRefund     = hoursUntil >= windowHours && booking.status === "CONFIRMED";
 
   try {
-    await prisma.$transaction(async (tx: Tx) => {
+    // La transacción retorna el userId del promovido (si hubo) para notificar fuera
+    const promotedUserId = await prisma.$transaction(async (tx: Tx): Promise<string | null> => {
     // Cancelar reserva
     await tx.booking.update({
       where: { id: bookingId },
@@ -304,21 +305,26 @@ export async function cancelBookingAction(
           },
         });
 
-        // Notificar al alumno promovido (fire-and-forget)
-        sendPushToUser(candidate.userId, {
-          title: "¡Conseguiste lugar! 🎉",
-          body: "Se liberó un cupo y tu reserva fue confirmada.",
-          url: "/bookings",
-          tag: "waitlist-promoted",
-        }).catch(() => {});
-
-        break; // sólo promover uno
+        return candidate.userId; // promovido — notificar fuera del tx
       }
     }
+
+    return null;
   });
 
   revalidatePath("/");
   revalidatePath("/bookings");
+
+  // Push fuera del transaction para evitar conflictos con el connection pool
+  if (promotedUserId) {
+    sendPushToUser(promotedUserId, {
+      title: "¡Conseguiste lugar! 🎉",
+      body: "Se liberó un cupo y tu reserva fue confirmada.",
+      url: "/bookings",
+      tag: "waitlist-promoted",
+    }).catch(() => {});
+  }
+
   return { success: true, data: undefined };
   } catch (e: unknown) {
     return { success: false, error: "Error al cancelar." };
