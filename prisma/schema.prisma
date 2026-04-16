@@ -110,6 +110,9 @@ model User {
   creditBalances  UserCreditBalance[]
   creditTxs       CreditTransaction[]
 
+  // Push notifications
+  pushSubscriptions PushSubscription[]
+
   // NextAuth adapters
   accounts Account[]
   sessions Session[]
@@ -334,6 +337,22 @@ model CreditTransaction {
   @@index([userId, gymId, createdAt])
   @@index([bookingId])
   @@map("credit_transactions")
+}
+
+// PushSubscription — suscripciones Web Push por usuario
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }
 
 // Announcement — noticias / avisos del gym para sus alumnos

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendPushToGym } from "@/lib/push";
 import type { ActionResult } from "@/types";
 
 async function requireAdmin() {
@@ -36,6 +37,17 @@ export async function createAnnouncementAction(
 
   revalidatePath("/");
   revalidatePath("/dashboard/admin/news");
+
+  // Solo notificar si el aviso se publica ahora (no programado para el futuro)
+  if (publishAt <= new Date()) {
+    sendPushToGym(gymId, {
+      title: pinned ? `📌 ${title}` : title,
+      body: body.length > 100 ? body.slice(0, 97) + "..." : body,
+      url: "/",
+      tag: "announcement",
+    }).catch(() => {});
+  }
+
   return { success: true, data: undefined };
 }
 
