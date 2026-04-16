@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/layout/SignOutButton";
 import { EditProfileForm } from "@/components/profile/EditProfileForm";
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
+import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
 import Link from "next/link";
 import { CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
@@ -170,6 +171,16 @@ export default async function ProfilePage() {
           </div>
         </div>
       )}
+
+      {/* ── Notificaciones push ──────────────────────────────────────────── */}
+      <div>
+        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+          Notificaciones
+        </h3>
+        <div className="glass-card rounded-2xl p-5">
+          <PushNotificationToggle />
+        </div>
+      </div>
 
       {/* ── Cerrar sesión ────────────────────────────────────────────────── */}
       <SignOutButton />

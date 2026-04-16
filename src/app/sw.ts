@@ -1,3 +1,5 @@
+/// <reference lib="webworker" />
+
 import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
 import {
   CacheableResponsePlugin,
@@ -8,12 +10,12 @@ import {
 } from "serwist";
 
 declare global {
-  interface WorkerGlobalScope extends SerwistGlobalConfig {
+  interface ServiceWorkerGlobalScope extends SerwistGlobalConfig {
     __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
   }
 }
 
-declare const self: WorkerGlobalScope;
+declare const self: ServiceWorkerGlobalScope;
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
@@ -79,3 +81,42 @@ const serwist = new Serwist({
 });
 
 serwist.addEventListeners();
+
+// ── Push Notifications ────────────────────────────────────────────────────────
+
+self.addEventListener("push", (event: PushEvent) => {
+  if (!event.data) return;
+
+  const data = event.data.json() as {
+    title?: string;
+    body?: string;
+    url?: string;
+    tag?: string;
+  };
+
+  const title = data.title ?? "Bee Box";
+  const options: NotificationOptions & { renotify?: boolean } = {
+    body: data.body ?? "",
+    icon: "/icons/icon-192x192.png",
+    badge: "/icons/icon-192x192.png",
+    data: { url: data.url ?? "/" },
+    tag: data.tag,
+    renotify: !!data.tag,
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event: NotificationEvent) => {
+  event.notification.close();
+  const url: string = (event.notification.data?.url as string) ?? "/";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === url && "focus" in client) return (client as WindowClient).focus();
+      }
+      return self.clients.openWindow(url);
+    })
+  );
+});

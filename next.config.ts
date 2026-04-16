@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     "utf-8-validate",
     "@neondatabase/serverless",
     "@prisma/adapter-neon",
+    "web-push",
   ],
 };
 

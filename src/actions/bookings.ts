@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { toClassDate } from "@/lib/utils";
+import { sendPushToUser } from "@/lib/push";
 import type { ActionResult } from "@/types";
 type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
 
@@ -141,6 +142,19 @@ export async function bookClassAction(
 
     revalidatePath("/");
     revalidatePath("/bookings");
+
+    // Notificación push (fire-and-forget, no bloquea la respuesta)
+    const pushBody =
+      result.status === "CONFIRMED"
+        ? "Tu reserva fue confirmada. ¡Nos vemos en el gym!"
+        : "Estás en lista de espera. Te avisaremos si se libera un lugar.";
+    sendPushToUser(userId, {
+      title: result.status === "CONFIRMED" ? "Reserva confirmada ✓" : "En lista de espera",
+      body: pushBody,
+      url: "/bookings",
+      tag: "booking",
+    }).catch(() => {});
+
     return { success: true, data: { status: result.status as "CONFIRMED" | "WAITLISTED", bookingId: result.bookingId } };
 
   } catch (e: unknown) {
@@ -289,6 +303,15 @@ export async function cancelBookingAction(
             ...(candidatePaymentId ? { paymentId: candidatePaymentId } : {}),
           },
         });
+
+        // Notificar al alumno promovido (fire-and-forget)
+        sendPushToUser(candidate.userId, {
+          title: "¡Conseguiste lugar! 🎉",
+          body: "Se liberó un cupo y tu reserva fue confirmada.",
+          url: "/bookings",
+          tag: "waitlist-promoted",
+        }).catch(() => {});
+
         break; // sólo promover uno
       }
     }
