@@ -2,9 +2,8 @@ name: Class Reminders
 
 on:
   schedule:
-    # Corre cada hora en punto (UTC)
     - cron: "0 * * * *"
-  workflow_dispatch: # permite dispararlo manualmente desde GitHub para probar
+  workflow_dispatch:
 
 jobs:
   send-reminders:
@@ -12,12 +11,18 @@ jobs:
     steps:
       - name: Call reminder endpoint
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" \
+          body=$(curl -s -w "\n%{http_code}" \
             -X POST "${{ secrets.APP_URL }}/api/cron/class-reminders" \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json")
-          echo "Response status: $response"
-          if [ "$response" != "200" ]; then
-            echo "Endpoint returned $response — fallo"
+
+          status=$(echo "$body" | tail -n1)
+          response=$(echo "$body" | head -n -1)
+
+          echo "Status:   $status"
+          echo "Response: $response"
+
+          if [ "$status" != "200" ]; then
+            echo "Endpoint returned $status — fallo"
             exit 1
           fi
