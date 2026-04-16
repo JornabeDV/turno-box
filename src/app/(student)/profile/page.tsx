@@ -5,6 +5,7 @@ import { SignOutButton } from "@/components/layout/SignOutButton";
 import { EditProfileForm } from "@/components/profile/EditProfileForm";
 import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
 import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
+import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
 import Link from "next/link";
 import { CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
@@ -179,6 +180,7 @@ export default async function ProfilePage() {
         </h3>
         <div className="glass-card rounded-2xl p-5">
           <PushNotificationToggle />
+          <PushNotificationHelp />
         </div>
       </div>
 
