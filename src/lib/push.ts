@@ -1,11 +1,17 @@
 import webpush from "web-push";
 import { prisma } from "@/lib/prisma";
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT!,
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
+let vapidInitialized = false;
+
+function initVapid() {
+  if (vapidInitialized) return;
+  const subject = process.env.VAPID_SUBJECT;
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+  if (!subject || !publicKey || !privateKey) return;
+  webpush.setVapidDetails(subject, publicKey, privateKey);
+  vapidInitialized = true;
+}
 
 export interface PushPayload {
   title: string;
@@ -17,6 +23,9 @@ export interface PushPayload {
 type RawSub = { id: string; endpoint: string; p256dh: string; auth: string };
 
 async function dispatchToSubs(subs: RawSub[], payload: PushPayload) {
+  initVapid();
+  if (!vapidInitialized || subs.length === 0) return;
+
   const expired: string[] = [];
 
   await Promise.allSettled(
