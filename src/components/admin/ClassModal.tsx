@@ -56,7 +56,12 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
   const [dayOfWeek, setDayOfWeek] = useState(gymClass?.dayOfWeek ?? "MONDAY");
   const [coachId, setCoachId] = useState(gymClass?.coachId ?? "");
   const [startTime, setStartTime] = useState(gymClass?.startTime ?? "07:00");
-  const [endTime, setEndTime] = useState(gymClass?.endTime ?? "08:00");
+
+  function addOneHour(time: string): string {
+    const [h, m] = time.split(":").map(Number);
+    const end = new Date(0, 0, 0, h + 1, m);
+    return `${end.getHours().toString().padStart(2, "0")}:${end.getMinutes().toString().padStart(2, "0")}`;
+  }
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -74,7 +79,7 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
     formData.set("dayOfWeek", dayOfWeek);
     formData.set("coachId", coachId);
     formData.set("startTime", startTime);
-    formData.set("endTime", endTime);
+    formData.set("endTime", addOneHour(startTime));
     const selectedDiscipline = disciplines.find(d => d.id === disciplineId);
     if (selectedDiscipline?.color) formData.set("color", selectedDiscipline.color);
 
@@ -90,6 +95,7 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
         formRef.current?.reset();
         setDisciplineId(disciplines[0]?.id ?? "");
         setDayOfWeek("MONDAY");
+        setStartTime("07:00");
         setCoachId("");
         handleClose();
       } catch (err) {
@@ -127,20 +133,13 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
         />
 
         {/* Horario */}
-        <div className="grid grid-cols-2 gap-3">
-          <TimePicker
-            label="Inicio"
-            value={startTime}
-            onChange={setStartTime}
-          />
-          <TimePicker
-            label="Fin"
-            value={endTime}
-            onChange={setEndTime}
-          />
-          <input type="hidden" name="startTime" value={startTime} />
-          <input type="hidden" name="endTime" value={endTime} />
-        </div>
+        <TimePicker
+          label="Inicio"
+          value={startTime}
+          onChange={setStartTime}
+        />
+        <input type="hidden" name="startTime" value={startTime} />
+        <input type="hidden" name="endTime" value={addOneHour(startTime)} />
 
         {/* Cupo */}
         <div className="space-y-1.5">
