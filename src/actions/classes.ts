@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { sendPushToUser } from "@/lib/push";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
 
@@ -143,10 +144,41 @@ export async function deleteClassAction(classId: string): Promise<void> {
   const gym = await prisma.gym.findUnique({ where: { id: gymId } });
   if (!gym) throw new Error("Gym no encontrado. Contacta al administrador.");
 
+  // Buscar la clase y sus reservas futuras activas antes de eliminar
+  const gymClass = await prisma.gymClass.findFirst({
+    where: { id: classId, gymId, deletedAt: null },
+    select: {
+      startTime: true,
+      discipline: { select: { name: true } },
+      bookings: {
+        where: {
+          status: { in: ["CONFIRMED", "WAITLISTED"] },
+          classDate: { gte: new Date() },
+          deletedAt: null,
+        },
+        select: { userId: true },
+      },
+    },
+  });
+
   await prisma.gymClass.update({
     where: { id: classId },
     data: { deletedAt: new Date(), isActive: false },
   });
+
+  // Notificar a cada alumno afectado (fire-and-forget)
+  if (gymClass && gymClass.bookings.length > 0) {
+    const userIds = [...new Set(gymClass.bookings.map((b) => b.userId))];
+    const label = gymClass.discipline?.name ?? "Clase";
+    for (const userId of userIds) {
+      sendPushToUser(userId, {
+        title: "Clase cancelada",
+        body: `${label} (${gymClass.startTime}hs) fue cancelada por el gym. Contactate con nosotros si tenés dudas.`,
+        url: "/",
+        tag: "class-cancelled",
+      }).catch(() => {});
+    }
+  }
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);

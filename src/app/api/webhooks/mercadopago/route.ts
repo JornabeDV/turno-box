@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendPushToUser } from "@/lib/push";
 import { MercadoPagoConfig, Payment as MPPayment } from "mercadopago";
 import crypto from "crypto";
 
@@ -107,6 +108,14 @@ export async function POST(req: NextRequest) {
           },
         });
       });
+
+      // Notificar al usuario que sus créditos fueron acreditados
+      sendPushToUser(payment.userId, {
+        title: "¡Abono acreditado! 🎉",
+        body: `Se sumaron ${payment.creditsGranted} crédito${payment.creditsGranted !== 1 ? "s" : ""} a tu cuenta.`,
+        url: "/packs",
+        tag: "payment-approved",
+      }).catch(() => {});
 
     } else if (["rejected", "cancelled"].includes(mpData.status ?? "")) {
       await prisma.payment.update({
