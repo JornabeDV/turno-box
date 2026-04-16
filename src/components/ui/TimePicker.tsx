@@ -11,7 +11,8 @@ interface TimePickerProps {
   className?: string;
 }
 
-const HOURS = Array.from({ length: 17 }, (_, i) => {
+// 06:00 → 21:00 en intervalos de 30 minutos
+const HOURS = Array.from({ length: 31 }, (_, i) => {
   const hour = 6 + Math.floor(i / 2);
   const minute = (i % 2) * 30;
   return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
