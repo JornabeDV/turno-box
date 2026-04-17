@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { approvePaymentIfValid } from "@/lib/approvePayment";
-import { sendPushToUser } from "@/lib/push";
+import { sendPushToUser, sendPushToGymAdmins } from "@/lib/push";
 import { MercadoPagoConfig, Payment as MPPayment } from "mercadopago";
 import crypto from "crypto";
 
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     if (mpData.status === "approved") {
       const payment = await prisma.payment.findUnique({
         where: { id: paymentId },
-        select: { status: true, userId: true, creditsGranted: true },
+        select: { status: true, userId: true, creditsGranted: true, amountPaid: true, gymId: true, user: { select: { name: true } } },
       });
 
       // credited = true solo si esta llamada hizo la acreditación
@@ -70,8 +70,16 @@ export async function POST(req: NextRequest) {
           url: "/packs",
           tag: "payment-approved",
         }).catch(() => {});
-      }
 
+        const userName = payment!.user?.name ?? "Un usuario";
+        const amountStr = String(payment!.amountPaid);
+        sendPushToGymAdmins(payment!.gymId, {
+          title: "💰 Nuevo pago recibido",
+          body: `${userName} pagó $${amountStr}`,
+          url: "/admin/payments",
+          tag: "admin-payment",
+        }).catch(() => {});
+      }
     } else if (["rejected", "cancelled"].includes(mpData.status ?? "")) {
       await prisma.payment.updateMany({
         where: { id: paymentId, status: { not: "APPROVED" } },

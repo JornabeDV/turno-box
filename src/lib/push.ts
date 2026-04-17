@@ -66,3 +66,12 @@ export async function sendPushToGym(gymId: string, payload: PushPayload) {
   });
   await dispatchToSubs(subs, payload);
 }
+
+/** Envía una notificación push a todos los administradores de un gym. */
+export async function sendPushToGymAdmins(gymId: string, payload: PushPayload) {
+  const subs = await prisma.pushSubscription.findMany({
+    where: { user: { gymId, role: "ADMIN" } },
+    select: { id: true, endpoint: true, p256dh: true, auth: true },
+  });
+  await dispatchToSubs(subs, payload);
+}
