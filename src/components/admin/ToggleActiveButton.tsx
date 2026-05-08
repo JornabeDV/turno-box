@@ -12,20 +12,31 @@ type Props = {
   action: (id: string) => Promise<ActionResult<{ isActive: boolean }>>;
 };
 
-export function ToggleActiveButton({ userId, initialIsActive, entityLabel, action }: Props) {
+export function ToggleActiveButton({
+  userId,
+  initialIsActive,
+  entityLabel,
+  action,
+}: Props) {
   const [isActive, setIsActive] = useState(initialIsActive);
   const [isPending, startTransition] = useTransition();
 
   function handleClick(e: React.MouseEvent) {
     e.preventDefault();
-    const msg = isActive ? `¿Desactivar este ${entityLabel}?` : `¿Reactivar este ${entityLabel}?`;
+    const msg = isActive
+      ? `¿Desactivar este ${entityLabel}?`
+      : `¿Reactivar este ${entityLabel}?`;
     if (!confirm(msg)) return;
 
     startTransition(async () => {
       const res = await action(userId);
       if (res.success) {
         setIsActive(res.data.isActive);
-        toast.success(res.data.isActive ? `${entityLabel} activado` : `${entityLabel} desactivado`);
+        toast.success(
+          res.data.isActive
+            ? `${entityLabel} activado`
+            : `${entityLabel} desactivado`,
+        );
       } else {
         toast.error(res.error);
       }
@@ -37,16 +48,19 @@ export function ToggleActiveButton({ userId, initialIsActive, entityLabel, actio
       onClick={handleClick}
       disabled={isPending}
       className={cn(
-        "text-xs cursor-pointer font-medium px-3 py-1.5 rounded-lg border transition-all active:scale-95 disabled:opacity-40 shrink-0",
+        "text-xs cursor-pointer font-medium px-3 py-1.5 rounded-[2px] border transition-all active:scale-95 disabled:opacity-40 shrink-0",
         isActive
-          ? "border-rose-500/30 text-rose-400 hover:bg-rose-500/10"
-          : "border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+          ? "border-rose-500/30 text-[#E61919] hover:bg-[#E61919]/10"
+          : "border-emerald-500/30 text-[#27C7B8] hover:bg-[#27C7B8]/10",
       )}
     >
-      {isPending
-        ? <span className="size-3 rounded-full border-2 border-current border-t-transparent animate-spin inline-block" />
-        : isActive ? "Desactivar" : "Activar"
-      }
+      {isPending ? (
+        <span className="size-3 rounded-full border-2 border-current border-t-transparent animate-spin inline-block" />
+      ) : isActive ? (
+        "Desactivar"
+      ) : (
+        "Activar"
+      )}
     </button>
   );
 }

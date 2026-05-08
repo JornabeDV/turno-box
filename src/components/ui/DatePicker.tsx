@@ -128,7 +128,7 @@ export function DatePicker({
   return (
     <div className={cn("relative", className)} ref={ref}>
       {label && (
-        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider block mb-1.5">
+        <label className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-name:var(--font-oswald)]">
           {label}
         </label>
       )}
@@ -144,7 +144,7 @@ export function DatePicker({
         )}
       >
         <span className="flex items-center gap-2">
-          <CalendarIcon size={16} className="text-zinc-500" />
+          <CalendarIcon size={16} className="text-[#4A6B7A]" />
           {value ? formatDisplay(parseLocalDate(value)) : "Seleccionar fecha"}
         </span>
         <CaretRightIcon
@@ -157,16 +157,16 @@ export function DatePicker({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl p-3">
+        <div className="absolute z-50 mt-1 w-full bg-[#0E2A38] border border-[#1A4A63] p-3">
           {/* Year picker overlay */}
           {showYearPicker && yearOpen && (
-            <div className="absolute inset-0 z-10 bg-zinc-800 rounded-xl flex flex-col overflow-hidden">
+            <div className="absolute inset-0 z-10 bg-[#0E2A38] flex flex-col overflow-hidden">
               <div className="flex items-center justify-between px-3 pt-3 pb-2 border-b border-zinc-700 shrink-0">
-                <span className="text-sm font-medium text-zinc-300">Seleccionar año</span>
+                <span className="text-sm font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)]">Seleccionar año</span>
                 <button
                   type="button"
                   onClick={() => setYearOpen(false)}
-                  className="text-zinc-400 hover:text-zinc-200 transition-colors text-xs"
+                  className="text-[#6B8A99] hover:text-[#EAEAEA] transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -178,8 +178,8 @@ export function DatePicker({
                     type="button"
                     onClick={() => { setViewDate(new Date(y, month, 1)); setYearOpen(false); }}
                     className={cn(
-                      "w-full py-2 text-sm hover:bg-zinc-700 transition-colors text-center",
-                      y === year ? "text-orange-500 bg-orange-500/10" : "text-zinc-200",
+                      "w-full py-2 text-sm hover:bg-[#143D52] transition-colors text-center",
+                      y === year ? "text-[#F78837] bg-[#F78837]/10" : "text-[#EAEAEA]",
                     )}
                   >
                     {y}
@@ -194,31 +194,31 @@ export function DatePicker({
             <button
               type="button"
               onClick={prevMonth}
-              className="p-1 hover:bg-zinc-700 rounded-lg transition-colors"
+              className="p-1 hover:bg-[#143D52] transition-colors"
             >
-              <CaretLeftIcon size={16} className="text-zinc-400" />
+              <CaretLeftIcon size={16} className="text-[#6B8A99]" />
             </button>
             <div className="flex items-center gap-1">
-              <span className="text-sm font-medium text-zinc-100">{months[month]}</span>
+              <span className="text-sm font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)]">{months[month]}</span>
               {showYearPicker ? (
                 <button
                   type="button"
                   onClick={() => setYearOpen(!yearOpen)}
-                  className="text-sm font-medium text-zinc-100 hover:text-orange-400 transition-colors flex items-center gap-1"
+                  className="text-sm font-medium text-[#EAEAEA] hover:text-[#F78837] transition-colors flex items-center gap-1"
                 >
                   {year}
                   <CaretDownIcon size={12} className={cn(yearOpen && "rotate-180")} />
                 </button>
               ) : (
-                <span className="text-sm font-medium text-zinc-100">{year}</span>
+                <span className="text-sm font-medium text-[#EAEAEA]">{year}</span>
               )}
             </div>
             <button
               type="button"
               onClick={nextMonth}
-              className="p-1 hover:bg-zinc-700 rounded-lg transition-colors"
+              className="p-1 hover:bg-[#143D52] transition-colors"
             >
-              <CaretRightIcon size={16} className="text-zinc-400" />
+              <CaretRightIcon size={16} className="text-[#6B8A99]" />
             </button>
           </div>
 
@@ -227,7 +227,7 @@ export function DatePicker({
             {DAYS.map((d) => (
               <div
                 key={d}
-                className="text-[10px] font-medium text-zinc-500 text-center py-1"
+                className="text-[10px] font-medium text-[#6B8A99] text-center py-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider"
               >
                 {d}
               </div>
@@ -253,13 +253,13 @@ export function DatePicker({
                   disabled={disabled}
                   onClick={() => handleSelect(day)}
                   className={cn(
-                    "h-8 text-sm rounded-lg transition-colors",
+                    "h-8 text-sm transition-colors",
                     disabled &&
-                      "text-zinc-600 cursor-not-allowed hover:bg-transparent",
-                    !disabled && "hover:bg-zinc-700",
+                      "text-[#4A6B7A] cursor-not-allowed hover:bg-transparent",
+                    !disabled && "hover:bg-[#143D52]",
                     isSelected &&
-                      "bg-orange-500 text-white hover:bg-orange-600",
-                    !isSelected && !disabled && "text-zinc-200",
+                      "bg-[#F78837] text-[#0A1F2A] hover:bg-[#E07A2E]",
+                    !isSelected && !disabled && "text-[#EAEAEA]",
                   )}
                 >
                   {day}

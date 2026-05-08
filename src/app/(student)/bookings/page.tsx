@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { BookingCardItem } from "@/components/booking/BookingCardItem";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Mis turnos" };
@@ -37,21 +38,25 @@ export default async function BookingsPage() {
   });
 
   return (
-    <section className="pt-5">
+    <section className="pt-4">
       <div className="mb-5">
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Próximos</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Mis turnos</h2>
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+          Mis turnos
+        </h2>
+        <p className="text-xs text-[#6B8A99] mt-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+          Próximas reservas
+        </p>
       </div>
 
       {bookings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="size-14 rounded-2xl bg-zinc-800 flex items-center justify-center mb-4">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600">
-              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-            </svg>
-          </div>
-          <p className="text-sm font-medium text-zinc-400">Sin turnos próximos</p>
-          <p className="text-xs text-zinc-600 mt-1">Reservá una clase desde la pantalla de inicio</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center border border-[#1A4A63] bg-[#0E2A38]">
+          <CalendarBlank size={28} className="text-[#1A4A63] mb-3" />
+          <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#6B8A99] uppercase tracking-wide">
+            Sin turnos próximos
+          </p>
+          <p className="text-xs text-[#4A6B7A] mt-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+            Reservá una clase desde la pantalla de inicio
+          </p>
         </div>
       ) : (
         <div className="space-y-3">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ClassCardCompact } from "@/components/booking/ClassCardCompact";
 import { DaySelector } from "@/components/booking/DaySelector";
+import { CalendarBlank } from "@phosphor-icons/react";
 import type { ClassSlot } from "@/types";
 
 type Props = {
@@ -12,7 +13,6 @@ type Props = {
   userId: string;
 };
 
-// Componente cliente que maneja el cambio de día con refetch via server action
 export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
   const [slots, setSlots] = useState(initialSlots);
   const [date, setDate] = useState(initialDate);
@@ -34,7 +34,7 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
 
   const dateStr = date.toISOString().split("T")[0];
   const todayStr = new Date().toISOString().split("T")[0];
-  const isToday  = dateStr === todayStr;
+  const isToday = dateStr === todayStr;
 
   const visibleSlots = isToday
     ? slots.filter((slot) => {
@@ -45,30 +45,34 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
     : slots;
 
   return (
-    <div>
+    <div className="space-y-4">
       <DaySelector initialDate={date} onChange={handleDateChange} />
 
-      <div className="py-4 space-y-3">
+      {/* Título de sección */}
+      <div className="pt-2">
+        <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg border-b border-[#1A4A63] pb-2">
+          Clases disponibles {isToday ? "hoy" : ""}
+        </h3>
+      </div>
+
+      <div className="space-y-3">
         {loading ? (
-          // Skeleton loader con las mismas dimensiones que las cards
+          // Skeleton
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="glass-card rounded-2xl h-[56px] animate-pulse"
+              className="bg-[#0E2A38] border border-[#1A4A63] h-[140px] animate-pulse"
             />
           ))
         ) : visibleSlots.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="size-14 rounded-2xl bg-zinc-800 flex items-center justify-center mb-4">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-zinc-600">
-                <rect x="3" y="4" width="18" height="18" rx="2" />
-                <line x1="16" y1="2" x2="16" y2="6" />
-                <line x1="8" y1="2" x2="8" y2="6" />
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>
-            </div>
-            <p className="text-sm font-medium text-zinc-400">Sin clases este día</p>
-            <p className="text-xs text-zinc-600 mt-1">Probá con otro día de la semana</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center border border-[#1A4A63] bg-[#0E2A38]">
+            <CalendarBlank size={28} className="text-[#1A4A63] mb-3" />
+            <p className="text-sm font-[family-name:var(--font-oswald)] font-medium text-[#6B8A99] uppercase tracking-wide">
+              Sin clases este día
+            </p>
+            <p className="text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A] mt-1">
+              Probá con otro día de la semana
+            </p>
           </div>
         ) : (
           visibleSlots.map((slot, i) => (

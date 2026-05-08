@@ -71,14 +71,14 @@ export function PushNotificationHelp() {
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between text-left"
       >
-        <span className="flex items-center gap-2 text-xs text-zinc-500">
+        <span className="flex items-center gap-2 text-xs text-[#6B8A99] font-[family-name:var(--font-oswald)]">
           <QuestionIcon size={14} />
           ¿Cómo recibir notificaciones cuando la app está cerrada?
         </span>
         <CaretDownIcon
           size={14}
           className={cn(
-            "text-zinc-600 transition-transform shrink-0",
+            "text-[#4A6B7A] transition-transform shrink-0",
             open && "rotate-180"
           )}
         />
@@ -96,7 +96,7 @@ export function PushNotificationHelp() {
               <button
                 type="button"
                 onClick={() => setOs("android")}
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-xs hover:bg-zinc-700 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 py-2 bg-[#0E2A38] border border-[#1A4A63] text-[#EAEAEA] text-xs hover:bg-[#143D52] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
               >
                 <AndroidLogoIcon size={14} /> Android
               </button>
@@ -117,13 +117,13 @@ export function PushNotificationHelp() {
                 ? <AndroidLogoIcon size={13} className="text-zinc-500" />
                 : <AppleLogoIcon size={13} className="text-zinc-500" />
               }
-              <span className="text-[11px] text-zinc-500">
+              <span className="text-[11px] text-[#6B8A99] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
                 {os === "android" ? "Instrucciones para Android" : "Instrucciones para iPhone / iPad"}
               </span>
               <button
                 type="button"
                 onClick={() => setOs("unknown")}
-                className="ml-auto text-[11px] text-zinc-600 underline underline-offset-2"
+                className="ml-auto text-[11px] text-[#4A6B7A] underline underline-offset-2 hover:text-[#6B8A99]"
               >
                 cambiar
               </button>
@@ -135,12 +135,12 @@ export function PushNotificationHelp() {
             <ol className="space-y-3">
               {steps.map((s) => (
                 <li key={s.step} className="flex gap-3">
-                  <span className="size-5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="size-5 bg-[#F78837]/10 border border-[#F78837]/20 text-[#F78837] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5 font-[family-name:var(--font-oswald)]">
                     {s.step}
                   </span>
                   <div>
-                    <p className="text-xs font-medium text-zinc-200">{s.title}</p>
-                    <p className="text-xs text-zinc-500 mt-0.5 leading-relaxed">{s.body}</p>
+                    <p className="text-xs font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)] uppercase tracking-tight">{s.title}</p>
+                    <p className="text-xs text-[#6B8A99] mt-0.5 leading-relaxed font-[family-name:var(--font-oswald)]">{s.body}</p>
                   </div>
                 </li>
               ))}

@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types";
 
 const DAYS = [
-  { value: "MONDAY",    label: "Lunes" },
-  { value: "TUESDAY",   label: "Martes" },
+  { value: "MONDAY", label: "Lunes" },
+  { value: "TUESDAY", label: "Martes" },
   { value: "WEDNESDAY", label: "Miércoles" },
-  { value: "THURSDAY",  label: "Jueves" },
-  { value: "FRIDAY",    label: "Viernes" },
-  { value: "SATURDAY",  label: "Sábado" },
-  { value: "SUNDAY",    label: "Domingo" },
+  { value: "THURSDAY", label: "Jueves" },
+  { value: "FRIDAY", label: "Viernes" },
+  { value: "SATURDAY", label: "Sábado" },
+  { value: "SUNDAY", label: "Domingo" },
 ];
 
 const CLASS_COLORS = [
@@ -44,14 +44,22 @@ type Props = {
 };
 
 const inputClass =
-  "w-full h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors";
+  "w-full h-11 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
-const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
+const labelClass =
+  "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
 
-export function ClassForm({ coaches, disciplines, action, defaultValues }: Props) {
+export function ClassForm({
+  coaches,
+  disciplines,
+  action,
+  defaultValues,
+}: Props) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState(defaultValues?.color ?? CLASS_COLORS[0]);
+  const [selectedColor, setSelectedColor] = useState(
+    defaultValues?.color ?? CLASS_COLORS[0],
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -67,12 +75,20 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-5 space-y-5">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-5"
+    >
       {/* Descripción */}
       <div className="space-y-1.5">
-        <label htmlFor="description" className={labelClass}>Descripción <span className="text-zinc-600 normal-case">(opcional)</span></label>
+        <label htmlFor="description" className={labelClass}>
+          Descripción{" "}
+          <span className="text-[#4A6B7A] normal-case">(opcional)</span>
+        </label>
         <textarea
-          id="description" name="description" rows={2}
+          id="description"
+          name="description"
+          rows={2}
           defaultValue={defaultValues?.description}
           placeholder="Descripción de la clase..."
           className={cn(inputClass, "h-auto py-2.5 resize-none")}
@@ -81,14 +97,20 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
 
       {/* Día */}
       <div className="space-y-1.5">
-        <label htmlFor="dayOfWeek" className={labelClass}>Día</label>
+        <label htmlFor="dayOfWeek" className={labelClass}>
+          Día
+        </label>
         <select
-          id="dayOfWeek" name="dayOfWeek" required
+          id="dayOfWeek"
+          name="dayOfWeek"
+          required
           defaultValue={defaultValues?.dayOfWeek ?? "MONDAY"}
           className={inputClass}
         >
           {DAYS.map((d) => (
-            <option key={d.value} value={d.value}>{d.label}</option>
+            <option key={d.value} value={d.value}>
+              {d.label}
+            </option>
           ))}
         </select>
       </div>
@@ -96,17 +118,27 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
       {/* Horario */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label htmlFor="startTime" className={labelClass}>Inicio</label>
+          <label htmlFor="startTime" className={labelClass}>
+            Inicio
+          </label>
           <input
-            id="startTime" name="startTime" type="time" required
+            id="startTime"
+            name="startTime"
+            type="time"
+            required
             defaultValue={defaultValues?.startTime ?? "07:00"}
             className={inputClass}
           />
         </div>
         <div className="space-y-1.5">
-          <label htmlFor="endTime" className={labelClass}>Fin</label>
+          <label htmlFor="endTime" className={labelClass}>
+            Fin
+          </label>
           <input
-            id="endTime" name="endTime" type="time" required
+            id="endTime"
+            name="endTime"
+            type="time"
+            required
             defaultValue={defaultValues?.endTime ?? "08:00"}
             className={inputClass}
           />
@@ -115,10 +147,16 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
 
       {/* Cupo */}
       <div className="space-y-1.5">
-        <label htmlFor="maxCapacity" className={labelClass}>Cupo máximo</label>
+        <label htmlFor="maxCapacity" className={labelClass}>
+          Cupo máximo
+        </label>
         <input
-          id="maxCapacity" name="maxCapacity" type="number"
-          min={1} max={100} required
+          id="maxCapacity"
+          name="maxCapacity"
+          type="number"
+          min={1}
+          max={100}
+          required
           defaultValue={defaultValues?.maxCapacity ?? 12}
           className={inputClass}
         />
@@ -127,15 +165,20 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
       {/* Coach */}
       {coaches.length > 0 && (
         <div className="space-y-1.5">
-          <label htmlFor="coachId" className={labelClass}>Coach <span className="text-zinc-600 normal-case">(opcional)</span></label>
+          <label htmlFor="coachId" className={labelClass}>
+            Coach <span className="text-[#4A6B7A] normal-case">(opcional)</span>
+          </label>
           <select
-            id="coachId" name="coachId"
+            id="coachId"
+            name="coachId"
             defaultValue={defaultValues?.coachId ?? ""}
             className={inputClass}
           >
             <option value="">Sin asignar</option>
             {coaches.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
             ))}
           </select>
         </div>
@@ -143,15 +186,23 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
 
       {/* Disciplina */}
       <div className="space-y-1.5">
-        <label htmlFor="disciplineId" className={labelClass}>Disciplina</label>
+        <label htmlFor="disciplineId" className={labelClass}>
+          Disciplina
+        </label>
         <select
-          id="disciplineId" name="disciplineId" required
+          id="disciplineId"
+          name="disciplineId"
+          required
           defaultValue={defaultValues?.disciplineId ?? ""}
           className={inputClass}
         >
-          <option value="" disabled>Selcciona una disciplina</option>
+          <option value="" disabled>
+            Selcciona una disciplina
+          </option>
           {disciplines.map((d) => (
-            <option key={d.id} value={d.id}>{d.name}</option>
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
           ))}
         </select>
       </div>
@@ -167,7 +218,8 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
               onClick={() => setSelectedColor(color)}
               className={cn(
                 "size-8 rounded-full transition-all",
-                selectedColor === color && "ring-2 ring-white ring-offset-2 ring-offset-zinc-900 scale-110"
+                selectedColor === color &&
+                  "ring-2 ring-white ring-offset-2 ring-offset-zinc-900 scale-110",
               )}
               style={{ backgroundColor: color }}
             />
@@ -176,16 +228,27 @@ export function ClassForm({ coaches, disciplines, action, defaultValues }: Props
       </div>
 
       {error && (
-        <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2.5">
-          <p className="text-xs text-rose-400">{error}</p>
+        <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2.5">
+          <p className="text-xs text-[#E61919]">{error}</p>
         </div>
       )}
 
       <div className="flex gap-3 pt-1">
-        <Button type="button" variant="ghost" size="md" onClick={() => history.back()}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="md"
+          onClick={() => history.back()}
+        >
           Cancelar
         </Button>
-        <Button type="submit" variant="brand" size="md" loading={pending} fullWidth>
+        <Button
+          type="submit"
+          variant="brand"
+          size="md"
+          loading={pending}
+          fullWidth
+        >
           {defaultValues ? "Guardar cambios" : "Crear clase"}
         </Button>
       </div>

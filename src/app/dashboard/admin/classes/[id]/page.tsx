@@ -10,11 +10,19 @@ import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
 const DAY_LABELS: Record<string, string> = {
-  MONDAY: "Lunes", TUESDAY: "Martes", WEDNESDAY: "Miércoles",
-  THURSDAY: "Jueves", FRIDAY: "Viernes", SATURDAY: "Sábado", SUNDAY: "Domingo",
+  MONDAY: "Lunes",
+  TUESDAY: "Martes",
+  WEDNESDAY: "Miércoles",
+  THURSDAY: "Jueves",
+  FRIDAY: "Viernes",
+  SATURDAY: "Sábado",
+  SUNDAY: "Domingo",
 };
 
-type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ date?: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ date?: string }>;
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -30,7 +38,9 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   const { date } = await searchParams;
 
   const session = await auth();
-  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  const user = session?.user as
+    | { id?: string; role?: string; gymId?: string }
+    | undefined;
   if (!user?.id || !["ADMIN", "COACH"].includes(user.role ?? "")) redirect("/");
   if (!user.gymId) redirect("/");
 
@@ -55,7 +65,12 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
       },
     }),
     prisma.booking.findMany({
-      where: { classId: id, classDate, deletedAt: null, status: { in: ["CONFIRMED", "WAITLISTED"] } },
+      where: {
+        classId: id,
+        classDate,
+        deletedAt: null,
+        status: { in: ["CONFIRMED", "WAITLISTED"] },
+      },
       orderBy: [{ status: "asc" }, { createdAt: "asc" }],
       select: {
         id: true,
@@ -68,7 +83,11 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
     // Solo el admin necesita los selectores de edición
     user.role === "ADMIN"
       ? prisma.user.findMany({
-          where: { gymId: user.gymId, role: { in: ["COACH", "ADMIN"] }, isActive: true },
+          where: {
+            gymId: user.gymId,
+            role: { in: ["COACH", "ADMIN"] },
+            isActive: true,
+          },
           select: { id: true, name: true },
           orderBy: { name: "asc" },
         })
@@ -93,14 +112,14 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
       {/* Back */}
       <Link
         href="/dashboard/admin/classes"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Clases
       </Link>
 
       {/* Header de la clase */}
-      <div className="glass-card rounded-2xl p-5">
+      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             <span
@@ -108,15 +127,19 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               style={{ backgroundColor: gymClass.color ?? "#f97316" }}
             />
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
+              <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
                 {gymClass.discipline?.name ?? "Sin disciplina"}
               </h2>
-              <p className="text-sm text-zinc-500 mt-0.5">
-                {DAY_LABELS[gymClass.dayOfWeek]} · {formatDate(targetDate)} · {formatTime(gymClass.startTime)} – {formatTime(gymClass.endTime)}
+              <p className="text-sm text-[#6B8A99] mt-0.5">
+                {DAY_LABELS[gymClass.dayOfWeek]} · {formatDate(targetDate)} ·{" "}
+                {formatTime(gymClass.startTime)} –{" "}
+                {formatTime(gymClass.endTime)}
                 {gymClass.coach?.name && ` · ${gymClass.coach.name}`}
               </p>
               {gymClass.description && (
-                <p className="text-xs text-zinc-600 mt-1.5">{gymClass.description}</p>
+                <p className="text-xs text-[#4A6B7A] mt-1.5">
+                  {gymClass.description}
+                </p>
               )}
             </div>
           </div>
@@ -142,24 +165,38 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         </div>
 
         {/* Stats rápidos */}
-        <div className="flex items-center gap-4 mb-4 pt-3 border-t border-white/[0.06]">
+        <div className="flex items-center gap-4 mb-4 pt-3 border-t border-[#1A4A63]">
           <div>
-            <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Capacidad</p>
-            <p className="text-xs font-bold text-zinc-300 mt-0.5">{gymClass.maxCapacity} cupos</p>
+            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+              Capacidad
+            </p>
+            <p className="text-xs font-bold text-[#EAEAEA] mt-0.5">
+              {gymClass.maxCapacity} cupos
+            </p>
           </div>
           <div>
-            <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Confirmados</p>
-            <p className="text-xs font-bold text-emerald-400 mt-0.5">{confirmed.length}</p>
+            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+              Confirmados
+            </p>
+            <p className="text-xs font-bold text-[#27C7B8] mt-0.5">
+              {confirmed.length}
+            </p>
           </div>
           {waitlisted.length > 0 && (
             <div>
-              <p className="text-[10px] text-zinc-600 uppercase tracking-wider">En espera</p>
-              <p className="text-xs font-bold text-orange-400 mt-0.5">{waitlisted.length}</p>
+              <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                En espera
+              </p>
+              <p className="text-xs font-bold text-[#F78837] mt-0.5">
+                {waitlisted.length}
+              </p>
             </div>
           )}
           <div>
-            <p className="text-[10px] text-zinc-600 uppercase tracking-wider">Disponibles</p>
-            <p className="text-xs font-bold text-zinc-300 mt-0.5">
+            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+              Disponibles
+            </p>
+            <p className="text-xs font-bold text-[#EAEAEA] mt-0.5">
               {Math.max(0, gymClass.maxCapacity - confirmed.length)}
             </p>
           </div>

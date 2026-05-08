@@ -144,10 +144,10 @@ export default async function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
+        <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
           Hoy
         </p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
+        <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
           Dashboard
         </h2>
       </div>
@@ -191,7 +191,7 @@ export default async function AdminDashboardPage() {
 
       {/* Clases de hoy */}
       <div>
-        <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
           Clases de hoy
         </h3>
         <TodayClassesTable
@@ -203,7 +203,7 @@ export default async function AdminDashboardPage() {
 
       {/* Abonos pagados hoy */}
       <div>
-        <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
           Abonos pagados hoy
         </h3>
         <TodayPaymentsTable payments={paymentsToday} />
@@ -211,7 +211,7 @@ export default async function AdminDashboardPage() {
 
       {/* Próximos cumpleaños */}
       <div>
-        <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
           Próximos cumpleaños
         </h3>
         <UpcomingBirthdays birthdays={upcomingBirthdays} />

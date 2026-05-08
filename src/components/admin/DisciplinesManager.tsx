@@ -10,7 +10,11 @@ interface Props {
   basePath?: string;
 }
 
-export function DisciplinesManager({ disciplines, weekParam, basePath = "/dashboard/admin/classes" }: Props) {
+export function DisciplinesManager({
+  disciplines,
+  weekParam,
+  basePath = "/dashboard/admin/classes",
+}: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentDiscipline = searchParams.get("discipline") ?? "";
@@ -30,7 +34,7 @@ export function DisciplinesManager({ disciplines, weekParam, basePath = "/dashbo
           "inline-flex items-center px-3 h-7 rounded-full text-xs font-medium transition-colors",
           !currentDiscipline
             ? "bg-zinc-100 text-zinc-900"
-            : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200",
+            : "bg-[#0E2A38] text-[#6B8A99] hover:bg-[#143D52] hover:text-[#EAEAEA]",
         ].join(" ")}
       >
         Todos
@@ -46,9 +50,11 @@ export function DisciplinesManager({ disciplines, weekParam, basePath = "/dashbo
               "inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-xs font-medium transition-colors",
               isActive
                 ? "text-zinc-900"
-                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200",
+                : "bg-[#0E2A38] text-[#6B8A99] hover:bg-[#143D52] hover:text-[#EAEAEA]",
             ].join(" ")}
-            style={isActive ? { backgroundColor: d.color ?? "#f97316" } : undefined}
+            style={
+              isActive ? { backgroundColor: d.color ?? "#f97316" } : undefined
+            }
           >
             {!isActive && (
               <span

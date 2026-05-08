@@ -3,21 +3,28 @@
 import { cn } from "@/lib/utils";
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 
-type Variant = "brand" | "ghost" | "danger" | "outline" | "success";
+type Variant = "brand" | "ghost" | "danger" | "outline" | "success" | "outline-brand";
 type Size = "sm" | "md" | "lg";
 
 const variantStyles: Record<Variant, string> = {
-  brand:   "bg-orange-500 text-white hover:bg-orange-600 shadow-[0_0_20px_rgba(249,115,22,.2)]",
-  ghost:   "bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-white",
-  danger:  "bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20",
-  outline: "bg-transparent text-zinc-200 border border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800/50",
-  success: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20",
+  brand:
+    "bg-[#F78837] text-[#0A1F2A] hover:bg-[#E07A2E]",
+  ghost:
+    "bg-transparent text-[#EAEAEA] hover:bg-[#143D52]",
+  danger:
+    "bg-transparent text-[#E61919] border border-[#E61919]/40 hover:bg-[#E61919]/10",
+  outline:
+    "bg-transparent text-[#EAEAEA] border border-[#1A4A63] hover:border-[#F78837] hover:text-[#F78837]",
+  success:
+    "bg-[#27C7B8] text-[#0A1F2A] hover:bg-[#20A898]",
+  "outline-brand":
+    "bg-transparent text-[#F78837] border border-[#F78837] hover:bg-[#F78837] hover:text-[#0A1F2A]",
 };
 
 const sizeStyles: Record<Size, string> = {
-  sm: "h-8  px-3   text-xs  rounded-lg",
-  md: "h-11 px-5   text-sm  rounded-xl",
-  lg: "h-14 px-6   text-base rounded-xl",
+  sm: "h-9  px-4   text-xs  rounded-[2px]",
+  md: "h-12 px-5   text-sm  rounded-[2px]",
+  lg: "h-14 px-6   text-base rounded-[2px]",
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -46,9 +53,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled={disabled || loading}
       className={cn(
         "inline-flex items-center justify-center gap-2 font-medium cursor-pointer",
+        "uppercase tracking-wide",
         "transition-all duration-150 ease-out",
-        "active:scale-[0.97]",                    // tactile press
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900",
+        "active:scale-[0.98]",
+        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F78837]",
         "disabled:opacity-50 disabled:pointer-events-none",
         variantStyles[variant],
         sizeStyles[size],

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { WarningCircle, CheckCircle } from "@phosphor-icons/react";
+import { WarningCircle, CheckCircle, Envelope } from "@phosphor-icons/react";
 
 export function ForgotPasswordForm() {
   const router = useRouter();
@@ -42,10 +42,12 @@ export function ForgotPasswordForm() {
   if (success) {
     return (
       <div className="flex flex-col gap-4 text-center">
-        <CheckCircle size={48} className="text-green-500 mx-auto" />
+        <CheckCircle size={48} className="text-[#27C7B8] mx-auto" />
         <div>
-          <h3 className="text-lg font-semibold text-zinc-100 mb-2">Email enviado</h3>
-          <p className="text-sm text-zinc-400">
+          <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
+            Email enviado
+          </h3>
+          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)]">
             Si existe una cuenta con ese email, recibirás instrucciones para resetear tu contraseña.
           </p>
         </div>
@@ -62,35 +64,35 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div>
-        <h3 className="text-lg font-semibold text-zinc-100 mb-2">Olvidé mi contraseña</h3>
-        <p className="text-sm text-zinc-400">
-          Ingresa tu email y te enviaremos un enlace para resetear tu contraseña.
+        <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
+          Olvidé mi contraseña
+        </h3>
+        <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          Ingresá tu email y te enviaremos un enlace para resetear tu contraseña.
         </p>
       </div>
 
       {/* Email */}
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Email
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          placeholder="tu@email.com"
-          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-        />
+        <div className="relative">
+          <Envelope size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]" />
+          <input
+            id="email" name="email" type="email" autoComplete="email" required
+            placeholder="email@atleta.com"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+          />
+        </div>
       </div>
 
-      {/* Error */}
       {error && (
-        <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2.5">
-          <WarningCircle size={15} className="text-rose-400 shrink-0" />
-          <p className="text-xs text-rose-400">{error}</p>
+        <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5">
+          <WarningCircle size={15} className="text-[#E61919] shrink-0" />
+          <p className="text-xs text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">{error}</p>
         </div>
       )}
 

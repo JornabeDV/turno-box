@@ -81,29 +81,32 @@ export default async function ProfilePage() {
   ] ?? "Alumno";
 
   return (
-    <section className="pt-5 space-y-6">
+    <section className="pt-4 space-y-5">
       {/* Header */}
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Cuenta</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Perfil</h2>
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+          Perfil
+        </h2>
       </div>
 
       {/* ── Bloque 1: Datos personales ───────────────────────────────────── */}
-      <div className="glass-card rounded-2xl p-5 space-y-5 animate-in">
+      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-5 animate-in">
         <div className="flex items-center gap-4">
-          <div className="size-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-xl font-bold text-orange-500 shrink-0">
+          <div className="size-14 border border-[#F78837]/30 bg-[#F78837]/10 flex items-center justify-center text-xl font-bold text-[#F78837] shrink-0 font-[family-name:var(--font-oswald)]">
             {user.name?.[0]?.toUpperCase() ?? user.email?.[0]?.toUpperCase() ?? "?"}
           </div>
           <div className="min-w-0">
-            <p className="font-semibold text-zinc-100 truncate">{user.name ?? "Sin nombre"}</p>
-            <p className="text-xs text-zinc-500 truncate">{user.email}</p>
-            <span className="inline-block mt-1 text-[10px] font-medium bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full">
+            <p className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">
+              {user.name ?? "Sin nombre"}
+            </p>
+            <p className="text-xs text-[#6B8A99] truncate font-[family-name:var(--font-jetbrains)]">{user.email}</p>
+            <span className="inline-block mt-1 text-[10px] font-medium border border-[#1A4A63] text-[#6B8A99] px-2 py-0.5 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
               {roleLabel}
             </span>
           </div>
         </div>
 
-        <div className="border-t border-white/[0.06] pt-4">
+        <div className="border-t border-[#1A4A63] pt-4">
           <EditProfileForm
             name={user.name}
             birthDate={user.birthDate ? user.birthDate.toISOString().split("T")[0] : null}
@@ -113,24 +116,24 @@ export default async function ProfilePage() {
 
       {/* ── Bloque 2: Estadísticas ───────────────────────────────────────── */}
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+        <h3 className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3">
           Mis estadísticas
         </h3>
         <div className="grid grid-cols-3 gap-3">
-          <div className="glass-card rounded-2xl p-4 text-center">
-            <p className="text-2xl font-black text-orange-400 tabular-nums">{statsThisMonth}</p>
-            <p className="text-[11px] text-zinc-500 mt-1 leading-tight">Este mes</p>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 text-center">
+            <p className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-[#F78837] tabular-nums">{statsThisMonth}</p>
+            <p className="text-[10px] text-[#6B8A99] mt-1 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">Este mes</p>
           </div>
-          <div className="glass-card rounded-2xl p-4 text-center">
-            <p className="text-2xl font-black text-zinc-100 tabular-nums">{statsTotal}</p>
-            <p className="text-[11px] text-zinc-500 mt-1 leading-tight">Total clases</p>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 text-center">
+            <p className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] tabular-nums">{statsTotal}</p>
+            <p className="text-[10px] text-[#6B8A99] mt-1 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">Total clases</p>
           </div>
-          <div className="glass-card rounded-2xl p-4 text-center">
-            <p className="text-2xl font-black tabular-nums" style={{ color: streak > 0 ? "#f97316" : "#52525b" }}>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 text-center">
+            <p className={`text-2xl font-[family-name:var(--font-oswald)] font-bold tabular-nums ${streak > 0 ? "text-[#F78837]" : "text-[#4A6B7A]"}`}>
               {streak}
             </p>
-            <p className="text-[11px] text-zinc-500 mt-1 leading-tight">
-              {streak === 1 ? "día de racha" : "días de racha"}
+            <p className="text-[10px] text-[#6B8A99] mt-1 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+              {streak === 1 ? "Día racha" : "Días racha"}
             </p>
           </div>
         </div>
@@ -140,34 +143,34 @@ export default async function ProfilePage() {
       <div className="space-y-3">
         <Link
           href="/profile/bookings"
-          className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between"
+          className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 flex items-center justify-between active:scale-[0.99] transition-transform"
         >
           <div>
-            <p className="text-sm font-medium text-zinc-100">Historial de turnos</p>
-            <p className="text-xs text-zinc-500 mt-0.5">Todas tus reservas pasadas y próximas</p>
+            <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">Historial de turnos</p>
+            <p className="text-xs text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">Todas tus reservas pasadas y próximas</p>
           </div>
-          <CaretRightIcon size={16} className="text-zinc-600 shrink-0" />
+          <CaretRightIcon size={16} className="text-[#4A6B7A] shrink-0" />
         </Link>
 
         <Link
           href="/profile/history"
-          className="glass-card rounded-2xl px-4 py-3.5 flex items-center justify-between"
+          className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 flex items-center justify-between active:scale-[0.99] transition-transform"
         >
           <div>
-            <p className="text-sm font-medium text-zinc-100">Historial de abonos</p>
-            <p className="text-xs text-zinc-500 mt-0.5">Abonos comprados y ajustes de créditos</p>
+            <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">Historial de abonos</p>
+            <p className="text-xs text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">Abonos comprados y ajustes de créditos</p>
           </div>
-          <CaretRightIcon size={16} className="text-zinc-600 shrink-0" />
+          <CaretRightIcon size={16} className="text-[#4A6B7A] shrink-0" />
         </Link>
       </div>
 
       {/* ── Cambio de contraseña ─────────────────────────────────────────── */}
       {hasPassword && (
         <div>
-          <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+          <h3 className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3">
             Cambiar contraseña
           </h3>
-          <div className="glass-card rounded-2xl p-5">
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
             <ChangePasswordForm />
           </div>
         </div>
@@ -175,10 +178,10 @@ export default async function ProfilePage() {
 
       {/* ── Notificaciones push ──────────────────────────────────────────── */}
       <div>
-        <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+        <h3 className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3">
           Notificaciones
         </h3>
-        <div className="glass-card rounded-2xl p-5">
+        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
           <PushNotificationToggle />
           <PushNotificationHelp />
         </div>

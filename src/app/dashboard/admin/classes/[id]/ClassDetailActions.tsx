@@ -10,7 +10,12 @@ import { ClassModal, type ClassData } from "@/components/admin/ClassModal";
 import { deleteClassAction } from "@/actions/classes";
 
 type Coach = { id: string; name: string | null };
-type Discipline = { id: string; name: string; color: string | null; description: string | null };
+type Discipline = {
+  id: string;
+  name: string;
+  color: string | null;
+  description: string | null;
+};
 
 interface Props {
   classData: ClassData;
@@ -67,8 +72,8 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
         size="sm"
       >
         {deleteError && (
-          <div className="mb-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">
-            <p className="text-xs text-rose-400">{deleteError}</p>
+          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs text-[#E61919]">{deleteError}</p>
           </div>
         )}
         <div className="flex gap-2">

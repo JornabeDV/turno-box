@@ -25,8 +25,7 @@ export function StudentsList({ students }: Props) {
     ? students.filter((s) => {
         const q = query.toLowerCase();
         return (
-          s.name?.toLowerCase().includes(q) ||
-          s.email.toLowerCase().includes(q)
+          s.name?.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)
         );
       })
     : students;
@@ -37,74 +36,100 @@ export function StudentsList({ students }: Props) {
       <div className="relative">
         <MagnifyingGlassIcon
           size={15}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600 pointer-events-none"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] pointer-events-none"
         />
         <input
           type="search"
           placeholder="Buscar por nombre o email…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full h-10 bg-zinc-900 border border-white/[0.08] rounded-xl pl-9 pr-4 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 transition-colors"
+          className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] pl-9 pr-4 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
       </div>
 
       {/* Lista */}
       {filtered.length === 0 ? (
-        <div className="glass-card rounded-2xl px-4 py-12 text-center">
-          <p className="text-sm text-zinc-500">
-            {query ? "Sin resultados para esa búsqueda." : "No hay alumnos registrados."}
+        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-12 text-center">
+          <p className="text-sm text-[#6B8A99]">
+            {query
+              ? "Sin resultados para esa búsqueda."
+              : "No hay alumnos registrados."}
           </p>
         </div>
       ) : (
-        <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="divide-y divide-white/[0.04]">
+        <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+          <div className="divide-y divide-[#1A4A63]">
             {filtered.map((s, i) => {
               const initials = s.name
-                ? s.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+                ? s.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
                 : s.email[0].toUpperCase();
 
               return (
                 <div
                   key={s.id}
-                  onClick={() => router.push(`/dashboard/admin/students/${s.id}`)}
-                  className={cn("flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in", `stagger-${Math.min(i + 1, 6)}`)}
+                  onClick={() =>
+                    router.push(`/dashboard/admin/students/${s.id}`)
+                  }
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
+                    `stagger-${Math.min(i + 1, 6)}`,
+                  )}
                 >
                   {/* Avatar */}
-                  <div className={cn(
-                    "size-9 rounded-xl border flex items-center justify-center text-xs font-semibold shrink-0",
-                    s.isActive
-                      ? "bg-zinc-800 border-white/[0.06] text-zinc-300"
-                      : "bg-zinc-900 border-white/[0.04] text-zinc-600"
-                  )}>
+                  <div
+                    className={cn(
+                      "size-9 rounded-[2px] border flex items-center justify-center text-xs font-semibold shrink-0",
+                      s.isActive
+                        ? "bg-[#0E2A38] border-[#1A4A63] text-[#EAEAEA]"
+                        : "bg-[#0A1F2A] border-[#1A4A63] text-[#4A6B7A]",
+                    )}
+                  >
                     {initials}
                   </div>
 
                   {/* Nombre + email */}
                   <div className="flex-1 min-w-0">
-                    <p className={cn("text-sm font-medium truncate leading-tight", s.isActive ? "text-zinc-100" : "text-zinc-500")}>
+                    <p
+                      className={cn(
+                        "text-sm font-medium truncate leading-tight",
+                        s.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
+                      )}
+                    >
                       {s.name ?? "Sin nombre"}
                     </p>
-                    <p className="text-xs text-zinc-600 truncate">{s.email}</p>
+                    <p className="text-xs text-[#4A6B7A] truncate">{s.email}</p>
                   </div>
 
                   {/* Próximas reservas */}
-                  <span className={cn(
-                    "text-xs font-mono tabular-nums shrink-0 hidden sm:block",
-                    s.upcomingCount > 0 ? "text-emerald-500" : "text-zinc-700"
-                  )}>
-                    {s.upcomingCount > 0 ? `${s.upcomingCount} turno${s.upcomingCount !== 1 ? "s" : ""}` : "Sin turnos"}
+                  <span
+                    className={cn(
+                      "text-xs font-mono tabular-nums shrink-0 hidden sm:block",
+                      s.upcomingCount > 0 ? "text-[#27C7B8]" : "text-[#4A6B7A]",
+                    )}
+                  >
+                    {s.upcomingCount > 0
+                      ? `${s.upcomingCount} turno${s.upcomingCount !== 1 ? "s" : ""}`
+                      : "Sin turnos"}
                   </span>
 
                   {/* Badge inactivo */}
                   {!s.isActive && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-500 shrink-0 hidden md:block">
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#0E2A38] text-[#6B8A99] shrink-0 hidden md:block">
                       Inactivo
                     </span>
                   )}
 
                   {/* Acciones */}
                   <div onClick={(e) => e.stopPropagation()}>
-                    <ToggleStudentButton studentId={s.id} initialIsActive={s.isActive} />
+                    <ToggleStudentButton
+                      studentId={s.id}
+                      initialIsActive={s.isActive}
+                    />
                   </div>
                 </div>
               );
@@ -113,7 +138,7 @@ export function StudentsList({ students }: Props) {
         </div>
       )}
 
-      <p className="text-xs text-zinc-700 px-1">
+      <p className="text-xs text-[#4A6B7A] px-1">
         {filtered.length} {filtered.length === 1 ? "alumno" : "alumnos"}
         {query && ` · filtrando por "${query}"`}
       </p>

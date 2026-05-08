@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { DateInput } from "@/components/ui/DatePicker";
-import { WarningCircle, CheckCircle, Eye, EyeSlash } from "@phosphor-icons/react";
+import { WarningCircle, CheckCircle, Eye, EyeSlash, User, Envelope, Lock } from "@phosphor-icons/react";
 import { registerAction } from "@/actions/auth";
 
 export function RegisterForm() {
@@ -53,87 +53,100 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="name" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {/* Name */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="name" className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Nombre completo
         </label>
-        <input
-          id="name" name="name" type="text" required
-          placeholder="Juan García"
-          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-        />
+        <div className="relative">
+          <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]" />
+          <input
+            id="name" name="name" type="text" required
+            placeholder="Juan García"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+          />
+        </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+      {/* Email */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Email
         </label>
-        <input
-          id="email" name="email" type="email" required
-          placeholder="tu@email.com"
-          className="h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
-        />
+        <div className="relative">
+          <Envelope size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]" />
+          <input
+            id="email" name="email" type="email" required
+            placeholder="email@atleta.com"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+          />
+        </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+      {/* Password */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="password" className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Contraseña
         </label>
         <div className="relative">
+          <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]" />
           <input
             id="password" name="password" type={showPassword ? "text" : "password"} required minLength={6}
             placeholder="Mínimo 6 caracteres"
-            className="w-full h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 pr-10 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 pr-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
           <button
             type="button"
             onClick={() => setShowPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#6B8A99] transition-colors"
           >
             {showPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="confirmPassword" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+      {/* Confirm Password */}
+      <div className="flex flex-col gap-2">
+        <label htmlFor="confirmPassword" className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Repetir contraseña
         </label>
         <div className="relative">
+          <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]" />
           <input
             id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? "text" : "password"} required minLength={6}
             placeholder="Repetí tu contraseña"
-            className="w-full h-11 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 pr-10 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 pr-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#6B8A99] transition-colors"
           >
             {showConfirmPassword ? <EyeSlash size={16} /> : <Eye size={16} />}
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+      {/* Birth date */}
+      <div className="flex flex-col gap-2">
+        <label className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Fecha de nacimiento
         </label>
         <DateInput name="birthDate" value={birthDate} onChange={setBirthDate} minAge={10} />
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2.5">
-          <WarningCircle size={15} className="text-rose-400 shrink-0" />
-          <p className="text-xs text-rose-400">{error}</p>
+        <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5">
+          <WarningCircle size={15} className="text-[#E61919] shrink-0" />
+          <p className="text-xs text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3 py-2.5">
-          <CheckCircle size={15} className="text-emerald-400 shrink-0" />
-          <p className="text-xs text-emerald-400">Cuenta creada. Redirigiendo...</p>
+        <div className="flex items-center gap-2 border-l-2 border-[#27C7B8] bg-[#0E2A38] px-3 py-2.5">
+          <CheckCircle size={15} className="text-[#27C7B8] shrink-0" />
+          <p className="text-xs text-[#27C7B8] font-[family-name:var(--font-oswald)] uppercase tracking-wide">Cuenta creada. Redirigiendo...</p>
         </div>
       )}
 

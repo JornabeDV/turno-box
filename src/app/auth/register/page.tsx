@@ -5,30 +5,34 @@ export const metadata: Metadata = { title: "Crear cuenta" };
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-4 bg-[#0f0f0f]">
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 overflow-hidden"
-      >
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 size-96 rounded-full bg-orange-500/10 blur-[80px]" />
+    <div className="min-h-dvh flex flex-col items-center justify-center px-4 bg-[#0A1F2A] relative">
+      {/* Meta info esquina */}
+      <div className="absolute top-4 right-4 text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
+        BEE_BOX v1.0
       </div>
 
       <div className="w-full max-w-sm relative">
-        <div className="flex flex-col items-center my-8">
-          <span className="bg-white size-16 rounded-2xl overflow-hidden mb-4">
-            <img src="/icons/Logo-header.png" alt="Bee Box" width={64} height={64} className="size-full object-cover" />
-          </span>
-          <h1 className="text-2xl font-bold text-zinc-100 tracking-tight">Crear cuenta</h1>
-          <p className="text-sm text-zinc-500 mt-1">Empezá a reservar tus clases</p>
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-8">
+          <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl">
+            Bee Box
+          </h1>
+          <div className="w-12 h-0.5 bg-[#F78837] mt-1" />
         </div>
 
-        <div className="glass-card rounded-2xl p-6">
+        {/* Título */}
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-6 text-center">
+          Crear cuenta
+        </h2>
+
+        {/* Card */}
+        <div className="bg-[#0E2A38] border border-[#1A4A63] p-6">
           <RegisterForm />
         </div>
 
-        <p className="text-center text-xs text-zinc-600 my-6">
+        <p className="text-center text-xs text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           ¿Ya tenés cuenta?{" "}
-          <a href="/auth/login" className="text-orange-500 hover:text-orange-400 transition-colors">
+          <a href="/auth/login" className="text-[#27C7B8] hover:text-[#20A898] transition-colors">
             Iniciá sesión
           </a>
         </p>

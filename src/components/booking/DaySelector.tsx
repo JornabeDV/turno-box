@@ -1,57 +1,81 @@
 "use client";
 
-import { useState } from "react";
-import { cn, formatDate } from "@/lib/utils";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 type Props = {
   initialDate: Date;
   onChange: (date: Date) => void;
 };
 
+const DAY_LABELS = ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"];
+
 export function DaySelector({ initialDate, onChange }: Props) {
   const [current, setCurrent] = useState(initialDate);
 
-  function shift(days: number) {
-    const next = new Date(current);
-    next.setDate(next.getDate() + days);
-    setCurrent(next);
-    onChange(next);
+  // Generar los 5 días de la semana laboral (lun-vie) centrados en la semana actual
+  const weekDays = useMemo(() => {
+    const d = new Date(current);
+    const day = d.getDay(); // 0=dom, 1=lun...
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // lunes de esta semana
+    const monday = new Date(d);
+    monday.setDate(diff);
+    monday.setHours(0, 0, 0, 0);
+
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + i);
+      days.push(date);
+    }
+    return days;
+  }, [current]);
+
+  function selectDate(date: Date) {
+    setCurrent(date);
+    onChange(date);
   }
 
-  const isToday =
-    current.toDateString() === new Date().toDateString();
-
   return (
-    <div className="flex items-center min-h-[60px] justify-between  bg-zinc-900/50 border-b border-white/[0.04]">
-      <button
-        onClick={() => shift(-1)}
-        disabled={isToday}
-        className="size-9 rounded-xl ml-4 my-3 flex items-center justify-center transition-all active:scale-90 disabled:opacity-20 disabled:pointer-events-none text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
-      >
-        <CaretLeft size={16} weight="bold" />
-      </button>
-
-      <div className="text-center my-2">
-        <p className="text-sm font-semibold text-zinc-100 capitalize">
-          {formatDate(current)}
-        </p>
-        {isToday && (
-          <span className="text-[10px] text-orange-500 font-medium uppercase tracking-wider">
-            Hoy
-          </span>
-        )}
+    <div className="bg-[#0E2A38] border border-[#1A4A63] p-3">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
+          Calendario semanal
+        </span>
+        <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
+          {current.toLocaleDateString("es-AR", { month: "short" })}
+        </span>
       </div>
-
-      <button
-        onClick={() => shift(1)}
-        className={cn(
-          "size-9 rounded-xl mr-4 my-2 flex items-center justify-center transition-all active:scale-90",
-          "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
-        )}
-      >
-        <CaretRight size={16} weight="bold" />
-      </button>
+      <div className="grid grid-cols-5 gap-2">
+        {weekDays.map((date) => {
+          const isSelected =
+            date.toDateString() === current.toDateString();
+          return (
+            <button
+              key={date.toISOString()}
+              onClick={() => selectDate(date)}
+              className={cn(
+                "flex flex-col items-center gap-1 py-2 transition-all duration-150 active:scale-[0.97]",
+                isSelected
+                  ? "bg-[#F78837] text-[#0A1F2A]"
+                  : "border border-[#1A4A63] text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99]"
+              )}
+            >
+              <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+                {DAY_LABELS[date.getDay()]}
+              </span>
+              <span
+                className={cn(
+                  "text-sm font-[family-name:var(--font-oswald)] font-bold",
+                  isSelected ? "text-[#0A1F2A]" : "text-[#EAEAEA]"
+                )}
+              >
+                {date.getDate()}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

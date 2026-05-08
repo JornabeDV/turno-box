@@ -19,14 +19,22 @@ import {
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard/admin",             label: "Dashboard",     Icon: ChartBarIcon },
-  { href: "/dashboard/admin/classes",     label: "Clases",        Icon: CalendarBlankIcon },
-  { href: "/dashboard/admin/disciplines", label: "Disciplinas",   Icon: TagIcon },
-  { href: "/dashboard/admin/students",    label: "Alumnos",       Icon: UsersIcon },
-  { href: "/dashboard/admin/coaches",     label: "Coaches",       Icon: BarbellIcon },
-  { href: "/dashboard/admin/packs",       label: "Abonos",        Icon: CurrencyCircleDollarIcon },
-  { href: "/dashboard/admin/news",        label: "Noticias",      Icon: MegaphoneIcon },
-  { href: "/dashboard/admin/settings",    label: "Configuración", Icon: GearIcon },
+  { href: "/dashboard/admin", label: "Dashboard", Icon: ChartBarIcon },
+  {
+    href: "/dashboard/admin/classes",
+    label: "Clases",
+    Icon: CalendarBlankIcon,
+  },
+  { href: "/dashboard/admin/disciplines", label: "Disciplinas", Icon: TagIcon },
+  { href: "/dashboard/admin/students", label: "Alumnos", Icon: UsersIcon },
+  { href: "/dashboard/admin/coaches", label: "Coaches", Icon: BarbellIcon },
+  {
+    href: "/dashboard/admin/packs",
+    label: "Abonos",
+    Icon: CurrencyCircleDollarIcon,
+  },
+  { href: "/dashboard/admin/news", label: "Noticias", Icon: MegaphoneIcon },
+  { href: "/dashboard/admin/settings", label: "Configuración", Icon: GearIcon },
 ];
 
 export function AdminMobileNav() {
@@ -34,12 +42,16 @@ export function AdminMobileNav() {
   const pathname = usePathname();
 
   // Cierra el drawer cuando cambia la ruta
-  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
 
   // Bloquea el scroll del body mientras el drawer está abierto
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
@@ -47,7 +59,7 @@ export function AdminMobileNav() {
       {/* Botón hamburguesa — solo mobile */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center justify-center size-8 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-all active:scale-90"
+        className="md:hidden flex items-center justify-center size-8 rounded-[2px] text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0E2A38] transition-all active:scale-90"
         aria-label="Abrir menú"
       >
         <ListIcon size={20} />
@@ -59,7 +71,7 @@ export function AdminMobileNav() {
           <div className="md:hidden fixed inset-0 z-50 flex">
             {/* Backdrop */}
             <motion.div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 "
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -69,7 +81,7 @@ export function AdminMobileNav() {
 
             {/* Panel */}
             <motion.div
-              className="relative w-72 max-w-[85vw] min-h-dvh bg-[#0f0f0f] border-r border-white/[0.06] flex flex-col p-4 gap-1"
+              className="relative w-72 max-w-[85vw] min-h-dvh bg-[#0A1F2A] border-r border-[#1A4A63] flex flex-col p-4 gap-1"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -78,13 +90,17 @@ export function AdminMobileNav() {
               {/* Header del drawer */}
               <div className="flex items-center justify-between px-2 py-3 mb-4">
                 <div className="flex flex-col gap-1">
-                  <span className="bg-white rounded-xl px-2 py-1.5 flex items-center self-start">
-                    <img src="/icons/Logo-header.png" alt="Bee Box" className="h-14 w-auto" />
+                  <span className="bg-white rounded-[2px] px-2 py-1.5 flex items-center self-start">
+                    <img
+                      src="/icons/Logo-header.png"
+                      alt="Bee Box"
+                      className="h-14 w-auto"
+                    />
                   </span>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-all"
+                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0E2A38] transition-all"
                   aria-label="Cerrar menú"
                 >
                   <XIcon size={18} />
@@ -93,17 +109,20 @@ export function AdminMobileNav() {
 
               {/* Nav items */}
               {NAV_ITEMS.map(({ href, label, Icon }) => {
-                const active = pathname === href || (href !== "/dashboard/admin" && pathname.startsWith(href + "/"));
+                const active =
+                  pathname === href ||
+                  (href !== "/dashboard/admin" &&
+                    pathname.startsWith(href + "/"));
                 return (
                   <Link
                     key={href}
                     href={href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150",
+                      "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm font-medium transition-all duration-150",
                       "active:scale-[0.97]",
                       active
-                        ? "bg-orange-500/10 text-orange-400 border border-orange-500/20"
-                        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60"
+                        ? "bg-[#F78837]/10 text-[#F78837] border border-[#F78837]/20"
+                        : "text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0A1F2A]",
                     )}
                   >
                     <Icon weight={active ? "fill" : "regular"} size={18} />

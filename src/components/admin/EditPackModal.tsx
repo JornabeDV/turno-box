@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/Button";
 import { updatePackAction } from "@/actions/payments";
 
 const inputClass =
-  "w-full h-10 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors";
+  "w-full h-10 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
-const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
+const labelClass =
+  "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
 
 export type PackData = {
   id: string;
@@ -63,7 +64,9 @@ export function EditPackModal({ pack, onClose }: Props) {
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="edit-pack-name" className={labelClass}>Nombre</label>
+          <label htmlFor="edit-pack-name" className={labelClass}>
+            Nombre
+          </label>
           <input
             id="edit-pack-name"
             key={pack?.id + "-name"}
@@ -79,7 +82,9 @@ export function EditPackModal({ pack, onClose }: Props) {
 
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <label htmlFor="edit-pack-credits" className={labelClass}>Clases</label>
+            <label htmlFor="edit-pack-credits" className={labelClass}>
+              Clases
+            </label>
             <input
               id="edit-pack-credits"
               key={pack?.id + "-credits"}
@@ -93,7 +98,9 @@ export function EditPackModal({ pack, onClose }: Props) {
             />
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="edit-pack-price" className={labelClass}>Precio (ARS)</label>
+            <label htmlFor="edit-pack-price" className={labelClass}>
+              Precio (ARS)
+            </label>
             <input
               id="edit-pack-price"
               key={pack?.id + "-price"}
@@ -124,7 +131,9 @@ export function EditPackModal({ pack, onClose }: Props) {
             />
           </div>
           <div className="space-y-1.5">
-            <label htmlFor="edit-pack-order" className={labelClass}>Orden</label>
+            <label htmlFor="edit-pack-order" className={labelClass}>
+              Orden
+            </label>
             <input
               id="edit-pack-order"
               key={pack?.id + "-order"}
@@ -138,16 +147,28 @@ export function EditPackModal({ pack, onClose }: Props) {
         </div>
 
         {error && (
-          <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">
-            <p className="text-xs text-rose-400">{error}</p>
+          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs text-[#E61919]">{error}</p>
           </div>
         )}
 
         <div className="flex gap-2 pt-1">
-          <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={handleClose}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="flex-1"
+            onClick={handleClose}
+          >
             Cancelar
           </Button>
-          <Button type="submit" variant="brand" size="sm" className="flex-1" loading={isPending}>
+          <Button
+            type="submit"
+            variant="brand"
+            size="sm"
+            className="flex-1"
+            loading={isPending}
+          >
             Guardar cambios
           </Button>
         </div>

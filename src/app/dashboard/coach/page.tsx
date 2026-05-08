@@ -7,7 +7,15 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Mis clases" };
 
-const DAY_ORDER = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+const DAY_ORDER = [
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
+];
 
 function getWeekStart(dateStr?: string): Date {
   let base: Date;
@@ -40,7 +48,9 @@ export default async function CoachDashboardPage({
   searchParams: Promise<{ week?: string; discipline?: string }>;
 }) {
   const session = await auth();
-  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  const user = session?.user as
+    | { id?: string; role?: string; gymId?: string }
+    | undefined;
   if (!user?.id || !["ADMIN", "COACH"].includes(user.role ?? "")) redirect("/");
   if (!user.gymId) redirect("/");
 
@@ -60,13 +70,13 @@ export default async function CoachDashboardPage({
     }),
     Promise.all(
       weekDays.map((date) =>
-        getClassSlotsForDay(user.gymId!, date, user.id!, user.id!)
-      )
+        getClassSlotsForDay(user.gymId!, date, user.id!, user.id!),
+      ),
     ),
   ]);
 
   const filteredSlotsPerDay = slotsPerDay.map((slots) =>
-    discipline ? slots.filter((s) => s.disciplineName === discipline) : slots
+    discipline ? slots.filter((s) => s.disciplineName === discipline) : slots,
   );
 
   return (
