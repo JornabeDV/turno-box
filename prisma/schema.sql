@@ -42,6 +42,7 @@ CREATE TABLE "users" (
     "role" "Role" NOT NULL DEFAULT 'STUDENT',
     "passwordHash" TEXT,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "pushNotificationsEnabled" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "gymId" TEXT,
@@ -188,6 +189,34 @@ CREATE TABLE "credit_transactions" (
     CONSTRAINT "credit_transactions_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "push_subscriptions" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "endpoint" TEXT NOT NULL,
+    "p256dh" TEXT NOT NULL,
+    "auth" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "push_subscriptions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "announcements" (
+    "id" TEXT NOT NULL,
+    "gymId" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "body" TEXT NOT NULL,
+    "pinned" BOOLEAN NOT NULL DEFAULT false,
+    "publishAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "expiresAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "announcements_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "gyms_slug_key" ON "gyms"("slug");
 
@@ -245,6 +274,15 @@ CREATE INDEX "credit_transactions_userId_gymId_createdAt_idx" ON "credit_transac
 -- CreateIndex
 CREATE INDEX "credit_transactions_bookingId_idx" ON "credit_transactions"("bookingId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "push_subscriptions_endpoint_key" ON "push_subscriptions"("endpoint");
+
+-- CreateIndex
+CREATE INDEX "push_subscriptions_userId_idx" ON "push_subscriptions"("userId");
+
+-- CreateIndex
+CREATE INDEX "announcements_gymId_publishAt_idx" ON "announcements"("gymId", "publishAt");
+
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_gymId_fkey" FOREIGN KEY ("gymId") REFERENCES "gyms"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -292,4 +330,10 @@ ALTER TABLE "credit_transactions" ADD CONSTRAINT "credit_transactions_paymentId_
 
 -- AddForeignKey
 ALTER TABLE "credit_transactions" ADD CONSTRAINT "credit_transactions_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "bookings"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "push_subscriptions" ADD CONSTRAINT "push_subscriptions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "announcements" ADD CONSTRAINT "announcements_gymId_fkey" FOREIGN KEY ("gymId") REFERENCES "gyms"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 

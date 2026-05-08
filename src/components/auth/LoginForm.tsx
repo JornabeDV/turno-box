@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -92,6 +93,16 @@ function LoginFormInner() {
       <Button type="submit" fullWidth size="lg" loading={pending} className="mt-1">
         Ingresar
       </Button>
+
+      {/* Forgot password link */}
+      <div className="text-center mt-2">
+        <Link
+          href="/forgot-password"
+          className="text-xs text-zinc-500 hover:text-orange-500 transition-colors"
+        >
+          ¿Olvidaste tu contraseña?
+        </Link>
+      </div>
     </form>
   );
 }
