@@ -42,41 +42,42 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
   const nextLimit = limit + PAGE_SIZE;
 
   return (
-    <section className="pt-5 space-y-4">
+    <section className="pt-4 space-y-4">
       <Link
         href="/profile"
-        className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
       >
         <ArrowLeftIcon size={13} />
         Perfil
       </Link>
 
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Cuenta</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Historial de turnos</h2>
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+          Historial de turnos
+        </h2>
       </div>
 
       {items.length === 0 ? (
-        <div className="glass-card rounded-2xl px-4 py-16 text-center">
-          <p className="text-sm text-zinc-600">Aún no tenés turnos.</p>
+        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
+          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">Aún no tenés turnos.</p>
         </div>
       ) : (
         <>
-          <div className="glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.04]">
+          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
             {items.map((b) => (
               <div key={b.id} className="flex items-center gap-3 px-4 py-3.5">
                 <span
-                  className="size-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: b.class.color ?? "#f97316" }}
+                  className="size-1.5 shrink-0"
+                  style={{ backgroundColor: b.class.color ?? "#F78837" }}
                 />
                 <div className="flex-1 min-w-0">
                   <p className={cn(
-                    "text-sm font-medium truncate",
-                    b.status === "CANCELLED" ? "text-zinc-600 line-through" : "text-zinc-100"
+                    "text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-tight truncate",
+                    b.status === "CANCELLED" ? "text-[#4A6B7A] line-through" : "text-[#EAEAEA]"
                   )}>
                     {b.class.discipline?.name ?? "Sin disciplina"}
                   </p>
-                  <p className="text-[11px] text-zinc-600 tabular-nums">
+                  <p className="text-[11px] text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
                     {new Date(b.classDate).toLocaleDateString("es-AR", {
                       day: "numeric", month: "short", year: "numeric",
                     })}
@@ -85,10 +86,10 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                   </p>
                 </div>
                 <span className={cn(
-                  "text-[10px] font-medium shrink-0",
-                  b.status === "CONFIRMED" && "text-emerald-500",
-                  b.status === "CANCELLED" && "text-zinc-600",
-                  b.status === "WAITLISTED" && "text-orange-500",
+                  "text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider shrink-0",
+                  b.status === "CONFIRMED" && "text-[#27C7B8]",
+                  b.status === "CANCELLED" && "text-[#4A6B7A]",
+                  b.status === "WAITLISTED" && "text-[#F78837]",
                 )}>
                   {b.status === "CONFIRMED" && "Asistió"}
                   {b.status === "CANCELLED" && "Canceló"}
@@ -101,7 +102,7 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
           {hasMore && (
             <Link
               href={`/profile/bookings?limit=${nextLimit}`}
-              className="w-full flex items-center justify-center h-10 rounded-xl border border-zinc-700 text-sm text-zinc-400 hover:text-zinc-200 hover:border-zinc-600 transition-colors"
+              className="w-full flex items-center justify-center h-10 border border-[#1A4A63] text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
             >
               Ver más
             </Link>

@@ -10,10 +10,10 @@ type Props = { studentId: string; currentBalance: number };
 const QUICK_AMOUNTS = [4, 8, 12, 16];
 
 export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
-  const [balance, setBalance]     = useState(currentBalance);
-  const [amount, setAmount]       = useState("");
-  const [note, setNote]           = useState("");
-  const [error, setError]         = useState<string | null>(null);
+  const [balance, setBalance] = useState(currentBalance);
+  const [amount, setAmount] = useState("");
+  const [note, setNote] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(e: React.FormEvent) {
@@ -30,7 +30,11 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         setAmount("");
         setNote("");
         const delta = Number(amount);
-        toast.success(delta > 0 ? `+${delta} créditos acreditados` : `${delta} créditos descontados`);
+        toast.success(
+          delta > 0
+            ? `+${delta} créditos acreditados`
+            : `${delta} créditos descontados`,
+        );
       } else {
         setError(res.error);
         toast.error(res.error);
@@ -42,15 +46,21 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
   const isNegative = Number(amount) < 0;
 
   return (
-    <div className="glass-card rounded-2xl p-5 space-y-4">
+    <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+        <h3 className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider">
           Créditos disponibles
         </h3>
-        <span className={cn(
-          "text-2xl font-black tabular-nums leading-none",
-          balance === 0 ? "text-rose-400" : balance <= 3 ? "text-amber-400" : "text-emerald-400"
-        )}>
+        <span
+          className={cn(
+            "text-2xl font-black tabular-nums leading-none",
+            balance === 0
+              ? "text-[#E61919]"
+              : balance <= 3
+                ? "text-[#F78837]"
+                : "text-[#27C7B8]",
+          )}
+        >
           {balance}
         </span>
       </div>
@@ -58,7 +68,9 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Atajos rápidos */}
         <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-2">Acreditar rápido</p>
+          <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider mb-2">
+            Acreditar rápido
+          </p>
           <div className="flex gap-2">
             {QUICK_AMOUNTS.map((n) => (
               <button
@@ -66,10 +78,10 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
                 type="button"
                 onClick={() => setAmount(String(n))}
                 className={cn(
-                  "flex-1 py-1.5 rounded-lg border text-xs font-bold transition-all active:scale-95",
+                  "flex-1 py-1.5 rounded-[2px] border text-xs font-bold transition-all active:scale-95",
                   amount === String(n)
-                    ? "bg-orange-500/10 border-orange-500/40 text-orange-400"
-                    : "border-white/[0.08] text-zinc-400 hover:border-white/20"
+                    ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
+                    : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
                 )}
               >
                 +{n}
@@ -87,16 +99,18 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
               onChange={(e) => setAmount(e.target.value)}
               placeholder="Monto (+8 o -2)"
               required
-              className="w-full h-10 bg-zinc-900 border border-white/[0.08] rounded-xl px-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 transition-colors tabular-nums"
+              className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
             />
           </div>
           {preview !== null && (
-            <div className={cn(
-              "h-10 px-3 rounded-xl border flex items-center text-xs font-bold tabular-nums shrink-0",
-              isNegative
-                ? "bg-rose-500/10 border-rose-500/20 text-rose-400"
-                : "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-            )}>
+            <div
+              className={cn(
+                "h-10 px-3 rounded-[2px] border flex items-center text-xs font-bold tabular-nums shrink-0",
+                isNegative
+                  ? "bg-[#E61919]/10 border-[#E61919]/20 text-[#E61919]"
+                  : "bg-[#27C7B8]/10 border-[#27C7B8]/20 text-[#27C7B8]",
+              )}
+            >
               → {Math.max(0, preview)}
             </div>
           )}
@@ -109,15 +123,15 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           onChange={(e) => setNote(e.target.value)}
           placeholder="Motivo (requerido)"
           required
-          className="w-full h-10 bg-zinc-900 border border-white/[0.08] rounded-xl px-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500/50 transition-colors"
+          className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
 
-        {error && <p className="text-xs text-rose-400">{error}</p>}
+        {error && <p className="text-xs text-[#E61919]">{error}</p>}
 
         <button
           type="submit"
           disabled={isPending || !amount || !note}
-          className="w-full h-10 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-400 active:scale-95 transition-all disabled:opacity-40"
+          className="w-full h-10 rounded-[2px] bg-[#F78837] text-white text-sm font-semibold hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">

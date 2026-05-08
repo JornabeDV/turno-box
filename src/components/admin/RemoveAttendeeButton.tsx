@@ -26,12 +26,13 @@ export function RemoveAttendeeButton({ bookingId }: { bookingId: string }) {
         });
       }}
       disabled={isPending}
-      className="size-7 rounded-lg flex items-center justify-center text-zinc-700 hover:text-rose-400 hover:bg-rose-500/10 transition-all active:scale-90 disabled:opacity-40"
+      className="size-7 rounded-[2px] flex items-center justify-center text-[#4A6B7A] hover:text-[#E61919] hover:bg-[#E61919]/10 transition-all active:scale-90 disabled:opacity-40"
     >
-      {isPending
-        ? <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
-        : <Trash size={13} />
-      }
+      {isPending ? (
+        <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+      ) : (
+        <Trash size={13} />
+      )}
     </button>
   );
 }

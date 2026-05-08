@@ -7,12 +7,12 @@ import { DateInput } from "@/components/ui/DatePicker";
 import { updateProfileAction } from "@/actions/profile";
 
 const inputClass =
-  "w-full h-10 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors";
-const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
+  "w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
+const labelClass = "text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]";
 
 interface Props {
   name: string | null;
-  birthDate: string | null; // "YYYY-MM-DD" ya serializado desde el server
+  birthDate: string | null;
 }
 
 export function EditProfileForm({ name, birthDate }: Props) {
@@ -61,12 +61,12 @@ export function EditProfileForm({ name, birthDate }: Props) {
       </div>
 
       {error && (
-        <p className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl px-3 py-2">
+        <p className="text-xs text-[#E61919] border-l-2 border-[#E61919] bg-[#0A1F2A] px-3 py-2 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           {error}
         </p>
       )}
       {success && (
-        <p className="text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2">
+        <p className="text-xs text-[#27C7B8] border-l-2 border-[#27C7B8] bg-[#0A1F2A] px-3 py-2 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           Perfil actualizado.
         </p>
       )}

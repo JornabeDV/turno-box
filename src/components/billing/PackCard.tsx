@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { createCheckoutAction } from "@/actions/payments";
+import { CheckCircle } from "@phosphor-icons/react";
 
 type SerializedPack = {
   id: string;
@@ -10,11 +11,15 @@ type SerializedPack = {
   price: number;
   currency: string;
   validityDays: number | null;
+  description?: string | null;
 };
 
-type Props = { pack: SerializedPack };
+type Props = {
+  pack: SerializedPack;
+  index?: number;
+};
 
-export function PackCard({ pack }: Props) {
+export function PackCard({ pack, index = 0 }: Props) {
   const [isPending, startTransition] = useTransition();
 
   function handleBuy() {
@@ -34,40 +39,81 @@ export function PackCard({ pack }: Props) {
     maximumFractionDigits: 0,
   }).format(Number(pack.price));
 
+  // Determinar si es "basic" o "pro" según el índice o precio
+  const isPro = index > 0 || pack.price > 15000;
+  const accentColor = isPro ? "#F78837" : "#27C7B8";
+  const badgeLabel = isPro ? "Pro Performance" : "Basic";
+
+  // Features mock basados en el pack (en producción vendrían de la DB)
+  const features = isPro
+    ? [
+        `${pack.credits} units included`,
+        "Performance review",
+        "Nutrition guide access",
+      ]
+    : [
+        "Professional coaching",
+        "Priority access",
+      ];
 
   return (
-    <button
-      onClick={handleBuy}
-      disabled={isPending}
-      className="glass-card glass-interactive rounded-2xl p-5 flex items-center gap-4 w-full text-left"
-    >
-      {/* Clases count */}
-      <div className="size-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex flex-col items-center justify-center shrink-0">
-        <span className="text-2xl font-black text-orange-400 leading-none">{pack.credits}</span>
-        <span className="text-[10px] text-orange-500/70 font-medium uppercase tracking-wide mt-0.5">clases</span>
-      </div>
+    <div className="bg-[#0E2A38] border border-[#1A4A63] border-l-2" style={{ borderLeftColor: accentColor }}>
+      <div className="p-5">
+        {/* Header: nombre + badge */}
+        <div className="flex items-start justify-between mb-3">
+          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg">
+            {pack.name}
+          </h3>
+          <span
+            className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider px-1.5 py-0.5 border"
+            style={{ color: accentColor, borderColor: `${accentColor}40` }}
+          >
+            {badgeLabel}
+          </span>
+        </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-zinc-100 text-sm">{pack.name}</p>
+        {/* Precio */}
+        <div className="mb-1">
+          <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-3xl uppercase tracking-tight">
+            {priceFormatted.replace(pack.currency, "").trim()}
+          </span>
+        </div>
+
+        {/* Validity */}
         {pack.validityDays && (
-          <p className="text-xs md:text-sm text-zinc-600 mt-1">
-            Válido {pack.validityDays} días desde la compra
+          <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-4">
+            {pack.validityDays} days validity
           </p>
         )}
-      </div>
 
-      {/* CTA */}
-      <div className="px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-bold shrink-0">
-        {isPending ? (
-          <span className="flex items-center gap-2">
-            <span className="size-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
-            Espera…
-          </span>
-        ) : (
-          priceFormatted
-        )}
+        {/* Features */}
+        <ul className="space-y-2 mb-5">
+          {features.map((feat, i) => (
+            <li key={i} className="flex items-center gap-2">
+              <CheckCircle size={14} weight="regular" className="text-[#27C7B8] shrink-0" />
+              <span className="text-xs text-[#EAEAEA] font-[family-name:var(--font-oswald)]">
+                {feat}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA */}
+        <button
+          onClick={handleBuy}
+          disabled={isPending}
+          className="w-full h-12 bg-[#F78837] text-[#0A1F2A] font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm active:scale-[0.98] transition-transform disabled:opacity-50 disabled:pointer-events-none"
+        >
+          {isPending ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="size-4 rounded-full border-2 border-[#0A1F2A] border-t-transparent animate-spin" />
+              Procesando...
+            </span>
+          ) : (
+            "Select Plan"
+          )}
+        </button>
       </div>
-    </button>
+    </div>
   );
 }

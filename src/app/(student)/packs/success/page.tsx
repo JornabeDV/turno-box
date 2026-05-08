@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { approvePaymentIfValid } from "@/lib/approvePayment";
 import { sendPushToUser } from "@/lib/push";
 import Link from "next/link";
+import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Pago exitoso" };
@@ -26,15 +27,11 @@ export default async function PaymentSuccessPage({
   });
   if (!payment) redirect("/packs");
 
-  // Si el webhook aún no llegó, acreditamos ahora mismo consultando MP directamente.
-  // approvePaymentIfValid es idempotente — si el webhook ya lo procesó, no hace nada.
   if (payment.status !== "APPROVED") {
     const credited = await approvePaymentIfValid(payment.id);
-
-    // Notificar push solo si acabamos de acreditar (el webhook lo haría si llega primero)
     if (credited) {
       sendPushToUser(payment.userId, {
-        title: "¡Abono acreditado! 🎉",
+        title: "Abono acreditado",
         body: `Se sumaron ${payment.creditsGranted} crédito${payment.creditsGranted !== 1 ? "s" : ""} a tu cuenta.`,
         url: "/packs",
         tag: "payment-approved",
@@ -44,28 +41,17 @@ export default async function PaymentSuccessPage({
 
   return (
     <section className="px-4 pt-16 pb-24 flex flex-col items-center text-center gap-6">
-      <div className="size-20 rounded-3xl flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20">
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#10b981"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M20 6L9 17l-5-5" />
-        </svg>
+      <div className="size-20 border border-[#27C7B8]/30 bg-[#27C7B8]/10 flex items-center justify-center">
+        <CheckCircle size={32} className="text-[#27C7B8]" weight="bold" />
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold text-zinc-100 tracking-tight">
-          ¡Pago aprobado!
+        <h2 className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
+          Pago aprobado
         </h2>
-        <p className="text-zinc-500 mt-2">
+        <p className="text-[#6B8A99] mt-2 font-[family-name:var(--font-oswald)]">
           Se acreditaron{" "}
-          <span className="text-emerald-400 font-bold">
+          <span className="text-[#27C7B8] font-bold">
             {payment.creditsGranted} clase{payment.creditsGranted !== 1 ? "s" : ""}
           </span>
           {payment.pack ? ` de ${payment.pack.name}` : ""} a tu cuenta.
@@ -74,7 +60,7 @@ export default async function PaymentSuccessPage({
 
       <Link
         href="/"
-        className="px-6 py-3 bg-orange-500 text-white rounded-xl font-semibold text-sm hover:bg-orange-400 transition-colors active:scale-95"
+        className="px-6 py-3 bg-[#F78837] text-[#0A1F2A] font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm hover:bg-[#E07A2E] transition-colors active:scale-[0.98]"
       >
         Reservar una clase
       </Link>

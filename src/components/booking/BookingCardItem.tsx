@@ -20,7 +20,7 @@ export function BookingCardItem({ booking, index }: Props) {
 
   const staggerClass = `stagger-${Math.min(index + 1, 6)}`;
 
-  if (cancelled) return null; // fade out tras cancelar
+  if (cancelled) return null;
 
   function handleCancel() {
     startTransition(async () => {
@@ -37,61 +37,63 @@ export function BookingCardItem({ booking, index }: Props) {
   return (
     <div
       className={cn(
-        "glass-card rounded-2xl p-4 animate-in",
+        "bg-[#0E2A38] border border-[#1A4A63] animate-in",
         staggerClass,
-        booking.status === "CONFIRMED" && "border-emerald-500/20",
-        booking.status === "WAITLISTED" && "border-orange-500/20"
+        booking.status === "CONFIRMED" && "border-l-2 border-l-[#27C7B8]",
+        booking.status === "WAITLISTED" && "border-l-2 border-l-[#F78837]"
       )}
     >
-      <div className="flex items-start justify-between gap-2 mb-3">
-        <h3 className="font-semibold text-zinc-100 text-base leading-tight">
-          {booking.class.name}
-        </h3>
-        <Badge
-          variant={booking.status === "CONFIRMED" ? "confirmed" : "waitlist"}
-          className="shrink-0"
-        />
-      </div>
-
-      <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-4 text-xs text-zinc-500">
-        <span className="flex items-center gap-1.5">
-          <CalendarBlank size={13} />
-          <span className="capitalize">
-            {formatDate(new Date(booking.classDate))}
-          </span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <Clock size={13} />
-          <span className="font-mono tabular-nums">
-            {formatTime(booking.class.startTime)} – {formatTime(booking.class.endTime)}
-          </span>
-        </span>
-        {booking.class.coachName && (
-          <span className="flex items-center gap-1.5">
-            <User size={13} />
-            {booking.class.coachName}
-          </span>
-        )}
-      </div>
-
-      {booking.status === "WAITLISTED" && booking.waitlistPos && (
-        <div className="flex items-center gap-2 rounded-xl bg-orange-500/10 border border-orange-500/20 px-3 py-2 mb-3">
-          <Hourglass size={13} className="text-orange-400" />
-          <span className="text-xs text-orange-400">
-            Posición {booking.waitlistPos} en lista de espera
-          </span>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-base uppercase tracking-tight">
+            {booking.class.name}
+          </h3>
+          <Badge
+            variant={booking.status === "CONFIRMED" ? "confirmed" : "waitlist"}
+            className="shrink-0"
+          />
         </div>
-      )}
 
-      <Button
-        variant={booking.status === "CONFIRMED" ? "danger" : "ghost"}
-        size="sm"
-        fullWidth
-        loading={isPending}
-        onClick={handleCancel}
-      >
-        {booking.status === "CONFIRMED" ? "Cancelar turno" : "Salir de lista"}
-      </Button>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 mb-4 text-xs text-[#6B8A99]">
+          <span className="flex items-center gap-1.5">
+            <CalendarBlank size={13} />
+            <span className="capitalize font-[family-name:var(--font-oswald)]">
+              {formatDate(new Date(booking.classDate))}
+            </span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <Clock size={13} />
+            <span className="font-[family-name:var(--font-jetbrains)] tabular-nums uppercase">
+              {formatTime(booking.class.startTime)} – {formatTime(booking.class.endTime)}
+            </span>
+          </span>
+          {booking.class.coachName && (
+            <span className="flex items-center gap-1.5">
+              <User size={13} />
+              <span className="font-[family-name:var(--font-oswald)]">{booking.class.coachName}</span>
+            </span>
+          )}
+        </div>
+
+        {booking.status === "WAITLISTED" && booking.waitlistPos && (
+          <div className="flex items-center gap-2 border border-[#F78837]/30 bg-[#F78837]/5 px-3 py-2 mb-3">
+            <Hourglass size={13} className="text-[#F78837]" />
+            <span className="text-xs text-[#F78837] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+              Posición {booking.waitlistPos} en lista de espera
+            </span>
+          </div>
+        )}
+
+        <Button
+          variant={booking.status === "CONFIRMED" ? "danger" : "ghost"}
+          size="sm"
+          fullWidth
+          loading={isPending}
+          onClick={handleCancel}
+        >
+          {booking.status === "CONFIRMED" ? "Cancelar turno" : "Salir de lista"}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -21,23 +21,12 @@ export default async function HomePage() {
   // Si el usuario no tiene gym asignado aún (registro nuevo)
   if (!user?.gymId) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-        <div className="size-16 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-4">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#f97316"
-            strokeWidth="1.5"
-          >
-            <path d="M6.5 6.5h11M6.5 17.5h11M12 2v20M2 12h4M18 12h4" />
-          </svg>
-        </div>
-        <h2 className="text-lg font-semibold text-zinc-100 mb-2">
+      <div className="flex flex-col items-center justify-center py-24 px-6 text-center border border-[#1A4A63] bg-[#0E2A38]">
+        <span className="text-3xl text-[#F78837] mb-4">✕</span>
+        <h2 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
           Sin gym asignado
         </h2>
-        <p className="text-sm text-zinc-500 max-w-xs">
+        <p className="text-sm text-[#6B8A99] max-w-xs font-[family-name:var(--font-oswald)]">
           Tu cuenta está activa, pero aún no fuiste asignado a ningún gimnasio.
           Contactá al administrador.
         </p>
@@ -79,75 +68,100 @@ export default async function HomePage() {
       },
     }),
   ]);
+
+  const firstName = user.name?.split(" ")[0] ?? "Atleta";
+
+  // Buscar próxima clase reservada
+  const nextBooked = slots.find((s) => s.userBooking?.status === "CONFIRMED");
+
+  // Subscription info
+  const subs = activeSubscriptions
+    .map((sub) => ({
+      expiresAt: sub.expiresAt!,
+      remaining: sub.creditsGranted + sub.creditTxs.reduce((s, t) => s + t.amount, 0),
+    }))
+    .filter((sub) => sub.remaining > 0);
+
+  const sub = subs[0];
+  const daysLeft = sub
+    ? Math.ceil((sub.expiresAt.getTime() - today.getTime()) / 86_400_000)
+    : null;
+
   return (
-    <section>
+    <section className="space-y-5">
       {/* Saludo */}
-      <div className="pt-5 pb-3 flex items-center justify-between">
-        <div>
-          <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">
-            Bienvenido
-          </p>
-          <h2 className="text-xl font-bold text-zinc-100 tracking-tight">
-            {user.name?.split(" ")[0] ?? "Atleta"}
-          </h2>
-          {(() => {
-            const subs = activeSubscriptions
-              .map((sub) => ({
-                expiresAt: sub.expiresAt!,
-                remaining:
-                  sub.creditsGranted +
-                  sub.creditTxs.reduce((s, t) => s + t.amount, 0),
-              }))
-              .filter((sub) => sub.remaining > 0);
-            if (subs.length === 0) return null;
-            const sub = subs[0];
-            const daysLeft = Math.ceil(
-              (sub.expiresAt.getTime() - today.getTime()) / 86_400_000,
-            );
-            const isCritical = daysLeft <= 3;
-            const isUrgent = daysLeft <= 7;
-            const dateStr = sub.expiresAt.toLocaleDateString("es-AR", {
-              day: "numeric",
-              month: "short",
-            });
-            return (
-              <span
-                className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full mt-2 ${
-                  isCritical
-                    ? "bg-red-500/15 text-red-400"
-                    : isUrgent
-                      ? "bg-amber-500/15 text-amber-400"
-                      : "bg-zinc-800 text-zinc-400"
-                }`}
-              >
-                {sub.remaining}{" "}
-                {sub.remaining === 1 ? "clase vence" : "clases vencen"}{" "}
-                {dateStr}
-                {isUrgent && ` · ${daysLeft}d`}
+      <div className="pt-4 pb-2">
+        <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+          Hola, {firstName}
+        </h1>
+        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+          Listo para superar tus marcas hoy.
+        </p>
+
+        {sub && (
+          <div className="mt-2 inline-flex items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
+            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
+              {sub.remaining} {sub.remaining === 1 ? "CLS" : "CLS"} restantes
+            </span>
+            {daysLeft !== null && daysLeft <= 7 && (
+              <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837]">
+                · {daysLeft}d
               </span>
-            );
-          })()}
-        </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Próxima clase */}
+      {nextBooked && (
+        <div className="bg-[#0E2A38] border border-[#1A4A63] border-l-2 border-l-[#F78837]">
+          <div className="p-4">
+            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] mb-1 block">
+              Próxima clase
+            </span>
+            <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-xl uppercase tracking-tight">
+              {nextBooked.name}
+            </h3>
+            <div className="flex items-center gap-2 mt-1 mb-3">
+              <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#EAEAEA] uppercase">
+                {nextBooked.startTime} hrs
+              </span>
+            </div>
+            <a
+              href={`/classes/${nextBooked.id}?date=${today.toISOString().split("T")[0]}`}
+              className="inline-flex items-center px-4 py-2 bg-[#F78837] text-[#0A1F2A] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide active:scale-[0.98] transition-transform"
+            >
+              Ver detalles
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Noticias */}
       {announcements.length > 0 && (
-        <div className="px-0 pb-4 space-y-2">
+        <div className="space-y-2">
           {announcements.map((a) => (
             <div
               key={a.id}
-              className={`rounded-2xl px-4 py-3.5 border ${
+              className={`border p-3 ${
                 a.pinned
-                  ? "bg-amber-500/5 border-amber-500/20"
-                  : "bg-violet-500/5 border-violet-500/20"
+                  ? "border-[#F78837]/30 bg-[#F78837]/5"
+                  : "border-[#1A4A63] bg-[#0E2A38]"
               }`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <p className={`text-xs font-semibold ${a.pinned ? "text-amber-300" : "text-violet-300"}`}>
+                {a.pinned && (
+                  <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1">
+                    Fijado
+                  </span>
+                )}
+                <p className={`text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}>
                   {a.title}
                 </p>
               </div>
-              <p className="text-xs text-zinc-400 leading-relaxed">{a.body}</p>
+              <p className="text-xs text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
+                {a.body}
+              </p>
             </div>
           ))}
         </div>

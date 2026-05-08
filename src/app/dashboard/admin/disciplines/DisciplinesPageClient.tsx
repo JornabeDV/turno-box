@@ -5,7 +5,10 @@ import { PlusIcon, TrashIcon } from "@phosphor-icons/react/dist/ssr";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
-import { DisciplineModal, type DisciplineData } from "@/components/admin/DisciplineModal";
+import {
+  DisciplineModal,
+  type DisciplineData,
+} from "@/components/admin/DisciplineModal";
 import { deleteDisciplineAction } from "@/actions/disciplines";
 
 interface Props {
@@ -13,8 +16,14 @@ interface Props {
 }
 
 export function DisciplinesPageClient({ disciplines }: Props) {
-  const [formModal, setFormModal] = useState<{ open: boolean; discipline?: DisciplineData }>({ open: false });
-  const [deleteModal, setDeleteModal] = useState<{ open: boolean; discipline?: DisciplineData }>({ open: false });
+  const [formModal, setFormModal] = useState<{
+    open: boolean;
+    discipline?: DisciplineData;
+  }>({ open: false });
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    discipline?: DisciplineData;
+  }>({ open: false });
   const [isPending, startTransition] = useTransition();
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -38,10 +47,18 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Admin</p>
-            <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Disciplinas</h2>
+            <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+              Admin
+            </p>
+            <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+              Disciplinas
+            </h2>
           </div>
-          <Button size="sm" variant="brand" onClick={() => setFormModal({ open: true })}>
+          <Button
+            size="sm"
+            variant="brand"
+            onClick={() => setFormModal({ open: true })}
+          >
             <PlusIcon size={14} weight="bold" />
             Nueva disciplina
           </Button>
@@ -49,14 +66,20 @@ export function DisciplinesPageClient({ disciplines }: Props) {
 
         {/* Lista */}
         {disciplines.length === 0 ? (
-          <div className="glass-card rounded-2xl px-4 py-16 text-center">
-            <p className="text-sm text-zinc-500 mb-4">No hay disciplinas creadas todavía.</p>
-            <Button variant="brand" size="md" onClick={() => setFormModal({ open: true })}>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
+            <p className="text-sm text-[#6B8A99] mb-4">
+              No hay disciplinas creadas todavía.
+            </p>
+            <Button
+              variant="brand"
+              size="md"
+              onClick={() => setFormModal({ open: true })}
+            >
               Crear primera disciplina
             </Button>
           </div>
         ) : (
-          <div className="glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.04]">
+          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
             {disciplines.map((d) => (
               <div
                 key={d.id}
@@ -69,18 +92,27 @@ export function DisciplinesPageClient({ disciplines }: Props) {
                   style={{ backgroundColor: d.color ?? "#f97316" }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-zinc-100">{d.name}</p>
+                  <p className="text-sm font-medium text-[#EAEAEA]">{d.name}</p>
                   {d.description && (
-                    <p className="text-xs text-zinc-500 mt-0.5 truncate">{d.description}</p>
+                    <p className="text-xs text-[#6B8A99] mt-0.5 truncate">
+                      {d.description}
+                    </p>
                   )}
                 </div>
                 {/* Eliminar */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); setDeleteModal({ open: true, discipline: d }); }}
-                  className="size-8 rounded-lg flex items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-zinc-800 transition-all shrink-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteModal({ open: true, discipline: d });
+                  }}
+                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
                 >
                   <TrashIcon size={14} className="md:hidden" weight="bold" />
-                  <TrashIcon size={18} className="hidden md:block" weight="bold" />
+                  <TrashIcon
+                    size={18}
+                    className="hidden md:block"
+                    weight="bold"
+                  />
                 </button>
               </div>
             ))}
@@ -104,8 +136,8 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         size="sm"
       >
         {deleteError && (
-          <div className="mb-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">
-            <p className="text-xs text-rose-400">{deleteError}</p>
+          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs text-[#E61919]">{deleteError}</p>
           </div>
         )}
         <div className="flex gap-2">

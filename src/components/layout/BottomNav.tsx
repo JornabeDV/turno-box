@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, CalendarCheck, User, Barbell } from "@phosphor-icons/react";
+import { Trophy, Calendar, ShoppingCart, User } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/",          label: "Inicio",    Icon: House },
-  { href: "/bookings",  label: "Mis turnos", Icon: CalendarCheck },
-  { href: "/packs",     label: "Abonos",    Icon: Barbell },
-  { href: "/profile",   label: "Perfil",    Icon: User },
+  { href: "/", label: "Arena", Icon: Trophy },
+  { href: "/bookings", label: "Classes", Icon: Calendar },
+  { href: "/packs", label: "Abonos", Icon: ShoppingCart },
+  { href: "/profile", label: "Profile", Icon: User },
 ];
 
 export function BottomNav() {
@@ -17,10 +17,8 @@ export function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bottom-nav-safe">
-      {/* double-bezel: outer shell */}
-      <div className="mx-3 mb-3 rounded-2xl border border-white/[0.06] bg-zinc-900/80 p-1 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,.5)]">
-        {/* inner core */}
-        <div className="grid grid-cols-4 rounded-xl overflow-hidden">
+      <div className="border-t border-[#1A4A63] bg-[#0A1F2A]">
+        <div className="grid grid-cols-4">
           {NAV_ITEMS.map(({ href, label, Icon }) => {
             const active = pathname === href;
             return (
@@ -28,24 +26,21 @@ export function BottomNav() {
                 key={href}
                 href={href}
                 className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 px-2 transition-all duration-200",
-                  "active:scale-95",
+                  "flex flex-col items-center gap-1 py-2.5 px-1 transition-all duration-150",
+                  "active:scale-[0.97]",
                   active
-                    ? "text-orange-500"
-                    : "text-zinc-500 hover:text-zinc-300"
+                    ? "bg-[#F78837] text-[#0A1F2A]"
+                    : "text-[#6B8A99] hover:text-[#EAEAEA]",
                 )}
               >
                 <Icon
-                  weight={active ? "fill" : "regular"}
+                  weight="regular"
                   size={22}
-                  className="transition-transform duration-200"
+                  className="transition-transform duration-150"
                 />
-                <span className="text-[10px] font-medium tracking-wide">
+                <span className="text-[10px] font-medium uppercase tracking-wide font-[family-name:var(--font-oswald)]">
                   {label}
                 </span>
-                {active && (
-                  <span className="absolute bottom-[10px] h-[3px] w-6 rounded-full bg-orange-500 blur-[2px]" />
-                )}
               </Link>
             );
           })}

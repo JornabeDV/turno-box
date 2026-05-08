@@ -11,6 +11,13 @@ type Props = {
   index: number;
 };
 
+function getTimeOfDayLabel(startTime: string): string {
+  const [h] = startTime.split(":").map(Number);
+  if (h < 12) return "MAÑANA";
+  if (h < 17) return "TARDE";
+  return "NOCHE";
+}
+
 export function ClassCardCompact({ slot, dateStr, index }: Props) {
   const staggerClass = `stagger-${Math.min(index + 1, 6)}`;
 
@@ -23,46 +30,73 @@ export function ClassCardCompact({ slot, dateStr, index }: Props) {
       ? "full"
       : spotsVariant(slot.availableSpots, slot.maxCapacity);
 
+  const isConfirmed = slot.userBooking?.status === "CONFIRMED";
+  const isFull = slot.isFull && !slot.userBooking;
+  const timeLabel = getTimeOfDayLabel(slot.startTime);
+
   return (
     <Link
       href={`/classes/${slot.id}?date=${dateStr}`}
       className={cn(
-        "glass-card glass-interactive rounded-2xl px-4 py-3.5 flex items-center gap-3 press-scale animate-in",
+        "block bg-[#0E2A38] border border-[#1A4A63] press-scale animate-in",
         staggerClass,
-        slot.userBooking?.status === "CONFIRMED" && "border-blue-500/20",
-        slot.userBooking?.status === "WAITLISTED" && "border-orange-500/20"
+        isConfirmed && "border-l-2 border-l-[#27C7B8]",
+        !isConfirmed && slot.userBooking?.status === "WAITLISTED" && "border-l-2 border-l-[#F78837]"
       )}
     >
-      {/* Dot de disciplina */}
-      <span
-        className="size-2.5 rounded-full shrink-0"
-        style={{ backgroundColor: slot.color ?? "#f97316" }}
-      />
+      <div className="p-4">
+        {/* Fila superior: turno + badge */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
+            {timeLabel}
+          </span>
+          <Badge variant={badgeVariant} />
+        </div>
 
-      {/* Hora de inicio */}
-      <span className="font-mono text-sm tabular-nums text-zinc-400 shrink-0">
-        {formatTime(slot.startTime)}
-      </span>
+        {/* Horario grande */}
+        <div className="flex items-baseline gap-2 mb-3">
+          <span className="text-xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
+            {formatTime(slot.startTime)}
+          </span>
+          <span className="text-xs text-[#4A6B7A]">—</span>
+          <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#6B8A99] uppercase">
+            {formatTime(slot.endTime)}
+          </span>
+        </div>
 
-      {/* Disciplina */}
-      <span className="flex-1 font-semibold text-zinc-100 text-sm truncate">
-        {slot.name}
-      </span>
+        {/* Nombre de clase */}
+        <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-base uppercase tracking-tight mb-3">
+          {slot.name}
+        </h3>
 
-      {/* Badge + chevron */}
-      <div className="flex items-center gap-2 shrink-0">
-        <Badge variant={badgeVariant} />
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          className="text-zinc-600"
-        >
-          <path d="M9 18l6-6-6-6" />
-        </svg>
+        {/* Fila inferior: cupos + CTA */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-[family-name:var(--font-jetbrains)] uppercase text-[#6B8A99]">
+              Cupos
+            </span>
+            <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#27C7B8] uppercase">
+              {String(slot.confirmedCount).padStart(2, "0")}/{String(slot.maxCapacity).padStart(2, "0")}
+            </span>
+            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
+              booked
+            </span>
+          </div>
+
+          {isConfirmed ? (
+            <span className="inline-flex items-center px-3 py-1.5 bg-[#27C7B8] text-[#0A1F2A] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
+              Clase reservada
+            </span>
+          ) : isFull ? (
+            <span className="inline-flex items-center px-3 py-1.5 border border-[#E61919] text-[#E61919] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
+              Lista de espera
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-3 py-1.5 border border-[#F78837] text-[#F78837] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
+              Reservar clase
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

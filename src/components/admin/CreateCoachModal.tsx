@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/Button";
 import { createCoachAction } from "@/actions/coaches";
 
 const inputClass =
-  "w-full h-10 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors";
+  "w-full h-10 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
-const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
+const labelClass =
+  "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
 
 interface Props {
   open: boolean;
@@ -52,7 +53,9 @@ export function CreateCoachModal({ open, onClose }: Props) {
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <label htmlFor="coach-name" className={labelClass}>Nombre</label>
+          <label htmlFor="coach-name" className={labelClass}>
+            Nombre
+          </label>
           <input
             id="coach-name"
             name="name"
@@ -65,7 +68,9 @@ export function CreateCoachModal({ open, onClose }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="coach-email" className={labelClass}>Email</label>
+          <label htmlFor="coach-email" className={labelClass}>
+            Email
+          </label>
           <input
             id="coach-email"
             name="email"
@@ -77,7 +82,9 @@ export function CreateCoachModal({ open, onClose }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="coach-password" className={labelClass}>Contraseña</label>
+          <label htmlFor="coach-password" className={labelClass}>
+            Contraseña
+          </label>
           <input
             id="coach-password"
             name="password"
@@ -90,16 +97,28 @@ export function CreateCoachModal({ open, onClose }: Props) {
         </div>
 
         {error && (
-          <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">
-            <p className="text-xs text-rose-400">{error}</p>
+          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs text-[#E61919]">{error}</p>
           </div>
         )}
 
         <div className="flex gap-2 pt-1">
-          <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={handleClose}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="flex-1"
+            onClick={handleClose}
+          >
             Cancelar
           </Button>
-          <Button type="submit" variant="brand" size="sm" className="flex-1" loading={isPending}>
+          <Button
+            type="submit"
+            variant="brand"
+            size="sm"
+            className="flex-1"
+            loading={isPending}
+          >
             Crear coach
           </Button>
         </div>

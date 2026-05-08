@@ -9,18 +9,22 @@ import { SelectInput } from "@/components/ui/Select";
 import { createClassAction, updateClassAction } from "@/actions/classes";
 
 const DAYS = [
-  { value: "MONDAY",    label: "Lunes" },
-  { value: "TUESDAY",   label: "Martes" },
+  { value: "MONDAY", label: "Lunes" },
+  { value: "TUESDAY", label: "Martes" },
   { value: "WEDNESDAY", label: "Miércoles" },
-  { value: "THURSDAY",  label: "Jueves" },
-  { value: "FRIDAY",    label: "Viernes" },
-  { value: "SATURDAY",  label: "Sábado" },
-  { value: "SUNDAY",    label: "Domingo" },
+  { value: "THURSDAY", label: "Jueves" },
+  { value: "FRIDAY", label: "Viernes" },
+  { value: "SATURDAY", label: "Sábado" },
+  { value: "SUNDAY", label: "Domingo" },
 ];
 
-
 type Coach = { id: string; name: string | null };
-type Discipline = { id: string; name: string; color: string | null; description: string | null };
+type Discipline = {
+  id: string;
+  name: string;
+  color: string | null;
+  description: string | null;
+};
 
 export type ClassData = {
   id: string;
@@ -43,16 +47,25 @@ interface Props {
 }
 
 const inputClass =
-  "w-full h-10 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors";
+  "w-full h-10 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
 const selectClass =
-  "w-full h-10 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors";
+  "w-full h-10 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] focus:outline-none focus:border-[#F78837] transition-colors";
 
-const labelClass = "text-xs font-medium text-zinc-400 uppercase tracking-wider";
+const labelClass =
+  "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
 
-export function ClassModal({ open, onClose, class: gymClass, coaches, disciplines }: Props) {
+export function ClassModal({
+  open,
+  onClose,
+  class: gymClass,
+  coaches,
+  disciplines,
+}: Props) {
   const isEditing = !!gymClass;
-  const [disciplineId, setDisciplineId] = useState(gymClass?.disciplineId ?? "");
+  const [disciplineId, setDisciplineId] = useState(
+    gymClass?.disciplineId ?? "",
+  );
   const [dayOfWeek, setDayOfWeek] = useState(gymClass?.dayOfWeek ?? "MONDAY");
   const [coachId, setCoachId] = useState(gymClass?.coachId ?? "");
   const [startTime, setStartTime] = useState(gymClass?.startTime ?? "07:00");
@@ -80,8 +93,9 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
     formData.set("coachId", coachId);
     formData.set("startTime", startTime);
     formData.set("endTime", addOneHour(startTime));
-    const selectedDiscipline = disciplines.find(d => d.id === disciplineId);
-    if (selectedDiscipline?.color) formData.set("color", selectedDiscipline.color);
+    const selectedDiscipline = disciplines.find((d) => d.id === disciplineId);
+    if (selectedDiscipline?.color)
+      formData.set("color", selectedDiscipline.color);
 
     startTransition(async () => {
       try {
@@ -117,7 +131,7 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
           name="disciplineId"
           value={disciplineId}
           onChange={setDisciplineId}
-          options={disciplines.map(d => ({ value: d.id, label: d.name }))}
+          options={disciplines.map((d) => ({ value: d.id, label: d.name }))}
           label="Disciplina"
           required
         />
@@ -133,17 +147,15 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
         />
 
         {/* Horario */}
-        <TimePicker
-          label="Inicio"
-          value={startTime}
-          onChange={setStartTime}
-        />
+        <TimePicker label="Inicio" value={startTime} onChange={setStartTime} />
         <input type="hidden" name="startTime" value={startTime} />
         <input type="hidden" name="endTime" value={addOneHour(startTime)} />
 
         {/* Cupo */}
         <div className="space-y-1.5">
-          <label htmlFor="maxCapacity" className={labelClass}>Cupo máximo</label>
+          <label htmlFor="maxCapacity" className={labelClass}>
+            Cupo máximo
+          </label>
           <input
             id="maxCapacity"
             name="maxCapacity"
@@ -162,7 +174,13 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
             name="coachId"
             value={coachId}
             onChange={setCoachId}
-            options={[{ value: "", label: "Sin asignar" }, ...coaches.map(c => ({ value: c.id, label: c.name || "Sin nombre" }))]}
+            options={[
+              { value: "", label: "Sin asignar" },
+              ...coaches.map((c) => ({
+                value: c.id,
+                label: c.name || "Sin nombre",
+              })),
+            ]}
             label="Coach (opcional)"
           />
         )}
@@ -170,7 +188,8 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
         {/* Descripción */}
         <div className="space-y-1.5">
           <label htmlFor="description" className={labelClass}>
-            Descripción <span className="text-zinc-600 normal-case">(opcional)</span>
+            Descripción{" "}
+            <span className="text-[#4A6B7A] normal-case">(opcional)</span>
           </label>
           <textarea
             id="description"
@@ -182,18 +201,29 @@ export function ClassModal({ open, onClose, class: gymClass, coaches, discipline
           />
         </div>
 
-
         {error && (
-          <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">
-            <p className="text-xs text-rose-400">{error}</p>
+          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs text-[#E61919]">{error}</p>
           </div>
         )}
 
         <div className="flex gap-2 pt-1">
-          <Button type="button" variant="ghost" size="sm" onClick={handleClose} className="flex-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={handleClose}
+            className="flex-1"
+          >
             Cancelar
           </Button>
-          <Button type="submit" variant="brand" size="sm" loading={isPending} className="flex-1">
+          <Button
+            type="submit"
+            variant="brand"
+            size="sm"
+            loading={isPending}
+            className="flex-1"
+          >
             {isEditing ? "Guardar" : "Crear"}
           </Button>
         </div>
