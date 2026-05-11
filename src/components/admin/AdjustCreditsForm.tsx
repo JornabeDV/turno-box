@@ -4,14 +4,38 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { adjustCreditsAction } from "@/actions/students";
 import { cn } from "@/lib/utils";
+import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react";
 
 type Props = { studentId: string; currentBalance: number };
 
 const QUICK_AMOUNTS = [4, 8, 12, 16];
 
+function formatARS(value: string, cursorPos: number | null) {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return { text: "", cursor: 0 };
+
+  const num = Number(digits);
+  const text = `$ ${new Intl.NumberFormat("es-AR").format(num)}`;
+
+  // preservar posición del cursor basada en dígitos antes del cursor
+  const beforeCursor = value.slice(0, cursorPos ?? 0);
+  const digitsBefore = beforeCursor.replace(/\D/g, "").length;
+  let newCursor = text.length;
+  let count = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (/\d/.test(text[i])) count++;
+    if (count === digitsBefore) {
+      newCursor = i + 1;
+      break;
+    }
+  }
+  return { text, cursor: newCursor };
+}
+
 export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
   const [balance, setBalance] = useState(currentBalance);
   const [amount, setAmount] = useState("");
+  const [amountPaid, setAmountPaid] = useState("");
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -21,6 +45,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
     setError(null);
     const fd = new FormData();
     fd.set("amount", amount);
+    fd.set("amountPaid", amountPaid.replace(/\D/g, ""));
     fd.set("note", note);
 
     startTransition(async () => {
@@ -28,6 +53,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
       if (res.success) {
         setBalance(res.data.newBalance);
         setAmount("");
+        setAmountPaid("");
         setNote("");
         const delta = Number(amount);
         toast.success(
@@ -102,19 +128,40 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
               className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
             />
           </div>
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              inputMode="numeric"
+              value={amountPaid}
+              onChange={(e) => {
+                const input = e.target;
+                const start = input.selectionStart ?? 0;
+                const { text, cursor } = formatARS(input.value, start);
+                setAmountPaid(text);
+                requestAnimationFrame(() => {
+                  input.setSelectionRange(cursor, cursor);
+                });
+              }}
+              placeholder="Monto pagado"
+              className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
+            />
+          </div>
           {preview !== null && (
             <div
               className={cn(
-                "h-10 px-3 rounded-[2px] border flex items-center text-xs font-bold tabular-nums shrink-0",
+                "h-10 px-3 rounded-[2px] border flex items-center gap-1 text-xs font-bold tabular-nums shrink-0",
                 isNegative
                   ? "bg-[#E61919]/10 border-[#E61919]/20 text-[#E61919]"
                   : "bg-[#27C7B8]/10 border-[#27C7B8]/20 text-[#27C7B8]",
               )}
             >
-              → {Math.max(0, preview)}
+              <ArrowRightIcon size={10} />
+              {Math.max(0, preview)}
             </div>
           )}
         </div>
+
+        <p className="text-[10px] text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
 
         {/* Nota obligatoria */}
         <input
@@ -131,7 +178,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         <button
           type="submit"
           disabled={isPending || !amount || !note}
-          className="w-full h-10 rounded-[2px] bg-[#F78837] text-white text-sm font-semibold hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
+          className="w-full h-10 rounded-[2px] bg-[#F78837] text-white text-sm hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">
@@ -139,7 +186,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
               Aplicando…
             </span>
           ) : (
-            `Aplicar ajuste`
+            `Cargar créditos`
           )}
         </button>
       </form>

@@ -44,10 +44,8 @@ export default async function StudentDetailPage({ params }: Props) {
   if (!student) notFound();
 
   const today = toClassDate(new Date());
-  const thirtyDaysAgo = new Date(today);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const [upcoming, recent, creditBalance] = await Promise.all([
+  const [upcoming, creditBalance] = await Promise.all([
     prisma.booking.findMany({
       where: {
         userId: id,
@@ -71,27 +69,6 @@ export default async function StudentDetailPage({ params }: Props) {
       },
       orderBy: { classDate: "asc" },
       take: 20,
-    }),
-    prisma.booking.findMany({
-      where: {
-        userId: id,
-        classDate: { gte: thirtyDaysAgo, lt: today },
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        status: true,
-        classDate: true,
-        class: {
-          select: {
-            startTime: true,
-            color: true,
-            discipline: { select: { name: true } },
-          },
-        },
-      },
-      orderBy: { classDate: "desc" },
-      take: 30,
     }),
     prisma.userCreditBalance.findUnique({
       where: { userId_gymId: { userId: id, gymId: user.gymId } },
@@ -250,60 +227,28 @@ export default async function StudentDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Historial reciente */}
-      {recent.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 mb-2 px-1">
-            <span className="size-1.5 rounded-full bg-zinc-600" />
-            <h3 className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
-              Últimos 30 días
-            </h3>
-            <span className="text-xs font-mono font-bold tabular-nums text-[#6B8A99]">
-              {recent.length}
-            </span>
-          </div>
-          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
-            <div className="divide-y divide-[#1A4A63]">
-              {recent.map((b) => (
-                <div key={b.id} className="flex items-center gap-3 px-4 py-3">
-                  <span
-                    className="size-1.5 rounded-full shrink-0"
-                    style={{ backgroundColor: b.class.color ?? "#f97316" }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={cn(
-                        "text-sm truncate",
-                        b.status === "CANCELLED"
-                          ? "text-[#4A6B7A] line-through"
-                          : "text-[#EAEAEA]",
-                      )}
-                    >
-                      {b.class.discipline?.name ?? "Sin disciplina"}
-                    </p>
-                    <p className="text-xs text-[#4A6B7A]">
-                      {formatDate(b.classDate)} ·{" "}
-                      {formatTime(b.class.startTime)}
-                    </p>
-                  </div>
-                  <span
-                    className={cn(
-                      "text-[10px] font-medium shrink-0",
-                      b.status === "CONFIRMED" && "text-emerald-600",
-                      b.status === "CANCELLED" && "text-[#4A6B7A]",
-                      b.status === "WAITLISTED" && "text-orange-600",
-                    )}
-                  >
-                    {b.status === "CONFIRMED" && "Asistió"}
-                    {b.status === "CANCELLED" && "Canceló"}
-                    {b.status === "WAITLISTED" && "En espera"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Acceso a historiales */}
+      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
+        <h3 className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
+          Historiales
+        </h3>
+        <div className="flex gap-3">
+          <Link
+            href={`/dashboard/admin/students/${id}/history/bookings`}
+            className="flex-1 h-10 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+          >
+            <span className="size-1.5 rounded-full bg-[#27C7B8]" />
+            Turnos
+          </Link>
+          <Link
+            href={`/dashboard/admin/students/${id}/history/credits`}
+            className="flex-1 h-10 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+          >
+            <span className="size-1.5 rounded-full bg-[#F78837]" />
+            Créditos
+          </Link>
         </div>
-      )}
+      </div>
     </div>
   );
 }

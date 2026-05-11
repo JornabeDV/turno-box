@@ -46,13 +46,15 @@ export async function adjustCreditsAction(
   const { gymId } = await requireAdmin();
 
   const schema = z.object({
-    amount: z.coerce.number().int().min(-100).max(100).refine((n) => n !== 0, "El monto no puede ser 0"),
-    note:   z.string().min(1, "La nota es requerida para ajustes manuales"),
+    amount:     z.coerce.number().int().min(-100).max(100).refine((n) => n !== 0, "El monto no puede ser 0"),
+    note:       z.string().min(1, "La nota es requerida para ajustes manuales"),
+    amountPaid: z.coerce.number().min(0).max(999999).default(0),
   });
 
   const parsed = schema.safeParse({
-    amount: formData.get("amount"),
-    note:   formData.get("note"),
+    amount:     formData.get("amount"),
+    note:       formData.get("note"),
+    amountPaid: formData.get("amountPaid"),
   });
   if (!parsed.success) return { success: false, error: parsed.error.issues[0].message };
 
@@ -62,7 +64,7 @@ export async function adjustCreditsAction(
   });
   if (!student) return { success: false, error: "Alumno no encontrado." };
 
-  const { amount, note } = parsed.data;
+  const { amount, note, amountPaid } = parsed.data;
 
   const result = await prisma.$transaction(async (tx: Tx) => {
     // Leer balance actual para calcular el nuevo valor
@@ -79,13 +81,29 @@ export async function adjustCreditsAction(
       update: { availableCredits: newBalance, version: { increment: 1 } },
     });
 
+    // Registrar el pago asociado (incluso si es $0, para trazabilidad completa)
+    const payment = await tx.payment.create({
+      data: {
+        gymId,
+        userId: studentId,
+        packId: null,
+        creditsGranted: amount,
+        amountPaid,
+        currency: "ARS",
+        provider: "MANUAL",
+        status: "APPROVED",
+        paidAt: new Date(),
+      },
+    });
+
     await tx.creditTransaction.create({
       data: {
         userId: studentId,
         gymId,
-        type:   "ADJUSTMENT",
+        type:      "ADJUSTMENT",
         amount,
         note,
+        paymentId: payment.id,
       },
     });
 
