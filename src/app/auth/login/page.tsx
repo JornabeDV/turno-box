@@ -6,16 +6,12 @@ export const metadata: Metadata = { title: "Iniciar sesión" };
 export default function LoginPage() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-4 bg-[#0A1F2A] relative">
-      {/* Meta info esquina superior derecha */}
-      <div className="absolute top-4 right-4 text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
-        BEE_BOX v1.0
-      </div>
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl">
-            Bee Box
+            Turno Box
           </h1>
           <div className="w-12 h-0.5 bg-[#F78837] mt-1" />
         </div>
@@ -44,16 +40,16 @@ export default function LoginPage() {
         {/* Legal footer */}
         <div className="mt-10 text-center space-y-1">
           <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
-            © 2024 Bee Box. All rights reserved.
+            © 2026 Turno Box. Todos los derechos reservados.
           </p>
-          <div className="flex items-center justify-center gap-4">
+          {/* <div className="flex items-center justify-center gap-4">
             <a href="#" className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A] hover:text-[#6B8A99] transition-colors">
               Privacy
             </a>
             <a href="#" className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A] hover:text-[#6B8A99] transition-colors">
               Terms
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

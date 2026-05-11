@@ -39,22 +39,31 @@ export function PackCard({ pack, index = 0 }: Props) {
     maximumFractionDigits: 0,
   }).format(Number(pack.price));
 
-  // Determinar si es "basic" o "pro" según el índice o precio
-  const isPro = index > 0 || pack.price > 15000;
-  const accentColor = isPro ? "#F78837" : "#27C7B8";
-  const badgeLabel = isPro ? "Pro Performance" : "Basic";
+  // Color de acento según cantidad de clases
+  let accentColor: string;
+  let badgeLabel: string;
+  if (pack.credits < 10) {
+    accentColor = "#E61919";
+    badgeLabel = `${pack.credits} clases`;
+  } else if (pack.credits <= 15) {
+    accentColor = "#F78837";
+    badgeLabel = `${pack.credits} clases`;
+  } else {
+    accentColor = "#27C7B8";
+    badgeLabel = `${pack.credits} clases`;
+  }
 
   // Features mock basados en el pack (en producción vendrían de la DB)
-  const features = isPro
-    ? [
-        `${pack.credits} units included`,
-        "Performance review",
-        "Nutrition guide access",
-      ]
-    : [
-        "Professional coaching",
-        "Priority access",
-      ];
+  // const features = isPro
+  //   ? [
+  //       `${pack.credits} units included`,
+  //       "Performance review",
+  //       "Nutrition guide access",
+  //     ]
+  //   : [
+  //       "Professional coaching",
+  //       "Priority access",
+  //     ];
 
   return (
     <div className="bg-[#0E2A38] border border-[#1A4A63] border-l-2" style={{ borderLeftColor: accentColor }}>
@@ -82,12 +91,12 @@ export function PackCard({ pack, index = 0 }: Props) {
         {/* Validity */}
         {pack.validityDays && (
           <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-4">
-            {pack.validityDays} days validity
+            {pack.validityDays} días válido
           </p>
         )}
 
         {/* Features */}
-        <ul className="space-y-2 mb-5">
+        {/* <ul className="space-y-2 mb-5">
           {features.map((feat, i) => (
             <li key={i} className="flex items-center gap-2">
               <CheckCircle size={14} weight="regular" className="text-[#27C7B8] shrink-0" />
@@ -96,7 +105,7 @@ export function PackCard({ pack, index = 0 }: Props) {
               </span>
             </li>
           ))}
-        </ul>
+        </ul> */}
 
         {/* CTA */}
         <button
@@ -110,7 +119,7 @@ export function PackCard({ pack, index = 0 }: Props) {
               Procesando...
             </span>
           ) : (
-            "Select Plan"
+            "Seleccionar Plan"
           )}
         </button>
       </div>

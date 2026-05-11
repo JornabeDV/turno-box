@@ -151,7 +151,7 @@ export default async function HomePage() {
             >
               <div className="flex items-center gap-2 mb-1">
                 {a.pinned && (
-                  <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1">
+                  <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1 pt-0.5">
                     Fijado
                   </span>
                 )}

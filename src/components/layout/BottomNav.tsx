@@ -6,10 +6,10 @@ import { Trophy, Calendar, ShoppingCart, User } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Arena", Icon: Trophy },
-  { href: "/bookings", label: "Classes", Icon: Calendar },
+  { href: "/", label: "Home", Icon: Trophy },
+  { href: "/bookings", label: "Clases", Icon: Calendar },
   { href: "/packs", label: "Abonos", Icon: ShoppingCart },
-  { href: "/profile", label: "Profile", Icon: User },
+  { href: "/profile", label: "Perfil", Icon: User },
 ];
 
 export function BottomNav() {

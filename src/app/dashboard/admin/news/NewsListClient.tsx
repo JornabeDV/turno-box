@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, forwardRef, useImperativeHandle } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
@@ -19,7 +19,9 @@ import {
 } from "@/actions/announcements";
 import type { Announcement } from "@prisma/client";
 
-type Props = { announcements: Announcement[] };
+export type Props = { announcements: Announcement[] };
+
+export type NewsListRef = { openCreate: () => void };
 
 const EMPTY_FORM = {
   title: "",
@@ -35,13 +37,18 @@ const inputClass =
 const labelClass =
   "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
 
-export function NewsListClient({ announcements: initial }: Props) {
+export const NewsListClient = forwardRef<NewsListRef, Props>(function NewsListClient(
+  { announcements: initial },
+  ref,
+) {
   const router = useRouter();
   const [items, setItems] = useState(initial);
   useEffect(() => {
     setItems(initial);
   }, [initial]);
   const [showForm, setShowForm] = useState(false);
+
+  useImperativeHandle(ref, () => ({ openCreate }));
   const [editing, setEditing] = useState<Announcement | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -122,14 +129,6 @@ export function NewsListClient({ announcements: initial }: Props) {
 
   return (
     <>
-      {/* Header con botón crear */}
-      <div className="flex justify-end">
-        <Button variant="brand" size="sm" onClick={openCreate}>
-          <PlusIcon size={14} weight="bold" />
-          Nueva noticia
-        </Button>
-      </div>
-
       {/* Lista */}
       {items.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
@@ -214,6 +213,7 @@ export function NewsListClient({ announcements: initial }: Props) {
         onOpenChange={(o) => !o && closeForm()}
         title={editing ? "Editar noticia" : "Nueva noticia"}
         size="lg"
+        className="max-md:h-full"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Título */}
@@ -284,12 +284,12 @@ export function NewsListClient({ announcements: initial }: Props) {
             <span className="text-sm text-[#EAEAEA]">Fijar al inicio</span>
           </label>
 
-          <div className="flex gap-2 pt-1">
+          <div className="flex max-md:flex-col gap-2 pt-1">
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="flex-1"
+              className="md:flex-1"
               onClick={closeForm}
             >
               Cancelar
@@ -298,7 +298,7 @@ export function NewsListClient({ announcements: initial }: Props) {
               type="submit"
               variant="brand"
               size="sm"
-              className="flex-1"
+              className="md:flex-1"
               loading={isPending}
             >
               {editing ? "Guardar" : "Crear"}
@@ -339,4 +339,4 @@ export function NewsListClient({ announcements: initial }: Props) {
       </Dialog>
     </>
   );
-}
+});
