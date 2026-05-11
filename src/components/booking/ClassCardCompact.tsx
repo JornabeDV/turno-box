@@ -79,7 +79,7 @@ export function ClassCardCompact({ slot, dateStr, index }: Props) {
               {String(slot.confirmedCount).padStart(2, "0")}/{String(slot.maxCapacity).padStart(2, "0")}
             </span>
             <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
-              booked
+              reservado
             </span>
           </div>
 

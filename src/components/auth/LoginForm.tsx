@@ -73,13 +73,13 @@ function LoginFormInner() {
             htmlFor="password"
             className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]"
           >
-            Password
+            Contraseña
           </label>
           <Link
             href="/forgot-password"
             className="text-[11px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wide text-[#27C7B8] hover:text-[#20A898] transition-colors"
           >
-            Forgot password?
+            Olvidaste tu contraseña?
           </Link>
         </div>
         <div className="relative">
@@ -121,16 +121,16 @@ function LoginFormInner() {
       </Button>
 
       {/* Separador OAuth */}
-      <div className="flex items-center gap-3 my-1">
+      {/* <div className="flex items-center gap-3 my-1">
         <div className="flex-1 h-px bg-[#1A4A63]" />
         <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
           O continuar con
         </span>
         <div className="flex-1 h-px bg-[#1A4A63]" />
-      </div>
+      </div> */}
 
       {/* OAuth buttons */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
           className="flex items-center justify-center gap-2 h-11 border border-[#1A4A63] bg-[#0E2A38] text-[#EAEAEA] hover:border-[#F78837] transition-colors text-xs font-[family-name:var(--font-oswald)] uppercase tracking-wide"
@@ -152,7 +152,7 @@ function LoginFormInner() {
           </svg>
           Apple
         </button>
-      </div>
+      </div> */}
     </form>
   );
 }

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { NewsListClient } from "./NewsListClient";
+import { AdminNewsClient } from "./AdminNewsClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Noticias" };
@@ -19,17 +19,5 @@ export default async function AdminNewsPage() {
     orderBy: [{ pinned: "desc" }, { publishAt: "desc" }],
   });
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
-          Admin
-        </p>
-        <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
-          Noticias
-        </h2>
-      </div>
-      <NewsListClient announcements={announcements} />
-    </div>
-  );
+  return <AdminNewsClient announcements={announcements} />;
 }

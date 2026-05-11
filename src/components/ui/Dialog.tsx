@@ -12,6 +12,7 @@ interface DialogProps {
   description?: string;
   children: React.ReactNode;
   size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
 const sizeClass = {
@@ -27,6 +28,7 @@ export function Dialog({
   description,
   children,
   size = "md",
+  className,
 }: DialogProps) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
@@ -49,8 +51,9 @@ export function Dialog({
               <RadixDialog.Content asChild>
                 <motion.div
                   className={cn(
-                    "fixed left-1/2 top-1/2 z-50 max-md:w-full md:w-[calc(100vw-2rem)] max-md:h-auto",
+                    "fixed left-1/2 top-1/2 z-50 max-md:w-full md:w-[calc(100vw-2rem)]",
                     sizeClass[size],
+                    className,
                     "bg-[#0E2A38] border border-[#1A4A63] p-6 shadow-2xl",
                     "focus:outline-none",
                   )}

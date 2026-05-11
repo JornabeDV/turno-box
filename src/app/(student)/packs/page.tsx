@@ -56,23 +56,6 @@ export default async function PacksPage({
           ))}
         </div>
       )}
-
-      {/* Custom Plan */}
-      <div className="bg-[#0E2A38] border border-[#F78837]/30 p-5 text-center">
-        <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-lg mb-2">
-          Custom Plan
-        </h3>
-        <p className="text-xs text-[#6B8A99] mb-4 font-[family-name:var(--font-oswald)] max-w-xs mx-auto">
-          Looking for a specialized enterprise plan or long-term training commitment? Let&apos;s talk.
-        </p>
-        <a
-          href="mailto:contacto@beebox.com"
-          className="inline-flex items-center px-5 py-2.5 border border-[#F78837] text-[#F78837] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide hover:bg-[#F78837] hover:text-[#0A1F2A] transition-colors"
-        >
-          Contact Sales
-        </a>
-      </div>
-
       {/* Footer de seguridad */}
       <div className="pt-4 border-t border-[#1A4A63]">
         <div className="flex items-center justify-center gap-6 mb-2">
@@ -81,7 +64,7 @@ export default async function PacksPage({
           <Lock size={20} className="text-[#4A6B7A]" />
         </div>
         <p className="text-center text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
-          Secure encrypted payments
+          Pagos seguros cifrados con SSL. Tus datos están protegidos.
         </p>
       </div>
     </section>
