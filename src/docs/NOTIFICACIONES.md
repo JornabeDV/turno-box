@@ -1,4 +1,4 @@
-# Cómo activar las notificaciones en Bee Box
+# Cómo activar las notificaciones en Turno box
 
 Recibí avisos de tus reservas, recordatorios de clases y novedades del gym directamente en tu celular — aunque la app esté cerrada.
 
@@ -7,8 +7,8 @@ Recibí avisos de tus reservas, recordatorios de clases y novedades del gym dire
 ## Android
 
 ### Paso 1 — Instalá la app
-Abrí Bee Box en **Chrome**, tocá el menú (⋮) → **"Agregar a pantalla de inicio"** → **"Instalar"**.
-> Si ya tenés el ícono de Bee Box en tu pantalla de inicio, saltá este paso.
+Abrí Turno box en **Chrome**, tocá el menú (⋮) → **"Agregar a pantalla de inicio"** → **"Instalar"**.
+> Si ya tenés el ícono de Turno box en tu pantalla de inicio, saltá este paso.
 
 ### Paso 2 — Activá las notificaciones
 Dentro de la app, andá a **Perfil → Notificaciones** y activá el toggle.
@@ -19,7 +19,7 @@ Para recibir notificaciones cuando la app está **cerrada**:
 
 1. Abrí los **Ajustes** de tu celular
 2. Entrá a **Aplicaciones**
-3. Buscá y tocá **Bee Box**
+3. Buscá y tocá **Turno box**
 4. Tocá **Batería**
 5. Seleccioná **"Sin restricciones"**
 
@@ -36,7 +36,7 @@ Las notificaciones solo funcionan desde **Safari**. No uses Chrome ni otro naveg
 Tocá el botón compartir **(□↑)** → **"Agregar a pantalla de inicio"** → **"Agregar"**.
 
 ### Paso 3 — Abrí la app desde el ícono
-Cerrá Safari completamente y abrí **Bee Box desde el ícono** en tu pantalla de inicio.
+Cerrá Safari completamente y abrí **Turno box desde el ícono** en tu pantalla de inicio.
 > Este paso es importante: si la abrís desde Safari, las notificaciones no funcionan.
 
 ### Paso 4 — Activá las notificaciones
@@ -62,7 +62,7 @@ Aceptá el permiso cuando aparezca.
 
 ## ¿Las notificaciones no llegan?
 
-**En Android:** verificá que en Ajustes → Aplicaciones → Bee Box → Batería esté en **"Sin restricciones"** y que las notificaciones estén habilitadas para la app.
+**En Android:** verificá que en Ajustes → Aplicaciones → Turno box → Batería esté en **"Sin restricciones"** y que las notificaciones estén habilitadas para la app.
 
 **En iPhone:** asegurarte de que estés abriendo la app desde el ícono en el home screen (no desde Safari) y que tengas iOS 16.4 o superior.
 

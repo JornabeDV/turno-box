@@ -94,11 +94,11 @@ self.addEventListener("push", (event: PushEvent) => {
     tag?: string;
   };
 
-  const title = data.title ?? "Bee Box";
+  const title = data.title ?? "Turno box";
   const options: NotificationOptions & { renotify?: boolean } = {
     body: data.body ?? "",
-    icon: "/icons/icon-192x192.png",
-    badge: "/icons/icon-192x192.png",
+    icon: "/icons/image.png",
+    badge: "/icons/image.png",
     data: { url: data.url ?? "/" },
     tag: data.tag,
     renotify: !!data.tag,

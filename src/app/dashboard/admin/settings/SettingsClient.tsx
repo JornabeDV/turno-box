@@ -73,7 +73,7 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               required
               className={inputClass}
-              placeholder="Bee Box CrossFit"
+              placeholder="Turno box CrossFit"
             />
           </div>
 

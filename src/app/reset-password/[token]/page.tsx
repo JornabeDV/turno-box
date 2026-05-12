@@ -21,7 +21,7 @@ export default async function ResetPasswordPage({ params }: PageProps) {
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl">
-            Bee Box
+            Turno box
           </h1>
           <div className="w-12 h-0.5 bg-[#F78837] mt-1" />
         </div>

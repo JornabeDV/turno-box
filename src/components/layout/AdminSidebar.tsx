@@ -35,12 +35,12 @@ export function AdminSidebar() {
   return (
     <aside className="hidden md:flex flex-col w-56 min-h-dvh border-r border-[#1A4A63] bg-[#0A1F2A] p-4 gap-1">
       {/* Brand */}
-      <div className="flex justify-center gap-1 px-2 py-3 mb-4">
-        <span className="bg-white rounded-[2px] px-2 py-1.5 flex items-center self-start">
+      <div className="flex justify-center gap-1 px-2 py-3 mb-3">
+        <span className="rounded-[2px] px-2 py-1.5 flex items-center self-start">
           <img
-            src="/icons/Logo-header.png"
-            alt="Bee Box"
-            className="h-20 w-auto"
+            src="/icons/image.png"
+            alt="Turno box"
+            className="h-24 w-auto"
           />
         </span>
       </div>
