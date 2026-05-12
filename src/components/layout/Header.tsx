@@ -34,9 +34,9 @@ export async function Header({
         <div className="flex items-center gap-3">
           {mobileMenuSlot}
           {/* Logo texto */}
-          <span className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-lg">
-            Bee Box
-          </span>
+          <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
+            Turno Box
+          </h1>
         </div>
 
         <div className="flex items-center gap-3">

@@ -27,7 +27,7 @@ const STEPS_ANDROID = [
   {
     step: "3",
     title: "Permitir actividad en segundo plano",
-    body: 'Ajustes del celular → Aplicaciones → Bee Box → Batería → "Sin restricciones". Esto permite recibir notificaciones aunque la app esté cerrada.',
+    body: 'Ajustes del celular → Aplicaciones → Turno box → Batería → "Sin restricciones". Esto permite recibir notificaciones aunque la app esté cerrada.',
   },
 ];
 
@@ -45,7 +45,7 @@ const STEPS_IOS = [
   {
     step: "3",
     title: "Abrí la app desde el ícono",
-    body: "Cerrá Safari y abrí Bee Box desde el ícono en tu pantalla de inicio. Esto es necesario para que las notificaciones funcionen.",
+    body: "Cerrá Safari y abrí Turno box desde el ícono en tu pantalla de inicio. Esto es necesario para que las notificaciones funcionen.",
   },
   {
     step: "4",

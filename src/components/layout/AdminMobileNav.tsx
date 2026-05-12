@@ -90,10 +90,10 @@ export function AdminMobileNav() {
               {/* Header del drawer */}
               <div className="flex items-center justify-between px-2 py-3 mb-4">
                 <div className="flex flex-col gap-1">
-                  <span className="bg-white rounded-[2px] px-2 py-1.5 flex items-center self-start">
+                  <span className="px-2 py-1.5 flex items-center self-start">
                     <img
-                      src="/icons/Logo-header.png"
-                      alt="Bee Box"
+                      src="/icons/image.png"
+                      alt="Turno box"
                       className="h-14 w-auto"
                     />
                   </span>

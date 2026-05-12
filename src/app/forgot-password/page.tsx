@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ForgotPasswordForm } from "@/components/auth/ForgotPasswordForm";
+import { Logo } from "@/components/icons/Logo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Olvidé mi contraseña" };
@@ -13,11 +14,8 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl">
-            Bee Box
-          </h1>
-          <div className="w-12 h-0.5 bg-[#F78837] mt-1" />
+        <div className="w-full mb-8">
+          <Logo />
         </div>
 
         {/* Card */}

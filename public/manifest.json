@@ -1,11 +1,11 @@
 {
-  "name": "Bee Box",
-  "short_name": "Bee Box",
+  "name": "Turno box",
+  "short_name": "Turno box",
   "description": "Reservá tu turno en segundos",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f0f0f",
-  "theme_color": "#0f0f0f",
+  "background_color": "#0A1F2A",
+  "theme_color": "#0A1F2A",
   "orientation": "portrait-primary",
   "icons": [
     {

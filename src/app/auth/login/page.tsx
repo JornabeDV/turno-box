@@ -1,23 +1,21 @@
 import { LoginForm } from "@/components/auth/LoginForm";
+import { Logo } from "@/components/icons/Logo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Iniciar sesión" };
 
 export default function LoginPage() {
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-4 bg-[#0A1F2A] relative">
+    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-[#0A1F2A] relative">
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl">
-            Turno Box
-          </h1>
-          <div className="w-12 h-0.5 bg-[#F78837] mt-1" />
+        <div className="w-full mb-8">
+          <Logo />
         </div>
 
         {/* Título */}
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-6 text-center">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-3 md:mb-6 text-center">
           Ingresá a tu cuenta
         </h2>
 
