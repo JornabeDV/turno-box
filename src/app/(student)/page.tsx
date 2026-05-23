@@ -2,7 +2,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { getClassSlotsForDay } from "@/lib/queries/classes";
+import { getClassSlotsForDay, getGymClassDays } from "@/lib/queries/classes";
 import { ClassList } from "@/components/booking/ClassList";
 import type { Metadata } from "next";
 
@@ -35,7 +35,7 @@ export default async function HomePage() {
   }
 
   const today = new Date();
-  const [slots, activeSubscriptions, announcements] = await Promise.all([
+  const [slots, activeSubscriptions, announcements, availableDays] = await Promise.all([
     getClassSlotsForDay(user.gymId, today, session.user.id),
     prisma.payment.findMany({
       where: {
@@ -67,6 +67,7 @@ export default async function HomePage() {
         publishAt: true,
       },
     }),
+    getGymClassDays(user.gymId),
   ]);
 
   const firstName = user.name?.split(" ")[0] ?? "Atleta";
@@ -88,9 +89,9 @@ export default async function HomePage() {
     : null;
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-4">
       {/* Saludo */}
-      <div className="pt-4 pb-2">
+      <div className="pt-4">
         <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
           Hola, {firstName}
         </h1>
@@ -172,6 +173,8 @@ export default async function HomePage() {
         initialDate={today}
         gymId={user.gymId}
         userId={session.user.id}
+        availableDays={availableDays}
+        compact
       />
     </section>
   );

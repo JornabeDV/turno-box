@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { ClassCardCompact } from "@/components/booking/ClassCardCompact";
 import { DaySelector } from "@/components/booking/DaySelector";
+import { DaySelectorCompact } from "@/components/booking/DaySelectorCompact";
+import Link from "next/link";
 import { CalendarBlank } from "@phosphor-icons/react";
 import type { ClassSlot } from "@/types";
 
@@ -11,9 +13,11 @@ type Props = {
   initialDate: Date;
   gymId: string;
   userId: string;
+  availableDays: number[];
+  compact?: boolean;
 };
 
-export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
+export function ClassList({ initialSlots, initialDate, gymId, userId, availableDays, compact }: Props) {
   const [slots, setSlots] = useState(initialSlots);
   const [date, setDate] = useState(initialDate);
   const [loading, setLoading] = useState(false);
@@ -46,13 +50,35 @@ export function ClassList({ initialSlots, initialDate, gymId, userId }: Props) {
 
   return (
     <div className="space-y-4">
-      <DaySelector initialDate={date} onChange={handleDateChange} />
+      {compact ? (
+        <DaySelectorCompact
+          initialDate={date}
+          onChange={handleDateChange}
+          availableDays={availableDays}
+        />
+      ) : (
+        <DaySelector
+          initialDate={date}
+          onChange={handleDateChange}
+          availableDays={availableDays}
+        />
+      )}
 
       {/* Título de sección */}
       <div className="pt-2">
-        <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg border-b border-[#1A4A63] pb-2">
-          Clases disponibles {isToday ? "hoy" : ""}
-        </h3>
+        <div className="flex items-center justify-between border-b border-[#1A4A63] pb-2">
+          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg">
+            Clases disponibles {isToday ? "hoy" : ""}
+          </h3>
+          {compact && (
+            <Link
+              href="/classes"
+              className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] hover:text-[#27C7B8] transition-colors"
+            >
+              Ver todo →
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="space-y-3">
