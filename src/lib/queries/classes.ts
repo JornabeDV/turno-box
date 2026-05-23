@@ -6,10 +6,29 @@ import { toClassDate } from "@/lib/utils";
 import type { ClassSlot } from "@/types";
 
 /**
- * Devuelve las clases del día indicado con:
- * - cupos confirmados (excluyendo cancelados)
- * - el booking del usuario autenticado (si existe)
+ * Devuelve los números de día de semana (0=dom, 6=sáb) en los que el gym
+ * tiene al menos una clase activa configurada.
  */
+export async function getGymClassDays(gymId: string): Promise<number[]> {
+  const rows = await prisma.gymClass.findMany({
+    where: { gymId, isActive: true, deletedAt: null },
+    select: { dayOfWeek: true },
+    distinct: ["dayOfWeek"],
+  });
+
+  const dayMap: Record<string, number> = {
+    SUNDAY: 0,
+    MONDAY: 1,
+    TUESDAY: 2,
+    WEDNESDAY: 3,
+    THURSDAY: 4,
+    FRIDAY: 5,
+    SATURDAY: 6,
+  };
+
+  return rows.map((r) => dayMap[r.dayOfWeek]).sort((a, b) => a - b);
+}
+
 export async function getClassSlotsForDay(
   gymId: string,
   date: Date,

@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Trophy, Calendar, ShoppingCart, User } from "@phosphor-icons/react";
+import { House, Calendar, ShoppingCart, User } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Home", Icon: Trophy },
+  { href: "/", label: "Inicio", Icon: House },
   { href: "/bookings", label: "Clases", Icon: Calendar },
   { href: "/packs", label: "Abonos", Icon: ShoppingCart },
   { href: "/profile", label: "Perfil", Icon: User },

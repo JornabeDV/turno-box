@@ -1,40 +1,68 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 type Props = {
   initialDate: Date;
   onChange: (date: Date) => void;
+  availableDays: number[];
 };
 
 const DAY_LABELS = ["DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB"];
 
-export function DaySelector({ initialDate, onChange }: Props) {
+const GRID_COLS: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+  5: "grid-cols-5",
+  6: "grid-cols-6",
+  7: "grid-cols-7",
+};
+
+export function DaySelector({ initialDate, onChange, availableDays }: Props) {
   const [current, setCurrent] = useState(initialDate);
+  const autoSelectedRef = useRef(false);
 
-  // Generar los 5 días de la semana laboral (lun-vie) centrados en la semana actual
+  // Generar los próximos 14 días calendario, filtrando solo los días con clases
   const weekDays = useMemo(() => {
-    const d = new Date(current);
-    const day = d.getDay(); // 0=dom, 1=lun...
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // lunes de esta semana
-    const monday = new Date(d);
-    monday.setDate(diff);
-    monday.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    const days = [];
-    for (let i = 0; i < 5; i++) {
-      const date = new Date(monday);
-      date.setDate(monday.getDate() + i);
-      days.push(date);
+    const days: Date[] = [];
+    for (let i = 0; i < 14; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      if (availableDays.includes(date.getDay())) {
+        days.push(date);
+      }
     }
     return days;
-  }, [current]);
+  }, [availableDays]);
+
+  // Si la fecha inicial no está entre los días disponibles, auto-seleccionar el primero
+  useEffect(() => {
+    if (autoSelectedRef.current) return;
+    if (weekDays.length === 0) return;
+
+    const isAvailable = weekDays.some(
+      (d) => d.toDateString() === initialDate.toDateString()
+    );
+
+    if (!isAvailable) {
+      autoSelectedRef.current = true;
+      setCurrent(weekDays[0]);
+      onChange(weekDays[0]);
+    }
+  }, [weekDays, initialDate, onChange]);
 
   function selectDate(date: Date) {
     setCurrent(date);
     onChange(date);
   }
+
+  const gridClass = GRID_COLS[weekDays.length] ?? "grid-cols-7";
 
   return (
     <div className="bg-[#0E2A38] border border-[#1A4A63] p-3">
@@ -46,7 +74,7 @@ export function DaySelector({ initialDate, onChange }: Props) {
           {current.toLocaleDateString("es-AR", { month: "short" })}
         </span>
       </div>
-      <div className="grid grid-cols-5 gap-2">
+      <div className={cn("grid gap-2", gridClass)}>
         {weekDays.map((date) => {
           const isSelected =
             date.toDateString() === current.toDateString();
