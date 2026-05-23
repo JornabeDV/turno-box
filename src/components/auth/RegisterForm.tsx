@@ -7,7 +7,11 @@ import { DateInput } from "@/components/ui/DatePicker";
 import { WarningCircle, CheckCircle, Eye, EyeSlash, User, Envelope, Lock } from "@phosphor-icons/react";
 import { registerAction } from "@/actions/auth";
 
-export function RegisterForm() {
+type RegisterFormProps = {
+  defaultGymId?: string;
+};
+
+export function RegisterForm({ defaultGymId }: RegisterFormProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -148,6 +152,10 @@ export function RegisterForm() {
           <CheckCircle size={15} className="text-[#27C7B8] shrink-0" />
           <p className="text-xs text-[#27C7B8] font-[family-name:var(--font-oswald)] uppercase tracking-wide">Cuenta creada. Redirigiendo...</p>
         </div>
+      )}
+
+      {defaultGymId && (
+        <input type="hidden" name="gymId" value={defaultGymId} />
       )}
 
       <Button type="submit" fullWidth size="lg" loading={pending} className="mt-1">
