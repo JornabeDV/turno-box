@@ -21,50 +21,34 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
   const { limit: limitParam } = await searchParams;
   const limit = Math.max(PAGE_SIZE, Math.min(200, Number(limitParam) || PAGE_SIZE));
 
-  const [payments, adjustments] = await Promise.all([
-    prisma.payment.findMany({
-      where: { userId, status: "APPROVED" },
-      orderBy: { paidAt: "desc" },
-      take: limit + 1,
-      select: {
-        id: true,
-        amountPaid: true,
-        currency: true,
-        paidAt: true,
-        expiresAt: true,
-        creditsGranted: true,
-        pack: { select: { name: true } },
+  const transactions = await prisma.creditTransaction.findMany({
+    where: {
+      userId,
+      gymId,
+      type: { in: ["PURCHASE", "ADJUSTMENT"] },
+    },
+    orderBy: { createdAt: "desc" },
+    take: limit + 1,
+    select: {
+      id: true,
+      type: true,
+      amount: true,
+      note: true,
+      createdAt: true,
+      expiresAt: true,
+      payment: {
+        select: {
+          amountPaid: true,
+          currency: true,
+          paidAt: true,
+          pack: { select: { name: true } },
+        },
       },
-    }),
-    prisma.creditTransaction.findMany({
-      where: { userId, gymId, type: "ADJUSTMENT" },
-      orderBy: { createdAt: "desc" },
-      take: limit + 1,
-      select: { id: true, amount: true, note: true, createdAt: true },
-    }),
-  ]);
+    },
+  });
 
-  type Entry =
-    | { kind: "payment"; date: Date; id: string; payment: (typeof payments)[0] }
-    | { kind: "adjustment"; date: Date; id: string; adj: (typeof adjustments)[0] };
-
-  const all: Entry[] = [
-    ...payments.map((p) => ({
-      kind: "payment" as const,
-      date: p.paidAt ?? new Date(0),
-      id: p.id,
-      payment: p,
-    })),
-    ...adjustments.map((a) => ({
-      kind: "adjustment" as const,
-      date: a.createdAt,
-      id: a.id,
-      adj: a,
-    })),
-  ].sort((a, b) => b.date.getTime() - a.date.getTime());
-
-  const hasMore  = all.length > limit;
-  const entries  = all.slice(0, limit);
+  const hasMore  = transactions.length > limit;
+  const entries  = transactions.slice(0, limit);
   const nextLimit = limit + PAGE_SIZE;
 
   return (
@@ -90,66 +74,71 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
       ) : (
         <>
           <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
-            {entries.map((entry) => {
-              if (entry.kind === "payment") {
-                const p = entry.payment;
-                return (
-                  <div key={entry.id} className="flex items-center gap-3 px-4 py-3.5">
-                    <div className="size-9 border border-[#F78837]/30 bg-[#F78837]/10 flex items-center justify-center shrink-0">
-                      <span className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#F78837] leading-none">
-                        {p.creditsGranted}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">{p.pack?.name ?? "Abono eliminado"}</p>
-                      <p className="text-[11px] text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
-                        {p.paidAt?.toLocaleDateString("es-AR", {
-                          day: "numeric", month: "short", year: "numeric",
-                        }) ?? "—"}
-                        {p.expiresAt && (
-                          <span className="ml-2 text-[#4A6B7A]">
-                            · vence{" "}
-                            {p.expiresAt.toLocaleDateString("es-AR", {
-                              day: "numeric", month: "short", year: "numeric",
-                            })}
-                          </span>
-                        )}
+            {entries.map((tx) => {
+              const isAdjustment = tx.type === "ADJUSTMENT";
+              const isPurchase   = tx.type === "PURCHASE";
+
+              return (
+                <div key={tx.id} className="flex items-center gap-3 px-4 py-3.5">
+                  <div
+                    className={`size-9 border flex items-center justify-center shrink-0 ${
+                      isAdjustment
+                        ? "border-[#1A4A63] bg-[#0A1F2A]"
+                        : "border-[#F78837]/30 bg-[#F78837]/10"
+                    }`}
+                  >
+                    <span
+                      className={`text-sm font-[family-name:var(--font-oswald)] font-bold leading-none ${
+                        isAdjustment
+                          ? tx.amount > 0
+                            ? "text-[#27C7B8]"
+                            : "text-[#E61919]"
+                          : "text-[#F78837]"
+                      }`}
+                    >
+                      {isAdjustment
+                        ? tx.amount > 0
+                          ? `+${tx.amount}`
+                          : tx.amount
+                        : tx.amount}
+                    </span>
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">
+                      {isAdjustment
+                        ? "Carga Administrativa"
+                        : tx.payment?.pack?.name ?? "Compra de pack"}
+                    </p>
+                    {isAdjustment && tx.note && (
+                      <p className="text-[11px] text-[#6B8A99] truncate mt-0.5 font-[family-name:var(--font-oswald)]">
+                        {tx.note}
                       </p>
-                    </div>
+                    )}
+                    <p className="text-[11px] text-[#4A6B7A] tabular-nums mt-0.5 font-[family-name:var(--font-jetbrains)]">
+                      {(tx.payment?.paidAt ?? tx.createdAt).toLocaleDateString("es-AR", {
+                        day: "numeric", month: "short", year: "numeric",
+                      })}
+                      {tx.expiresAt && (
+                        <span className="ml-2 text-[#4A6B7A]">
+                          · vence{" "}
+                          {tx.expiresAt.toLocaleDateString("es-AR", {
+                            day: "numeric", month: "short", year: "numeric",
+                          })}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+
+                  {tx.payment && (
                     <span className="text-xs font-[family-name:var(--font-jetbrains)] font-semibold text-[#EAEAEA] tabular-nums shrink-0">
                       {new Intl.NumberFormat("es-AR", {
                         style: "currency",
-                        currency: p.currency,
+                        currency: tx.payment.currency,
                         maximumFractionDigits: 0,
-                      }).format(Number(p.amountPaid))}
+                      }).format(Number(tx.payment.amountPaid))}
                     </span>
-                  </div>
-                );
-              }
-
-              const a = entry.adj;
-              return (
-                <div key={entry.id} className="flex items-center gap-3 px-4 py-3.5">
-                  <div className="size-9 border border-[#1A4A63] bg-[#0A1F2A] flex items-center justify-center shrink-0">
-                    <span
-                      className={`text-sm font-[family-name:var(--font-oswald)] font-bold leading-none ${
-                        a.amount > 0 ? "text-[#27C7B8]" : "text-[#E61919]"
-                      }`}
-                    >
-                      {a.amount > 0 ? `+${a.amount}` : a.amount}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">Carga Administrativa</p>
-                    {a.note && (
-                      <p className="text-[11px] text-[#6B8A99] truncate mt-0.5 font-[family-name:var(--font-oswald)]">{a.note}</p>
-                    )}
-                    <p className="text-[11px] text-[#4A6B7A] tabular-nums mt-0.5 font-[family-name:var(--font-jetbrains)]">
-                      {a.createdAt.toLocaleDateString("es-AR", {
-                        day: "numeric", month: "short", year: "numeric",
-                      })}
-                    </p>
-                  </div>
+                  )}
                 </div>
               );
             })}
