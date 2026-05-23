@@ -124,8 +124,12 @@ export function ClassModal({
       onOpenChange={(o) => !o && handleClose()}
       title={isEditing ? "Editar clase" : "Nueva clase"}
       size="md"
+      className="max-sm:h-screen max-sm:max-h-screen max-sm:w-screen max-sm:max-w-none max-sm:rounded-none"
     >
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-4 max-sm:h-screen max-sm:max-h-screen">
         {/* Disciplina */}
         <SelectInput
           name="disciplineId"
@@ -207,13 +211,13 @@ export function ClassModal({
           </div>
         )}
 
-        <div className="flex gap-2 pt-1">
+        <div className="flex gap-2 pt-1 max-sm:flex-col">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={handleClose}
-            className="flex-1"
+            className="sm:flex-1"
           >
             Cancelar
           </Button>
@@ -222,7 +226,7 @@ export function ClassModal({
             variant="brand"
             size="sm"
             loading={isPending}
-            className="flex-1"
+            className="sm:flex-1"
           >
             {isEditing ? "Guardar" : "Crear"}
           </Button>

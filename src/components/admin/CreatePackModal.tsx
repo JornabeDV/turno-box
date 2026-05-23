@@ -125,7 +125,7 @@ export function CreatePackModal({ open, onClose }: Props) {
         <div className="flex max-md:flex-col gap-2 pt-1">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
             className="md:flex-1"
             onClick={handleClose}

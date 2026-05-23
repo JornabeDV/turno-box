@@ -85,7 +85,7 @@ export function BookingCardItem({ booking, index }: Props) {
         )}
 
         <Button
-          variant={booking.status === "CONFIRMED" ? "danger" : "ghost"}
+          variant={booking.status === "CONFIRMED" ? "danger" : "outline"}
           size="sm"
           fullWidth
           loading={isPending}
