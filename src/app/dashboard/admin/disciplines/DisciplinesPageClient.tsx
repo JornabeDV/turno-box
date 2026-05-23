@@ -143,7 +143,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         <div className="flex gap-2">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
             className="flex-1"
             onClick={() => setDeleteModal({ open: false })}

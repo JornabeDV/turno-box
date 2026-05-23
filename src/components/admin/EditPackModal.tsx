@@ -155,7 +155,7 @@ export function EditPackModal({ pack, onClose }: Props) {
         <div className="flex gap-2 pt-1">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
             className="flex-1"
             onClick={handleClose}

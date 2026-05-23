@@ -145,13 +145,13 @@ export function DisciplineModal({ open, onClose, discipline }: Props) {
           </div>
         )}
 
-        <div className="flex gap-2 pt-1">
+        <div className="flex max-sm:flex-col gap-2 pt-1">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={handleClose}
-            className="flex-1"
+            className="sm:flex-1"
           >
             Cancelar
           </Button>
@@ -160,7 +160,7 @@ export function DisciplineModal({ open, onClose, discipline }: Props) {
             variant="brand"
             size="sm"
             loading={isPending}
-            className="flex-1"
+            className="sm:flex-1"
           >
             {isEditing ? "Guardar" : "Crear"}
           </Button>

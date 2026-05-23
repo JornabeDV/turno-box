@@ -18,7 +18,7 @@ export function BottomNav() {
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bottom-nav-safe">
       <div className="border-t border-[#1A4A63] bg-[#0A1F2A]">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-4 max-w-5xl mx-auto">
           {NAV_ITEMS.map(({ href, label, Icon }) => {
             const active = pathname === href;
             return (

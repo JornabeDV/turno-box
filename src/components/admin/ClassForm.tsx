@@ -236,7 +236,7 @@ export function ClassForm({
       <div className="flex gap-3 pt-1">
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           size="md"
           onClick={() => history.back()}
         >

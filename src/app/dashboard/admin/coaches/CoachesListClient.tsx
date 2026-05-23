@@ -145,7 +145,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
  size="sm"
  >
  <div className="flex gap-2 pt-1">
- <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={() => setConfirmDeleteId(null)}>
+ <Button type="button" variant="outline" size="sm" className="flex-1" onClick={() => setConfirmDeleteId(null)}>
  Cancelar
  </Button>
  <Button type="button" variant="danger" size="sm" className="flex-1" loading={isPending} onClick={handleDelete}>

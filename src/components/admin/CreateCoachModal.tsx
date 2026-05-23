@@ -102,12 +102,12 @@ export function CreateCoachModal({ open, onClose }: Props) {
           </div>
         )}
 
-        <div className="flex gap-2 pt-1">
+        <div className="flex gap-2 pt-1 max-sm:flex-col">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="flex-1"
+            className="sm:flex-1"
             onClick={handleClose}
           >
             Cancelar
@@ -116,7 +116,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
             type="submit"
             variant="brand"
             size="sm"
-            className="flex-1"
+            className="sm:flex-1"
             loading={isPending}
           >
             Crear coach
