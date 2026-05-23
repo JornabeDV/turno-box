@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getClassSlotsForDay, getGymClassDays } from "@/lib/queries/classes";
 import { ClassList } from "@/components/booking/ClassList";
+import { WhatsAppLink } from "@/components/layout/FloatingWhatsApp";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Clases" };
@@ -15,7 +16,7 @@ export default async function HomePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { gymId: true, name: true },
+    select: { gymId: true, name: true, gym: { select: { phone: true } } },
   });
 
   // Si el usuario no tiene gym asignado aún (registro nuevo)
@@ -92,9 +93,12 @@ export default async function HomePage() {
     <section className="space-y-4">
       {/* Saludo */}
       <div className="pt-4">
-        <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
-          Hola, {firstName}
-        </h1>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+            Hola, {firstName}
+          </h1>
+          {user.gym?.phone && <WhatsAppLink phone={user.gym.phone} />}
+        </div>
         <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
           Listo para superar tus marcas hoy.
         </p>
@@ -176,6 +180,7 @@ export default async function HomePage() {
         availableDays={availableDays}
         compact
       />
+
     </section>
   );
 }
