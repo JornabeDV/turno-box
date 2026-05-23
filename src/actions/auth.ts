@@ -11,6 +11,7 @@ const registerSchema = z.object({
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   confirmPassword: z.string().min(6, "Debes repetir la contraseña"),
   birthDate: z.string().min(1, "La fecha de nacimiento es requerida"),
+  gymId: z.string().optional(),
 });
 
 export async function registerAction(
@@ -29,7 +30,7 @@ export async function registerAction(
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { name, email, password, confirmPassword, birthDate } = parsed.data;
+  const { name, email, password, confirmPassword, birthDate, gymId: formGymId } = parsed.data;
 
   if (password !== confirmPassword) {
     return { success: false, error: "Las contraseñas no coinciden" };
@@ -42,11 +43,19 @@ export async function registerAction(
 
   const passwordHash = await bcrypt.hash(password, 12);
 
-  const defaultGym = await prisma.gym.findFirst({
-    orderBy: { createdAt: "asc" },
-  });
+  let gymId = formGymId ?? null;
 
-  const gymId = defaultGym?.id ?? null;
+  if (gymId) {
+    const gymExists = await prisma.gym.findUnique({ where: { id: gymId } });
+    if (!gymExists) {
+      return { success: false, error: "El gimnasio no existe." };
+    }
+  } else {
+    const defaultGym = await prisma.gym.findFirst({
+      orderBy: { createdAt: "asc" },
+    });
+    gymId = defaultGym?.id ?? null;
+  }
 
   await prisma.user.create({
     data: { name, email, passwordHash, role: "STUDENT", gymId, birthDate: new Date(birthDate) },
