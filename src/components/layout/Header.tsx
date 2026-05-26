@@ -7,12 +7,14 @@ type HeaderProps = {
   showSignOut?: boolean;
   showCredits?: boolean;
   mobileMenuSlot?: React.ReactNode;
+  logoSrc?: string;
 };
 
 export async function Header({
   showSignOut = false,
   showCredits = false,
   mobileMenuSlot,
+  logoSrc,
 }: HeaderProps) {
   const session = await auth();
 
@@ -33,10 +35,18 @@ export async function Header({
       <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-5xl mx-auto">
         <div className="flex items-center gap-3">
           {mobileMenuSlot}
-          {/* Logo texto */}
-          <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
-            Turno Box
-          </h1>
+          {/* Logo */}
+          {logoSrc ? (
+            <img
+              src={logoSrc}
+              alt="BoxTurno"
+              className="h-7 w-auto"
+            />
+          ) : (
+            <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
+              Turno Box
+            </h1>
+          )}
         </div>
 
         <div className="flex items-center gap-3">

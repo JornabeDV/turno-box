@@ -38,9 +38,9 @@ export function AdminSidebar() {
       <div className="flex justify-center gap-1 px-2 py-3 mb-3">
         <span className="rounded-[2px] px-2 py-1.5 flex items-center self-start">
           <img
-            src="/icons/image.png"
+            src="/icons/image.png?v=2"
             alt="Turno box"
-            className="h-24 w-auto"
+            className="h-28 w-auto"
           />
         </span>
       </div>

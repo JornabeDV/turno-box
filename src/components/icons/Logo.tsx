@@ -1,16 +1,13 @@
-import Image from "next/image";
-
 export function Logo({ className }: { className?: string }) {
   return (
     <div className={`flex flex-col items-center my-5 md:my-10 ${className ?? ""}`}>
       {/* Isotype */}
-      <Image
-        src="/icons/image.png"
+      <img
+        src="/icons/image.png?v=2"
         alt="Turno Box"
         width={208}
         height={197}
-        className="w-20 h-auto"
-        priority
+        className="w-36 h-auto"
       />
 
       {/* Tagline */}

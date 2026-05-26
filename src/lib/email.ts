@@ -23,7 +23,7 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string, us
           </head>
           <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <img src="${process.env.NEXT_PUBLIC_URL}/icons/image.png" alt="Turno Box" style="max-width: 150px;">
+              <img src="${process.env.NEXT_PUBLIC_URL}/icons/image.png?v=2" alt="Turno Box" style="max-width: 150px;">
             </div>
 
             <h1 style="color: #1a1a1a; text-align: center; margin-bottom: 20px;">Recupera tu contraseña</h1>
