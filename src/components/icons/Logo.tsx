@@ -13,11 +13,6 @@ export function Logo({ className }: { className?: string }) {
         priority
       />
 
-      {/* Wordmark */}
-      <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl mt-2 leading-none">
-        Turno Box
-      </h1>
-
       {/* Tagline */}
       <p className="font-[family-name:var(--font-oswald)] text-[#27C7B8] uppercase tracking-[0.1em] text-sm mt-1.5">
         Reservá tu entrenamiento
