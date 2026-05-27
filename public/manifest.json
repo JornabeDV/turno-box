@@ -1,6 +1,6 @@
 {
-  "name": "Turno box",
-  "short_name": "Turno box",
+  "name": "Box Turno",
+  "short_name": "Box Turno",
   "description": "Reservá tu turno en segundos",
   "start_url": "/",
   "display": "standalone",

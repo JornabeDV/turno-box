@@ -1,6 +1,6 @@
 const WHATSAPP_NUMBER = "5492644366369";
 const WHATSAPP_MESSAGE = encodeURIComponent(
-  "Hola, vi TurnoBox y quiero probarlo para mi box de CrossFit. ¿Me podrían dar más info?"
+  "Hola, vi BoxTurno y quiero probarlo para mi box de CrossFit. ¿Me podrían dar más info?"
 );
 
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;

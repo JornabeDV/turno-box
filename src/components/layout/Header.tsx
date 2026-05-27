@@ -44,7 +44,7 @@ export async function Header({
             />
           ) : (
             <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
-              Turno Box
+              Box Turno
             </h1>
           )}
         </div>

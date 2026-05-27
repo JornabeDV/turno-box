@@ -4,7 +4,7 @@ export function Logo({ className }: { className?: string }) {
       {/* Isotype */}
       <img
         src="/icons/image.png?v=2"
-        alt="Turno Box"
+        alt="Box Turno"
         width={208}
         height={197}
         className="w-36 h-auto"

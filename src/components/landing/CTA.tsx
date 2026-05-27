@@ -1,11 +1,15 @@
-import { ArrowRight, Barbell } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { WHATSAPP_URL } from "./constants";
 
 export function CTA() {
   return (
     <section className="py-16 px-4 border-t border-[#1A4A63]">
       <div className="max-w-3xl mx-auto text-center">
-        <Barbell size={32} className="text-[#F78837] mx-auto mb-4" />
+        <img
+          src="/icons/image.png"
+          alt="BoxTurno"
+          className="h-40 w-auto mx-auto mb-4"
+        />
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl">
           Empezá a organizar tu box hoy
         </h2>

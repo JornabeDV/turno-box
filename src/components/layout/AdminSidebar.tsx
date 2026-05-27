@@ -39,7 +39,7 @@ export function AdminSidebar() {
         <span className="rounded-[2px] px-2 py-1.5 flex items-center self-start">
           <img
             src="/icons/image.png?v=2"
-            alt="Turno box"
+            alt="Box Turno"
             className="h-28 w-auto"
           />
         </span>
