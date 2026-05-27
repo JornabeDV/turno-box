@@ -147,7 +147,7 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
           {hasMore && (
             <Link
               href={`/profile/history?limit=${nextLimit}`}
-              className="w-full flex items-center justify-center h-10 border border-[#1A4A63] text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
+              className="w-full flex items-center justify-center h-12 border border-[#1A4A63] text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
             >
               Ver más
             </Link>

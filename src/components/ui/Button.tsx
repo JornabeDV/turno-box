@@ -22,9 +22,9 @@ const variantStyles: Record<Variant, string> = {
 };
 
 const sizeStyles: Record<Size, string> = {
-  sm: "h-9  px-4   text-xs  rounded-[2px]",
+  sm: "h-12 px-4   text-xs  rounded-[2px]",
   md: "h-12 px-5   text-sm  rounded-[2px]",
-  lg: "h-14 px-6   text-base rounded-[2px]",
+  lg: "h-12 px-6   text-base rounded-[2px]",
 };
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

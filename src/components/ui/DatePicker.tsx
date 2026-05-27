@@ -17,6 +17,7 @@ interface DatePickerProps {
   minAge?: number;
   allowFuture?: boolean;
   showYearPicker?: boolean;
+  hideYear?: boolean;
 }
 
 export function DatePicker({
@@ -27,6 +28,7 @@ export function DatePicker({
   minAge,
   allowFuture = false,
   showYearPicker = true,
+  hideYear = false,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const parseLocalDate = (dateStr: string) => {
@@ -84,7 +86,7 @@ export function DatePicker({
     return d.toLocaleDateString("es-AR", {
       day: "2-digit",
       month: "short",
-      year: "numeric",
+      ...(hideYear ? {} : { year: "numeric" }),
     });
   }
 
@@ -136,11 +138,11 @@ export function DatePicker({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "w-full h-10 rounded-xl bg-zinc-800/60 border border-zinc-700 px-3.5 text-sm text-zinc-100",
+          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3.5 text-sm text-[#EAEAEA]",
           "flex items-center justify-between gap-2",
-          "focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500",
-          "transition-colors hover:border-zinc-600",
-          !value && "text-zinc-500",
+          "focus:outline-none focus:border-[#F78837]/50",
+          "transition-colors hover:border-[#6B8A99]",
+          !value && "text-[#4A6B7A]",
         )}
       >
         <span className="flex items-center gap-2">
@@ -150,7 +152,7 @@ export function DatePicker({
         <CaretRightIcon
           size={14}
           className={cn(
-            "text-zinc-500 rotate-90 transition-transform",
+            "text-[#4A6B7A] rotate-90 transition-transform",
             open && "rotate-[-90deg]",
           )}
         />
@@ -282,6 +284,7 @@ interface DateInputProps {
   minAge?: number;
   allowFuture?: boolean;
   showYearPicker?: boolean;
+  hideYear?: boolean;
 }
 
 export function DateInput({
@@ -293,6 +296,7 @@ export function DateInput({
   minAge,
   allowFuture,
   showYearPicker,
+  hideYear,
 }: DateInputProps) {
   return (
     <>
@@ -304,6 +308,7 @@ export function DateInput({
         minAge={minAge}
         allowFuture={allowFuture}
         showYearPicker={showYearPicker}
+        hideYear={hideYear}
       />
       <input type="hidden" name={name} value={value} />
     </>
