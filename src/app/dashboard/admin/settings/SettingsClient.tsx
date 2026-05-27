@@ -9,6 +9,8 @@ import { SelectInput } from "@/components/ui/Select";
 import { updateGymSettingsAction } from "@/actions/gym";
 import { changePasswordAction } from "@/actions/profile";
 import { Copy, Check, Lock, Link as LinkIcon } from "@phosphor-icons/react";
+import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
+import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
 
 type GymSettings = {
   name: string;
@@ -278,6 +280,13 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
             </span>
           </Button>
         </div>
+      </div>
+
+      {/* ── Sección: Notificaciones ─────────────────────────────────────── */}
+      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
+        <h3 className="text-sm font-semibold text-[#EAEAEA]">Notificaciones</h3>
+        <PushNotificationToggle />
+        <PushNotificationHelp />
       </div>
 
       {/* ── Sección: Cambiar contraseña ─────────────────────────────────── */}
