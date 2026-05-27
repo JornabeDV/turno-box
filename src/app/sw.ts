@@ -94,7 +94,7 @@ self.addEventListener("push", (event: PushEvent) => {
     tag?: string;
   };
 
-  const title = data.title ?? "Turno box";
+  const title = data.title ?? "Box Turno";
   const options: NotificationOptions & { renotify?: boolean } = {
     body: data.body ?? "",
     icon: "/icons/logo_solo.png?v=2",

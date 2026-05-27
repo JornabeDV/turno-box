@@ -34,7 +34,7 @@ export function ProblemSolution() {
           <div className="border border-[#27C7B8]/30 bg-[#27C7B8]/5 p-6">
             <h3 className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#27C7B8] uppercase tracking-tight mb-4 flex items-center gap-2">
               <CheckCircle size={16} />
-              Con TurnoBox
+              Con BoxTurno
             </h3>
             <ul className="space-y-3">
               {[

@@ -18,13 +18,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: "Turno box", template: "%s · Turno box" },
+  title: { default: "Box Turno", template: "%s · Box Turno" },
   description: "Sistema operativo de entrenamiento competitivo. Reservá tu turno en segundos.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Turno box",
+    title: "Box Turno",
   },
   icons: {
     icon: [

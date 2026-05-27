@@ -1,8 +1,8 @@
-# Turno box — Tactical Training Operating System
+# Box Turno — Tactical Training Operating System
 
 ## Brand Positioning
 
-Turno box is a competitive training operating system for serious athletes.
+Box Turno is a competitive training operating system for serious athletes.
 
 It is not a generic fitness app. The interface must feel like mission-critical software used by elite competitors to manage their training schedule, track their capacity, and execute their performance protocol.
 
@@ -259,7 +259,7 @@ Animations must feel fast, dry, and mechanical:
 - Background: Ocean Obsidian
 - Border-bottom: `1px solid #1A4A63`
 - No blur
-- Logo: "Turno box" text in Oswald 700, Tangerine Tango, uppercase
+- Logo: "Box Turno" text in Oswald 700, Tangerine Tango, uppercase
 - No image logo
 
 ---
@@ -345,4 +345,4 @@ Visual references:
 - 1970s–80s mainframe terminals
 - Swiss industrial print manuals
 
-But maintain Turno box unique identity: a training OS, not a generic terminal.
+But maintain Box Turno unique identity: a training OS, not a generic terminal.

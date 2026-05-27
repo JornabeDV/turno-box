@@ -38,7 +38,7 @@ export default function LoginPage() {
         {/* Legal footer */}
         <div className="mt-10 text-center space-y-1">
           <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
-            © 2026 Turno Box. Todos los derechos reservados.
+            © 2026 Box Turno. Todos los derechos reservados.
           </p>
           {/* <div className="flex items-center justify-center gap-4">
             <a href="#" className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A] hover:text-[#6B8A99] transition-colors">

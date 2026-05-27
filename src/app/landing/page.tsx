@@ -11,7 +11,7 @@ import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-  title: "TurnoBox — Gestión inteligente para boxes de CrossFit",
+  title: "BoxTurno — Gestión inteligente para boxes de CrossFit",
   description:
     "Dejá de administrar tu box con WhatsApp y Excel. Turnos, pagos, cupos y alumnos. Todo en una sola app.",
 };

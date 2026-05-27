@@ -4,11 +4,12 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 border-b border-[#1A4A63] bg-[#0A1F2A]/95 backdrop-blur-sm">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link
-          href="/landing"
-          className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-lg"
-        >
-          TurnoBox
+        <Link href="/landing" className="flex items-center">
+          <img
+            src="/icons/nombre_logo.png"
+            alt="BoxTurno"
+            className="h-7 w-auto"
+          />
         </Link>
         <div className="hidden sm:flex items-center gap-6">
           <a
