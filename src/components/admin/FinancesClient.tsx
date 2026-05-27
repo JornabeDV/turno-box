@@ -376,10 +376,7 @@ export function FinancesClient({
             <div className="flex items-center justify-between px-4 py-3 border-t border-[#1A4A63]">
               <button
                 disabled={offset === 0 || isPending}
-                onClick={() => {
-                  setOffset((o) => Math.max(0, o - limit));
-                  reload();
-                }}
+                onClick={() => setOffset((o) => Math.max(0, o - limit))}
                 className="flex items-center gap-1 text-xs font-medium text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
               >
                 <CaretLeft size={14} /> Anterior
@@ -389,10 +386,7 @@ export function FinancesClient({
               </span>
               <button
                 disabled={offset + limit >= total || isPending}
-                onClick={() => {
-                  setOffset((o) => o + limit);
-                  reload();
-                }}
+                onClick={() => setOffset((o) => o + limit)}
                 className="flex items-center gap-1 text-xs font-medium text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
               >
                 Siguiente <CaretRight size={14} />
