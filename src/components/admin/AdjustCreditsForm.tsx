@@ -6,6 +6,8 @@ import { adjustCreditsAction } from "@/actions/students";
 import { cn } from "@/lib/utils";
 import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react";
 
+const MANUAL_METHODS = ["EFECTIVO", "TRANSFERENCIA", "TARJETA"];
+
 type Props = { studentId: string; currentBalance: number };
 
 const QUICK_AMOUNTS = [4, 8, 12, 16];
@@ -36,6 +38,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
   const [balance, setBalance] = useState(currentBalance);
   const [amount, setAmount] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
+  const [method, setMethod] = useState("EFECTIVO");
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -46,6 +49,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
     const fd = new FormData();
     fd.set("amount", amount);
     fd.set("amountPaid", amountPaid.replace(/\D/g, ""));
+    fd.set("method", method);
     fd.set("note", note);
 
     startTransition(async () => {
@@ -125,7 +129,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
               onChange={(e) => setAmount(e.target.value)}
               placeholder="Monto (+8 o -2)"
               required
-              className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
+              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
             />
           </div>
           <div className="flex-1 relative">
@@ -143,13 +147,13 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
                 });
               }}
               placeholder="Monto pagado"
-              className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
+              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
             />
           </div>
           {preview !== null && (
             <div
               className={cn(
-                "h-10 px-3 rounded-[2px] border flex items-center gap-1 text-xs font-bold tabular-nums shrink-0",
+                "h-12 px-3 rounded-[2px] border flex items-center gap-1 text-xs font-bold tabular-nums shrink-0",
                 isNegative
                   ? "bg-[#E61919]/10 border-[#E61919]/20 text-[#E61919]"
                   : "bg-[#27C7B8]/10 border-[#27C7B8]/20 text-[#27C7B8]",
@@ -161,6 +165,32 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           )}
         </div>
 
+        {/* Método de pago (solo si hay monto pagado) */}
+        {Number(amountPaid.replace(/\D/g, "")) > 0 && (
+          <div>
+            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider mb-1.5">
+              Método de pago
+            </p>
+            <div className="flex gap-2">
+              {MANUAL_METHODS.map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMethod(m)}
+                  className={cn(
+                    "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                    method === m
+                      ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
+                      : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
+                  )}
+                >
+                  {m.charAt(0) + m.slice(1).toLowerCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <p className="text-[10px] text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
 
         {/* Nota obligatoria */}
@@ -170,7 +200,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           onChange={(e) => setNote(e.target.value)}
           placeholder="Motivo (requerido)"
           required
-          className="w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
+          className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
 
         {error && <p className="text-xs text-[#E61919]">{error}</p>}
@@ -178,7 +208,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         <button
           type="submit"
           disabled={isPending || !amount || !note}
-          className="w-full h-10 rounded-[2px] bg-[#F78837] text-white text-sm hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
+          className="w-full h-12 rounded-[2px] bg-[#F78837] text-white text-sm hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">

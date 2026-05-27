@@ -19,7 +19,7 @@ async function requireAdmin() {
 export async function toggleStudentActiveAction(
   studentId: string
 ): Promise<ActionResult<{ isActive: boolean }>> {
-  const { gymId } = await requireAdmin();
+  const { userId, gymId } = await requireAdmin();
 
   const student = await prisma.user.findFirst({
     where: { id: studentId, gymId, role: "STUDENT" },
@@ -43,18 +43,20 @@ export async function adjustCreditsAction(
   studentId: string,
   formData: FormData
 ): Promise<ActionResult<{ newBalance: number }>> {
-  const { gymId } = await requireAdmin();
+  const { userId, gymId } = await requireAdmin();
 
   const schema = z.object({
     amount:     z.coerce.number().int().min(-100).max(100).refine((n) => n !== 0, "El monto no puede ser 0"),
     note:       z.string().min(1, "La nota es requerida para ajustes manuales"),
     amountPaid: z.coerce.number().min(0).max(999999).default(0),
+    method:     z.string().optional(),
   });
 
   const parsed = schema.safeParse({
     amount:     formData.get("amount"),
     note:       formData.get("note"),
     amountPaid: formData.get("amountPaid"),
+    method:     formData.get("method"),
   });
   if (!parsed.success) return { success: false, error: parsed.error.issues[0].message };
 
@@ -91,6 +93,7 @@ export async function adjustCreditsAction(
         amountPaid,
         currency: "ARS",
         provider: "MANUAL",
+        method: parsed.data.method || null,
         status: "APPROVED",
         paidAt: new Date(),
       },
@@ -106,6 +109,23 @@ export async function adjustCreditsAction(
         paymentId: payment.id,
       },
     });
+
+    if (amountPaid > 0) {
+      await tx.gymTransaction.create({
+        data: {
+          gymId,
+          type: "INCOME",
+          category: "Venta manual",
+          amount: amountPaid,
+          description: note,
+          method: parsed.data.method || "EFECTIVO",
+          userId: studentId,
+          paymentId: payment.id,
+          registeredBy: userId,
+          date: new Date(),
+        },
+      });
+    }
 
     return newBalance;
   });

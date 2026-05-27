@@ -11,6 +11,8 @@ import {
   Tag,
   Gear,
   Megaphone,
+  ChartLineUp,
+  Receipt,
 } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +26,16 @@ const NAV_ITEMS = [
     href: "/dashboard/admin/packs",
     label: "Abonos",
     Icon: CurrencyCircleDollar,
+  },
+  {
+    href: "/dashboard/admin/payments",
+    label: "Pagos",
+    Icon: Receipt,
+  },
+  {
+    href: "/dashboard/admin/finances",
+    label: "Finanzas",
+    Icon: ChartLineUp,
   },
   { href: "/dashboard/admin/news", label: "Noticias", Icon: Megaphone },
   { href: "/dashboard/admin/settings", label: "Configuración", Icon: Gear },

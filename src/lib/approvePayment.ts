@@ -71,6 +71,21 @@ export async function approvePaymentIfValid(paymentId: string): Promise<boolean>
         expiresAt: payment.expiresAt,
       },
     });
+
+    await tx.gymTransaction.create({
+      data: {
+        gymId: payment.gymId,
+        type: "INCOME",
+        category: "Venta de abono",
+        amount: payment.amountPaid,
+        description: `Compra de abono (${payment.creditsGranted} créditos)`,
+        method: "MERCADOPAGO",
+        userId: payment.userId,
+        paymentId: payment.id,
+        registeredBy: "system-mp",
+        date: new Date(),
+      },
+    });
   });
 
   return true;

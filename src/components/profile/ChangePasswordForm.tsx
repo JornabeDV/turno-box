@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { changePasswordAction } from "@/actions/profile";
 
 const inputClass =
-  "w-full h-10 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 pr-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
+  "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 pr-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
 const labelClass = "text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]";
 
 function PasswordField({
