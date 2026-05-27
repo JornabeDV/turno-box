@@ -23,6 +23,7 @@ export default async function AdminSettingsPage() {
       phone: true,
       cancelWindowHours: true,
       waitlistEnabled: true,
+      slug: true,
     },
   });
   if (!gym) redirect("/");
