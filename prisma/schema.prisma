@@ -17,6 +17,7 @@ datasource db {
 // ─── ENUMS ────────────────────────────────────────────────────────────────────
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
   COACH
   STUDENT

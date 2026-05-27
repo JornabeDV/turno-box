@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Envelope, Lock, Eye, EyeSlash, WarningCircle } from "@phosphor-icons/react";
@@ -35,7 +35,16 @@ function LoginFormInner() {
       return;
     }
 
-    router.push(callbackUrl);
+    // Redirigir según rol
+    const session = await getSession();
+    const role = (session?.user as { role?: string } | undefined)?.role;
+
+    let destination = callbackUrl;
+    if (role === "SUPER_ADMIN") destination = "/dashboard/super-admin";
+    else if (role === "ADMIN") destination = "/dashboard/admin";
+    else if (role === "COACH") destination = "/dashboard/coach";
+
+    router.push(destination);
     router.refresh();
   }
 
