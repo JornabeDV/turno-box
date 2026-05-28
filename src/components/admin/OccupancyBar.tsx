@@ -31,7 +31,7 @@ export function OccupancyBar({
     return (
       <div className="space-y-2">
         {/* Números */}
-        <div className="flex items-end justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 sm:gap-0">
           <div>
             <span
               className={cn(

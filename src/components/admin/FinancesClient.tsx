@@ -121,6 +121,15 @@ export function FinancesClient({
   const [expenseCategory, setExpenseCategory] = useState("");
   const [amountDisplay, setAmountDisplay] = useState("");
   const [amountValue, setAmountValue] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [showFullYear, setShowFullYear] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Resetear modal al abrir
   useEffect(() => {
@@ -269,10 +278,29 @@ export function FinancesClient({
 
       {/* Gráfico */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
-        <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
-          Ingresos vs Egresos ({year})
-        </h3>
-        <BarChart data={chart} />
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider">
+            Ingresos vs Egresos ({year})
+          </h3>
+          {isMobile && (
+            <button
+              type="button"
+              onClick={() => setShowFullYear((v) => !v)}
+              className="text-[10px] md:text-xs font-medium text-[#6B8A99] hover:text-[#F78837] transition-colors uppercase tracking-wider"
+            >
+              {showFullYear ? "Ver 6 meses" : "Ver año completo"}
+            </button>
+          )}
+        </div>
+        <BarChart
+          data={
+            isMobile && !showFullYear
+              ? month <= 6
+                ? chart.slice(0, 6)
+                : chart.slice(-6)
+              : chart
+          }
+        />
       </div>
 
       {/* Movimientos */}

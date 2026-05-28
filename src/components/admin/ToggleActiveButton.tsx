@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
@@ -24,8 +24,11 @@ export function ToggleActiveButton({
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isActive, setIsActive] = useState(initialIsActive);
 
-  const isActive = initialIsActive;
+  useEffect(() => {
+    setIsActive(initialIsActive);
+  }, [initialIsActive]);
 
   function handleOpen() {
     setError(null);
@@ -37,6 +40,7 @@ export function ToggleActiveButton({
     startTransition(async () => {
       const res = await action(userId);
       if (res.success) {
+        setIsActive(res.data.isActive);
         setOpen(false);
         toast.success(
           res.data.isActive
