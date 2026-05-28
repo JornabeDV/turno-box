@@ -104,7 +104,7 @@ export function AdminMobileNav() {
                 <div className="flex flex-col gap-1">
                   <span className="px-2 py-1.5 flex items-center self-start">
                     <img
-                      src="/icons/logo_solo.png?v=2"
+                      src="/icons/image.png?v=2"
                       alt="Box Turno"
                       className="h-14 w-auto"
                     />

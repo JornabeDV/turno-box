@@ -46,11 +46,11 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
+        <Button size="md" variant="ghost" onClick={() => setEditOpen(true)}>
           <PencilSimpleIcon size={14} />
           Editar
         </Button>
-        <Button size="sm" variant="danger" onClick={() => setDeleteOpen(true)}>
+        <Button size="md" variant="danger" onClick={() => setDeleteOpen(true)}>
           <TrashIcon size={14} />
           Eliminar
         </Button>
@@ -69,7 +69,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
         onOpenChange={(o) => !o && setDeleteOpen(false)}
         title="Eliminar clase"
         description="¿Eliminar esta clase? Las reservas existentes quedarán en el historial."
-        size="sm"
+        size="md"
       >
         {deleteError && (
           <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
@@ -80,7 +80,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="md"
             className="flex-1"
             onClick={() => setDeleteOpen(false)}
           >
@@ -89,7 +89,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
           <Button
             type="button"
             variant="danger"
-            size="sm"
+            size="md"
             className="flex-1"
             loading={isPending}
             onClick={handleDelete}

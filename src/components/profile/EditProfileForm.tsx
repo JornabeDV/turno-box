@@ -71,7 +71,7 @@ export function EditProfileForm({ name, birthDate }: Props) {
         </p>
       )}
 
-      <Button type="submit" variant="brand" size="sm" fullWidth loading={isPending}>
+      <Button type="submit" variant="brand" size="md" fullWidth loading={isPending}>
         Guardar cambios
       </Button>
     </form>

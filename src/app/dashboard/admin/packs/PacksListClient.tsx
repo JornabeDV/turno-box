@@ -127,13 +127,13 @@ export function PacksListClient({ packs: initial }: Props) {
         onOpenChange={(o) => !o && setConfirmDeleteId(null)}
         title="Eliminar abono"
         description="Esta acción no se puede deshacer."
-        size="sm"
+        size="md"
       >
         <div className="flex gap-2 pt-1">
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="md"
             className="flex-1"
             onClick={() => setConfirmDeleteId(null)}
           >
@@ -142,7 +142,7 @@ export function PacksListClient({ packs: initial }: Props) {
           <Button
             type="button"
             variant="danger"
-            size="sm"
+            size="md"
             className="flex-1"
             loading={isPending}
             onClick={handleDelete}

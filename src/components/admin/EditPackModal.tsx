@@ -156,7 +156,7 @@ export function EditPackModal({ pack, onClose }: Props) {
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="md"
             className="flex-1"
             onClick={handleClose}
           >
@@ -165,7 +165,7 @@ export function EditPackModal({ pack, onClose }: Props) {
           <Button
             type="submit"
             variant="brand"
-            size="sm"
+            size="md"
             className="flex-1"
             loading={isPending}
           >

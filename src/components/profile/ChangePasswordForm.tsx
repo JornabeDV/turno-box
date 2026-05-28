@@ -104,7 +104,7 @@ export function ChangePasswordForm() {
         </p>
       )}
 
-      <Button type="submit" variant="brand" size="sm" fullWidth loading={isPending}>
+      <Button type="submit" variant="brand" size="md" fullWidth loading={isPending}>
         Cambiar contraseña
       </Button>
     </form>

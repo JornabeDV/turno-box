@@ -218,7 +218,7 @@ export function FinancesClient({
             ).map((y) => ({ value: String(y), label: String(y) }))}
             className="w-24"
           />
-          <Button variant="brand" size="sm" onClick={() => setShowModal(true)} className="flex items-center gap-1.5">
+          <Button variant="brand" size="md" onClick={() => setShowModal(true)} className="flex items-center gap-1.5">
             <Plus size={16} weight="bold" />
             Egreso
           </Button>
@@ -478,10 +478,10 @@ export function FinancesClient({
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Button type="button" variant="outline" size="sm" onClick={() => setShowModal(false)}>
+            <Button type="button" variant="outline" size="md" onClick={() => setShowModal(false)}>
               Cancelar
             </Button>
-            <Button type="submit" variant="brand" size="sm" loading={modalPending}>
+            <Button type="submit" variant="brand" size="md" loading={modalPending}>
               Registrar egreso
             </Button>
           </div>

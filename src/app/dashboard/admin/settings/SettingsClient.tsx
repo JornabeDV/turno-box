@@ -242,6 +242,8 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
             variant="brand"
             loading={isPending}
             className="min-w-32"
+            size="md"
+
           >
             Guardar cambios
           </Button>

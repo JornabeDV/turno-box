@@ -55,7 +55,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
             </h2>
           </div>
           <Button
-            size="sm"
+            size="md"
             variant="brand"
             onClick={() => setFormModal({ open: true })}
           >
@@ -133,7 +133,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         onOpenChange={(o) => !o && setDeleteModal({ open: false })}
         title="Eliminar disciplina"
         description={`¿Eliminar "${deleteModal.discipline?.name}"? Las clases asociadas quedarán sin disciplina.`}
-        size="sm"
+        size="md"
       >
         {deleteError && (
           <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
@@ -144,7 +144,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="md"
             className="flex-1"
             onClick={() => setDeleteModal({ open: false })}
           >
@@ -153,7 +153,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
           <Button
             type="button"
             variant="danger"
-            size="sm"
+            size="md"
             className="flex-1"
             loading={isPending}
             onClick={handleDelete}

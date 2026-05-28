@@ -28,11 +28,6 @@ export function TodayPaymentsTable({ payments }: Props) {
               <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                 {p.user.name ?? p.user.email}
               </p>
-              {p.user.name && (
-                <p className="text-[11px] md:text-xs text-[#4A6B7A] truncate">
-                  {p.user.email}
-                </p>
-              )}
             </div>
 
             {/* Abono */}

@@ -98,7 +98,7 @@ export function CoachWeeklyClient({
         <Link
           href={`/dashboard/coach?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="sm" variant="ghost">
+          <Button size="md" variant="ghost">
             <CaretLeftIcon size={14} weight="bold" />
             Anterior
           </Button>
@@ -110,7 +110,7 @@ export function CoachWeeklyClient({
         <Link
           href={`/dashboard/coach?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="sm" variant="ghost">
+          <Button size="md" variant="ghost">
             Siguiente
             <CaretRightIcon size={14} weight="bold" />
           </Button>
