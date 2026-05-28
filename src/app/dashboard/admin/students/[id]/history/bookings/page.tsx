@@ -74,7 +74,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
     <div className="max-w-5xl space-y-6">
       <Link
         href={`/dashboard/admin/students/${id}`}
-        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Volver al alumno

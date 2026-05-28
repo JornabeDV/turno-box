@@ -127,7 +127,7 @@ export default async function CoachDetailPage({ params }: Props) {
     <div className="max-w-5xl space-y-6">
       <Link
         href="/dashboard/admin/coaches"
-        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Coaches
@@ -311,9 +311,9 @@ export default async function CoachDetailPage({ params }: Props) {
                           )}
                           <Link
                             href={`/dashboard/admin/classes/${c.id}`}
-                            className="size-6 rounded-md flex items-center justify-center text-[#4A6B7A] hover:text-[#6B8A99] hover:bg-white/[0.04] transition-all shrink-0"
+                            className="size-8 rounded-md flex items-center justify-center text-[#4A6B7A] hover:text-[#6B8A99] hover:bg-white/[0.04] transition-all shrink-0"
                           >
-                            <PencilSimpleIcon size={12} />
+                            <PencilSimpleIcon size={16} />
                           </Link>
                         </div>
                       );

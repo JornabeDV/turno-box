@@ -63,7 +63,7 @@ export function Dialog({
                   transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 >
                   {/* Header */}
-                  <div className="flex items-start justify-between md:mb-5">
+                  <div className="flex items-start justify-between md:mb-5 shrink-0">
                     <div>
                       <RadixDialog.Title className="text-base font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
                         {title}

@@ -15,7 +15,7 @@ import {
   PAYMENT_METHODS,
 } from "@/lib/finance-constants";
 import { Dialog } from "@/components/ui/Dialog";
-import { Select } from "@/components/ui/Select";
+import { Select, SelectInput } from "@/components/ui/Select";
 import { DateInput } from "@/components/ui/DatePicker";
 import { BarChart } from "./BarChart";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ import {
   Trash,
   CaretLeft,
   CaretRight,
+  TrashIcon,
 } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/Button";
 
@@ -118,6 +119,17 @@ export function FinancesClient({
   );
   const [expenseMethod, setExpenseMethod] = useState("");
   const [expenseCategory, setExpenseCategory] = useState("");
+  const [amountDisplay, setAmountDisplay] = useState("");
+  const [amountValue, setAmountValue] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [showFullYear, setShowFullYear] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Resetear modal al abrir
   useEffect(() => {
@@ -125,6 +137,8 @@ export function FinancesClient({
       setExpenseDate(new Date().toISOString().split("T")[0]);
       setExpenseMethod("");
       setExpenseCategory("");
+      setAmountDisplay("");
+      setAmountValue("");
     }
   }, [showModal]);
 
@@ -218,7 +232,12 @@ export function FinancesClient({
             ).map((y) => ({ value: String(y), label: String(y) }))}
             className="w-24"
           />
-          <Button variant="brand" size="md" onClick={() => setShowModal(true)} className="flex items-center gap-1.5">
+          <Button
+            variant="brand"
+            size="md"
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-1.5"
+          >
             <Plus size={16} weight="bold" />
             Egreso
           </Button>
@@ -259,10 +278,29 @@ export function FinancesClient({
 
       {/* Gráfico */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
-        <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
-          Ingresos vs Egresos ({year})
-        </h3>
-        <BarChart data={chart} />
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider">
+            Ingresos vs Egresos ({year})
+          </h3>
+          {isMobile && (
+            <button
+              type="button"
+              onClick={() => setShowFullYear((v) => !v)}
+              className="text-[10px] md:text-xs font-medium text-[#6B8A99] hover:text-[#F78837] transition-colors uppercase tracking-wider"
+            >
+              {showFullYear ? "Ver 6 meses" : "Ver año completo"}
+            </button>
+          )}
+        </div>
+        <BarChart
+          data={
+            isMobile && !showFullYear
+              ? month <= 6
+                ? chart.slice(0, 6)
+                : chart.slice(-6)
+              : chart
+          }
+        />
       </div>
 
       {/* Movimientos */}
@@ -314,10 +352,13 @@ export function FinancesClient({
           ) : (
             <div className="divide-y divide-[#1A4A63]">
               {items.map((tx) => (
-                <div key={tx.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
+                <div
+                  key={tx.id}
+                  className="flex items-start gap-3 px-4 md:px-5 py-3 md:py-4"
+                >
                   <div
                     className={cn(
-                      "size-2 rounded-full shrink-0",
+                      "size-2 rounded-full shrink-0 mt-1.5",
                       tx.type === "INCOME" ? "bg-[#27C7B8]" : "bg-[#E61919]",
                     )}
                   />
@@ -325,7 +366,7 @@ export function FinancesClient({
                     <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                       {tx.description || tx.category}
                     </p>
-                    <div className="flex items-center gap-2 mt-0.5">
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                       <span className="text-[10px] md:text-xs font-medium text-[#4A6B7A] uppercase tracking-wider">
                         {tx.category}
                       </span>
@@ -334,14 +375,14 @@ export function FinancesClient({
                           · {tx.method}
                         </span>
                       )}
-                      {tx.user && (
-                        <span className="text-[10px] md:text-xs font-medium text-[#6B8A99] truncate">
-                          · {tx.user.name ?? tx.user.email}
-                        </span>
-                      )}
                     </div>
+                    {tx.user && (
+                      <p className="text-[10px] md:text-xs font-medium text-[#6B8A99] mt-0.5">
+                        {tx.user.name ?? tx.user.email}
+                      </p>
+                    )}
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 w-24 md:w-28">
                     <p
                       className={cn(
                         "text-sm md:text-base font-bold tabular-nums",
@@ -357,15 +398,17 @@ export function FinancesClient({
                       {new Date(tx.date).toLocaleDateString("es-AR")}
                     </p>
                   </div>
-                  {!tx.paymentId && (
-                    <button
-                      onClick={() => handleDelete(tx.id, !!tx.paymentId)}
-                      className="p-1.5 text-[#4A6B7A] hover:text-[#E61919] transition-colors shrink-0"
-                      title="Eliminar"
-                    >
-                      <Trash size={14} />
-                    </button>
-                  )}
+                  <div className="w-8 flex justify-end shrink-0">
+                    {!tx.paymentId && (
+                      <button
+                        onClick={() => handleDelete(tx.id, !!tx.paymentId)}
+                        className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all"
+                        title="Eliminar"
+                      >
+                        <TrashIcon size={16} weight="bold" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -407,6 +450,18 @@ export function FinancesClient({
           className="space-y-3"
           onSubmit={(e) => {
             e.preventDefault();
+            if (!expenseCategory) {
+              toast.error("Seleccioná una categoría");
+              return;
+            }
+            if (!expenseMethod) {
+              toast.error("Seleccioná un método de pago");
+              return;
+            }
+            if (!amountValue || parseFloat(amountValue) <= 0) {
+              toast.error("Ingresá un monto válido");
+              return;
+            }
             handleCreateExpense(new FormData(e.currentTarget));
           }}
         >
@@ -414,29 +469,49 @@ export function FinancesClient({
             <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
               Categoría
             </label>
-            <Select
+            <SelectInput
+              name="category"
               value={expenseCategory}
               onChange={(v) => setExpenseCategory(v)}
-              options={[
-                { value: "", label: "Seleccionar…" },
-                ...EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c })),
-              ]}
+              placeholder="Seleccionar"
+              options={EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c }))}
             />
-            <input type="hidden" name="category" value={expenseCategory} />
           </div>
           <div>
             <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
               Monto
             </label>
             <input
-              name="amount"
-              type="number"
-              step="0.01"
-              min={0.01}
-              required
-              placeholder="0.00"
+              type="text"
+              inputMode="decimal"
+              placeholder="0,00"
+              value={amountDisplay}
+              onChange={(e) => {
+                const raw = e.target.value;
+                let cleaned = raw.replace(/\./g, "");
+                cleaned = cleaned.replace(/[^\d,]/g, "");
+                const commaIndex = cleaned.indexOf(",");
+                if (commaIndex !== -1) {
+                  cleaned =
+                    cleaned.slice(0, commaIndex + 1) +
+                    cleaned.slice(commaIndex + 1).replace(/,/g, "");
+                }
+                const parts = cleaned.split(",");
+                if (parts[1] && parts[1].length > 2) {
+                  parts[1] = parts[1].slice(0, 2);
+                }
+                const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                const display =
+                  parts.length > 1 ? `${intPart},${parts[1]}` : intPart;
+                const numeric =
+                  parts[0] +
+                  (parts.length > 1 && parts[1] ? "." + parts[1] : "");
+                setAmountDisplay(display);
+                setAmountValue(numeric);
+              }}
               className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50"
             />
+            <input type="hidden" name="amount" value={amountValue} />
           </div>
           <div>
             <DateInput
@@ -453,18 +528,16 @@ export function FinancesClient({
             <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
               Método de pago
             </label>
-            <Select
+            <SelectInput
+              name="method"
               value={expenseMethod}
               onChange={(v) => setExpenseMethod(v)}
-              options={[
-                { value: "", label: "Seleccionar..." },
-                ...PAYMENT_METHODS.map((m) => ({
-                  value: m,
-                  label: m.charAt(0) + m.slice(1).toLowerCase(),
-                })),
-              ]}
+              placeholder="Seleccionar"
+              options={PAYMENT_METHODS.map((m) => ({
+                value: m,
+                label: m.charAt(0) + m.slice(1).toLowerCase(),
+              }))}
             />
-            <input type="hidden" name="method" value={expenseMethod} />
           </div>
           <div>
             <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
@@ -478,10 +551,20 @@ export function FinancesClient({
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Button type="button" variant="outline" size="md" onClick={() => setShowModal(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              onClick={() => setShowModal(false)}
+            >
               Cancelar
             </Button>
-            <Button type="submit" variant="brand" size="md" loading={modalPending}>
+            <Button
+              type="submit"
+              variant="brand"
+              size="md"
+              loading={modalPending}
+            >
               Registrar egreso
             </Button>
           </div>
@@ -521,7 +604,9 @@ function MetricCard({
         {icon === "wallet" && <Wallet size={14} className="text-[#6B8A99]" />}
         {icon === "list" && <ListDashes size={14} className="text-[#6B8A99]" />}
       </div>
-      <p className={cn("text-lg md:text-xl font-bold tabular-nums", colorClass)}>
+      <p
+        className={cn("text-lg md:text-xl font-bold tabular-nums", colorClass)}
+      >
         {value}
       </p>
       {change !== null && (

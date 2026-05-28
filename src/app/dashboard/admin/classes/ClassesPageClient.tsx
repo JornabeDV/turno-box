@@ -116,7 +116,7 @@ export function ClassesPageClient({
         <Link
           href={`/dashboard/admin/classes?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="ghost">
+          <Button size="md" variant="outline">
             <CaretLeftIcon size={14} weight="bold" />
             Anterior
           </Button>
@@ -128,7 +128,7 @@ export function ClassesPageClient({
         <Link
           href={`/dashboard/admin/classes?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="ghost">
+          <Button size="md" variant="outline">
             Siguiente
             <CaretRightIcon size={14} weight="bold" />
           </Button>

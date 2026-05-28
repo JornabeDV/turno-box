@@ -1,40 +1,56 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
+
 type DataPoint = {
   label: string;
   income: number;
   expense: number;
 };
 
-const CHART_H = 220;
-const CHART_W = 720;
-const PAD_L = 40;
-const PAD_R = 16;
-const PAD_B = 32;
-const PAD_T = 16;
-
 export function BarChart({ data }: { data: DataPoint[] }) {
-  const maxValue = Math.max(
-    1,
-    ...data.map((d) => Math.max(d.income, d.expense))
-  );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(720);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    const ro = new ResizeObserver((entries) => {
+      setContainerWidth(entries[0].contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const isMobile = containerWidth < 640;
+
+  const CHART_H = isMobile ? 260 : 220;
+  const PAD_L = isMobile ? 36 : 44;
+  const PAD_R = isMobile ? 8 : 16;
+  const PAD_B = isMobile ? 48 : 32;
+  const PAD_T = 16;
+  const CHART_W = Math.max(containerWidth, 300);
+
+  const maxValue = Math.max(1, ...data.map((d) => Math.max(d.income, d.expense)));
 
   const barGroupW = (CHART_W - PAD_L - PAD_R) / data.length;
-  const barW = barGroupW * 0.32;
-  const gap = barW * 0.3;
+  const barW = barGroupW * (isMobile ? 0.38 : 0.32);
+  const gap = barW * 0.25;
 
   const yScale = (val: number) =>
     CHART_H - PAD_B - (val / maxValue) * (CHART_H - PAD_T - PAD_B);
 
+  const yTicks = isMobile ? [0, 0.5, 1] : [0, 0.25, 0.5, 0.75, 1];
+
   return (
-    <div className="w-full overflow-x-auto">
+    <div ref={containerRef} className="w-full">
       <svg
         viewBox={`0 0 ${CHART_W} ${CHART_H}`}
-        className="w-full min-w-[400px]"
+        className="w-full"
         preserveAspectRatio="xMidYMid meet"
       >
         {/* Líneas horizontales guía */}
-        {[0, 0.25, 0.5, 0.75, 1].map((p) => {
+        {yTicks.map((p) => {
           const y = yScale(maxValue * p);
           return (
             <g key={p}>
@@ -52,7 +68,7 @@ export function BarChart({ data }: { data: DataPoint[] }) {
                 y={y + 4}
                 textAnchor="end"
                 className="fill-[#4A6B7A]"
-                style={{ fontSize: 10 }}
+                style={{ fontSize: isMobile ? 9 : 10 }}
               >
                 {Math.round(maxValue * p).toLocaleString("es-AR")}
               </text>
@@ -91,10 +107,13 @@ export function BarChart({ data }: { data: DataPoint[] }) {
               {/* Label */}
               <text
                 x={cx}
-                y={CHART_H - 8}
-                textAnchor="middle"
+                y={CHART_H - 10}
+                textAnchor={isMobile ? "end" : "middle"}
+                transform={
+                  isMobile ? `rotate(-45, ${cx}, ${CHART_H - 10})` : undefined
+                }
                 className="fill-[#6B8A99]"
-                style={{ fontSize: 10 }}
+                style={{ fontSize: isMobile ? 9 : 10 }}
               >
                 {d.label}
               </text>

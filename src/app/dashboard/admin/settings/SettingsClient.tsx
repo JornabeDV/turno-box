@@ -218,20 +218,17 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
                 clase está llena.
               </p>
             </div>
-            <button
+            <Button
               type="button"
+              variant={form.waitlistEnabled ? "danger" : "success"}
+              size="md"
               onClick={() =>
                 setForm((f) => ({ ...f, waitlistEnabled: !f.waitlistEnabled }))
               }
-              className={cn(
-                "text-xs cursor-pointer font-medium px-3 py-1.5 rounded-[2px] border transition-all active:scale-95 shrink-0 ml-4",
-                form.waitlistEnabled
-                  ? "border-rose-500/30 text-[#E61919] hover:bg-[#E61919]/10"
-                  : "border-emerald-500/30 text-[#27C7B8] hover:bg-[#27C7B8]/10",
-              )}
+              className="shrink-0 ml-4"
             >
               {form.waitlistEnabled ? "Desactivar" : "Activar"}
-            </button>
+            </Button>
           </div>
         </div>
 

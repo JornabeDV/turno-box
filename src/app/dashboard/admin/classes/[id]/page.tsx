@@ -112,7 +112,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
       {/* Back */}
       <Link
         href="/dashboard/admin/classes"
-        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Clases
@@ -120,7 +120,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
 
       {/* Header de la clase */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             <span
               className="size-3 rounded-full mt-1.5 shrink-0"
@@ -146,26 +146,28 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
 
           {/* Acciones editar/eliminar — solo admin */}
           {isAdmin && (
-            <ClassDetailActions
-              classData={{
-                id: gymClass.id,
-                description: gymClass.description,
-                dayOfWeek: gymClass.dayOfWeek,
-                startTime: gymClass.startTime,
-                endTime: gymClass.endTime,
-                maxCapacity: gymClass.maxCapacity,
-                color: gymClass.color,
-                coachId: gymClass.coachId,
-                disciplineId: gymClass.disciplineId,
-              }}
-              coaches={coaches}
-              disciplines={disciplines}
-            />
+            <div className="self-end sm:self-auto">
+              <ClassDetailActions
+                classData={{
+                  id: gymClass.id,
+                  description: gymClass.description,
+                  dayOfWeek: gymClass.dayOfWeek,
+                  startTime: gymClass.startTime,
+                  endTime: gymClass.endTime,
+                  maxCapacity: gymClass.maxCapacity,
+                  color: gymClass.color,
+                  coachId: gymClass.coachId,
+                  disciplineId: gymClass.disciplineId,
+                }}
+                coaches={coaches}
+                disciplines={disciplines}
+              />
+            </div>
           )}
         </div>
 
         {/* Stats rápidos */}
-        <div className="flex items-center gap-4 mb-4 pt-3 border-t border-[#1A4A63]">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-4 mb-4 pt-3 border-t border-[#1A4A63]">
           <div>
             <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
               Capacidad

@@ -129,12 +129,12 @@ export function PacksListClient({ packs: initial }: Props) {
         description="Esta acción no se puede deshacer."
         size="md"
       >
-        <div className="flex gap-2 pt-1">
+        <div className="flex max-md:flex-col gap-2 max-md:mt-6">
           <Button
             type="button"
             variant="outline"
             size="md"
-            className="flex-1"
+            className="md:flex-1"
             onClick={() => setConfirmDeleteId(null)}
           >
             Cancelar
@@ -143,7 +143,7 @@ export function PacksListClient({ packs: initial }: Props) {
             type="button"
             variant="danger"
             size="md"
-            className="flex-1"
+            className="md:flex-1"
             loading={isPending}
             onClick={handleDelete}
           >
