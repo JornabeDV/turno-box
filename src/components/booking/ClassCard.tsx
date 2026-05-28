@@ -126,11 +126,11 @@ export function ClassCard({ slot, dateStr, index }: Props) {
 
       {/* Acción */}
       {localBooking?.status === "CONFIRMED" ? (
-        <Button variant="danger" size="sm" fullWidth loading={isPending} onClick={handleCancel}>
+        <Button variant="danger" size="md" fullWidth loading={isPending} onClick={handleCancel}>
           Cancelar turno
         </Button>
       ) : localBooking?.status === "WAITLISTED" ? (
-        <Button variant="ghost" size="sm" fullWidth loading={isPending} onClick={handleCancel}>
+        <Button variant="ghost" size="md" fullWidth loading={isPending} onClick={handleCancel}>
           Salir de la lista
         </Button>
       ) : slot.isFull ? (

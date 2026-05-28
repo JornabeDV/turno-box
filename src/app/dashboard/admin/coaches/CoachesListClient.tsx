@@ -167,13 +167,13 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
         onOpenChange={(o) => !o && setConfirmDeleteId(null)}
         title="Eliminar coach"
         description="Esta acción no se puede deshacer."
-        size="sm"
+        size="md"
       >
         <div className="flex gap-2 pt-1">
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="md"
             className="flex-1"
             onClick={() => setConfirmDeleteId(null)}
           >
@@ -182,7 +182,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
           <Button
             type="button"
             variant="danger"
-            size="sm"
+            size="md"
             className="flex-1"
             loading={isPending}
             onClick={handleDelete}

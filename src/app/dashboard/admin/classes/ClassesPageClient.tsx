@@ -99,7 +99,7 @@ export function ClassesPageClient({
           </h2>
         </div>
         <Button
-          size="sm"
+          size="md"
           variant="brand"
           onClick={() => setShowClassModal(true)}
         >
@@ -116,7 +116,7 @@ export function ClassesPageClient({
         <Link
           href={`/dashboard/admin/classes?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="sm" variant="ghost">
+          <Button size="md" variant="ghost">
             <CaretLeftIcon size={14} weight="bold" />
             Anterior
           </Button>
@@ -128,7 +128,7 @@ export function ClassesPageClient({
         <Link
           href={`/dashboard/admin/classes?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="sm" variant="ghost">
+          <Button size="md" variant="ghost">
             Siguiente
             <CaretRightIcon size={14} weight="bold" />
           </Button>

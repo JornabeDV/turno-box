@@ -149,7 +149,7 @@ export function DisciplineModal({ open, onClose, discipline }: Props) {
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            size="md"
             onClick={handleClose}
             className="sm:flex-1"
           >
@@ -158,7 +158,7 @@ export function DisciplineModal({ open, onClose, discipline }: Props) {
           <Button
             type="submit"
             variant="brand"
-            size="sm"
+            size="md"
             loading={isPending}
             className="sm:flex-1"
           >

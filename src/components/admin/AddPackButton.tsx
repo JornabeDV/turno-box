@@ -10,7 +10,7 @@ export function AddPackButton() {
 
   return (
     <>
-      <Button size="sm" variant="brand" onClick={() => setOpen(true)}>
+      <Button size="md" variant="brand" onClick={() => setOpen(true)}>
         <PlusIcon size={14} weight="bold" />
         Nuevo abono
       </Button>

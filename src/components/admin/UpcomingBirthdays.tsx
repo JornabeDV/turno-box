@@ -33,9 +33,6 @@ export function UpcomingBirthdays({ birthdays }: Props) {
               <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                 {b.name ?? b.email}
               </p>
-              {b.name && (
-                <p className="text-[11px] md:text-xs text-[#4A6B7A] truncate">{b.email}</p>
-              )}
             </div>
 
             {/* Fecha */}

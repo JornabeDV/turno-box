@@ -26,7 +26,7 @@ export function AdminNewsClient({ announcements }: Props) {
         </div>
         <Button
           variant="brand"
-          size="sm"
+          size="md"
           onClick={() => newsRef.current?.openCreate()}
         >
           <PlusIcon size={14} weight="bold" />
