@@ -127,7 +127,7 @@ export default async function StudentDetailPage({ params }: Props) {
                 initialIsActive={student.isActive}
               />
             </div>
-            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
+            <div className="flex items-start gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
                 <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                   Desde
@@ -141,12 +141,12 @@ export default async function StudentDetailPage({ params }: Props) {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                   Próximos turnos
                 </p>
                 <p
                   className={cn(
-                    "text-xs font-bold mt-0.5",
+                    "text-xs md:text-sm font-bold mt-0.5",
                     confirmedCount > 0 ? "text-[#27C7B8]" : "text-[#4A6B7A]",
                   )}
                 >
@@ -154,12 +154,12 @@ export default async function StudentDetailPage({ params }: Props) {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                   Estado
                 </p>
                 <p
                   className={cn(
-                    "text-xs font-medium mt-0.5",
+                    "text-xs md:text-sm font-medium mt-0.5",
                     student.isActive ? "text-[#27C7B8]" : "text-[#6B8A99]",
                   )}
                 >
@@ -211,12 +211,12 @@ export default async function StudentDetailPage({ params }: Props) {
                     </p>
                   </div>
                   {b.status === "WAITLISTED" && (
-                    <span className="text-[10px] md:text-xs text-[#F78837] font-medium shrink-0">
+                    <span className="text-xs md:text-sm text-[#F78837] font-medium shrink-0">
                       #{b.waitlistPos} espera
                     </span>
                   )}
                   {b.status === "CONFIRMED" && (
-                    <span className="text-[10px] md:text-xs text-[#27C7B8] font-medium shrink-0">
+                    <span className="text-xs md:text-sm text-[#27C7B8] font-medium shrink-0">
                       Confirmado
                     </span>
                   )}
@@ -242,7 +242,7 @@ export default async function StudentDetailPage({ params }: Props) {
           </Link>
           <Link
             href={`/dashboard/admin/students/${id}/history/credits`}
-            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
           >
             <span className="size-1.5 rounded-full bg-[#F78837]" />
             Créditos

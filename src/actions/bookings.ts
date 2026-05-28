@@ -118,7 +118,7 @@ export async function bookClassAction(
 
         let targetPaymentId: string | null = null;
         for (const p of activePayments) {
-          const remaining = p.creditsGranted + p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          const remaining = p.creditTxs.reduce((s, t) => s + t.amount, 0);
           if (remaining > 0) {
             targetPaymentId = p.id;
             break;
@@ -290,7 +290,7 @@ export async function cancelBookingAction(
 
         let candidatePaymentId: string | null = null;
         for (const p of candidatePayments) {
-          const remaining = p.creditsGranted + p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          const remaining = p.creditTxs.reduce((s, t) => s + t.amount, 0);
           if (remaining > 0) { candidatePaymentId = p.id; break; }
         }
 

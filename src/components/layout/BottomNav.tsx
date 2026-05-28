@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { House, Calendar, ShoppingCart, User } from "@phosphor-icons/react";
+import { House, Calendar, Wallet, User } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/", label: "Inicio", Icon: House },
   { href: "/bookings", label: "Reservas", Icon: Calendar },
-  { href: "/packs", label: "Abonos", Icon: ShoppingCart },
+  { href: "/credits", label: "Créditos", Icon: Wallet },
   { href: "/profile", label: "Perfil", Icon: User },
 ];
 

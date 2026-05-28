@@ -10,7 +10,7 @@ export default function LoginPage() {
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
-        <div className="w-full mb-8">
+        <div className="w-full mb-3 md:mb-3 md:mb-8">
           <Logo />
         </div>
 
@@ -36,7 +36,7 @@ export default function LoginPage() {
         </p>
 
         {/* Legal footer */}
-        <div className="mt-10 text-center space-y-1">
+        <div className="mt-5 md:mt-10 text-center space-y-1">
           <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
             © 2026 Box Turno. Todos los derechos reservados.
           </p>

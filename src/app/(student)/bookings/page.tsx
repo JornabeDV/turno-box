@@ -43,8 +43,8 @@ export default async function BookingsPage() {
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
           Mis turnos
         </h2>
-        <p className="text-xs text-[#6B8A99] mt-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
-          Próximas reservas
+        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+          Próximas reservas confirmadas
         </p>
       </div>
 

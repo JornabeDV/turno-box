@@ -87,6 +87,9 @@ export default async function ProfilePage() {
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
           Perfil
         </h2>
+        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+          Tus datos y estadísticas
+        </p>
       </div>
 
       {/* ── Bloque 1: Datos personales ───────────────────────────────────── */}
