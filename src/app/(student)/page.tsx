@@ -80,7 +80,7 @@ export default async function HomePage() {
   const subs = activeSubscriptions
     .map((sub) => ({
       expiresAt: sub.expiresAt!,
-      remaining: sub.creditsGranted + sub.creditTxs.reduce((s, t) => s + t.amount, 0),
+      remaining: sub.creditTxs.reduce((s, t) => s + t.amount, 0),
     }))
     .filter((sub) => sub.remaining > 0);
 
@@ -106,7 +106,7 @@ export default async function HomePage() {
         {sub && (
           <div className="mt-2 inline-flex items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
             <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
-              {sub.remaining} {sub.remaining === 1 ? "CLS" : "CLS"} restantes
+              {sub.remaining} {sub.remaining === 1 ? "CLASE" : "CLASES"} restantes
             </span>
             {daysLeft !== null && daysLeft <= 7 && (
               <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837]">

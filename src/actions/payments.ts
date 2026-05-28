@@ -24,9 +24,8 @@ export async function createCheckoutAction(
   });
   if (!pack) return { success: false, error: "Abono no encontrado." };
 
-  const expiresAt = pack.validityDays
-    ? new Date(Date.now() + pack.validityDays * 86_400_000)
-    : null;
+  const validityDays = pack.validityDays ?? 30;
+  const expiresAt = new Date(Date.now() + validityDays * 86_400_000);
 
   // Crear payment PENDING — su id es la external_reference en MP
   const payment = await prisma.payment.create({

@@ -8,13 +8,10 @@ export const metadata: Metadata = { title: "Olvidé mi contraseña" };
 export default function ForgotPasswordPage() {
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-4 bg-[#0A1F2A] relative">
-      <div className="absolute top-4 right-4 text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
-        BEE_BOX v1.0
-      </div>
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
-        <div className="w-full mb-8">
+        <div className="w-full mb-3 md:mb-8">
           <Logo />
         </div>
 

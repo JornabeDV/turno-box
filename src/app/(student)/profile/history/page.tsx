@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
+import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Historial de abonos" };
@@ -65,6 +66,9 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
           Historial de abonos
         </h2>
+        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+          Movimientos de compras y ajustes
+        </p>
       </div>
 
       {entries.length === 0 ? (
@@ -144,14 +148,7 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
             })}
           </div>
 
-          {hasMore && (
-            <Link
-              href={`/profile/history?limit=${nextLimit}`}
-              className="w-full flex items-center justify-center h-12 border border-[#1A4A63] text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
-            >
-              Ver más
-            </Link>
-          )}
+          {hasMore && <LoadMoreButton nextLimit={nextLimit} basePath="/profile/history" />}
         </>
       )}
     </section>

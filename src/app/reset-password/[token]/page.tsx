@@ -13,13 +13,10 @@ export default async function ResetPasswordPage({ params }: PageProps) {
 
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center px-4 bg-[#0A1F2A] relative">
-      <div className="absolute top-4 right-4 text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
-        BEE_BOX v1.0
-      </div>
 
       <div className="w-full max-w-sm relative">
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-3 md:mb-8">
           <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl">
             Box Turno
           </h1>

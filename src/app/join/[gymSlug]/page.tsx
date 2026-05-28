@@ -42,7 +42,7 @@ export default async function JoinPage({
   return (
     <section className="max-w-sm mx-auto pt-8 pb-12 px-4">
       {/* Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-3 md:mb-8">
         <div className="inline-flex items-center justify-center size-14 border border-[#F78837]/30 bg-[#F78837]/10 mb-4">
           {gym.logoUrl ? (
             <img src={gym.logoUrl} alt={gym.name} className="w-8 h-8 object-contain" />

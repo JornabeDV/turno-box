@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 type Props = { credits: number; href?: string };
 
-export function CreditsBadge({ credits, href = "/packs" }: Props) {
+export function CreditsBadge({ credits, href = "/credits" }: Props) {
   const isZero = credits === 0;
   const isLow = credits > 0 && credits <= 3;
 
