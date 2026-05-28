@@ -141,7 +141,7 @@ export function DisciplineModal({ open, onClose, discipline }: Props) {
 
         {error && (
           <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs text-[#E61919]">{error}</p>
+            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
           </div>
         )}
 

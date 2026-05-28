@@ -112,7 +112,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
       {/* Back */}
       <Link
         href="/dashboard/admin/classes"
-        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Clases
@@ -127,17 +127,17 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               style={{ backgroundColor: gymClass.color ?? "#f97316" }}
             />
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
                 {gymClass.discipline?.name ?? "Sin disciplina"}
               </h2>
-              <p className="text-sm text-[#6B8A99] mt-0.5">
+              <p className="text-sm md:text-base text-[#6B8A99] mt-0.5">
                 {DAY_LABELS[gymClass.dayOfWeek]} · {formatDate(targetDate)} ·{" "}
                 {formatTime(gymClass.startTime)} –{" "}
                 {formatTime(gymClass.endTime)}
                 {gymClass.coach?.name && ` · ${gymClass.coach.name}`}
               </p>
               {gymClass.description && (
-                <p className="text-xs text-[#4A6B7A] mt-1.5">
+                <p className="text-xs md:text-sm text-[#4A6B7A] mt-1.5">
                   {gymClass.description}
                 </p>
               )}
@@ -167,10 +167,10 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         {/* Stats rápidos */}
         <div className="flex items-center gap-4 mb-4 pt-3 border-t border-[#1A4A63]">
           <div>
-            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
               Capacidad
             </p>
-            <p className="text-xs font-bold text-[#EAEAEA] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
               {gymClass.maxCapacity} cupos
             </p>
           </div>
@@ -178,7 +178,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
             <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
               Confirmados
             </p>
-            <p className="text-xs font-bold text-[#27C7B8] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
               {confirmed.length}
             </p>
           </div>
@@ -187,7 +187,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
                 En espera
               </p>
-              <p className="text-xs font-bold text-[#F78837] mt-0.5">
+              <p className="text-xs md:text-sm font-bold text-[#F78837] mt-0.5">
                 {waitlisted.length}
               </p>
             </div>
@@ -196,7 +196,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
             <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
               Disponibles
             </p>
-            <p className="text-xs font-bold text-[#EAEAEA] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
               {Math.max(0, gymClass.maxCapacity - confirmed.length)}
             </p>
           </div>

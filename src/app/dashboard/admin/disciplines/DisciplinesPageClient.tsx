@@ -47,10 +47,10 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+            <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
               Admin
             </p>
-            <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
               Disciplinas
             </h2>
           </div>
@@ -67,7 +67,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         {/* Lista */}
         {disciplines.length === 0 ? (
           <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-            <p className="text-sm text-[#6B8A99] mb-4">
+            <p className="text-sm md:text-base text-[#6B8A99] mb-4">
               No hay disciplinas creadas todavía.
             </p>
             <Button
@@ -84,7 +84,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
               <div
                 key={d.id}
                 onClick={() => setFormModal({ open: true, discipline: d })}
-                className="flex items-center gap-4 px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors"
+                className="flex items-center gap-4 px-4 md:px-5 py-3.5 md:py-4 cursor-pointer hover:bg-white/[0.03] transition-colors"
               >
                 {/* Color dot + nombre */}
                 <span
@@ -92,9 +92,9 @@ export function DisciplinesPageClient({ disciplines }: Props) {
                   style={{ backgroundColor: d.color ?? "#f97316" }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#EAEAEA]">{d.name}</p>
+                  <p className="text-sm md:text-base font-medium text-[#EAEAEA]">{d.name}</p>
                   {d.description && (
-                    <p className="text-xs text-[#6B8A99] mt-0.5 truncate">
+                    <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5 truncate">
                       {d.description}
                     </p>
                   )}
@@ -137,7 +137,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
       >
         {deleteError && (
           <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs text-[#E61919]">{deleteError}</p>
+            <p className="text-xs md:text-sm text-[#E61919]">{deleteError}</p>
           </div>
         )}
         <div className="flex gap-2">

@@ -101,14 +101,14 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        "bg-[#0E2A38] border border-[#1A4A63] p-3 md:p-4 animate-in md:flex items-center justify-start gap-3",
+        "bg-[#0E2A38] border border-[#1A4A63] p-3 md:p-4 lg:p-5 animate-in md:flex items-center justify-start gap-3 md:gap-4",
         large && "col-span-2 md:col-span-4 flex items-center gap-4",
         className,
       )}
     >
       <div
         className={cn(
-          "size-9 rounded-[2px] flex items-center justify-center shrink-0",
+          "size-9 md:size-10 rounded-[2px] flex items-center justify-center shrink-0",
           accent === "orange" && "bg-[#F78837]/10 text-[#F78837]",
           accent === "emerald" && "bg-[#27C7B8]/10 text-[#27C7B8]",
           accent === "rose" && "bg-[#E61919]/10 text-[#E61919]",
@@ -121,13 +121,13 @@ export function MetricCard({
         <p
           className={cn(
             "font-bold tabular-nums leading-none",
-            large ? "text-3xl" : "text-2xl",
+            large ? "text-3xl md:text-4xl" : "text-2xl md:text-3xl",
             accentStyles[accent],
           )}
         >
           {value}
         </p>
-        <p className="text-xs text-[#6B8A99] mt-1">{label}</p>
+        <p className="text-xs md:text-sm text-[#6B8A99] mt-1">{label}</p>
       </div>
     </div>
   );

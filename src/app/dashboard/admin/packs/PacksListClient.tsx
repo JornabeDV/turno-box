@@ -47,7 +47,7 @@ export function PacksListClient({ packs: initial }: Props) {
           <div
             key={pack.id}
             onClick={() => setEditing(pack)}
-            className="flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors group"
+            className="flex items-center gap-3 px-4 md:px-5 py-3.5 md:py-4 cursor-pointer hover:bg-white/[0.03] transition-colors group"
           >
             {/* Credits circle */}
             <div
@@ -72,13 +72,13 @@ export function PacksListClient({ packs: initial }: Props) {
             <div className="flex-1 min-w-0">
               <p
                 className={cn(
-                  "text-sm font-medium truncate",
+                  "text-sm md:text-base font-medium truncate",
                   pack.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
                 )}
               >
                 {pack.name}
               </p>
-              <p className="text-xs text-[#4A6B7A] font-mono tabular-nums">
+              <p className="text-xs md:text-sm text-[#4A6B7A] font-mono tabular-nums">
                 {new Intl.NumberFormat("es-AR", {
                   style: "currency",
                   currency: pack.currency,
@@ -92,10 +92,10 @@ export function PacksListClient({ packs: initial }: Props) {
 
             {/* Ventas */}
             <div className="text-right shrink-0 hidden sm:block">
-              <p className="text-xs font-mono font-bold text-[#EAEAEA] tabular-nums">
+              <p className="text-xs md:text-sm font-mono font-bold text-[#EAEAEA] tabular-nums">
                 {pack._count.payments}
               </p>
-              <p className="text-[10px] text-[#4A6B7A]">ventas</p>
+              <p className="text-[10px] md:text-xs text-[#4A6B7A]">ventas</p>
             </div>
 
             {/* Toggle */}

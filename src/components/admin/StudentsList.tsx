@@ -50,7 +50,7 @@ export function StudentsList({ students }: Props) {
       {/* Lista */}
       {filtered.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-12 text-center">
-          <p className="text-sm text-[#6B8A99]">
+          <p className="text-sm md:text-base text-[#6B8A99]">
             {query
               ? "Sin resultados para esa búsqueda."
               : "No hay alumnos registrados."}
@@ -76,14 +76,14 @@ export function StudentsList({ students }: Props) {
                     router.push(`/dashboard/admin/students/${s.id}`)
                   }
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
+                    "flex items-center gap-3 px-4 md:px-5 py-3 md:py-4 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
                     `stagger-${Math.min(i + 1, 6)}`,
                   )}
                 >
                   {/* Avatar */}
                   <div
                     className={cn(
-                      "size-9 rounded-[2px] border flex items-center justify-center text-xs font-semibold shrink-0",
+                      "size-9 md:size-10 rounded-[2px] border flex items-center justify-center text-xs md:text-sm font-semibold shrink-0",
                       s.isActive
                         ? "bg-[#0E2A38] border-[#1A4A63] text-[#EAEAEA]"
                         : "bg-[#0A1F2A] border-[#1A4A63] text-[#4A6B7A]",
@@ -96,7 +96,7 @@ export function StudentsList({ students }: Props) {
                   <div className="flex-1 min-w-0">
                     <p
                       className={cn(
-                        "text-sm font-medium truncate leading-tight",
+                        "text-sm md:text-base font-medium truncate leading-tight",
                         s.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
                       )}
                     >
@@ -107,7 +107,7 @@ export function StudentsList({ students }: Props) {
                   {/* Próximas reservas */}
                   <span
                     className={cn(
-                      "text-xs font-mono tabular-nums shrink-0 hidden sm:block",
+                      "text-xs md:text-sm font-mono tabular-nums shrink-0 hidden sm:block",
                       s.upcomingCount > 0 ? "text-[#27C7B8]" : "text-[#4A6B7A]",
                     )}
                   >
@@ -118,7 +118,7 @@ export function StudentsList({ students }: Props) {
 
                   {/* Badge inactivo */}
                   {!s.isActive && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#0E2A38] text-[#6B8A99] shrink-0 hidden md:block">
+                    <span className="text-[10px] md:text-xs font-medium px-2 py-0.5 rounded-full bg-[#0E2A38] text-[#6B8A99] shrink-0 hidden md:block">
                       Inactivo
                     </span>
                   )}
@@ -137,7 +137,7 @@ export function StudentsList({ students }: Props) {
         </div>
       )}
 
-      <p className="text-xs text-[#4A6B7A] px-1">
+      <p className="text-xs md:text-sm text-[#4A6B7A] px-1">
         {filtered.length} {filtered.length === 1 ? "alumno" : "alumnos"}
         {query && ` · filtrando por "${query}"`}
       </p>

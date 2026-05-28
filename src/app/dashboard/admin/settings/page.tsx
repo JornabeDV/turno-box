@@ -31,10 +31,10 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+        <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
           Admin
         </p>
-        <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
           Configuración
         </h2>
       </div>

@@ -74,30 +74,30 @@ export default async function StudentCreditsHistoryPage({ params, searchParams }
     <div className="max-w-5xl space-y-6">
       <Link
         href={`/dashboard/admin/students/${id}`}
-        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Volver al alumno
       </Link>
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <h2 className="text-lg font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight">
           Historial de créditos
         </h2>
-        <p className="text-sm text-[#6B8A99] mt-1">
+        <p className="text-sm md:text-base text-[#6B8A99] mt-1">
           {student.name ?? student.email}
         </p>
       </div>
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
         {creditTxs.length === 0 ? (
-          <p className="text-xs text-[#4A6B7A] text-center py-12">
+          <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-12">
             Sin movimientos de créditos.
           </p>
         ) : (
           <div className="divide-y divide-[#1A4A63]">
             {creditTxs.map((tx) => (
-              <div key={tx.id} className="flex items-center gap-3 px-4 py-3">
+              <div key={tx.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
                 <div
                   className={cn(
                     "size-8 border flex items-center justify-center shrink-0",
@@ -108,7 +108,7 @@ export default async function StudentCreditsHistoryPage({ params, searchParams }
                 >
                   <span
                     className={cn(
-                      "text-xs font-bold leading-none",
+                      "text-xs md:text-sm font-bold leading-none",
                       tx.amount > 0 ? "text-[#27C7B8]" : "text-[#E61919]",
                     )}
                   >
@@ -116,7 +116,7 @@ export default async function StudentCreditsHistoryPage({ params, searchParams }
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#EAEAEA] truncate">
+                  <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate">
                     {tx.type === "ADJUSTMENT" && "Ajuste manual"}
                     {tx.type === "PURCHASE" && (tx.payment?.pack?.name ?? "Compra de pack")}
                     {tx.type === "CONSUME" && "Reserva de turno"}
@@ -124,9 +124,9 @@ export default async function StudentCreditsHistoryPage({ params, searchParams }
                     {tx.type === "EXPIRY" && "Vencimiento"}
                   </p>
                   {tx.note && (
-                    <p className="text-xs text-[#6B8A99] truncate">{tx.note}</p>
+                    <p className="text-xs md:text-sm text-[#6B8A99] truncate">{tx.note}</p>
                   )}
-                  <p className="text-[10px] text-[#4A6B7A]">
+                  <p className="text-[10px] md:text-xs text-[#4A6B7A]">
                     {tx.createdAt.toLocaleDateString("es-AR", {
                       day: "numeric",
                       month: "short",
@@ -163,14 +163,14 @@ export default async function StudentCreditsHistoryPage({ params, searchParams }
           <Link
             href={`/dashboard/admin/students/${id}/history/credits?page=${page - 1}`}
             className={cn(
-              "inline-flex items-center gap-1 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors",
+              "inline-flex items-center gap-1 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors",
               !hasPrev && "pointer-events-none opacity-30",
             )}
           >
             <CaretLeftIcon size={12} />
             Anterior
           </Link>
-          <span className="text-xs text-[#6B8A99] tabular-nums">
+          <span className="text-xs md:text-sm text-[#6B8A99] tabular-nums">
             Página {page} de {totalPages}
           </span>
           <Link

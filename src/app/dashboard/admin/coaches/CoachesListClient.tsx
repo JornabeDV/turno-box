@@ -76,7 +76,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                   router.push(`/dashboard/admin/coaches/${coach.id}`)
                 }
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
+                  "flex items-center gap-3 px-4 md:px-5 py-3.5 md:py-4 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
                   `stagger-${Math.min(i + 1, 6)}`,
                 )}
               >
@@ -96,7 +96,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                 <div className="flex-1 min-w-0">
                   <p
                     className={cn(
-                      "text-sm font-medium truncate leading-tight",
+                      "text-sm md:text-base font-medium truncate leading-tight",
                       coach.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
                     )}
                   >
@@ -107,13 +107,13 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                 {/* Días que enseña */}
                 <div className="hidden md:flex items-center gap-1 shrink-0">
                   {coach.teachingDays.length === 0 ? (
-                    <span className="text-xs text-[#4A6B7A]">Sin clases</span>
+                    <span className="text-xs md:text-sm text-[#4A6B7A]">Sin clases</span>
                   ) : (
                     coach.teachingDays.map((d) => (
                       <span
                         key={d}
                         className={cn(
-                          "text-[10px] font-medium px-1.5 py-0.5 rounded-md",
+                          "text-[10px] md:text-xs font-medium px-1.5 py-0.5 rounded-md",
                           d === dayOfWeek
                             ? "bg-[#F78837]/15 text-[#F78837]"
                             : "bg-[#0E2A38] text-[#6B8A99]",
@@ -127,12 +127,12 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
 
                 {/* Clases totales + asistentes hoy */}
                 <div className="hidden sm:flex flex-col items-end shrink-0 min-w-[60px]">
-                  <span className="text-xs font-mono text-[#6B8A99] tabular-nums">
+                  <span className="text-xs md:text-sm font-mono text-[#6B8A99] tabular-nums">
                     {coach.classCount}{" "}
                     {coach.classCount === 1 ? "clase" : "clases"}
                   </span>
                   {coach.todayAttendees > 0 && (
-                    <span className="text-[10px] text-[#27C7B8] tabular-nums">
+                    <span className="text-[10px] md:text-xs text-[#27C7B8] tabular-nums">
                       {coach.todayAttendees} hoy
                     </span>
                   )}

@@ -85,7 +85,7 @@ export function PushNotificationToggle() {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <div className="size-9 border border-[#1A4A63] bg-[#0A1F2A] flex items-center justify-center shrink-0">
+        <div className="size-9 md:size-10 border border-[#1A4A63] bg-[#0A1F2A] flex items-center justify-center shrink-0">
           {isGranted ? (
             <BellIcon size={18} className="text-[#F78837]" weight="fill" />
           ) : (
@@ -93,10 +93,10 @@ export function PushNotificationToggle() {
           )}
         </div>
         <div>
-          <p className="text-sm font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)] uppercase tracking-tight">
+          <p className="text-sm md:text-base font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)] uppercase tracking-tight">
             Notificaciones push
           </p>
-          <p className="text-xs text-[#6B8A99] mt-0.5 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+          <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
             {isGranted
               ? "Activas en este dispositivo"
               : isDenied

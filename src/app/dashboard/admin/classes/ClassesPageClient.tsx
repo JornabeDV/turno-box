@@ -91,10 +91,10 @@ export function ClassesPageClient({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
             Admin
           </p>
-          <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
             Clases
           </h2>
         </div>
@@ -121,7 +121,7 @@ export function ClassesPageClient({
             Anterior
           </Button>
         </Link>
-        <p className="text-sm font-medium text-[#EAEAEA] tabular-nums">
+        <p className="text-sm md:text-base font-medium text-[#EAEAEA] tabular-nums">
           {formatShortDate(weekStart)} –{" "}
           {formatShortDate(addDays(weekStart, 6))}
         </p>
@@ -138,7 +138,7 @@ export function ClassesPageClient({
       {/* Grid semanal */}
       {totalClasses === 0 && disciplines.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm text-[#6B8A99] mb-4">
+          <p className="text-sm md:text-base text-[#6B8A99] mb-4">
             No hay clases creadas todavía.
           </p>
           <Button
@@ -173,17 +173,17 @@ export function ClassesPageClient({
                     {/* Mobile */}
                     <div className="md:hidden flex items-center justify-between px-3 py-2.5">
                       <span
-                        className={`text-sm font-semibold ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
+                        className={`text-sm md:text-base font-semibold ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
                       >
                         {DAY_LABELS[dayKey]}
                         {isToday && (
-                          <span className="ml-2 text-[10px] bg-[#F78837]/20 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
+                          <span className="ml-2 text-[10px] md:text-xs bg-[#F78837]/20 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
                             hoy
                           </span>
                         )}
                       </span>
                       <span
-                        className={`text-xs font-mono tabular-nums ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
+                        className={`text-xs md:text-sm font-mono tabular-nums ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
                       >
                         {date.toLocaleDateString("es-AR", {
                           day: "numeric",
@@ -194,7 +194,7 @@ export function ClassesPageClient({
                     {/* Desktop */}
                     <div className="hidden md:block text-center py-2">
                       <p
-                        className={`text-[10px] font-bold uppercase tracking-widest ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
+                        className={`text-[10px] md:text-xs font-bold uppercase tracking-widest ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
                       >
                         {DAY_LABELS[dayKey].slice(0, 3)}
                       </p>
@@ -209,7 +209,7 @@ export function ClassesPageClient({
                   {/* Cards de turnos */}
                   {slots.length === 0 ? (
                     <div className="flex items-center justify-center py-6">
-                      <span className="text-xs text-[#4A6B7A]">—</span>
+                      <span className="text-xs md:text-sm text-[#4A6B7A]">—</span>
                     </div>
                   ) : (
                     slots.map((slot: ClassSlot) => {
@@ -232,24 +232,24 @@ export function ClassesPageClient({
                                 backgroundColor: slot.color ?? "#f97316",
                               }}
                             />
-                            <p className="text-sm font-semibold text-[#EAEAEA] leading-tight line-clamp-2">
+                            <p className="text-sm md:text-base font-semibold text-[#EAEAEA] leading-tight line-clamp-2">
                               {slot.name}
                             </p>
                           </div>
 
                           {/* Horario */}
-                          <p className="text-xs text-[#6B8A99] font-mono tabular-nums leading-none">
+                          <p className="text-xs md:text-sm text-[#6B8A99] font-mono tabular-nums leading-none">
                             {formatTime(slot.startTime)}
                           </p>
 
                           {/* Ocupación */}
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs text-[#6B8A99] tabular-nums font-medium">
+                              <span className="text-xs md:text-sm text-[#6B8A99] tabular-nums font-medium">
                                 {slot.confirmedCount}/{slot.maxCapacity}
                               </span>
                               <span
-                                className={`text-xs font-semibold ${isFull ? "text-[#E61919]" : "text-[#27C7B8]"}`}
+                                className={`text-xs md:text-sm font-semibold ${isFull ? "text-[#E61919]" : "text-[#27C7B8]"}`}
                               >
                                 {isFull
                                   ? "Lleno"
