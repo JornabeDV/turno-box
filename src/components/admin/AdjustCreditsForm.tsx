@@ -78,7 +78,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
   return (
     <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider">
+        <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider">
           Créditos disponibles
         </h3>
         <span
@@ -98,7 +98,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Atajos rápidos */}
         <div>
-          <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider mb-2">
+          <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider mb-2">
             Acreditar rápido
           </p>
           <div className="flex gap-2">
@@ -191,7 +191,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           </div>
         )}
 
-        <p className="text-[10px] text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
+        <p className="text-[10px] md:text-xs text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
 
         {/* Nota obligatoria */}
         <input
@@ -203,7 +203,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
 
-        {error && <p className="text-xs text-[#E61919]">{error}</p>}
+        {error && <p className="text-xs md:text-sm text-[#E61919]">{error}</p>}
 
         <button
           type="submit"

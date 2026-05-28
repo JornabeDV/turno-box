@@ -13,7 +13,7 @@ export function TodayPaymentsTable({ payments }: Props) {
   if (payments.length === 0) {
     return (
       <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
-        <p className="text-sm text-[#6B8A99]">No hubo pagos aprobados hoy.</p>
+        <p className="text-sm md:text-base text-[#6B8A99]">No hubo pagos aprobados hoy.</p>
       </div>
     );
   }
@@ -22,27 +22,27 @@ export function TodayPaymentsTable({ payments }: Props) {
     <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
       <div className="divide-y divide-[#1A4A63]">
         {payments.map((p) => (
-          <div key={p.id} className="flex items-center gap-3 px-4 py-3.5">
+          <div key={p.id} className="flex items-center gap-3 px-4 md:px-5 py-3.5 md:py-4">
             {/* Alumno */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[#EAEAEA] truncate leading-tight">
+              <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                 {p.user.name ?? p.user.email}
               </p>
               {p.user.name && (
-                <p className="text-[11px] text-[#4A6B7A] truncate">
+                <p className="text-[11px] md:text-xs text-[#4A6B7A] truncate">
                   {p.user.email}
                 </p>
               )}
             </div>
 
             {/* Abono */}
-            <span className="text-xs font-medium text-[#EAEAEA] shrink-0 hidden sm:block">
+            <span className="text-xs md:text-sm font-medium text-[#EAEAEA] shrink-0 hidden sm:block">
               {p.pack?.name ?? "—"}
             </span>
 
             {/* Vigencia */}
             {p.expiresAt ? (
-              <span className="text-xs font-mono text-[#6B8A99] tabular-nums shrink-0">
+              <span className="text-xs md:text-sm font-mono text-[#6B8A99] tabular-nums shrink-0">
                 hasta{" "}
                 {p.expiresAt.toLocaleDateString("es-AR", {
                   day: "numeric",
@@ -51,7 +51,7 @@ export function TodayPaymentsTable({ payments }: Props) {
                 })}
               </span>
             ) : (
-              <span className="text-xs text-[#4A6B7A] shrink-0">sin venc.</span>
+              <span className="text-xs md:text-sm text-[#4A6B7A] shrink-0">sin venc.</span>
             )}
           </div>
         ))}

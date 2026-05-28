@@ -74,24 +74,24 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
     <div className="max-w-5xl space-y-6">
       <Link
         href={`/dashboard/admin/students/${id}`}
-        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Volver al alumno
       </Link>
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <h2 className="text-lg font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight">
           Historial de turnos
         </h2>
-        <p className="text-sm text-[#6B8A99] mt-1">
+        <p className="text-sm md:text-base text-[#6B8A99] mt-1">
           {student.name ?? student.email}
         </p>
       </div>
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
         {bookings.length === 0 ? (
-          <p className="text-xs text-[#4A6B7A] text-center py-12">
+          <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-12">
             Sin turnos registrados.
           </p>
         ) : (
@@ -99,7 +99,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
             {bookings.map((b) => {
               const isPast = new Date(b.classDate) < new Date();
               return (
-                <div key={b.id} className="flex items-center gap-3 px-4 py-3">
+                <div key={b.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
                   <span
                     className={cn(
                       "size-1.5 rounded-full shrink-0",
@@ -112,7 +112,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
                   <div className="flex-1 min-w-0">
                     <p
                       className={cn(
-                        "text-sm font-medium truncate",
+                        "text-sm md:text-base font-medium truncate",
                         b.status === "CANCELLED"
                           ? "text-[#4A6B7A] line-through"
                           : "text-[#EAEAEA]",
@@ -120,7 +120,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
                     >
                       {b.class.discipline?.name ?? "Sin disciplina"}
                     </p>
-                    <p className="text-xs text-[#4A6B7A]">
+                    <p className="text-xs md:text-sm text-[#4A6B7A]">
                       {formatDate(b.classDate)} · {formatTime(b.class.startTime)}
                       {b.status === "WAITLISTED" && b.waitlistPos !== null && (
                         <span className="ml-2 text-[#F78837]">
@@ -140,7 +140,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
                   </div>
                   <span
                     className={cn(
-                      "text-[10px] font-medium shrink-0",
+                      "text-[10px] md:text-xs font-medium shrink-0",
                       b.status === "CONFIRMED" && isPast && "text-emerald-600",
                       b.status === "CONFIRMED" && !isPast && "text-[#27C7B8]",
                       b.status === "CANCELLED" && "text-[#4A6B7A]",
@@ -165,14 +165,14 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
           <Link
             href={`/dashboard/admin/students/${id}/history/bookings?page=${page - 1}`}
             className={cn(
-              "inline-flex items-center gap-1 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors",
+              "inline-flex items-center gap-1 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors",
               !hasPrev && "pointer-events-none opacity-30",
             )}
           >
             <CaretLeftIcon size={12} />
             Anterior
           </Link>
-          <span className="text-xs text-[#6B8A99] tabular-nums">
+          <span className="text-xs md:text-sm text-[#6B8A99] tabular-nums">
             Página {page} de {totalPages}
           </span>
           <Link

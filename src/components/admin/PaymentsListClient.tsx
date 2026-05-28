@@ -69,10 +69,10 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
             {month ? `${MONTHS[month - 1]} ` : ""}{year}
           </p>
-          <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
             Pagos de atletas
           </h2>
         </div>
@@ -123,12 +123,12 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
           </div>
         ) : items.length === 0 ? (
           <div className="px-4 py-10 text-center">
-            <p className="text-sm text-[#6B8A99]">Sin pagos en este período.</p>
+            <p className="text-sm md:text-base text-[#6B8A99]">Sin pagos en este período.</p>
           </div>
         ) : (
           <div className="divide-y divide-[#1A4A63]">
             {items.map((p) => (
-              <div key={p.id} className="flex items-center gap-3 px-4 py-3">
+              <div key={p.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
                 <div className={cn(
                   "size-2 rounded-full shrink-0",
                   p.status === "APPROVED" ? "bg-[#27C7B8]" :
@@ -136,20 +136,20 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
                   "bg-[#E61919]"
                 )} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[#EAEAEA] truncate leading-tight">
+                  <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                     {p.user.name ?? p.user.email}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-[#4A6B7A]">
+                    <span className="text-[10px] md:text-xs text-[#4A6B7A]">
                       {p.pack?.name ?? "Ajuste manual"}
                     </span>
                     {p.method && (
-                      <span className="text-[10px] text-[#6B8A99]">
+                      <span className="text-[10px] md:text-xs text-[#6B8A99]">
                         · {p.method}
                       </span>
                     )}
                     <span className={cn(
-                      "text-[10px] px-1.5 py-0.5 rounded-[2px] border",
+                      "text-[10px] md:text-xs px-1.5 py-0.5 rounded-[2px] border",
                       p.provider === "MANUAL"
                         ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
                         : "bg-[#27C7B8]/10 border-[#27C7B8]/20 text-[#27C7B8]"
@@ -159,10 +159,10 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-bold tabular-nums text-[#EAEAEA]">
+                  <p className="text-sm md:text-base font-bold tabular-nums text-[#EAEAEA]">
                     {fmtMoney(p.amountPaid)}
                   </p>
-                  <p className="text-[10px] text-[#4A6B7A]">
+                  <p className="text-[10px] md:text-xs text-[#4A6B7A]">
                     {p.creditsGranted > 0 ? `${p.creditsGranted} créd. · ` : ""}
                     {p.paidAt
                       ? new Date(p.paidAt).toLocaleDateString("es-AR")
@@ -180,11 +180,11 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
             <button
               disabled={offset === 0 || isPending}
               onClick={() => setOffset((o) => Math.max(0, o - limit))}
-              className="flex items-center gap-1 text-xs text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
+              className="flex items-center gap-1 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
             >
               <CaretLeft size={14} /> Anterior
             </button>
-            <span className="text-xs text-[#4A6B7A]">
+            <span className="text-xs md:text-sm text-[#4A6B7A]">
               {offset + 1} – {Math.min(offset + limit, total)} de {total}
             </span>
             <button

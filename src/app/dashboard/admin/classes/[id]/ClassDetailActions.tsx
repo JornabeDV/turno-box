@@ -73,7 +73,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
       >
         {deleteError && (
           <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs text-[#E61919]">{deleteError}</p>
+            <p className="text-xs md:text-sm text-[#E61919]">{deleteError}</p>
           </div>
         )}
         <div className="flex gap-2">

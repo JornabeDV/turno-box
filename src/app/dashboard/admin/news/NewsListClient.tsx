@@ -41,7 +41,7 @@ const inputClass =
   "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
 const labelClass =
-  "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
 
 export const NewsListClient = forwardRef<NewsListRef, Props>(
   function NewsListClient({ announcements: initial }, ref) {
@@ -136,7 +136,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
         {/* Lista */}
         {items.length === 0 ? (
           <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-            <p className="text-sm text-[#6B8A99]">No hay noticias todavía.</p>
+            <p className="text-sm md:text-base text-[#6B8A99]">No hay noticias todavía.</p>
           </div>
         ) : (
           <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
@@ -146,7 +146,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
                 <div
                   key={item.id}
                   onClick={() => openEdit(item)}
-                  className="flex items-center gap-3 px-4 py-4 cursor-pointer hover:bg-white/[0.03] transition-colors group"
+                  className="flex items-center gap-3 px-4 md:px-5 py-4 md:py-5 cursor-pointer hover:bg-white/[0.03] transition-colors group"
                 >
                   {/* Pin indicator */}
                   <div className="mt-0.5 shrink-0">
@@ -163,13 +163,13 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#EAEAEA] truncate">
+                    <p className="text-sm md:text-base font-semibold text-[#EAEAEA] truncate">
                       {item.title}
                     </p>
-                    <p className="text-xs text-[#6B8A99] mt-0.5 line-clamp-2">
+                    <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5 line-clamp-2">
                       {item.body}
                     </p>
-                    <div className="flex items-center gap-3 mt-1.5 text-[11px]">
+                    <div className="flex items-center gap-3 mt-1.5 text-[11px] md:text-xs">
                       <span className={cls}>{label}</span>
                       <span className="text-[#4A6B7A]">
                         {item.publishAt.toLocaleDateString("es-AR", {
@@ -291,7 +291,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
                     )}
                   />
                 </div>
-                <span className="text-sm text-[#EAEAEA]">Fijar al inicio</span>
+                <span className="text-sm md:text-base text-[#EAEAEA]">Fijar al inicio</span>
               </label>
             </div>
 

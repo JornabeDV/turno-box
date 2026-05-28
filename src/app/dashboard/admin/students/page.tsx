@@ -57,10 +57,10 @@ export default async function StudentsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+        <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
           Admin
         </p>
-        <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
           Alumnos
         </h2>
       </div>
@@ -82,7 +82,7 @@ export default async function StudentsPage() {
       </div>
 
       {inactive > 0 && (
-        <p className="text-xs text-[#4A6B7A] px-1">
+        <p className="text-xs md:text-sm text-[#4A6B7A] px-1">
           {inactive} {inactive === 1 ? "alumno inactivo" : "alumnos inactivos"}{" "}
           — no aparecen en reservas
         </p>

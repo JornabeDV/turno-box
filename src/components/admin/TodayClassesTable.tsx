@@ -28,7 +28,7 @@ export function TodayClassesTable({
   if (classes.length === 0) {
     return (
       <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
-        <p className="text-sm text-[#6B8A99]">
+        <p className="text-sm md:text-base text-[#6B8A99]">
           No hay clases programadas para hoy.
         </p>
       </div>
@@ -52,7 +52,7 @@ export function TodayClassesTable({
             <Link
               key={c.id}
               href={`${basePath}/${c.id}?date=${dateParam}`}
-              className="flex items-center gap-3 px-4 py-3.5 hover:bg-white/[0.02] transition-colors group"
+              className="flex items-center gap-3 px-4 md:px-5 py-3.5 md:py-4 hover:bg-white/[0.02] transition-colors group"
             >
               {/* Dot de color */}
               <span
@@ -61,17 +61,17 @@ export function TodayClassesTable({
               />
 
               {/* Hora */}
-              <span className="font-mono text-xs text-[#6B8A99] w-14 shrink-0 tabular-nums">
+              <span className="font-mono text-xs md:text-sm text-[#6B8A99] w-14 shrink-0 tabular-nums">
                 {formatTime(c.startTime)}
               </span>
 
               {/* Nombre + coach */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-[#EAEAEA] truncate leading-tight">
+                <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                   {c.name}
                 </p>
                 {c.coach?.name && (
-                  <p className="text-[11px] text-[#4A6B7A] truncate">
+                  <p className="text-[11px] md:text-xs text-[#4A6B7A] truncate">
                     {c.coach.name}
                   </p>
                 )}
@@ -87,18 +87,18 @@ export function TodayClassesTable({
               </div>
 
               {/* Cupos en mobile (sin barra) */}
-              <span className="font-mono text-xs text-[#6B8A99] sm:hidden tabular-nums shrink-0">
+              <span className="font-mono text-xs md:text-sm text-[#6B8A99] sm:hidden tabular-nums shrink-0">
                 {confirmed}/{c.maxCapacity}
               </span>
 
               {waitlisted > 0 && (
-                <span className="text-[10px] text-[#F78837] shrink-0 hidden md:block">
+                <span className="text-[10px] md:text-xs text-[#F78837] shrink-0 hidden md:block">
                   +{waitlisted}
                 </span>
               )}
 
               <ArrowRightIcon
-                size={13}
+                size={14}
                 className="text-[#4A6B7A] group-hover:text-[#6B8A99] transition-colors shrink-0"
               />
             </Link>

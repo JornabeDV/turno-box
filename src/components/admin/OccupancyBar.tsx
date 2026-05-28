@@ -41,10 +41,10 @@ export function OccupancyBar({
             >
               {confirmed}
             </span>
-            <span className="text-lg text-[#4A6B7A] font-mono">/{max}</span>
+            <span className="text-lg md:text-xl text-[#4A6B7A] font-mono">/{max}</span>
           </div>
           <div className="text-right">
-            <p className="text-xs text-[#6B8A99]">
+            <p className="text-xs md:text-sm text-[#6B8A99]">
               {available > 0 ? (
                 <span className="text-[#27C7B8]">
                   {available} {available === 1 ? "cupo libre" : "cupos libres"}
@@ -54,7 +54,7 @@ export function OccupancyBar({
               )}
             </p>
             {waitlisted > 0 && (
-              <p className="text-xs text-[#F78837]">{waitlisted} en espera</p>
+              <p className="text-xs md:text-sm text-[#F78837]">{waitlisted} en espera</p>
             )}
           </div>
         </div>
@@ -71,7 +71,7 @@ export function OccupancyBar({
         </div>
 
         {/* Etiqueta % */}
-        <p className="text-[10px] text-[#4A6B7A] font-mono">
+        <p className="text-[10px] md:text-xs text-[#4A6B7A] font-mono">
           {Math.round(pct)}% de ocupación
         </p>
       </div>

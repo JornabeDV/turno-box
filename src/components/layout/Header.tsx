@@ -32,7 +32,7 @@ export async function Header({
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#1A4A63] bg-[#0A1F2A]">
-      <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-5xl mx-auto">
+      <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6 lg:px-8 max-w-5xl lg:max-w-6xl mx-auto">
         <div className="flex items-center gap-3">
           {mobileMenuSlot}
           {/* Logo */}
@@ -40,7 +40,7 @@ export async function Header({
             <img
               src={logoSrc}
               alt="BoxTurno"
-              className="h-7 w-auto"
+              className="h-7 md:h-9 w-auto"
             />
           ) : (
             <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
@@ -52,7 +52,7 @@ export async function Header({
         <div className="flex items-center gap-3">
           {credits !== null && <CreditsBadge credits={credits} />}
           {session?.user && (
-            <span className="text-[11px] text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
+            <span className="text-[11px] md:text-xs text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
               {session.user.name ?? session.user.email}
             </span>
           )}

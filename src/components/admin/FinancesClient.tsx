@@ -189,10 +189,10 @@ export function FinancesClient({
       {/* Header + filtros de período */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <p className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider mb-0.5">
             {MONTHS[month - 1]} {year}
           </p>
-          <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
             Finanzas
           </h2>
         </div>
@@ -226,7 +226,7 @@ export function FinancesClient({
       </div>
 
       {/* Métricas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
         <MetricCard
           label="Ingresos"
           value={fmtMoney(summary.income)}
@@ -259,7 +259,7 @@ export function FinancesClient({
 
       {/* Gráfico */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
-        <h3 className="text-xs font-medium font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
+        <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
           Ingresos vs Egresos ({year})
         </h3>
         <BarChart data={chart} />
@@ -268,7 +268,7 @@ export function FinancesClient({
       {/* Movimientos */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
-          <h3 className="text-xs font-medium font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Movimientos
           </h3>
           <div className="flex items-center gap-2">
@@ -307,14 +307,14 @@ export function FinancesClient({
             </div>
           ) : items.length === 0 ? (
             <div className="px-4 py-10 text-center">
-              <p className="text-sm text-[#6B8A99]">
+              <p className="text-sm md:text-base text-[#6B8A99]">
                 Sin movimientos en este período.
               </p>
             </div>
           ) : (
             <div className="divide-y divide-[#1A4A63]">
               {items.map((tx) => (
-                <div key={tx.id} className="flex items-center gap-3 px-4 py-3">
+                <div key={tx.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
                   <div
                     className={cn(
                       "size-2 rounded-full shrink-0",
@@ -322,20 +322,20 @@ export function FinancesClient({
                     )}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[#EAEAEA] truncate leading-tight">
+                    <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                       {tx.description || tx.category}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs font-medium text-[#4A6B7A] uppercase tracking-wider">
+                      <span className="text-[10px] md:text-xs font-medium text-[#4A6B7A] uppercase tracking-wider">
                         {tx.category}
                       </span>
                       {tx.method && (
-                        <span className="text-xs font-medium text-[#6B8A99]">
+                        <span className="text-[10px] md:text-xs font-medium text-[#6B8A99]">
                           · {tx.method}
                         </span>
                       )}
                       {tx.user && (
-                        <span className="text-xs font-medium text-[#6B8A99] truncate">
+                        <span className="text-[10px] md:text-xs font-medium text-[#6B8A99] truncate">
                           · {tx.user.name ?? tx.user.email}
                         </span>
                       )}
@@ -344,7 +344,7 @@ export function FinancesClient({
                   <div className="text-right shrink-0">
                     <p
                       className={cn(
-                        "text-sm font-bold tabular-nums",
+                        "text-sm md:text-base font-bold tabular-nums",
                         tx.type === "INCOME"
                           ? "text-[#27C7B8]"
                           : "text-[#E61919]",
@@ -353,7 +353,7 @@ export function FinancesClient({
                       {tx.type === "INCOME" ? "+" : "-"}
                       {fmtMoney(tx.amount)}
                     </p>
-                    <p className="text-xs font-medium text-[#4A6B7A]">
+                    <p className="text-[10px] md:text-xs font-medium text-[#4A6B7A]">
                       {new Date(tx.date).toLocaleDateString("es-AR")}
                     </p>
                   </div>
@@ -377,17 +377,17 @@ export function FinancesClient({
               <button
                 disabled={offset === 0 || isPending}
                 onClick={() => setOffset((o) => Math.max(0, o - limit))}
-                className="flex items-center gap-1 text-xs font-medium text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
+                className="flex items-center gap-1 text-xs md:text-sm font-medium text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
               >
                 <CaretLeft size={14} /> Anterior
               </button>
-              <span className="text-xs font-medium text-[#4A6B7A]">
+              <span className="text-xs md:text-sm font-medium text-[#4A6B7A]">
                 {offset + 1} – {Math.min(offset + limit, total)} de {total}
               </span>
               <button
                 disabled={offset + limit >= total || isPending}
                 onClick={() => setOffset((o) => o + limit)}
-                className="flex items-center gap-1 text-xs font-medium text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
+                className="flex items-center gap-1 text-xs md:text-sm font-medium text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
               >
                 Siguiente <CaretRight size={14} />
               </button>
@@ -513,7 +513,7 @@ function MetricCard({
   return (
     <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
       <div className="flex items-start justify-between mb-2">
-        <span className="text-xs font-medium text-[#4A6B7A] uppercase tracking-wider">
+        <span className="text-xs md:text-sm font-medium text-[#4A6B7A] uppercase tracking-wider">
           {label}
         </span>
         {icon === "up" && <TrendUp size={14} className="text-[#27C7B8]" />}
@@ -521,7 +521,7 @@ function MetricCard({
         {icon === "wallet" && <Wallet size={14} className="text-[#6B8A99]" />}
         {icon === "list" && <ListDashes size={14} className="text-[#6B8A99]" />}
       </div>
-      <p className={cn("text-lg font-bold tabular-nums", colorClass)}>
+      <p className={cn("text-lg md:text-xl font-bold tabular-nums", colorClass)}>
         {value}
       </p>
       {change !== null && (

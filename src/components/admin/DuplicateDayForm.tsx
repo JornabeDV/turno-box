@@ -98,12 +98,12 @@ export function DuplicateDayForm({ classesByDay }: Props) {
           </svg>
         </div>
         <div>
-          <p className="text-xl font-bold text-[#EAEAEA]">
+          <p className="text-xl md:text-2xl font-bold text-[#EAEAEA]">
             {result.created}{" "}
             {result.created === 1 ? "clase creada" : "clases creadas"}
           </p>
           {result.skipped > 0 && (
-            <p className="text-xs text-[#6B8A99] mt-1">
+            <p className="text-xs md:text-sm text-[#6B8A99] mt-1">
               {result.skipped}{" "}
               {result.skipped === 1 ? "clase ya existía" : "clases ya existían"}{" "}
               y fueron omitidas
@@ -124,7 +124,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
     <div className="space-y-7">
       {/* ── Día origen ── */}
       <div>
-        <p className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider mb-3 px-1">
+        <p className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider mb-3 px-1">
           Día origen
         </p>
         <div className="flex gap-2 flex-wrap">
@@ -147,7 +147,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
                 {label}
                 <span
                   className={cn(
-                    "text-[10px] font-mono tabular-nums",
+                    "text-[10px] md:text-xs font-mono tabular-nums",
                     isSelected ? "text-[#F78837]" : "text-[#4A6B7A]",
                   )}
                 >
@@ -163,21 +163,21 @@ export function DuplicateDayForm({ classesByDay }: Props) {
       {sourceDay && (
         <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
           {sourceClasses.length === 0 ? (
-            <p className="text-xs text-[#4A6B7A] text-center py-8">
+            <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-8">
               Este día no tiene clases para copiar.
             </p>
           ) : (
             <div className="divide-y divide-[#1A4A63]">
               {sourceClasses.map((c, i) => (
-                <div key={i} className="flex items-center gap-3 px-4 py-2.5">
+                <div key={i} className="flex items-center gap-3 px-4 md:px-5 py-2.5 md:py-3">
                   <span
                     className="size-1.5 rounded-full shrink-0"
                     style={{ backgroundColor: c.color ?? "#f97316" }}
                   />
-                  <span className="text-sm text-[#EAEAEA] flex-1 truncate">
+                  <span className="text-sm md:text-base text-[#EAEAEA] flex-1 truncate">
                     {c.name}
                   </span>
-                  <span className="text-xs font-mono text-[#6B8A99] shrink-0 tabular-nums">
+                  <span className="text-xs md:text-sm font-mono text-[#6B8A99] shrink-0 tabular-nums">
                     {formatTime(c.startTime)} – {formatTime(c.endTime)}
                   </span>
                 </div>
@@ -191,12 +191,12 @@ export function DuplicateDayForm({ classesByDay }: Props) {
       {sourceDay && sourceClasses.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3 px-1">
-            <p className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider">
+            <p className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider">
               Copiar a
             </p>
             <button
               onClick={toggleAll}
-              className="text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+              className="text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
             >
               {DAYS.filter((d) => d.key !== sourceDay).every((d) =>
                 targetDays.has(d.key),
@@ -230,7 +230,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
                     {existing > 0 && (
                       <span
                         className={cn(
-                          "text-[10px] font-mono tabular-nums",
+                          "text-[10px] md:text-xs font-mono tabular-nums",
                           checked ? "text-[#F78837]" : "text-[#4A6B7A]",
                         )}
                       >
@@ -248,7 +248,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
       {/* ── Resumen + submit ── */}
       {targetDays.size > 0 && sourceClasses.length > 0 && (
         <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 flex items-center justify-between gap-4">
-          <p className="text-sm text-[#EAEAEA] leading-snug">
+          <p className="text-sm md:text-base text-[#EAEAEA] leading-snug">
             Se crearán hasta{" "}
             <span className="font-bold text-[#F78837] tabular-nums">
               {totalToCreate}
@@ -274,7 +274,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
         </div>
       )}
 
-      {error && <p className="text-xs text-[#E61919] px-1">{error}</p>}
+      {error && <p className="text-xs md:text-sm text-[#E61919] px-1">{error}</p>}
     </div>
   );
 }

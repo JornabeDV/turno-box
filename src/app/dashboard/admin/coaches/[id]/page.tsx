@@ -127,7 +127,7 @@ export default async function CoachDetailPage({ params }: Props) {
     <div className="max-w-5xl space-y-6">
       <Link
         href="/dashboard/admin/coaches"
-        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Coaches
@@ -149,10 +149,10 @@ export default async function CoachDetailPage({ params }: Props) {
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h2 className="text-lg font-bold text-[#EAEAEA] tracking-tight truncate">
+                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight truncate">
                   {coach.name ?? "Sin nombre"}
                 </h2>
-                <p className="text-sm text-[#6B8A99] truncate">{coach.email}</p>
+                <p className="text-sm md:text-base text-[#6B8A99] truncate">{coach.email}</p>
               </div>
               <ToggleCoachButton
                 coachId={coach.id}
@@ -161,10 +161,10 @@ export default async function CoachDetailPage({ params }: Props) {
             </div>
             <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
-                <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                   Coach desde
                 </p>
-                <p className="text-xs text-[#EAEAEA] font-medium mt-0.5">
+                <p className="text-xs md:text-sm text-[#EAEAEA] font-medium mt-0.5">
                   {new Date(coach.createdAt).toLocaleDateString("es-AR", {
                     day: "numeric",
                     month: "short",
@@ -176,27 +176,27 @@ export default async function CoachDetailPage({ params }: Props) {
                 <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
                   Clases
                 </p>
-                <p className="text-xs font-bold text-[#EAEAEA] mt-0.5">
+                <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
                   {classes.length}
                 </p>
               </div>
               {totalTodayConfirmed > 0 && (
                 <div>
-                  <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                  <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                     Alumnos hoy
                   </p>
-                  <p className="text-xs font-bold text-[#27C7B8] mt-0.5">
+                  <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
                     {totalTodayConfirmed}
                   </p>
                 </div>
               )}
               <div>
-                <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                   Estado
                 </p>
                 <p
                   className={cn(
-                    "text-xs font-medium mt-0.5",
+                    "text-xs md:text-sm font-medium mt-0.5",
                     coach.isActive ? "text-[#27C7B8]" : "text-[#6B8A99]",
                   )}
                 >
@@ -212,20 +212,20 @@ export default async function CoachDetailPage({ params }: Props) {
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
           <span className="size-1.5 rounded-full bg-[#F78837]" />
-          <h3 className="text-xs font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Horario semanal
           </h3>
-          <span className="text-xs font-mono font-bold tabular-nums text-[#F78837]">
+          <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-[#F78837]">
             {classes.length}
           </span>
         </div>
 
         {Object.keys(grouped).length === 0 ? (
           <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
-            <p className="text-sm text-[#4A6B7A]">
+            <p className="text-sm md:text-base text-[#4A6B7A]">
               Este coach no tiene clases asignadas.
             </p>
-            <p className="text-xs text-[#4A6B7A] mt-1">
+            <p className="text-xs md:text-sm text-[#4A6B7A] mt-1">
               Podés asignarle clases desde{" "}
               <Link
                 href="/dashboard/admin/classes"
@@ -245,14 +245,14 @@ export default async function CoachDetailPage({ params }: Props) {
                   <div className="flex items-center gap-2 mb-2 px-1">
                     <h4
                       className={cn(
-                        "text-xs font-semibold uppercase tracking-wider",
+                        "text-xs md:text-sm font-semibold uppercase tracking-wider",
                         isToday ? "text-[#F78837]" : "text-[#6B8A99]",
                       )}
                     >
                       {DAY_LABELS[day]}
                     </h4>
                     {isToday && (
-                      <span className="text-[10px] bg-[#F78837]/10 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
+                      <span className="text-[10px] md:text-xs bg-[#F78837]/10 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
                         hoy
                       </span>
                     )}
@@ -269,17 +269,17 @@ export default async function CoachDetailPage({ params }: Props) {
                       return (
                         <div
                           key={c.id}
-                          className="flex items-center gap-3 px-4 py-3"
+                          className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4"
                         >
                           <span
                             className="size-2 rounded-full shrink-0"
                             style={{ backgroundColor: c.color ?? "#f97316" }}
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-[#EAEAEA] truncate">
+                            <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate">
                               {c.discipline?.name ?? "Sin disciplina"}
                             </p>
-                            <p className="text-xs text-[#6B8A99] font-mono tabular-nums">
+                            <p className="text-xs md:text-sm text-[#6B8A99] font-mono tabular-nums">
                               {formatTime(c.startTime)} –{" "}
                               {formatTime(c.endTime)}
                             </p>
@@ -288,7 +288,7 @@ export default async function CoachDetailPage({ params }: Props) {
                             <div className="text-right shrink-0">
                               <p
                                 className={cn(
-                                  "text-xs font-mono font-bold tabular-nums",
+                                  "text-xs md:text-sm font-mono font-bold tabular-nums",
                                   pct >= 100
                                     ? "text-[#E61919]"
                                     : pct >= 75
@@ -299,13 +299,13 @@ export default async function CoachDetailPage({ params }: Props) {
                                 {confirmed}/{c.maxCapacity}
                               </p>
                               {waitlisted > 0 && (
-                                <p className="text-[10px] text-[#F78837]">
+                                <p className="text-[10px] md:text-xs text-[#F78837]">
                                   +{waitlisted} espera
                                 </p>
                               )}
                             </div>
                           ) : (
-                            <span className="text-xs text-[#4A6B7A] font-mono shrink-0">
+                            <span className="text-xs md:text-sm text-[#4A6B7A] font-mono shrink-0">
                               {c.maxCapacity} cupos
                             </span>
                           )}
