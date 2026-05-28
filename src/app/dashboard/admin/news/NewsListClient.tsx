@@ -146,7 +146,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
                 <div
                   key={item.id}
                   onClick={() => openEdit(item)}
-                  className="flex items-center gap-3 px-4 md:px-5 py-4 md:py-5 cursor-pointer hover:bg-white/[0.03] transition-colors group"
+                  className="flex items-center gap-3 px-4 md:px-5 py-4 md:py-4 cursor-pointer hover:bg-white/[0.03] transition-colors group"
                 >
                   {/* Pin indicator */}
                   <div className="mt-0.5 shrink-0">
@@ -198,10 +198,8 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
                     }}
                     className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
                   >
-                    <TrashIcon size={14} className="md:hidden" weight="bold" />
                     <TrashIcon
-                      size={18}
-                      className="hidden md:block"
+                      size={16}
                       weight="bold"
                     />
                   </button>
@@ -326,12 +324,12 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
           description="Esta acción no se puede deshacer."
           size="md"
         >
-          <div className="flex gap-2 pt-1">
+          <div className="flex max-md:flex-col gap-2 mt-6">
             <Button
               type="button"
               variant="outline"
               size="md"
-              className="flex-1"
+              className="md:flex-1"
               onClick={() => setConfirmDeleteId(null)}
             >
               Cancelar
@@ -340,7 +338,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
               type="button"
               variant="danger"
               size="md"
-              className="flex-1"
+              className="md:flex-1"
               loading={isPending}
               onClick={handleDelete}
             >

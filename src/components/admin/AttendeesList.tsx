@@ -98,13 +98,10 @@ export function AttendeesList({
                     <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
                       {b.user.name ?? "—"}
                     </p>
-                    <p className="text-xs md:text-sm text-[#4A6B7A] truncate">
-                      {b.user.email}
-                    </p>
                   </div>
 
                   {/* Hora de reserva */}
-                  <span className="text-[10px] md:text-xs text-[#4A6B7A] font-mono shrink-0 hidden sm:block">
+                  <span className="text-xs md:text-sm text-[#4A6B7A] font-mono shrink-0 hidden sm:block">
                     {new Date(b.createdAt).toLocaleTimeString("es-AR", {
                       hour: "2-digit",
                       minute: "2-digit",

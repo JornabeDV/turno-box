@@ -112,7 +112,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
       {/* Back */}
       <Link
         href="/dashboard/admin/classes"
-        className="inline-flex items-center gap-1.5 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Clases

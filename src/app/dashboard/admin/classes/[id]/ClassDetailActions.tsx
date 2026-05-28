@@ -46,7 +46,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button size="md" variant="ghost" onClick={() => setEditOpen(true)}>
+        <Button size="md" variant="outline" onClick={() => setEditOpen(true)}>
           <PencilSimpleIcon size={14} />
           Editar
         </Button>
@@ -76,12 +76,12 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
             <p className="text-xs md:text-sm text-[#E61919]">{deleteError}</p>
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="flex max-md:flex-col gap-2 max-md:mt-6">
           <Button
             type="button"
             variant="outline"
             size="md"
-            className="flex-1"
+            className="md:flex-1"
             onClick={() => setDeleteOpen(false)}
           >
             Cancelar
@@ -90,7 +90,7 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
             type="button"
             variant="danger"
             size="md"
-            className="flex-1"
+            className="md:flex-1"
             loading={isPending}
             onClick={handleDelete}
           >

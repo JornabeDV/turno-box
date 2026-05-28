@@ -124,7 +124,7 @@ export function ClassModal({
       onOpenChange={(o) => !o && handleClose()}
       title={isEditing ? "Editar clase" : "Nueva clase"}
       size="md"
-      className="max-sm:h-screen max-sm:max-h-screen max-sm:w-screen max-sm:max-w-none max-sm:rounded-none"
+      className="max-sm:h-screen max-sm:max-h-screen max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col max-sm:overflow-y-auto"
     >
       <form
         ref={formRef}

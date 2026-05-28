@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
+import { Dialog } from "@/components/ui/Dialog";
 import type { ActionResult } from "@/types";
 
 type Props = {
   userId: string;
   initialIsActive: boolean;
-  entityLabel: string; // "alumno" | "coach"
+  entityLabel: string; // "alumno" | "coach" | "abono"
   action: (id: string) => Promise<ActionResult<{ isActive: boolean }>>;
 };
 
@@ -18,49 +20,91 @@ export function ToggleActiveButton({
   entityLabel,
   action,
 }: Props) {
-  const [isActive, setIsActive] = useState(initialIsActive);
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  function handleClick(e: React.MouseEvent) {
-    e.preventDefault();
-    const msg = isActive
-      ? `¿Desactivar este ${entityLabel}?`
-      : `¿Reactivar este ${entityLabel}?`;
-    if (!confirm(msg)) return;
+  const isActive = initialIsActive;
 
+  function handleOpen() {
+    setError(null);
+    setOpen(true);
+  }
+
+  function handleConfirm() {
+    setError(null);
     startTransition(async () => {
       const res = await action(userId);
       if (res.success) {
-        setIsActive(res.data.isActive);
+        setOpen(false);
         toast.success(
           res.data.isActive
             ? `${entityLabel} activado`
             : `${entityLabel} desactivado`,
         );
+        router.refresh();
       } else {
-        toast.error(res.error);
+        setError(res.error ?? "No se pudo completar la acción");
       }
     });
   }
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={isPending}
-      className={cn(
-        "text-xs cursor-pointer font-medium px-3 py-1.5 rounded-[2px] border transition-all active:scale-95 disabled:opacity-40 shrink-0",
-        isActive
-          ? "border-rose-500/30 text-[#E61919] hover:bg-[#E61919]/10"
-          : "border-emerald-500/30 text-[#27C7B8] hover:bg-[#27C7B8]/10",
-      )}
-    >
-      {isPending ? (
-        <span className="size-3 rounded-full border-2 border-current border-t-transparent animate-spin inline-block" />
-      ) : isActive ? (
-        "Desactivar"
-      ) : (
-        "Activar"
-      )}
-    </button>
+    <>
+      <Button
+        type="button"
+        variant={isActive ? "danger" : "success"}
+        size="md"
+        onClick={handleOpen}
+        disabled={isPending}
+      >
+        {isActive ? "Desactivar" : "Activar"}
+      </Button>
+
+      <Dialog
+        open={open}
+        onOpenChange={(o) => {
+          if (!o) {
+            setOpen(false);
+            setError(null);
+          }
+        }}
+        title={isActive ? "Desactivar" : "Activar"}
+        description={
+          isActive
+            ? `¿Desactivar este ${entityLabel}?`
+            : `¿Reactivar este ${entityLabel}?`
+        }
+        size="sm"
+      >
+        {error && (
+          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
+          </div>
+        )}
+        <div className="flex max-md:flex-col gap-2 max-md:mt-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="md"
+            className="md:flex-1"
+            onClick={() => setOpen(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="button"
+            variant={isActive ? "danger" : "success"}
+            size="md"
+            className="md:flex-1"
+            loading={isPending}
+            onClick={handleConfirm}
+          >
+            {isActive ? "Desactivar" : "Activar"}
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 }

@@ -105,12 +105,10 @@ export function DisciplinesPageClient({ disciplines }: Props) {
                     e.stopPropagation();
                     setDeleteModal({ open: true, discipline: d });
                   }}
-                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
+                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0 cursor-pointer"
                 >
-                  <TrashIcon size={14} className="md:hidden" weight="bold" />
                   <TrashIcon
-                    size={18}
-                    className="hidden md:block"
+                    size={16}
                     weight="bold"
                   />
                 </button>
@@ -140,12 +138,12 @@ export function DisciplinesPageClient({ disciplines }: Props) {
             <p className="text-xs md:text-sm text-[#E61919]">{deleteError}</p>
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="flex  max-md:flex-col gap-2 max-md:mt-6">
           <Button
             type="button"
             variant="outline"
             size="md"
-            className="flex-1"
+            className="md:flex-1"
             onClick={() => setDeleteModal({ open: false })}
           >
             Cancelar
@@ -154,7 +152,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
             type="button"
             variant="danger"
             size="md"
-            className="flex-1"
+            className="md:flex-1"
             loading={isPending}
             onClick={handleDelete}
           >
