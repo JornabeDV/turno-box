@@ -16,7 +16,11 @@ export default async function HomePage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { gymId: true, name: true, gym: { select: { phone: true } } },
+    select: {
+      gymId: true,
+      name: true,
+      gym: { select: { phone: true, logoUrl: true } },
+    },
   });
 
   // Si el usuario no tiene gym asignado aún (registro nuevo)
@@ -36,40 +40,41 @@ export default async function HomePage() {
   }
 
   const today = new Date();
-  const [slots, activeSubscriptions, announcements, availableDays] = await Promise.all([
-    getClassSlotsForDay(user.gymId, today, session.user.id),
-    prisma.payment.findMany({
-      where: {
-        userId: session.user.id,
-        gymId: user.gymId,
-        status: "APPROVED",
-        expiresAt: { gt: today },
-      },
-      select: {
-        expiresAt: true,
-        creditsGranted: true,
-        creditTxs: { select: { amount: true } },
-      },
-      orderBy: { expiresAt: "asc" },
-    }),
-    prisma.announcement.findMany({
-      where: {
-        gymId: user.gymId,
-        publishAt: { lte: today },
-        OR: [{ expiresAt: null }, { expiresAt: { gt: today } }],
-      },
-      orderBy: [{ pinned: "desc" }, { publishAt: "desc" }],
-      take: 3,
-      select: {
-        id: true,
-        title: true,
-        body: true,
-        pinned: true,
-        publishAt: true,
-      },
-    }),
-    getGymClassDays(user.gymId),
-  ]);
+  const [slots, activeSubscriptions, announcements, availableDays] =
+    await Promise.all([
+      getClassSlotsForDay(user.gymId, today, session.user.id),
+      prisma.payment.findMany({
+        where: {
+          userId: session.user.id,
+          gymId: user.gymId,
+          status: "APPROVED",
+          expiresAt: { gt: today },
+        },
+        select: {
+          expiresAt: true,
+          creditsGranted: true,
+          creditTxs: { select: { amount: true } },
+        },
+        orderBy: { expiresAt: "asc" },
+      }),
+      prisma.announcement.findMany({
+        where: {
+          gymId: user.gymId,
+          publishAt: { lte: today },
+          OR: [{ expiresAt: null }, { expiresAt: { gt: today } }],
+        },
+        orderBy: [{ pinned: "desc" }, { publishAt: "desc" }],
+        take: 3,
+        select: {
+          id: true,
+          title: true,
+          body: true,
+          pinned: true,
+          publishAt: true,
+        },
+      }),
+      getGymClassDays(user.gymId),
+    ]);
 
   const firstName = user.name?.split(" ")[0] ?? "Atleta";
 
@@ -107,19 +112,34 @@ export default async function HomePage() {
       {/* Saludo */}
       <div className="pt-4">
         <div className="flex items-center justify-between gap-3">
-          <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
-            Hola, {firstName}
-          </h1>
+          <div className="flex items-center gap-3">
+            {user.gym?.logoUrl && (
+              <div className="shrink-0 w-20 h-20 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-1.5">
+                <img
+                  src={user.gym.logoUrl}
+                  alt="Logo del gimnasio"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            )}
+            <div>
+            <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+              Hola, {firstName}
+            </h1>
+            <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+              Listo para superar tus marcas hoy.
+            </p>
+            </div>
+
+          </div>
           {user.gym?.phone && <WhatsAppLink phone={user.gym.phone} />}
         </div>
-        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
-          Listo para superar tus marcas hoy.
-        </p>
 
         {sub && (
           <div className="mt-2 inline-flex items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
             <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
-              {sub.remaining} {sub.remaining === 1 ? "CLASE" : "CLASES"} restantes
+              {sub.remaining} {sub.remaining === 1 ? "CLASE" : "CLASES"}{" "}
+              restantes
             </span>
             {daysLeft !== null && daysLeft <= 7 && (
               <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837]">
@@ -148,7 +168,9 @@ export default async function HomePage() {
                     Fijado
                   </span>
                 )}
-                <p className={`text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}>
+                <p
+                  className={`text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}
+                >
                   {a.title}
                 </p>
               </div>
@@ -193,7 +215,6 @@ export default async function HomePage() {
         availableDays={availableDays}
         compact
       />
-
     </section>
   );
 }

@@ -234,7 +234,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         <button
           type="submit"
           disabled={isPending || !amount || !note}
-          className="w-full h-12 rounded-[2px] bg-[#F78837] text-white text-sm hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
+          className="w-full uppercase h-12 rounded-[2px] bg-[#F78837] text-white text-xs md:text-sm hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">

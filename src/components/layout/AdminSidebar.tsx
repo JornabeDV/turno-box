@@ -41,20 +41,20 @@ const NAV_ITEMS = [
   { href: "/dashboard/admin/settings", label: "Configuración", Icon: Gear },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ logoSrc }: { logoSrc?: string }) {
   const pathname = usePathname();
 
   return (
     <aside className="hidden md:flex flex-col w-56 min-h-dvh border-r border-[#1A4A63] bg-[#0A1F2A] p-4 gap-1">
       {/* Brand */}
       <div className="flex justify-center gap-1 px-2 py-3 mb-3">
-        <span className="rounded-[2px] px-2 py-1.5 flex items-center self-start">
+        <div className="w-28 h-28 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-2">
           <img
-            src="/icons/image.png?v=2"
+            src={logoSrc ?? "/icons/image.png?v=2"}
             alt="Box Turno"
-            className="h-28 w-auto"
+            className="w-full h-full object-contain"
           />
-        </span>
+        </div>
       </div>
 
       {NAV_ITEMS.map(({ href, label, Icon }) => {
