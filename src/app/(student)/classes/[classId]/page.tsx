@@ -35,7 +35,7 @@ export default async function ClassDetailPage({
   const gymId = (session.user as { gymId?: string }).gymId;
   if (!gymId) redirect("/");
 
-  const classDate = new Date(date + "T00:00:00.000Z");
+  const classDate = new Date(date + "T12:00:00");
 
   const gymClass = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, isActive: true, deletedAt: null },
@@ -72,9 +72,10 @@ export default async function ClassDetailPage({
     : null;
 
   const cancelWindowHours = gymClass.gym?.cancelWindowHours ?? 2;
-  const [h, m] = gymClass.startTime.split(":").map(Number);
-  const classStart = new Date(classDate);
-  classStart.setUTCHours(h, m, 0, 0);
+  // startTime está en hora de Argentina (UTC-3)
+  const classStart = new Date(
+    `${date}T${gymClass.startTime}:00-03:00`,
+  );
   const cancelDeadline = new Date(
     classStart.getTime() - cancelWindowHours * 3_600_000,
   );
