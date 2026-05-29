@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { SelectInput } from "@/components/ui/Select";
 import { updateGymSettingsAction } from "@/actions/gym";
 import { changePasswordAction } from "@/actions/profile";
-import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash } from "@phosphor-icons/react";
+import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash, UploadSimple, X } from "@phosphor-icons/react";
 import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
 import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
 
@@ -40,6 +40,10 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
     cancelWindowHours: String(gym.cancelWindowHours),
     waitlistEnabled: gym.waitlistEnabled,
   });
+
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(gym.logoUrl);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Password change state
   const [passwordPending, startPasswordTransition] = useTransition();
@@ -161,19 +165,69 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
               />
             </div>
 
-            {/* Logo URL */}
-            <div className="space-y-1.5 sm:col-span-2 hidden">
-              <label className={labelClass}>URL del logo</label>
+            {/* Logo upload */}
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className={labelClass}>Logo del gimnasio</label>
+              <input type="hidden" name="logoUrl" value={form.logoUrl} />
               <input
-                name="logoUrl"
-                value={form.logoUrl}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, logoUrl: e.target.value }))
-                }
-                className={inputClass}
-                placeholder="https://..."
-                type="url"
+                ref={fileInputRef}
+                type="file"
+                name="logoFile"
+                accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] ?? null;
+                  if (file) {
+                    setLogoFile(file);
+                    const reader = new FileReader();
+                    reader.onloadend = () => setLogoPreview(reader.result as string);
+                    reader.readAsDataURL(file);
+                  }
+                }}
               />
+
+              <div className="flex items-center gap-4">
+                {logoPreview ? (
+                  <div className="relative group">
+                    <img
+                      src={logoPreview}
+                      alt="Logo preview"
+                      className="h-16 w-16 md:h-20 md:w-20 object-contain rounded-[2px] border border-[#1A4A63] bg-[#0A1F2A] p-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLogoFile(null);
+                        setLogoPreview(null);
+                        setForm((f) => ({ ...f, logoUrl: "" }));
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                      }}
+                      className="absolute -top-1.5 -right-1.5 bg-[#F78837] text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Quitar logo"
+                    >
+                      <X size={12} weight="bold" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="h-16 w-16 md:h-20 md:w-20 rounded-[2px] border border-dashed border-[#4A6B7A] bg-[#0A1F2A] flex items-center justify-center text-[#4A6B7A]">
+                    <span className="text-[10px] text-center leading-tight">Sin logo</span>
+                  </div>
+                )}
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <UploadSimple size={16} className="mr-1.5" />
+                  {logoPreview ? "Cambiar logo" : "Subir logo"}
+                </Button>
+              </div>
+
+              <p className="text-xs text-[#6B8A99]">
+                Formatos: PNG, JPG, WEBP, SVG. Máximo 2MB.
+              </p>
             </div>
           </div>
         </div>
