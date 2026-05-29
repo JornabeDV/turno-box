@@ -8,6 +8,7 @@ type HeaderProps = {
   showCredits?: boolean;
   mobileMenuSlot?: React.ReactNode;
   logoSrc?: string;
+  gymName?: string;
 };
 
 export async function Header({
@@ -15,6 +16,7 @@ export async function Header({
   showCredits = false,
   mobileMenuSlot,
   logoSrc,
+  gymName,
 }: HeaderProps) {
   const session = await auth();
 
@@ -35,8 +37,12 @@ export async function Header({
       <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6 lg:px-8 max-w-5xl lg:max-w-6xl mx-auto">
         <div className="flex items-center gap-3">
           {mobileMenuSlot}
-          {/* Logo */}
-          {logoSrc ? (
+          {/* Nombre del box */}
+          {gymName ? (
+            <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-xl leading-none">
+              {gymName}
+            </span>
+          ) : logoSrc ? (
             <img
               src={logoSrc}
               alt="BoxTurno"

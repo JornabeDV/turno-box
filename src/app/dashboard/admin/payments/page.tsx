@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { PaymentsListClient } from "@/components/admin/PaymentsListClient";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Pagos de atletas" };
+export const metadata: Metadata = { title: "Pagos de alumnos" };
 
 export default async function PaymentsPage() {
   const session = await auth();

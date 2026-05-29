@@ -73,7 +73,7 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
             {month ? `${MONTHS[month - 1]} ` : ""}{year}
           </p>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
-            Pagos de atletas
+            Pagos de alumnos
           </h2>
         </div>
         <div className="flex items-center gap-2 flex-wrap">

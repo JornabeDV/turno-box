@@ -40,39 +40,36 @@ export default async function JoinPage({
   }
 
   return (
-    <section className="max-w-sm mx-auto pt-8 pb-12 px-4">
-      {/* Header */}
-      <div className="text-center mb-3 md:mb-8">
-        <div className="inline-flex items-center justify-center size-14 border border-[#F78837]/30 bg-[#F78837]/10 mb-4">
-          {gym.logoUrl ? (
-            <img src={gym.logoUrl} alt={gym.name} className="w-8 h-8 object-contain" />
-          ) : (
-            <Barbell size={28} className="text-[#F78837]" />
-          )}
+    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-[#0A1F2A] relative">
+      <div className="w-full max-w-sm relative">
+        {/* Logo */}
+        <div className="w-full mb-3 md:mb-8 flex justify-center">
+          <div className="w-24 h-24 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-2">
+            {gym.logoUrl ? (
+              <img src={gym.logoUrl} alt={gym.name} className="w-full h-full object-contain" />
+            ) : (
+              <Barbell size={40} className="text-[#F78837]" />
+            )}
+          </div>
         </div>
-        <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-xl">
+
+        {/* Título */}
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-6 text-center">
           Unite a {gym.name}
-        </h1>
-        <p className="text-xs text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
-          Creá tu cuenta para reservar clases
-        </p>
-      </div>
+        </h2>
 
-      {/* Form */}
-      <RegisterForm defaultGymId={gym.id} />
+        {/* Card */}
+        <div className="bg-[#0E2A38] border border-[#1A4A63] p-6">
+          <RegisterForm defaultGymId={gym.id} />
+        </div>
 
-      {/* Login link */}
-      <div className="mt-6 text-center">
-        <p className="text-xs text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+        <p className="text-center text-xs text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           ¿Ya tenés cuenta?{" "}
-          <Link
-            href="/auth/login"
-            className="text-[#F78837] hover:underline"
-          >
-            Ingresá acá
+          <Link href="/auth/login" className="text-[#27C7B8] hover:text-[#20A898] transition-colors">
+            Iniciá sesión
           </Link>
         </p>
       </div>
-    </section>
+    </div>
   );
 }

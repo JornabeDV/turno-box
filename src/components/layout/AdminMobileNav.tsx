@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ListIcon,
-  XIcon,
   ChartBarIcon,
   CalendarBlankIcon,
   UsersIcon,
@@ -49,7 +48,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/admin/settings", label: "Configuración", Icon: GearIcon },
 ];
 
-export function AdminMobileNav() {
+export function AdminMobileNav({ logoSrc }: { logoSrc?: string }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -100,23 +99,14 @@ export function AdminMobileNav() {
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             >
               {/* Header del drawer */}
-              <div className="flex items-center justify-between px-2 py-3 mb-4">
-                <div className="flex flex-col gap-1">
-                  <span className="px-2 py-1.5 flex items-center self-start">
-                    <img
-                      src="/icons/image.png?v=2"
-                      alt="Box Turno"
-                      className="h-14 w-auto"
-                    />
-                  </span>
+              <div className="flex items-center justify-center px-2 py-2">
+                <div className="w-24 h-24 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-2">
+                  <img
+                    src={logoSrc ?? "/icons/image.png?v=2"}
+                    alt="Box Turno"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0E2A38] transition-all"
-                  aria-label="Cerrar menú"
-                >
-                  <XIcon size={18} />
-                </button>
               </div>
 
               {/* Nav items */}
