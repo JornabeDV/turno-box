@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { toClassDate, formatTime } from "@/lib/utils";
 import { ToggleCoachButton } from "@/components/admin/ToggleCoachButton";
+import { EditCoachButton } from "@/components/admin/EditCoachButton";
 import Link from "next/link";
 import {
   ArrowLeftIcon,
@@ -147,17 +148,20 @@ export default async function CoachDetailPage({ params }: Props) {
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
               <div className="min-w-0">
                 <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight truncate">
                   {coach.name ?? "Sin nombre"}
                 </h2>
                 <p className="text-sm md:text-base text-[#6B8A99] truncate">{coach.email}</p>
               </div>
-              <ToggleCoachButton
-                coachId={coach.id}
-                initialIsActive={coach.isActive}
-              />
+              <div className="flex items-center gap-2 shrink-0">
+                <EditCoachButton coach={coach} />
+                <ToggleCoachButton
+                  coachId={coach.id}
+                  initialIsActive={coach.isActive}
+                />
+              </div>
             </div>
             <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
