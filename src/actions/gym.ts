@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
+import { uploadGymLogo } from "@/lib/cloudinary";
 
 const gymSettingsSchema = z.object({
   name:               z.string().min(1, "El nombre es requerido").max(100),
@@ -26,9 +27,33 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
   const user = await getAdminUser();
   if (!user) return { success: false, error: "No autorizado" };
 
+  const logoFile = formData.get("logoFile") as File | null;
+  let logoUrl = formData.get("logoUrl") as string | null;
+
+  // Si se subió un archivo de logo, subirlo a Cloudinary
+  if (logoFile && logoFile.size > 0) {
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+    if (!allowedTypes.includes(logoFile.type)) {
+      return { success: false, error: "El logo debe ser una imagen (PNG, JPG, WEBP o SVG)" };
+    }
+    if (logoFile.size > 2 * 1024 * 1024) {
+      return { success: false, error: "El logo no puede superar los 2MB" };
+    }
+
+    const gym = await prisma.gym.findUnique({
+      where: { id: user.gymId },
+      select: { slug: true },
+    });
+    if (!gym) return { success: false, error: "Gimnasio no encontrado" };
+
+    const buffer = Buffer.from(await logoFile.arrayBuffer());
+    const { secureUrl } = await uploadGymLogo(buffer, gym.slug);
+    logoUrl = secureUrl;
+  }
+
   const parsed = gymSettingsSchema.safeParse({
     name:              formData.get("name"),
-    logoUrl:           formData.get("logoUrl"),
+    logoUrl:           logoUrl ?? "",
     address:           formData.get("address"),
     phone:             formData.get("phone"),
     cancelWindowHours: formData.get("cancelWindowHours"),

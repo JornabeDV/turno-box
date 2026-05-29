@@ -199,8 +199,7 @@ export default async function ClassDetailPage({
 
       {/* Ventana de cancelación */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 flex items-start gap-3">
-        <InfoIcon size={15} className="text-[#4A6B7A] mt-0.5 shrink-0" />
-        <p className="text-xs text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
+        <p className="text-sm text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
           Cancelá antes de las{" "}
           <span className="text-[#EAEAEA] font-bold">
             {cancelDeadline.toLocaleTimeString("es-AR", {
