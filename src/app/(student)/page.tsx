@@ -73,8 +73,21 @@ export default async function HomePage() {
 
   const firstName = user.name?.split(" ")[0] ?? "Atleta";
 
-  // Buscar próxima clase reservada
-  const nextBooked = slots.find((s) => s.userBooking?.status === "CONFIRMED");
+  // Buscar próxima clase reservada (solo futuras, comparando en hora Argentina)
+  const nowTimeStr = today.toLocaleTimeString("es-AR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+  const [nowH, nowM] = nowTimeStr.split(":").map(Number);
+  const nowMinutes = nowH * 60 + nowM;
+
+  const nextBooked = slots.find((s) => {
+    if (s.userBooking?.status !== "CONFIRMED") return false;
+    const [h, m] = s.startTime.split(":").map(Number);
+    return h * 60 + m > nowMinutes;
+  });
 
   // Subscription info
   const subs = activeSubscriptions
@@ -150,21 +163,21 @@ export default async function HomePage() {
       {/* Próxima clase */}
       {nextBooked && (
         <div className="bg-[#0E2A38] border border-[#1A4A63] border-l-2 border-l-[#F78837]">
-          <div className="p-4">
-            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] mb-1 block">
-              Próxima clase
-            </span>
-            <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-xl uppercase tracking-tight">
-              {nextBooked.name}
-            </h3>
-            <div className="flex items-center gap-2 mt-1 mb-3">
+          <div className="p-3 flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] block">
+                Próxima clase
+              </span>
+              <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-lg uppercase tracking-tight truncate">
+                {nextBooked.name}
+              </h3>
               <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#EAEAEA] uppercase">
                 {nextBooked.startTime} hrs
               </span>
             </div>
             <a
               href={`/classes/${nextBooked.id}?date=${today.toISOString().split("T")[0]}`}
-              className="inline-flex items-center px-4 py-2 bg-[#F78837] text-[#0A1F2A] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide active:scale-[0.98] transition-transform"
+              className="inline-flex items-center px-3 py-2 bg-[#F78837] text-[#0A1F2A] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide active:scale-[0.98] transition-transform shrink-0"
             >
               Ver detalles
             </a>
