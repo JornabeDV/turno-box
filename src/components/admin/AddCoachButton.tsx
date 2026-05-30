@@ -10,7 +10,7 @@ export function AddCoachButton() {
 
   return (
     <>
-      <Button size="sm" variant="brand" onClick={() => setOpen(true)}>
+      <Button size="md" variant="brand" onClick={() => setOpen(true)}>
         <PlusIcon size={14} weight="bold" />
         Agregar coach
       </Button>

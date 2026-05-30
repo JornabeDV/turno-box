@@ -4,17 +4,19 @@ import { SignOutButton } from "@/components/layout/SignOutButton";
 import { CreditsBadge } from "@/components/billing/CreditsBadge";
 
 type HeaderProps = {
-  title: string;
   showSignOut?: boolean;
   showCredits?: boolean;
   mobileMenuSlot?: React.ReactNode;
+  logoSrc?: string;
+  gymName?: string;
 };
 
 export async function Header({
-  title,
   showSignOut = false,
   showCredits = false,
   mobileMenuSlot,
+  logoSrc,
+  gymName,
 }: HeaderProps) {
   const session = await auth();
 
@@ -31,23 +33,32 @@ export async function Header({
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#0f0f0f]/90 backdrop-blur-xl">
-      <div className="flex h-14 items-center justify-between px-4 md:px-6 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2.5">
+    <header className="sticky top-0 z-40 border-b border-[#1A4A63] bg-[#0A1F2A]">
+      <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6 lg:px-8 max-w-5xl lg:max-w-6xl mx-auto">
+        <div className="flex items-center gap-3">
           {mobileMenuSlot}
-          {/* Logo / marca */}
-          <img
-            src="/icons/logo-favicon.png"
-            alt="Bee Box"
-            className="h-8 w-auto"
-          />
-          <h1 className="text-sm font-semibold text-zinc-100">{title}</h1>
+          {/* Nombre del box */}
+          {gymName ? (
+            <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-xl leading-none">
+              {gymName}
+            </span>
+          ) : logoSrc ? (
+            <img
+              src={logoSrc}
+              alt="BoxTurno"
+              className="h-7 md:h-9 w-auto"
+            />
+          ) : (
+            <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
+              Box Turno
+            </h1>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
           {credits !== null && <CreditsBadge credits={credits} />}
           {session?.user && (
-            <span className="text-xs text-zinc-500 hidden sm:block">
+            <span className="text-[11px] md:text-xs text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
               {session.user.name ?? session.user.email}
             </span>
           )}

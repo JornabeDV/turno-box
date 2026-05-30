@@ -17,6 +17,7 @@ datasource db {
 // ─── ENUMS ────────────────────────────────────────────────────────────────────
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
   COACH
   STUDENT
@@ -42,6 +43,11 @@ enum CreditTxType {
   REFUND      // +1 al cancelar dentro de ventana
   EXPIRY      // -N al vencer (cron job)
   ADJUSTMENT  // corrección manual por admin
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
 }
 
 enum DayOfWeek {
@@ -74,9 +80,10 @@ model Gym {
   // Billing
   cancelWindowHours Float   @default(2)    // ventana para cancelar con reembolso de crédito (0.5 = 30min, 1, 2)
   waitlistEnabled   Boolean @default(true) // permite lista de espera cuando la clase está llena
-  packs          Pack[]
-  payments       Payment[]
-  creditBalances UserCreditBalance[]
+  packs            Pack[]
+  payments         Payment[]
+  creditBalances   UserCreditBalance[]
+  gymTransactions  GymTransaction[]
 
   announcements Announcement[]
 
@@ -109,6 +116,7 @@ model User {
   payments        Payment[]
   creditBalances  UserCreditBalance[]
   creditTxs       CreditTransaction[]
+  gymTransactions GymTransaction[]
 
   // Push notifications
   pushSubscriptions PushSubscription[]
@@ -294,6 +302,7 @@ model Payment {
   currency          String        @default("ARS")
 
   provider          String        @default("MERCADOPAGO")
+  method            String?                // EFECTIVO | TRANSFERENCIA | TARJETA | MERCADOPAGO (solo MANUAL)
   providerPaymentId String?       @unique  // payment_id de MP — garantiza idempotencia
   providerOrderId   String?                // preference_id (URL de checkout)
 
@@ -307,10 +316,11 @@ model Payment {
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
-  gym          Gym               @relation(fields: [gymId], references: [id])
-  user         User              @relation(fields: [userId], references: [id])
-  pack         Pack?             @relation(fields: [packId], references: [id], onDelete: SetNull)
-  creditTxs    CreditTransaction[]
+  gym             Gym               @relation(fields: [gymId], references: [id])
+  user            User              @relation(fields: [userId], references: [id])
+  pack            Pack?             @relation(fields: [packId], references: [id], onDelete: SetNull)
+  creditTxs       CreditTransaction[]
+  gymTransaction  GymTransaction?
 
   @@index([userId, gymId])
   @@index([providerPaymentId])
@@ -355,6 +365,32 @@ model CreditTransaction {
   @@index([userId, gymId, createdAt])
   @@index([bookingId])
   @@map("credit_transactions")
+}
+
+// GymTransaction — ledger contable del gimnasio (ingresos y egresos)
+model GymTransaction {
+  id           String   @id @default(cuid())
+  gymId        String
+  type         TransactionType
+  category     String
+  amount       Decimal  @db.Decimal(10, 2)
+  description  String?
+  method       String?  // EFECTIVO | TRANSFERENCIA | TARJETA | MERCADOPAGO
+
+  userId       String?  // atleta que pagó (si aplica)
+  paymentId    String?  @unique // si viene de un Payment existente
+  registeredBy String   // admin que cargó el movimiento
+
+  date         DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  gym     Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  payment Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([gymId, date])
+  @@index([gymId, type])
+  @@map("gym_transactions")
 }
 
 // PushSubscription — suscripciones Web Push por usuario

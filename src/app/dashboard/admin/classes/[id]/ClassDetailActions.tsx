@@ -10,7 +10,12 @@ import { ClassModal, type ClassData } from "@/components/admin/ClassModal";
 import { deleteClassAction } from "@/actions/classes";
 
 type Coach = { id: string; name: string | null };
-type Discipline = { id: string; name: string; color: string | null; description: string | null };
+type Discipline = {
+  id: string;
+  name: string;
+  color: string | null;
+  description: string | null;
+};
 
 interface Props {
   classData: ClassData;
@@ -41,11 +46,11 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="ghost" onClick={() => setEditOpen(true)}>
+        <Button size="md" variant="outline" onClick={() => setEditOpen(true)}>
           <PencilSimpleIcon size={14} />
           Editar
         </Button>
-        <Button size="sm" variant="danger" onClick={() => setDeleteOpen(true)}>
+        <Button size="md" variant="danger" onClick={() => setDeleteOpen(true)}>
           <TrashIcon size={14} />
           Eliminar
         </Button>
@@ -64,19 +69,19 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
         onOpenChange={(o) => !o && setDeleteOpen(false)}
         title="Eliminar clase"
         description="¿Eliminar esta clase? Las reservas existentes quedarán en el historial."
-        size="sm"
+        size="md"
       >
         {deleteError && (
-          <div className="mb-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-3 py-2">
-            <p className="text-xs text-rose-400">{deleteError}</p>
+          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-[#E61919]">{deleteError}</p>
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="flex max-md:flex-col gap-2 max-md:mt-6">
           <Button
             type="button"
-            variant="ghost"
-            size="sm"
-            className="flex-1"
+            variant="outline"
+            size="md"
+            className="md:flex-1"
             onClick={() => setDeleteOpen(false)}
           >
             Cancelar
@@ -84,8 +89,8 @@ export function ClassDetailActions({ classData, coaches, disciplines }: Props) {
           <Button
             type="button"
             variant="danger"
-            size="sm"
-            className="flex-1"
+            size="md"
+            className="md:flex-1"
             loading={isPending}
             onClick={handleDelete}
           >

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PackCard } from "@/components/billing/PackCard";
 import { PaymentToast } from "@/components/billing/PaymentToast";
+import { CreditCard, Fingerprint, Lock } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Comprar clases" };
@@ -24,31 +25,48 @@ export default async function PacksPage({
   });
 
   return (
-    <section className="pt-5">
+    <section className="space-y-5 pt-4">
       <PaymentToast error={error} info={info} />
-      <div className="mb-5">
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-0.5">Turnos</p>
-        <h2 className="text-xl font-bold text-zinc-100 tracking-tight">Comprar abonos</h2>
+
+      {/* Header */}
+      <div>
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+          Comprar abonos
+        </h2>
+        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+          Seleccioná el plan que mejor se adapte a tu entrenamiento.
+        </p>
       </div>
 
+      {/* Lista de packs */}
       {packs.length === 0 ? (
-        <div className="glass-card rounded-2xl px-4 py-16 text-center">
-          <p className="text-sm text-zinc-500">No hay abonos disponibles en este momento.</p>
+        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
+          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+            No hay abonos disponibles en este momento.
+          </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {packs.map((pack) => (
+        <div className="space-y-4">
+          {packs.map((pack, i) => (
             <PackCard
               key={pack.id}
               pack={{ ...pack, price: Number(pack.price) }}
+              index={i}
             />
           ))}
         </div>
       )}
-
-      <p className="text-xs text-zinc-700 text-center mt-6">
-        Los pagos son procesados de forma segura por MercadoPago.
-      </p>
+      {/* Footer de seguridad */}
+      <div className="pt-4 border-t border-[#1A4A63]">
+        <div className="flex items-center justify-center gap-6 mb-2">
+          <CreditCard size={20} className="text-[#4A6B7A]" />
+          <Fingerprint size={20} className="text-[#4A6B7A]" />
+          <Lock size={20} className="text-[#4A6B7A]" />
+        </div>
+        <p className="text-center text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
+          Pagos seguros cifrados con SSL. Tus datos están protegidos.
+        </p>
+      </div>
     </section>
   );
 }

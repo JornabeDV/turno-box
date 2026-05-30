@@ -24,9 +24,8 @@ export async function createCheckoutAction(
   });
   if (!pack) return { success: false, error: "Abono no encontrado." };
 
-  const expiresAt = pack.validityDays
-    ? new Date(Date.now() + pack.validityDays * 86_400_000)
-    : null;
+  const validityDays = pack.validityDays ?? 30;
+  const expiresAt = new Date(Date.now() + validityDays * 86_400_000);
 
   // Crear payment PENDING — su id es la external_reference en MP
   const payment = await prisma.payment.create({
@@ -175,4 +174,87 @@ export async function getUserCreditsAction(): Promise<number> {
   });
 
   return balance?.availableCredits ?? 0;
+}
+
+// ── Listado global de pagos del gym (admin) ───────────────────────────────────
+export async function getAllPaymentsAction(opts: {
+  status?: string | null;
+  provider?: string | null;
+  limit?: number;
+  offset?: number;
+  year?: number | null;
+  month?: number | null;
+}): Promise<
+  ActionResult<{
+    items: {
+      id: string;
+      status: string;
+      provider: string;
+      method: string | null;
+      amountPaid: number;
+      creditsGranted: number;
+      paidAt: Date | null;
+      createdAt: Date;
+      user: { name: string | null; email: string };
+      pack: { name: string } | null;
+    }[];
+    total: number;
+  }>
+> {
+  const session = await auth();
+  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  if (!user?.id || user.role !== "ADMIN" || !user.gymId) {
+    return { success: false, error: "No autorizado." };
+  }
+  const gymId = user.gymId;
+
+  const { status, provider, limit = 50, offset = 0, year, month } = opts;
+
+  const dateFilter =
+    year != null
+      ? {
+          gte: month ? new Date(year, month - 1, 1) : new Date(year, 0, 1),
+          lt: month ? new Date(year, month, 1) : new Date(year + 1, 0, 1),
+        }
+      : undefined;
+
+  const where = {
+    gymId,
+    ...(status ? { status: status as any } : {}),
+    ...(provider ? { provider } : {}),
+    ...(dateFilter ? { paidAt: dateFilter } : {}),
+  };
+
+  const [items, total] = await Promise.all([
+    prisma.payment.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      skip: offset,
+      select: {
+        id: true,
+        status: true,
+        provider: true,
+        method: true,
+        amountPaid: true,
+        creditsGranted: true,
+        paidAt: true,
+        createdAt: true,
+        user: { select: { name: true, email: true } },
+        pack: { select: { name: true } },
+      },
+    }),
+    prisma.payment.count({ where }),
+  ]);
+
+  return {
+    success: true,
+    data: {
+      items: items.map((p) => ({
+        ...p,
+        amountPaid: Number(p.amountPaid),
+      })),
+      total,
+    },
+  };
 }

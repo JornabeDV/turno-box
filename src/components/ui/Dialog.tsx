@@ -11,8 +11,8 @@ interface DialogProps {
   title: string;
   description?: string;
   children: React.ReactNode;
-  /** Ancho del panel. Default: "sm" */
   size?: "sm" | "md" | "lg";
+  className?: string;
 }
 
 const sizeClass = {
@@ -28,6 +28,7 @@ export function Dialog({
   description,
   children,
   size = "md",
+  className,
 }: DialogProps) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
@@ -38,7 +39,7 @@ export function Dialog({
               {/* Overlay */}
               <RadixDialog.Overlay asChild>
                 <motion.div
-                  className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+                  className="fixed inset-0 z-50 bg-black/80"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -50,9 +51,10 @@ export function Dialog({
               <RadixDialog.Content asChild>
                 <motion.div
                   className={cn(
-                    "fixed left-1/2 top-1/2 z-50 max-md:w-full md:w-[calc(100vw-2rem)] max-md:h-auto",
+                    "fixed left-1/2 top-1/2 z-50 max-md:w-full md:w-[calc(100vw-2rem)]",
                     sizeClass[size],
-                    "glass-card md:rounded-2xl p-6 shadow-2xl",
+                    className,
+                    "bg-[#0E2A38] border border-[#1A4A63] p-6 shadow-2xl",
                     "focus:outline-none",
                   )}
                   initial={{ opacity: 0, x: "-50%", y: "-46%", scale: 0.97 }}
@@ -61,18 +63,18 @@ export function Dialog({
                   transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 >
                   {/* Header */}
-                  <div className="flex items-start justify-between md:mb-5">
+                  <div className="flex items-start justify-between md:mb-5 shrink-0">
                     <div>
-                      <RadixDialog.Title className="text-base font-semibold text-zinc-100">
+                      <RadixDialog.Title className="text-base font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
                         {title}
                       </RadixDialog.Title>
                       {description && (
-                        <RadixDialog.Description className="text-sm text-zinc-500 mt-0.5">
+                        <RadixDialog.Description className="text-sm text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">
                           {description}
                         </RadixDialog.Description>
                       )}
                     </div>
-                    <RadixDialog.Close className="rounded-lg p-1.5 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors">
+                    <RadixDialog.Close className="p-1.5 text-[#4A6B7A] hover:text-[#EAEAEA] hover:bg-[#143D52] transition-colors">
                       <XIcon size={16} />
                     </RadixDialog.Close>
                   </div>

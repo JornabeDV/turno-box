@@ -118,7 +118,7 @@ export async function bookClassAction(
 
         let targetPaymentId: string | null = null;
         for (const p of activePayments) {
-          const remaining = p.creditsGranted + p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          const remaining = p.creditTxs.reduce((s, t) => s + t.amount, 0);
           if (remaining > 0) {
             targetPaymentId = p.id;
             break;
@@ -193,9 +193,11 @@ export async function cancelBookingAction(
   }
 
   // ── Calcular si está dentro de la ventana de cancelación con reembolso ──
-  const [startHour, startMin] = booking.class.startTime.split(":").map(Number);
-  const classStart = new Date(booking.classDate);
-  classStart.setUTCHours(startHour, startMin, 0, 0);
+  // startTime está en hora de Argentina (UTC-3)
+  const classDateStr = booking.classDate.toISOString().split("T")[0];
+  const classStart = new Date(
+    `${classDateStr}T${booking.class.startTime}:00-03:00`,
+  );
   const msUntilClass  = classStart.getTime() - Date.now();
   const hoursUntil    = msUntilClass / 3_600_000;
   const windowHours   = booking.class.gym?.cancelWindowHours ?? 2;
@@ -290,7 +292,7 @@ export async function cancelBookingAction(
 
         let candidatePaymentId: string | null = null;
         for (const p of candidatePayments) {
-          const remaining = p.creditsGranted + p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          const remaining = p.creditTxs.reduce((s, t) => s + t.amount, 0);
           if (remaining > 0) { candidatePaymentId = p.id; break; }
         }
 

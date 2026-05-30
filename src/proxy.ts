@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/api/auth", "/api/webhooks", "/api/cron", "/offline"];
+const PUBLIC_PATHS = ["/landing", "/join", "/auth/login", "/auth/register", "/api/auth", "/api/webhooks", "/api/cron", "/offline"];
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
@@ -10,6 +10,10 @@ export default auth((req) => {
   if (isPublic) return NextResponse.next();
 
   if (!req.auth?.user) {
+    // Root sin sesión → landing page
+    if (pathname === "/") {
+      return NextResponse.redirect(new URL("/landing", req.url));
+    }
     const loginUrl = new URL("/auth/login", req.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);

@@ -8,7 +8,9 @@ export const metadata: Metadata = { title: "Disciplinas" };
 
 export default async function DisciplinesPage() {
   const session = await auth();
-  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  const user = session?.user as
+    | { id?: string; role?: string; gymId?: string }
+    | undefined;
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 

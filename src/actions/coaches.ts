@@ -57,6 +57,54 @@ export async function deleteCoachAction(coachId: string): Promise<ActionResult> 
   return { success: true, data: undefined };
 }
 
+const updateCoachSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido").max(100),
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres").optional().or(z.literal("")),
+});
+
+export async function updateCoachAction(coachId: string, formData: FormData): Promise<ActionResult> {
+  const { gymId } = await requireAdmin();
+
+  const parsed = updateCoachSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const { name, email, password } = parsed.data;
+
+  const coach = await prisma.user.findFirst({
+    where: { id: coachId, gymId, role: "COACH" },
+    select: { id: true, email: true },
+  });
+
+  if (!coach) return { success: false, error: "Coach no encontrado." };
+
+  if (email !== coach.email) {
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) return { success: false, error: "Ya existe un usuario con ese email." };
+  }
+
+  const data: { name: string; email: string; passwordHash?: string } = { name, email };
+  if (password) {
+    data.passwordHash = await bcrypt.hash(password, 12);
+  }
+
+  await prisma.user.update({
+    where: { id: coachId },
+    data,
+  });
+
+  revalidatePath("/dashboard/admin/coaches");
+  revalidatePath(`/dashboard/admin/coaches/${coachId}`);
+  return { success: true, data: undefined };
+}
+
 export async function toggleCoachActiveAction(
   coachId: string
 ): Promise<ActionResult<{ isActive: boolean }>> {

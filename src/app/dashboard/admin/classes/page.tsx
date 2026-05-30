@@ -4,7 +4,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { formatTime } from "@/lib/utils";
 import { deleteClassAction } from "@/actions/classes";
-import { PlusIcon, CopySimpleIcon, CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
+import {
+  PlusIcon,
+  CopySimpleIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+} from "@phosphor-icons/react/dist/ssr";
 import { getClassSlotsForDay } from "@/lib/queries/classes";
 import { DisciplinesManager } from "@/components/admin/DisciplinesManager";
 import { prisma } from "@/lib/prisma";
@@ -13,11 +18,15 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Gestión de Clases" };
 
-const DAY_LABELS: Record<string, string> = {
-  MONDAY: "Lunes", TUESDAY: "Martes", WEDNESDAY: "Miércoles",
-  THURSDAY: "Jueves", FRIDAY: "Viernes", SATURDAY: "Sábado", SUNDAY: "Domingo",
-};
-const DAY_ORDER = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+const DAY_ORDER = [
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
+];
 
 function getWeekStart(dateStr?: string): Date {
   let base: Date;
@@ -57,7 +66,9 @@ export default async function ClassesPage({
   searchParams: Promise<{ week?: string; discipline?: string }>;
 }) {
   const session = await auth();
-  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  const user = session?.user as
+    | { id?: string; role?: string; gymId?: string }
+    | undefined;
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
@@ -76,7 +87,11 @@ export default async function ClassesPage({
 
   // Coaches
   const coaches = await prisma.user.findMany({
-    where: { gymId: user.gymId, role: { in: ["COACH", "ADMIN"] }, isActive: true },
+    where: {
+      gymId: user.gymId,
+      role: { in: ["COACH", "ADMIN"] },
+      isActive: true,
+    },
     select: { id: true, name: true },
     orderBy: { name: "asc" },
   });
@@ -87,15 +102,20 @@ export default async function ClassesPage({
   }));
 
   const slotsPerDay = await Promise.all(
-    weekDays.map(({ date }) => getClassSlotsForDay(user.gymId!, date, user.id!))
+    weekDays.map(({ date }) =>
+      getClassSlotsForDay(user.gymId!, date, user.id!),
+    ),
   );
 
   // Filtrar por disciplina seleccionada (por nombre de disciplina en el slot)
   const filteredSlotsPerDay = slotsPerDay.map((slots) =>
-    discipline ? slots.filter((s) => s.disciplineName === discipline) : slots
+    discipline ? slots.filter((s) => s.disciplineName === discipline) : slots,
   );
 
-  const totalClasses = filteredSlotsPerDay.reduce((sum, slots) => sum + slots.length, 0);
+  const totalClasses = filteredSlotsPerDay.reduce(
+    (sum, slots) => sum + slots.length,
+    0,
+  );
 
   return (
     <ClassesPageClient

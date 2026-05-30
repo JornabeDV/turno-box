@@ -11,8 +11,13 @@ import { deleteCoachAction } from "@/actions/coaches";
 import { cn } from "@/lib/utils";
 
 const DAY_LABELS: Record<string, string> = {
-  MONDAY: "Lun", TUESDAY: "Mar", WEDNESDAY: "Mié",
-  THURSDAY: "Jue", FRIDAY: "Vie", SATURDAY: "Sáb", SUNDAY: "Dom",
+  MONDAY: "Lun",
+  TUESDAY: "Mar",
+  WEDNESDAY: "Mié",
+  THURSDAY: "Jue",
+  FRIDAY: "Vie",
+  SATURDAY: "Sáb",
+  SUNDAY: "Dom",
 };
 
 export type CoachRow = {
@@ -52,53 +57,66 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
 
   return (
     <>
-      <div className="glass-card rounded-2xl overflow-hidden">
-        <div className="divide-y divide-white/[0.04]">
+      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+        <div className="divide-y divide-[#1A4A63]">
           {coaches.map((coach, i) => {
             const initials = coach.name
-              ? coach.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
+              ? coach.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()
               : coach.email[0].toUpperCase();
 
             return (
               <div
                 key={coach.id}
-                onClick={() => router.push(`/dashboard/admin/coaches/${coach.id}`)}
+                onClick={() =>
+                  router.push(`/dashboard/admin/coaches/${coach.id}`)
+                }
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
-                  `stagger-${Math.min(i + 1, 6)}`
+                  "flex items-center gap-3 px-4 md:px-5 py-3.5 md:py-4 cursor-pointer hover:bg-white/[0.03] transition-colors animate-in",
+                  `stagger-${Math.min(i + 1, 6)}`,
                 )}
               >
                 {/* Avatar */}
-                <div className={cn(
-                  "size-10 rounded-xl border flex items-center justify-center text-sm font-bold shrink-0",
-                  coach.isActive
-                    ? "bg-orange-500/10 border-orange-500/20 text-orange-400"
-                    : "bg-zinc-900 border-white/[0.04] text-zinc-600"
-                )}>
+                <div
+                  className={cn(
+                    "size-10 rounded-[2px] border flex items-center justify-center text-sm font-bold shrink-0",
+                    coach.isActive
+                      ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
+                      : "bg-[#0A1F2A] border-[#1A4A63] text-[#4A6B7A]",
+                  )}
+                >
                   {initials}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-medium truncate leading-tight", coach.isActive ? "text-zinc-100" : "text-zinc-500")}>
+                  <p
+                    className={cn(
+                      "text-sm md:text-base font-medium truncate leading-tight",
+                      coach.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
+                    )}
+                  >
                     {coach.name ?? "Sin nombre"}
                   </p>
-                  <p className="text-xs text-zinc-600 truncate mt-0.5">{coach.email}</p>
                 </div>
 
                 {/* Días que enseña */}
                 <div className="hidden md:flex items-center gap-1 shrink-0">
                   {coach.teachingDays.length === 0 ? (
-                    <span className="text-xs text-zinc-700">Sin clases</span>
+                    <span className="text-xs md:text-sm text-[#4A6B7A]">Sin clases</span>
                   ) : (
                     coach.teachingDays.map((d) => (
                       <span
                         key={d}
                         className={cn(
-                          "text-[10px] font-medium px-1.5 py-0.5 rounded-md",
+                          "text-[10px] md:text-xs font-medium px-1.5 py-0.5 rounded-md",
                           d === dayOfWeek
-                            ? "bg-orange-500/15 text-orange-400"
-                            : "bg-zinc-800 text-zinc-500"
+                            ? "bg-[#F78837]/15 text-[#F78837]"
+                            : "bg-[#0E2A38] text-[#6B8A99]",
                         )}
                       >
                         {DAY_LABELS[d]}
@@ -109,11 +127,12 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
 
                 {/* Clases totales + asistentes hoy */}
                 <div className="hidden sm:flex flex-col items-end shrink-0 min-w-[60px]">
-                  <span className="text-xs font-mono text-zinc-400 tabular-nums">
-                    {coach.classCount} {coach.classCount === 1 ? "clase" : "clases"}
+                  <span className="text-xs md:text-sm font-mono text-[#6B8A99] tabular-nums">
+                    {coach.classCount}{" "}
+                    {coach.classCount === 1 ? "clase" : "clases"}
                   </span>
                   {coach.todayAttendees > 0 && (
-                    <span className="text-[10px] text-emerald-500 tabular-nums">
+                    <span className="text-[10px] md:text-xs text-[#27C7B8] tabular-nums">
                       {coach.todayAttendees} hoy
                     </span>
                   )}
@@ -121,13 +140,19 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
 
                 {/* Toggle */}
                 <div onClick={(e) => e.stopPropagation()}>
-                  <ToggleCoachButton coachId={coach.id} initialIsActive={coach.isActive} />
+                  <ToggleCoachButton
+                    coachId={coach.id}
+                    initialIsActive={coach.isActive}
+                  />
                 </div>
 
                 {/* Eliminar */}
                 <button
-                  onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(coach.id); }}
-                  className="size-8 rounded-lg flex items-center justify-center text-zinc-500 cursor-pointer hover:text-rose-400 hover:bg-zinc-800 transition-all shrink-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setConfirmDeleteId(coach.id);
+                  }}
+                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
                 >
                   <TrashIcon size={16} weight="bold" />
                 </button>
@@ -142,13 +167,26 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
         onOpenChange={(o) => !o && setConfirmDeleteId(null)}
         title="Eliminar coach"
         description="Esta acción no se puede deshacer."
-        size="sm"
+        size="md"
       >
         <div className="flex gap-2 pt-1">
-          <Button type="button" variant="ghost" size="sm" className="flex-1" onClick={() => setConfirmDeleteId(null)}>
+          <Button
+            type="button"
+            variant="outline"
+            size="md"
+            className="flex-1"
+            onClick={() => setConfirmDeleteId(null)}
+          >
             Cancelar
           </Button>
-          <Button type="button" variant="danger" size="sm" className="flex-1" loading={isPending} onClick={handleDelete}>
+          <Button
+            type="button"
+            variant="danger"
+            size="md"
+            className="flex-1"
+            loading={isPending}
+            onClick={handleDelete}
+          >
             Eliminar
           </Button>
         </div>

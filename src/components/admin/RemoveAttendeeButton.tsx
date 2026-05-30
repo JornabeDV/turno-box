@@ -1,37 +1,87 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Trash } from "@phosphor-icons/react";
+import { TrashIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/Button";
+import { Dialog } from "@/components/ui/Dialog";
 import { cancelBookingAction } from "@/actions/bookings";
 
 export function RemoveAttendeeButton({ bookingId }: { bookingId: string }) {
   const [isPending, startTransition] = useTransition();
   const [removed, setRemoved] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (removed) return null;
 
-  return (
-    <button
-      onClick={() => {
-        if (!confirm("¿Eliminar esta reserva?")) return;
-        startTransition(async () => {
-          const result = await cancelBookingAction(bookingId);
-          if (result.success) {
-            setRemoved(true);
-            toast.success("Reserva eliminada");
-          } else {
-            toast.error(result.error);
-          }
-        });
-      }}
-      disabled={isPending}
-      className="size-7 rounded-lg flex items-center justify-center text-zinc-700 hover:text-rose-400 hover:bg-rose-500/10 transition-all active:scale-90 disabled:opacity-40"
-    >
-      {isPending
-        ? <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
-        : <Trash size={13} />
+  function handleConfirm() {
+    setError(null);
+    startTransition(async () => {
+      const result = await cancelBookingAction(bookingId);
+      if (result.success) {
+        setRemoved(true);
+        setOpen(false);
+        toast.success("Reserva eliminada");
+      } else {
+        setError(result.error ?? "No se pudo eliminar la reserva");
       }
-    </button>
+    });
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        disabled={isPending}
+        className="size-8 cursor-pointer rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#E61919]/10 transition-all active:scale-90 disabled:opacity-40"
+      >
+        {isPending ? (
+          <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+        ) : (
+          <TrashIcon size={16} weight="bold" />
+        )}
+      </button>
+
+      <Dialog
+        open={open}
+        onOpenChange={(o) => {
+          if (!o) {
+            setOpen(false);
+            setError(null);
+          }
+        }}
+        title="Eliminar reserva"
+        description="¿Eliminar a este estudiante de la clase?"
+        size="sm"
+      >
+        {error && (
+          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
+          </div>
+        )}
+        <div className="flex max-md:flex-col gap-2 max-md:mt-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="md"
+            className="md:flex-1"
+            onClick={() => setOpen(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="button"
+            variant="danger"
+            size="md"
+            className="md:flex-1"
+            loading={isPending}
+            onClick={handleConfirm}
+          >
+            Eliminar
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 }

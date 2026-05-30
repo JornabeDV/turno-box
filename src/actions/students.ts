@@ -19,7 +19,7 @@ async function requireAdmin() {
 export async function toggleStudentActiveAction(
   studentId: string
 ): Promise<ActionResult<{ isActive: boolean }>> {
-  const { gymId } = await requireAdmin();
+  const { userId, gymId } = await requireAdmin();
 
   const student = await prisma.user.findFirst({
     where: { id: studentId, gymId, role: "STUDENT" },
@@ -43,16 +43,22 @@ export async function adjustCreditsAction(
   studentId: string,
   formData: FormData
 ): Promise<ActionResult<{ newBalance: number }>> {
-  const { gymId } = await requireAdmin();
+  const { userId, gymId } = await requireAdmin();
 
   const schema = z.object({
-    amount: z.coerce.number().int().min(-100).max(100).refine((n) => n !== 0, "El monto no puede ser 0"),
-    note:   z.string().min(1, "La nota es requerida para ajustes manuales"),
+    amount:       z.coerce.number().int().min(-100).max(100).refine((n) => n !== 0, "El monto no puede ser 0"),
+    note:         z.string().min(1, "La nota es requerida para ajustes manuales"),
+    amountPaid:   z.coerce.number().min(0).max(999999).default(0),
+    method:       z.string().optional(),
+    validityDays: z.coerce.number().int().min(1).max(365).default(30),
   });
 
   const parsed = schema.safeParse({
-    amount: formData.get("amount"),
-    note:   formData.get("note"),
+    amount:       formData.get("amount"),
+    note:         formData.get("note"),
+    amountPaid:   formData.get("amountPaid"),
+    method:       formData.get("method"),
+    validityDays: formData.get("validityDays"),
   });
   if (!parsed.success) return { success: false, error: parsed.error.issues[0].message };
 
@@ -62,7 +68,7 @@ export async function adjustCreditsAction(
   });
   if (!student) return { success: false, error: "Alumno no encontrado." };
 
-  const { amount, note } = parsed.data;
+  const { amount, note, amountPaid, validityDays } = parsed.data;
 
   const result = await prisma.$transaction(async (tx: Tx) => {
     // Leer balance actual para calcular el nuevo valor
@@ -79,15 +85,51 @@ export async function adjustCreditsAction(
       update: { availableCredits: newBalance, version: { increment: 1 } },
     });
 
+    // Registrar el pago asociado (incluso si es $0, para trazabilidad completa)
+    const expiresAt = new Date(Date.now() + validityDays * 86_400_000);
+    const payment = await tx.payment.create({
+      data: {
+        gymId,
+        userId: studentId,
+        packId: null,
+        creditsGranted: amount,
+        amountPaid,
+        currency: "ARS",
+        provider: "MANUAL",
+        method: parsed.data.method || null,
+        status: "APPROVED",
+        paidAt: new Date(),
+        expiresAt,
+      },
+    });
+
     await tx.creditTransaction.create({
       data: {
         userId: studentId,
         gymId,
-        type:   "ADJUSTMENT",
+        type:      "ADJUSTMENT",
         amount,
         note,
+        paymentId: payment.id,
       },
     });
+
+    if (amountPaid > 0) {
+      await tx.gymTransaction.create({
+        data: {
+          gymId,
+          type: "INCOME",
+          category: "Venta manual",
+          amount: amountPaid,
+          description: note,
+          method: parsed.data.method || "EFECTIVO",
+          userId: studentId,
+          paymentId: payment.id,
+          registeredBy: userId,
+          date: new Date(),
+        },
+      });
+    }
 
     return newBalance;
   });
@@ -99,7 +141,7 @@ export async function adjustCreditsAction(
   sendPushToUser(studentId, {
     title: "El gym ajustó tu saldo",
     body: `${sign}${amount} crédito${Math.abs(amount) !== 1 ? "s" : ""}. Saldo actual: ${result}.`,
-    url: "/packs",
+    url: "/credits",
     tag: "credit-adjustment",
   }).catch(() => {});
 
