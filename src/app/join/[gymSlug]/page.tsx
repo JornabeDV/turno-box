@@ -15,7 +15,7 @@ export default async function JoinPage({
 
   const gym = await prisma.gym.findUnique({
     where: { slug: gymSlug },
-    select: { id: true, name: true, logoUrl: true },
+    select: { id: true, name: true, logoUrl: true, slug: true },
   });
 
   if (!gym) {
@@ -65,7 +65,7 @@ export default async function JoinPage({
 
         <p className="text-center text-xs text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           ¿Ya tenés cuenta?{" "}
-          <Link href="/auth/login" className="text-[#27C7B8] hover:text-[#20A898] transition-colors">
+          <Link href={`/auth/login?gymSlug=${gym.slug}`} className="text-[#27C7B8] hover:text-[#20A898] transition-colors">
             Iniciá sesión
           </Link>
         </p>

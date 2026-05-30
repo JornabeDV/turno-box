@@ -63,15 +63,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    // Persiste role y gymId en el JWT
+    // Persiste role, gymId y gymSlug en el JWT
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as { role: Role }).role;
         token.gymId = (user as { gymId: string | null }).gymId;
+        token.gymSlug = (user as { gymSlug?: string | null }).gymSlug ?? null;
       }
       return token;
     },
-    // Expone role y gymId en la session del cliente
+    // Expone role, gymId y gymSlug en la session del cliente
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.sub!;
@@ -79,6 +80,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         (session.user as any).role = token.role as Role;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (session.user as any).gymId = token.gymId as string | null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session.user as any).gymSlug = token.gymSlug as string | null;
       }
       return session;
     },

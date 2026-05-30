@@ -44,6 +44,9 @@ export default async function ProfilePage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/auth/login");
 
+  const gymSlug = (session.user as { gymSlug?: string | null }).gymSlug;
+  const signOutUrl = gymSlug ? `/auth/login?gymSlug=${gymSlug}` : "/auth/login";
+
   const userId = session.user.id;
 
   const now        = new Date();
@@ -191,7 +194,7 @@ export default async function ProfilePage() {
       </div>
 
       {/* ── Cerrar sesión ────────────────────────────────────────────────── */}
-      <SignOutButton />
+      <SignOutButton callbackUrl={signOutUrl} />
     </section>
   );
 }

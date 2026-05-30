@@ -31,12 +31,20 @@ export function Navbar() {
             Precios
           </a>
         </div>
-        <Link
-          href="/auth/login"
-          className="text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wider bg-[#F78837] text-[#0A1F2A] px-4 py-2 hover:bg-[#F78837]/90 transition-colors"
-        >
-          Ingresar
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/gyms"
+            className="text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wider border border-[#1A4A63] text-[#6B8A99] px-4 py-2 hover:border-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+          >
+            Soy atleta
+          </Link>
+          <Link
+            href="/auth/login"
+            className="text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wider bg-[#F78837] text-[#0A1F2A] px-4 py-2 hover:bg-[#F78837]/90 transition-colors"
+          >
+            Ingresar admin
+          </Link>
+        </div>
       </div>
     </nav>
   );
