@@ -50,11 +50,6 @@ export async function registerAction(
     if (!gymExists) {
       return { success: false, error: "El gimnasio no existe." };
     }
-  } else {
-    const defaultGym = await prisma.gym.findFirst({
-      orderBy: { createdAt: "asc" },
-    });
-    gymId = defaultGym?.id ?? null;
   }
 
   await prisma.user.create({
@@ -62,4 +57,52 @@ export async function registerAction(
   });
 
   return { success: true, data: undefined };
+}
+
+const emailSchema = z.string().email("Email inválido");
+
+export async function lookupGymForEmailAction(
+  formData: FormData
+): Promise<
+  ActionResult<{
+    gym: {
+      id: string;
+      name: string;
+      logoUrl: string | null;
+      slug: string;
+    } | null;
+    hasAccount: boolean;
+  }>
+> {
+  const rawEmail = formData.get("email");
+  const parsed = emailSchema.safeParse(rawEmail);
+  if (!parsed.success) {
+    return { success: false, error: "Email inválido" };
+  }
+
+  const email = parsed.data.toLowerCase().trim();
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      role: true,
+      gymId: true,
+    },
+  });
+
+  if (!user) {
+    return { success: true, data: { gym: null, hasAccount: false } };
+  }
+
+  if (!user.gymId) {
+    return { success: true, data: { gym: null, hasAccount: true } };
+  }
+
+  const gym = await prisma.gym.findUnique({
+    where: { id: user.gymId },
+    select: { id: true, name: true, logoUrl: true, slug: true },
+  });
+
+  return { success: true, data: { gym, hasAccount: true } };
 }

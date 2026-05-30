@@ -13,7 +13,7 @@ export function Hero() {
           Turnos, pagos, cupos y alumnos. Todo en una sola app diseñada para
           boxes de CrossFit.
         </p>
-        <div className="mt-8 flex items-center justify-center gap-3">
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
             href={WHATSAPP_URL}
             target="_blank"
@@ -28,6 +28,13 @@ export function Hero() {
             className="inline-flex items-center gap-2 border border-[#1A4A63] text-[#6B8A99] px-6 py-3 text-sm font-[family-name:var(--font-oswald)] uppercase tracking-wide hover:border-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
           >
             Ver cómo funciona
+          </a>
+          <a
+            href="/gyms"
+            className="inline-flex items-center gap-2 border border-[#27C7B8]/40 text-[#27C7B8] px-6 py-3 text-sm font-[family-name:var(--font-oswald)] uppercase tracking-wide hover:border-[#27C7B8] hover:bg-[#27C7B8]/10 transition-colors"
+          >
+            Soy atleta
+            <ArrowRight size={16} />
           </a>
         </div>
 

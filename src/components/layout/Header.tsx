@@ -19,6 +19,8 @@ export async function Header({
   gymName,
 }: HeaderProps) {
   const session = await auth();
+  const gymSlug = (session?.user as { gymSlug?: string | null } | undefined)?.gymSlug;
+  const signOutUrl = gymSlug ? `/auth/login?gymSlug=${gymSlug}` : "/auth/login";
 
   let credits: number | null = null;
   if (showCredits && session?.user?.id) {
@@ -62,7 +64,7 @@ export async function Header({
               {session.user.name ?? session.user.email}
             </span>
           )}
-          {showSignOut && <SignOutButton iconOnly />}
+          {showSignOut && <SignOutButton iconOnly callbackUrl={signOutUrl} />}
         </div>
       </div>
     </header>
