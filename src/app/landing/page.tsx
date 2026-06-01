@@ -3,6 +3,7 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { ProblemSolution } from "@/components/landing/ProblemSolution";
+import { AppPreview } from "@/components/landing/AppPreview";
 import { Features } from "@/components/landing/Features";
 import { Demo } from "@/components/landing/Demo";
 import { Pricing } from "@/components/landing/Pricing";
@@ -25,6 +26,7 @@ export default function LandingPage() {
       <Hero />
       <TrustBar />
       <ProblemSolution />
+      <AppPreview />
       <Features />
       <Demo />
       <Pricing />
