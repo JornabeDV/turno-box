@@ -40,6 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             gymId: true,
             image: true,
             isActive: true,
+            gym: { select: { slug: true } },
           },
         });
 
@@ -57,6 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           role: user.role,
           gymId: user.gymId,
+          gymSlug: user.gym?.slug ?? null,
           image: user.image,
         };
       },
