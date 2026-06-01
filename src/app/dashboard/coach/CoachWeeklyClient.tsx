@@ -78,10 +78,10 @@ export function CoachWeeklyClient({
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+        <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
           Coach
         </p>
-        <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
           Mis clases
         </h2>
       </div>
@@ -98,19 +98,19 @@ export function CoachWeeklyClient({
         <Link
           href={`/dashboard/coach?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="ghost">
+          <Button size="md" variant="outline">
             <CaretLeftIcon size={14} weight="bold" />
             Anterior
           </Button>
         </Link>
-        <p className="text-sm font-medium text-[#EAEAEA] tabular-nums">
+        <p className="text-sm md:text-base font-medium text-[#EAEAEA] tabular-nums">
           {formatShortDate(weekStart)} –{" "}
           {formatShortDate(addDays(weekStart, 6))}
         </p>
         <Link
           href={`/dashboard/coach?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="ghost">
+          <Button size="md" variant="outline">
             Siguiente
             <CaretRightIcon size={14} weight="bold" />
           </Button>
@@ -120,7 +120,7 @@ export function CoachWeeklyClient({
       {/* Grid semanal */}
       {totalClasses === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm text-[#6B8A99]">
+          <p className="text-sm md:text-base text-[#6B8A99]">
             No tenés clases asignadas esta semana.
           </p>
         </div>
@@ -148,7 +148,7 @@ export function CoachWeeklyClient({
                     {/* Mobile */}
                     <div className="md:hidden flex items-center justify-between px-3 py-2.5">
                       <span
-                        className={`text-sm font-semibold ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
+                        className={`text-sm md:text-base font-semibold ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
                       >
                         {DAY_LABELS[dayKey]}
                         {isToday && (
@@ -158,7 +158,7 @@ export function CoachWeeklyClient({
                         )}
                       </span>
                       <span
-                        className={`text-xs font-mono tabular-nums ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
+                        className={`text-xs md:text-sm font-mono tabular-nums ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
                       >
                         {date.toLocaleDateString("es-AR", {
                           day: "numeric",
@@ -169,12 +169,12 @@ export function CoachWeeklyClient({
                     {/* Desktop */}
                     <div className="hidden md:block text-center py-2">
                       <p
-                        className={`text-[10px] font-bold uppercase tracking-widest ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
+                        className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
                       >
                         {DAY_LABELS[dayKey].slice(0, 3)}
                       </p>
                       <p
-                        className={`text-base font-semibold leading-tight ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
+                        className={`text-base lg:text-lg font-semibold leading-tight ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
                       >
                         {date.getDate()}
                       </p>
@@ -184,7 +184,7 @@ export function CoachWeeklyClient({
                   {/* Cards de turnos */}
                   {slots.length === 0 ? (
                     <div className="hidden md:flex items-center justify-center py-6">
-                      <span className="text-xs text-[#4A6B7A]">—</span>
+                      <span className="text-xs lg:text-sm text-[#4A6B7A]">—</span>
                     </div>
                   ) : (
                     slots.map((slot: ClassSlot) => {
@@ -207,24 +207,24 @@ export function CoachWeeklyClient({
                                 backgroundColor: slot.color ?? "#f97316",
                               }}
                             />
-                            <p className="text-sm font-semibold text-[#EAEAEA] leading-tight line-clamp-2">
+                            <p className="text-sm lg:text-base font-semibold text-[#EAEAEA] leading-tight line-clamp-2">
                               {slot.name}
                             </p>
                           </div>
 
                           {/* Horario */}
-                          <p className="text-xs text-[#6B8A99] font-mono tabular-nums leading-none">
+                          <p className="text-xs lg:text-sm text-[#6B8A99] font-mono tabular-nums leading-none">
                             {formatTime(slot.startTime)}
                           </p>
 
                           {/* Ocupación */}
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs text-[#6B8A99] tabular-nums font-medium">
+                              <span className="text-xs lg:text-sm text-[#6B8A99] tabular-nums font-medium">
                                 {slot.confirmedCount}/{slot.maxCapacity}
                               </span>
                               <span
-                                className={`text-xs font-semibold ${isFull ? "text-[#E61919]" : "text-[#27C7B8]"}`}
+                                className={`text-xs lg:text-sm font-semibold ${isFull ? "text-[#E61919]" : "text-[#27C7B8]"}`}
                               >
                                 {isFull
                                   ? "Lleno"
