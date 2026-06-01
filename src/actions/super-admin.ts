@@ -148,6 +148,131 @@ export async function getGymsListAction(): Promise<
   return { success: true, data: gyms };
 }
 
+export async function getGymByIdAction(
+  id: string
+): Promise<
+  ActionResult<{
+    id: string;
+    name: string;
+    slug: string;
+    address: string | null;
+    phone: string | null;
+  }>
+> {
+  await requireSuperAdmin();
+
+  const gym = await prisma.gym.findUnique({
+    where: { id },
+    select: { id: true, name: true, slug: true, address: true, phone: true },
+  });
+
+  if (!gym) {
+    return { success: false, error: "Gimnasio no encontrado" };
+  }
+
+  return { success: true, data: gym };
+}
+
+const updateGymSchema = z.object({
+  name: z.string().min(1, "El nombre es requerido").max(100),
+  slug: z
+    .string()
+    .min(1, "El slug es requerido")
+    .max(50)
+    .regex(slugRegex, "El slug solo puede contener letras minúsculas, números y guiones"),
+  address: z.string().max(200).optional().or(z.literal("")),
+  phone: z.string().max(30).optional().or(z.literal("")),
+});
+
+export async function updateGymAction(
+  id: string,
+  formData: FormData
+): Promise<ActionResult<{ id: string }>> {
+  await requireSuperAdmin();
+
+  const raw = {
+    name: formData.get("name"),
+    slug: formData.get("slug"),
+    address: formData.get("address"),
+    phone: formData.get("phone"),
+  };
+
+  const parsed = updateGymSchema.safeParse(raw);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0].message };
+  }
+
+  const { name, slug, address, phone } = parsed.data;
+  const normalizedSlug = slug.toLowerCase().trim();
+
+  // Verificar que el gym existe
+  const existingGym = await prisma.gym.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+  if (!existingGym) {
+    return { success: false, error: "Gimnasio no encontrado" };
+  }
+
+  // Verificar que el slug no esté en uso por OTRO gimnasio
+  const slugConflict = await prisma.gym.findUnique({
+    where: { slug: normalizedSlug },
+    select: { id: true },
+  });
+  if (slugConflict && slugConflict.id !== id) {
+    return { success: false, error: "Ya existe un gimnasio con ese slug. Elegí otro." };
+  }
+
+  await prisma.gym.update({
+    where: { id },
+    data: {
+      name,
+      slug: normalizedSlug,
+      address: address || null,
+      phone: phone || null,
+    },
+  });
+
+  return { success: true, data: { id } };
+}
+
+export async function deleteGymAction(
+  id: string
+): Promise<ActionResult<{ id: string }>> {
+  await requireSuperAdmin();
+
+  const gym = await prisma.gym.findUnique({
+    where: { id },
+    include: {
+      _count: {
+        select: { users: true, classes: true, payments: true },
+      },
+    },
+  });
+
+  if (!gym) {
+    return { success: false, error: "Gimnasio no encontrado" };
+  }
+
+  if (gym._count.users > 0) {
+    return {
+      success: false,
+      error: `No se puede eliminar el gimnasio porque tiene ${gym._count.users} usuario(s) asociados.`,
+    };
+  }
+
+  if (gym._count.payments > 0) {
+    return {
+      success: false,
+      error: `No se puede eliminar el gimnasio porque tiene pagos registrados.`,
+    };
+  }
+
+  await prisma.gym.delete({ where: { id } });
+
+  return { success: true, data: { id } };
+}
+
 export async function getSuperAdminStatsAction(): Promise<
   ActionResult<{
     totalGyms: number;

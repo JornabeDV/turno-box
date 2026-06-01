@@ -17,15 +17,15 @@ export default async function SuperAdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-[#6B8A99] uppercase tracking-wider mb-0.5">
+        <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
           Super Admin
         </p>
-        <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
           Dashboard
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
         <MetricCard
           label="Gimnasios"
           value={stats?.totalGyms ?? 0}
@@ -53,7 +53,7 @@ export default async function SuperAdminDashboardPage() {
       </div>
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <h3 className="text-sm font-semibold text-[#EAEAEA] mb-2">
+        <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA] mb-2">
           Acciones rápidas
         </h3>
         <div className="flex flex-wrap gap-3">
