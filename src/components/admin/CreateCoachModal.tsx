@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
@@ -21,6 +22,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   function handleClose() {
     setError(null);
@@ -37,6 +39,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
       const result = await createCoachAction(formData);
       if (result.success) {
         toast.success("Coach creado");
+        router.refresh();
         handleClose();
       } else {
         setError(result.error);

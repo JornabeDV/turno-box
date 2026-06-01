@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { cn, formatTime } from "@/lib/utils";
+import { cn, formatTime, toClassDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { BookingActions } from "@/components/booking/BookingActions";
 import {
@@ -16,6 +16,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Detalle de clase" };
+export const dynamic = "force-dynamic";
 
 export default async function ClassDetailPage({
   params,
@@ -35,7 +36,7 @@ export default async function ClassDetailPage({
   const gymId = (session.user as { gymId?: string }).gymId;
   if (!gymId) redirect("/");
 
-  const classDate = new Date(date + "T12:00:00");
+  const classDate = toClassDate(new Date(date));
 
   const gymClass = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, isActive: true, deletedAt: null },
