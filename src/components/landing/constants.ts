@@ -14,7 +14,7 @@ export const FEATURES = [
   {
     iconName: "Coins",
     title: "Créditos y packs",
-    desc: "Vendé packs de 4, 8 o 12 clases. El sistema descuenta automáticamente.",
+    desc: "Vendé packs de clases. El sistema descuenta automáticamente.",
   },
   {
     iconName: "Users",
