@@ -69,9 +69,10 @@ export function GymDiscoveryClient({ initialGyms, initialQuery }: Props) {
       ) : (
         <div className="space-y-3">
           {gyms.map((gym) => (
-            <div
+            <button
               key={gym.id}
-              className="flex items-center gap-4 border border-[#1A4A63] bg-[#0E2A38] p-4 hover:border-[#6B8A99] transition-colors"
+              onClick={() => router.push(`/auth/login?gymSlug=${gym.slug}`)}
+              className="w-full flex items-center gap-4 border border-[#1A4A63] bg-[#0E2A38] p-4 hover:border-[#6B8A99] transition-colors text-left cursor-pointer"
             >
               {/* Logo */}
               <div className="shrink-0 w-14 h-14 rounded-xl border border-[#1A4A63] bg-[#0A1F2A] overflow-hidden flex items-center justify-center p-1.5">
@@ -99,14 +100,11 @@ export function GymDiscoveryClient({ initialGyms, initialQuery }: Props) {
               </div>
 
               {/* CTA */}
-              <button
-                onClick={() => router.push(`/auth/login?gymSlug=${gym.slug}`)}
-                className="shrink-0 inline-flex items-center gap-1.5 bg-[#F78837] text-[#0A1F2A] px-4 py-2.5 text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide hover:bg-[#F78837]/90 transition-colors active:scale-[0.98]"
-              >
+              <span className="shrink-0 inline-flex items-center gap-1.5 bg-[#F78837] text-[#0A1F2A] px-4 py-2.5 text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
                 Entrar
                 <ArrowRight size={14} />
-              </button>
-            </div>
+              </span>
+            </button>
           ))}
         </div>
       )}
