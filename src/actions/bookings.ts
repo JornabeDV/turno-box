@@ -142,6 +142,7 @@ export async function bookClassAction(
 
     revalidatePath("/");
     revalidatePath("/bookings");
+    revalidatePath("/classes/[classId]");
 
     // Notificación push (fire-and-forget, no bloquea la respuesta)
     const pushBody =
@@ -316,6 +317,7 @@ export async function cancelBookingAction(
 
   revalidatePath("/");
   revalidatePath("/bookings");
+  revalidatePath("/classes/[classId]");
 
   // Push fuera del transaction para evitar conflictos con el connection pool
   if (promotedUserId) {

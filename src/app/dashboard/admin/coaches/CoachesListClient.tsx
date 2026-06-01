@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { TrashIcon } from "@phosphor-icons/react/dist/ssr";
@@ -38,6 +38,11 @@ interface Props {
 export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
   const router = useRouter();
   const [coaches, setCoaches] = useState(initial);
+
+  useEffect(() => {
+    setCoaches(initial);
+  }, [initial]);
+
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
