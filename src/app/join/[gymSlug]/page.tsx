@@ -60,7 +60,7 @@ export default async function JoinPage({
 
         {/* Card */}
         <div className="bg-[#0E2A38] border border-[#1A4A63] p-6">
-          <RegisterForm defaultGymId={gym.id} />
+          <RegisterForm defaultGymId={gym.id} gymSlug={gym.slug} />
         </div>
 
         <p className="text-center text-xs text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">

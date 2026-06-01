@@ -9,9 +9,10 @@ import { registerAction } from "@/actions/auth";
 
 type RegisterFormProps = {
   defaultGymId?: string;
+  gymSlug?: string;
 };
 
-export function RegisterForm({ defaultGymId }: RegisterFormProps) {
+export function RegisterForm({ defaultGymId, gymSlug }: RegisterFormProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +54,10 @@ export function RegisterForm({ defaultGymId }: RegisterFormProps) {
     }
 
     setSuccess(true);
-    setTimeout(() => router.push("/auth/login"), 1500);
+    setTimeout(() => {
+      const redirectUrl = gymSlug ? `/auth/login?gymSlug=${gymSlug}` : "/auth/login";
+      router.push(redirectUrl);
+    }, 1500);
   }
 
   return (
