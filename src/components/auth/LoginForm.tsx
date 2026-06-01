@@ -145,18 +145,6 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
         Ingresar
       </Button>
 
-      {/* Link a registro del mismo gym */}
-      {preselectedGym && (
-        <p className="text-center text-xs text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
-          ¿Primera vez?{" "}
-          <Link
-            href={`/join/${preselectedGym.slug}`}
-            className="text-[#27C7B8] hover:text-[#20A898] transition-colors"
-          >
-            Crear cuenta en {preselectedGym.name}
-          </Link>
-        </p>
-      )}
     </form>
   );
 }
