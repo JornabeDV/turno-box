@@ -85,7 +85,7 @@ export default async function CoachClassDetailPage({
     <div className="space-y-6">
       <Link
         href="/dashboard/coach"
-        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
       >
         <ArrowLeftIcon size={13} />
         Mis clases
