@@ -80,7 +80,7 @@ export function BookingActions({
   if (booking?.status === "WAITLISTED") {
     return (
       <Button
-        variant="ghost"
+        variant="outline"
         size="md"
         fullWidth
         loading={isPending}
