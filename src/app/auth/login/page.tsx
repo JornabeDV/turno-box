@@ -81,7 +81,7 @@ export default async function LoginPage({
             </>
           ) : (
             <>
-              ¿Sos atleta?{" "}
+              ¿Sos alumno?{" "}
               <Link
                 href="/gyms"
                 className="text-[#27C7B8] hover:text-[#20A898] transition-colors"

@@ -2,7 +2,7 @@ import { FAQ_ITEMS } from "./constants";
 
 export function FAQ() {
   return (
-    <section className="py-16 px-4 border-t border-[#1A4A63] bg-[#0E2A38]">
+    <section className="py-8 md:py-16 px-4 border-t border-[#1A4A63] bg-[#0E2A38]">
       <div className="max-w-4xl mx-auto">
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl text-center mb-10">
           Preguntas frecuentes

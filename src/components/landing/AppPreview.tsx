@@ -18,14 +18,14 @@ export function AppPreview() {
   ];
 
   return (
-    <section className="py-16 px-4 border-t border-[#1A4A63]">
+    <section className="py-8 md:py-16 px-4 border-t border-[#1A4A63]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
-            Tu box, en una pantalla
+            Tu gimnasio, en una pantalla
           </h2>
           <p className="mt-2 text-sm lg:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
-            Organizá clases, disciplinas y coaches desde un solo lugar.
+            Organizá clases, actividades y profesores desde un solo lugar.
           </p>
         </div>
 

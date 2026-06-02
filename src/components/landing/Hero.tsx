@@ -3,15 +3,15 @@ import { WHATSAPP_URL } from "./constants";
 
 export function Hero() {
   return (
-    <section className="pt-16 pb-12 px-4">
+    <section className="py-8 md:py-16 px-4">
       <div className="max-w-7xl mx-auto text-center">
-        <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-none">
-          Dejá de administrar tu box con{" "}
+        <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-none max-w-5xl mx-auto">
+          Dejá de administrar tu gimnasio con{" "}
           <span className="text-[#F78837]">WhatsApp y Excel</span>
         </h1>
         <p className="mt-4 text-base sm:text-lg lg:text-xl text-[#6B8A99] max-w-3xl mx-auto font-[family-name:var(--font-oswald)]">
           Turnos, pagos, cupos y alumnos. Todo en una sola app diseñada para
-          boxes de CrossFit.
+          gimnasios, boxes y centros deportivos.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-xs sm:max-w-none mx-auto sm:mx-0">
           <a
@@ -33,7 +33,7 @@ export function Hero() {
             href="/gyms"
             className="inline-flex items-center w-48 justify-center gap-2 border border-[#27C7B8]/40 text-[#27C7B8] px-6 py-3 text-sm font-[family-name:var(--font-oswald)] uppercase tracking-wide hover:border-[#27C7B8] hover:bg-[#27C7B8]/10 transition-colors"
           >
-            Soy atleta
+            Soy alumno
             <ArrowRight size={16} />
           </a>
         </div>
@@ -52,7 +52,7 @@ export function Hero() {
           </div>
           <img
             src="/landing_3.png"
-            alt="Dashboard de BoxTurno con métricas del box"
+            alt="Dashboard de BoxTurno con métricas del gimnasio"
             className="w-full"
           />
         </div>

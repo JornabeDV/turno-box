@@ -243,7 +243,7 @@ export async function deleteGymTransactionAction(id: string): Promise<ActionResu
   });
 
   if (!tx) return { success: false, error: "Transacción no encontrada." };
-  if (tx.paymentId) return { success: false, error: "No se puede eliminar una transacción vinculada a un pago de atleta." };
+  if (tx.paymentId) return { success: false, error: "No se puede eliminar una transacción vinculada a un pago de alumno." };
 
   await prisma.gymTransaction.delete({ where: { id } });
 

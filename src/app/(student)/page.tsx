@@ -76,7 +76,7 @@ export default async function HomePage() {
       getGymClassDays(user.gymId),
     ]);
 
-  const firstName = user.name?.split(" ")[0] ?? "Atleta";
+  const firstName = user.name?.split(" ")[0] ?? "Alumno";
 
   // Buscar próxima clase reservada (solo futuras, comparando en hora Argentina)
   const nowTimeStr = today.toLocaleTimeString("es-AR", {

@@ -1,6 +1,6 @@
 const WHATSAPP_NUMBER = "5492644366369";
 const WHATSAPP_MESSAGE = encodeURIComponent(
-  "Hola, vi BoxTurno y quiero probarlo para mi box de CrossFit. ¿Me podrían dar más info?"
+  "Hola, vi BoxTurno y quiero probarlo para mi gimnasio. ¿Me podrían dar más info?"
 );
 
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MESSAGE}`;
@@ -24,7 +24,7 @@ export const FEATURES = [
   {
     iconName: "Gear",
     title: "Panel de admin",
-    desc: "Gestión completa de alumnos, clases, coaches y disciplinas.",
+    desc: "Gestión completa de alumnos, clases, profesores y actividades.",
   },
   {
     iconName: "Bell",
@@ -89,10 +89,10 @@ export const FAQ_ITEMS = [
   },
   {
     q: "¿Los alumnos necesitan pagar algo?",
-    a: "No. La app es gratuita para los alumnos. Solo el box paga la suscripción.",
+    a: "No. La app es gratuita para tus alumnos. Solo el gimnasio paga la suscripción.",
   },
   {
-    q: "¿Funciona si mi box es pequeño?",
-    a: "Absolutamente. El plan Starter está pensado para boxes en crecimiento con hasta 50 alumnos.",
+    q: "¿Funciona si mi gimnasio es pequeño?",
+    a: "Absolutamente. El plan Starter está pensado para gimnasios en crecimiento con hasta 50 alumnos.",
   },
 ] as const;
