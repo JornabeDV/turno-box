@@ -5,8 +5,8 @@ import { searchGymsAction } from "@/actions/gyms";
 import { GymDiscoveryClient } from "@/components/gyms/GymDiscoveryClient";
 
 export const metadata: Metadata = {
-  title: "Encontrá tu box — BoxTurno",
-  description: "Buscá tu box de CrossFit y unite para reservar tus clases.",
+  title: "Encontrá tu gimnasio — BoxTurno",
+  description: "Buscá tu gimnasio y unite para reservar tus clases.",
 };
 
 export const dynamic = "force-dynamic";
@@ -29,7 +29,7 @@ export default async function GymsPage({
         </div>
 
         <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-2 text-center">
-          Encontrá tu box
+          Encontrá tu gimnasio
         </h1>
         <p className="text-sm text-[#6B8A99] text-center mb-8 font-[family-name:var(--font-oswald)]">
           Buscá tu gimnasio y unite para reservar clases
@@ -38,7 +38,7 @@ export default async function GymsPage({
         <GymDiscoveryClient initialGyms={gyms} initialQuery={q ?? ""} />
 
         <p className="text-center text-xs text-[#6B8A99] mt-8 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
-          Seleccioná tu box para ingresar
+          Seleccioná tu gimnasio para ingresar
         </p>
       </div>
     </main>

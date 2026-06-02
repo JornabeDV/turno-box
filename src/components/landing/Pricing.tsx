@@ -3,7 +3,7 @@ import { PLANS, WHATSAPP_URL } from "./constants";
 
 export function Pricing() {
   return (
-    <section id="precios" className="py-16 px-4 border-t border-[#1A4A63]">
+    <section id="precios" className="py-8 md:py-16 px-4 border-t border-[#1A4A63]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">

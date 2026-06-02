@@ -42,7 +42,7 @@ export function ProblemSolution() {
                 "Cupos actualizados en tiempo real",
                 "Sistema de créditos y packs automático",
                 "Historial de pagos y abonos siempre disponible",
-                "Panel de admin con métricas de tu box",
+                "Panel de admin con métricas de tu gimnasio",
               ].map((item) => (
                 <li
                   key={item}

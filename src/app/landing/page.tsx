@@ -12,9 +12,9 @@ import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-  title: "BoxTurno — Gestión inteligente para boxes de CrossFit",
+  title: "BoxTurno — Gestión inteligente de turnos",
   description:
-    "Dejá de administrar tu box con WhatsApp y Excel. Turnos, pagos, cupos y alumnos. Todo en una sola app.",
+    "Dejá de administrar tu gimnasio con WhatsApp y Excel. Turnos, pagos, cupos y alumnos. Todo en una sola app.",
 };
 
 export const dynamic = "force-dynamic";

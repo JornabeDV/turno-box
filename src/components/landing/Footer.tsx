@@ -11,13 +11,13 @@ export function Footer() {
           </span>
           <a
             href="#"
-            className="text-[10px] lg:text-xs text-[#4A6B7A] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider hover:text-[#6B8A99] transition-colors"
+            className="hidden text-[10px] lg:text-xs text-[#4A6B7A] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider hover:text-[#6B8A99] transition-colors"
           >
             Términos
           </a>
           <a
             href="#"
-            className="text-[10px] text-[#4A6B7A] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider hover:text-[#6B8A99] transition-colors"
+            className="hidden text-[10px] lg:text-xs text-[#4A6B7A] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider hover:text-[#6B8A99] transition-colors"
           >
             Privacidad
           </a>

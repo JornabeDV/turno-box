@@ -36,8 +36,8 @@ export function Navbar() {
             href="/gyms"
             className="text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wider border border-[#1A4A63] text-[#6B8A99] px-3 py-2 sm:px-4 hover:border-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
           >
-            <span className="sm:hidden">Atleta</span>
-            <span className="hidden sm:inline">Soy atleta</span>
+            <span className="sm:hidden">Alumno</span>
+            <span className="hidden sm:inline">Soy alumno</span>
           </Link>
           <Link
             href="/auth/login"

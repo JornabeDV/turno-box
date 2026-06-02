@@ -19,11 +19,11 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: 
 
 export function Features() {
   return (
-    <section id="funciones" className="py-16 px-4 border-t border-[#1A4A63]">
+    <section id="funciones" className="py-8 md:py-16 px-4 border-t border-[#1A4A63]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
-            Todo lo que necesitás para tu box
+            Todo lo que necesitás para tu gimnasio
           </h2>
           <p className="mt-2 text-sm lg:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
             En un solo lugar, sin integraciones complicadas.

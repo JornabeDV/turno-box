@@ -3,7 +3,7 @@ import { WHATSAPP_URL } from "./constants";
 
 export function CTA() {
   return (
-    <section className="py-16 px-4 border-t border-[#1A4A63]">
+    <section className="py-8 md:py-16 px-4 border-t border-[#1A4A63]">
       <div className="max-w-4xl mx-auto text-center">
         <img
           src="/icons/image.png"
@@ -11,7 +11,7 @@ export function CTA() {
           className="h-40 w-auto mx-auto mb-4"
         />
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
-          Empezá a organizar tu box hoy
+          Empezá a organizar tu gimnasio hoy
         </h2>
         <p className="mt-2 text-sm lg:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
           14 días de prueba gratis. Sin tarjeta. Sin compromiso.

@@ -377,7 +377,7 @@ model GymTransaction {
   description  String?
   method       String?  // EFECTIVO | TRANSFERENCIA | TARJETA | MERCADOPAGO
 
-  userId       String?  // atleta que pagó (si aplica)
+  userId       String?  // alumno que pagó (si aplica)
   paymentId    String?  @unique // si viene de un Payment existente
   registeredBy String   // admin que cargó el movimiento
 
