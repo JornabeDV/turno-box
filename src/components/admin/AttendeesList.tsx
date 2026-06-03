@@ -19,6 +19,7 @@ type Props = {
   bookings: Booking[];
   emptyMessage?: string;
   accent: "emerald" | "orange";
+  allowRemove?: boolean;
 };
 
 const accentDot: Record<Props["accent"], string> = {
@@ -36,6 +37,7 @@ export function AttendeesList({
   bookings,
   emptyMessage,
   accent,
+  allowRemove = true,
 }: Props) {
   return (
     <div>
@@ -109,7 +111,7 @@ export function AttendeesList({
                   </span>
 
                   {/* Acción — solo admins pueden eliminar */}
-                  <RemoveAttendeeButton bookingId={b.id} />
+                  {allowRemove && <RemoveAttendeeButton bookingId={b.id} />}
                 </div>
               );
             })}

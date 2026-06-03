@@ -134,6 +134,7 @@ export default async function CoachClassDetailPage({
         }))}
         emptyMessage="Nadie reservó esta clase todavía."
         accent="emerald"
+        allowRemove={false}
       />
 
       {waitlisted.length > 0 && (
@@ -147,6 +148,7 @@ export default async function CoachClassDetailPage({
             user: b.user,
           }))}
           accent="orange"
+          allowRemove={false}
         />
       )}
     </div>
