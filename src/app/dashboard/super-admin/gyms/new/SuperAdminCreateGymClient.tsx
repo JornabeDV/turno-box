@@ -8,7 +8,10 @@ import { createGymWithAdminAction } from "@/actions/super-admin";
 import { Copy, Check, Link as LinkIcon, WarningCircle, CheckCircle } from "@phosphor-icons/react";
 
 const inputClass =
-  "w-full h-12 md:h-14 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
+  "w-full h-12 md:h-14 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+
+const labelClass =
+  "text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
 
 export function SuperAdminCreateGymClient() {
   const router = useRouter();
