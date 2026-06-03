@@ -140,7 +140,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
                   </div>
                   <span
                     className={cn(
-                      "text-[10px] md:text-xs font-medium shrink-0",
+                      "text-xs md:text-sm font-medium shrink-0",
                       b.status === "CONFIRMED" && isPast && "text-emerald-600",
                       b.status === "CONFIRMED" && !isPast && "text-[#27C7B8]",
                       b.status === "CANCELLED" && "text-[#4A6B7A]",

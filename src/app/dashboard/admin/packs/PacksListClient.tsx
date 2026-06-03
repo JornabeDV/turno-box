@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { TrashIcon } from "@phosphor-icons/react/dist/ssr";
 import { PackToggleButton } from "@/components/admin/PackToggleButton";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function PacksListClient({ packs: initial }: Props) {
+  const router = useRouter();
   const [packs, setPacks] = useState(initial);
   const [editing, setEditing] = useState<PackData | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -34,6 +36,7 @@ export function PacksListClient({ packs: initial }: Props) {
         setPacks((prev) => prev.filter((p) => p.id !== confirmDeleteId));
         setConfirmDeleteId(null);
         toast.success("Abono eliminado");
+        router.refresh();
       } else {
         toast.error(res.error);
       }
@@ -95,7 +98,7 @@ export function PacksListClient({ packs: initial }: Props) {
               <p className="text-xs md:text-sm font-mono font-bold text-[#EAEAEA] tabular-nums">
                 {pack._count.payments}
               </p>
-              <p className="text-[10px] md:text-xs text-[#4A6B7A]">ventas</p>
+              <p className="text-xs md:text-sm text-[#4A6B7A]">ventas</p>
             </div>
 
             {/* Toggle */}

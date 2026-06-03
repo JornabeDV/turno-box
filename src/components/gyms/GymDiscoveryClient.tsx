@@ -50,7 +50,7 @@ export function GymDiscoveryClient({ initialGyms, initialQuery }: Props) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar por nombre..."
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] pl-10 pr-4 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] pl-10 pr-4 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
         </div>
         <Button type="submit" loading={isPending} className="shrink-0">

@@ -24,7 +24,7 @@ export default function RegisterPage() {
           <RegisterForm />
         </div>
 
-        <p className="text-center text-xs text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-center text-xs sm:text-sm text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           ¿Ya tenés cuenta?{" "}
           <a href="/auth/login" className="text-[#27C7B8] hover:text-[#20A898] transition-colors">
             Iniciá sesión

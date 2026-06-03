@@ -65,11 +65,11 @@ export function Dialog({
                   {/* Header */}
                   <div className="flex items-start justify-between md:mb-5 shrink-0">
                     <div>
-                      <RadixDialog.Title className="text-base font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
+                      <RadixDialog.Title className="text-base md:text-xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
                         {title}
                       </RadixDialog.Title>
                       {description && (
-                        <RadixDialog.Description className="text-sm text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">
+                        <RadixDialog.Description className="text-sm md:text-base text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">
                           {description}
                         </RadixDialog.Description>
                       )}

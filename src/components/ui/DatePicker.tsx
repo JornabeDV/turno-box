@@ -130,7 +130,7 @@ export function DatePicker({
   return (
     <div className={cn("relative", className)} ref={ref}>
       {label && (
-        <label className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-name:var(--font-oswald)]">
+        <label className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider block font-[family-name:var(--font-oswald)]">
           {label}
         </label>
       )}

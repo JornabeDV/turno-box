@@ -186,7 +186,7 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
             </div>
 
             <div className="bg-[#0A1F2A] border border-[#1A4A63] p-4 space-y-2">
-              <p className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider">
+              <p className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider">
                 Columnas esperadas
               </p>
               <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm text-[#4A6B7A]">
