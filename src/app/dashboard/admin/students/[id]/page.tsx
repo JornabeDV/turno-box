@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { toClassDate, formatDate, formatTime } from "@/lib/utils";
 import { ToggleStudentButton } from "@/components/admin/ToggleStudentButton";
+import { ResendInvitationButton } from "@/components/admin/ResendInvitationButton";
 import { AdjustCreditsForm } from "@/components/admin/AdjustCreditsForm";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
@@ -38,6 +39,7 @@ export default async function StudentDetailPage({ params }: Props) {
       email: true,
       isActive: true,
       createdAt: true,
+      invitedAt: true,
     },
   });
 
@@ -122,10 +124,13 @@ export default async function StudentDetailPage({ params }: Props) {
                   {student.email}
                 </p>
               </div>
-              <ToggleStudentButton
-                studentId={student.id}
-                initialIsActive={student.isActive}
-              />
+              <div className="flex items-center gap-2">
+                <ResendInvitationButton studentId={student.id} />
+                <ToggleStudentButton
+                  studentId={student.id}
+                  initialIsActive={student.isActive}
+                />
+              </div>
             </div>
             <div className="flex items-start gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
@@ -164,6 +169,21 @@ export default async function StudentDetailPage({ params }: Props) {
                   )}
                 >
                   {student.isActive ? "Activo" : "Inactivo"}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                  Invitación
+                </p>
+                <p
+                  className={cn(
+                    "text-xs md:text-sm font-medium mt-0.5",
+                    student.invitedAt ? "text-[#6B8A99]" : "text-[#F78837]",
+                  )}
+                >
+                  {student.invitedAt
+                    ? `Enviada el ${new Date(student.invitedAt).toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" })}`
+                    : "Pendiente"}
                 </p>
               </div>
             </div>

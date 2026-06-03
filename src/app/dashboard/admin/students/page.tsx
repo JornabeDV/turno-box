@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { toClassDate } from "@/lib/utils";
 import { StudentsList } from "@/components/admin/StudentsList";
 import { MetricCard } from "@/components/admin/MetricCard";
+import { ImportStudentsButton } from "@/components/admin/ImportStudentsButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Alumnos" };
@@ -56,13 +57,16 @@ export default async function StudentsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
-          Admin
-        </p>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
-          Alumnos
-        </h2>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+            Admin
+          </p>
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+            Alumnos
+          </h2>
+        </div>
+        <ImportStudentsButton />
       </div>
 
       <div className="grid grid-cols-3 gap-3">
