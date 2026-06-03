@@ -59,13 +59,13 @@ export default async function SuperAdminDashboardPage() {
         <div className="flex flex-wrap gap-3">
           <a
             href="/dashboard/super-admin/gyms/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F78837] text-[#0A1F2A] text-xs font-medium uppercase tracking-wide rounded-[2px] hover:bg-[#E07A2E] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F78837] text-[#0A1F2A] text-xs sm:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:bg-[#E07A2E] transition-colors"
           >
             Crear nuevo gimnasio
           </a>
           <a
             href="/dashboard/super-admin/gyms"
-            className="inline-flex items-center gap-2 px-4 py-2.5 border border-[#1A4A63] text-[#EAEAEA] text-xs font-medium uppercase tracking-wide rounded-[2px] hover:border-[#F78837] hover:text-[#F78837] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 border border-[#1A4A63] text-[#EAEAEA] text-xs sm:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:border-[#F78837] hover:text-[#F78837] transition-colors"
           >
             Ver gimnasios
           </a>

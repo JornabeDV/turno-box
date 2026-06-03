@@ -44,7 +44,7 @@ export function SuperAdminSidebar() {
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm font-medium transition-all duration-150",
+              "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm sm:text-base font-medium transition-all duration-150",
               "active:scale-[0.97]",
               active
                 ? "bg-[#F78837]/10 text-[#F78837] border border-[#F78837]/20"
