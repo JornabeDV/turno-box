@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendPushToUser } from "@/lib/push";
+import { sendWelcomeInvitationEmail } from "@/lib/email";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
 
@@ -146,4 +149,145 @@ export async function adjustCreditsAction(
   }).catch(() => {});
 
   return { success: true, data: { newBalance: result } };
+}
+
+// ── Crear alumno individual (admin) ────────────────────────────────────────────
+
+const createStudentSchema = z.object({
+  name: z.string().min(1, "El nombre es obligatorio.").max(120),
+  email: z.string().email("Email inválido.").min(1).max(120),
+  phone: z.string().max(30).optional().transform((v) => (v ? v.trim() : undefined)),
+  birthDate: z.string().optional().transform((v) => {
+    if (!v) return undefined;
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? undefined : d;
+  }),
+  initialCredits: z.coerce.number().int().min(0).max(999).optional().default(0),
+});
+
+export async function createStudentAction(
+  formData: FormData
+): Promise<ActionResult<{ id: string }>> {
+  const { userId: adminUserId, gymId } = await requireAdmin();
+
+  const gym = await prisma.gym.findUnique({
+    where: { id: gymId },
+    select: { name: true },
+  });
+  if (!gym) return { success: false, error: "Gimnasio no encontrado." };
+
+  const parsed = createStudentSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    phone: formData.get("phone") || undefined,
+    birthDate: formData.get("birthDate") || undefined,
+    initialCredits: formData.get("initialCredits") || 0,
+  });
+
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message || "Datos inválidos." };
+  }
+
+  const { name, email, phone, birthDate, initialCredits } = parsed.data;
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const existing = await prisma.user.findUnique({
+    where: { email: normalizedEmail },
+    select: { id: true, gymId: true, role: true },
+  });
+
+  if (existing) {
+    if (existing.gymId && existing.gymId !== gymId) {
+      return { success: false, error: "Este email ya está registrado en otro gimnasio." };
+    }
+    return { success: false, error: "Este email ya está registrado en tu gimnasio." };
+  }
+
+  const randomPassword = crypto.randomBytes(32).toString("hex");
+  const passwordHash = await bcrypt.hash(randomPassword, 12);
+
+  const user = await prisma.user.create({
+    data: {
+      name,
+      email: normalizedEmail,
+      passwordHash,
+      role: "STUDENT",
+      gymId,
+      phone: phone || null,
+      birthDate: birthDate || undefined,
+    },
+  });
+
+  // Créditos iniciales
+  if (initialCredits > 0) {
+    await prisma.$transaction(async (tx: Tx) => {
+      await tx.userCreditBalance.upsert({
+        where: { userId_gymId: { userId: user.id, gymId } },
+        create: { userId: user.id, gymId, availableCredits: initialCredits, version: 1 },
+        update: { availableCredits: { increment: initialCredits }, version: { increment: 1 } },
+      });
+
+      const payment = await tx.payment.create({
+        data: {
+          gymId,
+          userId: user.id,
+          packId: null,
+          creditsGranted: initialCredits,
+          amountPaid: 0,
+          currency: "ARS",
+          provider: "MANUAL",
+          status: "APPROVED",
+          paidAt: new Date(),
+          expiresAt: new Date(Date.now() + 30 * 86_400_000),
+        },
+      });
+
+      await tx.creditTransaction.create({
+        data: {
+          userId: user.id,
+          gymId,
+          type: "ADJUSTMENT",
+          amount: initialCredits,
+          note: "Créditos iniciales — alta manual",
+          paymentId: payment.id,
+        },
+      });
+
+      await tx.gymTransaction.create({
+        data: {
+          gymId,
+          type: "INCOME",
+          category: "Alta manual",
+          amount: 0,
+          description: `Alta manual — ${initialCredits} crédito${initialCredits !== 1 ? "s" : ""}`,
+          method: "EFECTIVO",
+          userId: user.id,
+          paymentId: payment.id,
+          registeredBy: adminUserId,
+          date: new Date(),
+        },
+      });
+    });
+  }
+
+  // Generar token de invitación (7 días)
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+  await prisma.passwordResetToken.create({
+    data: { userId: user.id, token, expiresAt },
+  });
+
+  // Enviar email de bienvenida
+  const resetUrl = `${process.env.NEXT_PUBLIC_URL}/reset-password/${token}`;
+  await sendWelcomeInvitationEmail(normalizedEmail, resetUrl, gym.name, name);
+
+  // Marcar invitedAt
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { invitedAt: new Date() },
+  });
+
+  revalidatePath("/dashboard/admin/students");
+  return { success: true, data: { id: user.id } };
 }

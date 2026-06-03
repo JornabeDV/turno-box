@@ -5,6 +5,7 @@ import { toClassDate } from "@/lib/utils";
 import { StudentsList } from "@/components/admin/StudentsList";
 import { MetricCard } from "@/components/admin/MetricCard";
 import { ImportStudentsButton } from "@/components/admin/ImportStudentsButton";
+import { CreateStudentButton } from "@/components/admin/CreateStudentButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Alumnos" };
@@ -66,7 +67,10 @@ export default async function StudentsPage() {
             Alumnos
           </h2>
         </div>
-        <ImportStudentsButton />
+        <div className="flex items-center gap-2">
+          <CreateStudentButton />
+          <ImportStudentsButton />
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">

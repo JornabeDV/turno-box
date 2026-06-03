@@ -11,7 +11,7 @@ export function ImportStudentsButton() {
   return (
     <>
       <Button variant="outline-brand" size="md" onClick={() => setOpen(true)}>
-        <UploadSimple size={16} />
+        <UploadSimple size={16} className="max-sm:hidden" />
         Importar alumnos
       </Button>
       <ImportStudentsModal open={open} onOpenChange={setOpen} />
