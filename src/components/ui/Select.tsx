@@ -44,7 +44,7 @@ export function Select({
   return (
     <div className={cn("relative", className)} ref={ref}>
       {label && (
-        <label className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-name:var(--font-oswald)]">
+        <label className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-name:var(--font-oswald)]">
           {label}
         </label>
       )}
@@ -52,7 +52,7 @@ export function Select({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA]",
+          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-xs sm:text-base text-[#EAEAEA]",
           "flex items-center justify-between gap-2",
           "focus:outline-none focus:border-[#F78837]",
           "transition-colors hover:border-[#6B8A99]",
@@ -81,7 +81,7 @@ export function Select({
                   setOpen(false);
                 }}
                 className={cn(
-                  "w-full px-3.5 py-2.5 text-sm text-left hover:bg-[#143D52] transition-colors",
+                  "w-full px-3.5 py-2.5 text-sm sm:text-base text-left hover:bg-[#143D52] transition-colors",
                   "flex items-center justify-between",
                   value === option.value
                     ? "text-[#F78837] bg-[#F78837]/10"

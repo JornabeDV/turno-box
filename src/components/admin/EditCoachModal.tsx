@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { updateCoachAction } from "@/actions/coaches";
 
 const inputClass =
-  "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+  "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
 const labelClass =
-  "text-xs font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
 
 interface Props {
   open: boolean;

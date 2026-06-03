@@ -49,7 +49,7 @@ export default async function LoginPage({
             <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl text-center">
               {gym.name}
             </h2>
-            <p className="text-xs text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide mt-0.5">
+            <p className="text-xs sm:text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide mt-0.5">
               Ingresá a tu cuenta
             </p>
           </div>
@@ -68,7 +68,7 @@ export default async function LoginPage({
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-center text-xs sm:text-sm text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           {gym ? (
             <>
               ¿No tenés cuenta?{" "}

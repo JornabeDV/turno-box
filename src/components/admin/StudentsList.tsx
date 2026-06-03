@@ -43,7 +43,7 @@ export function StudentsList({ students }: Props) {
           placeholder="Buscar por nombre o email…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] pl-9 pr-4 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
+          className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] pl-9 pr-4 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
       </div>
 

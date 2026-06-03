@@ -48,7 +48,7 @@ export function TimePicker({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA]",
+          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA]",
           "flex items-center justify-between gap-2",
           "focus:outline-none focus:border-[#F78837]",
           "transition-colors hover:border-[#6B8A99]",

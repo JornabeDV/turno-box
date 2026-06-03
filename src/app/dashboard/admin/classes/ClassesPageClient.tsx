@@ -71,6 +71,16 @@ export function ClassesPageClient({
     return date.toLocaleDateString("es-AR", { day: "numeric", month: "short" });
   }
 
+  function formatWeekRange(start: Date, end: Date): string {
+    const sameMonth =
+      start.getMonth() === end.getMonth() &&
+      start.getFullYear() === end.getFullYear();
+    if (sameMonth) {
+      return `${start.getDate()} – ${end.toLocaleDateString("es-AR", { day: "numeric", month: "short" })}`;
+    }
+    return `${start.toLocaleDateString("es-AR", { day: "numeric", month: "short" })} – ${end.toLocaleDateString("es-AR", { day: "numeric", month: "short" })}`;
+  }
+
   function addDays(date: Date, days: number): Date {
     const d = new Date(date);
     d.setDate(d.getDate() + days);
@@ -121,9 +131,8 @@ export function ClassesPageClient({
             Anterior
           </Button>
         </Link>
-        <p className="text-sm md:text-base font-medium text-[#EAEAEA] tabular-nums">
-          {formatShortDate(weekStart)} –{" "}
-          {formatShortDate(addDays(weekStart, 6))}
+        <p className="text-base md:text-xl font-medium text-[#EAEAEA] tabular-nums whitespace-nowrap">
+          {formatWeekRange(weekStart, addDays(weekStart, 6))}
         </p>
         <Link
           href={`/dashboard/admin/classes?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
