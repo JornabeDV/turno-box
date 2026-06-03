@@ -25,7 +25,7 @@ export function BarChart({ data }: { data: DataPoint[] }) {
   const isMobile = containerWidth < 640;
 
   const CHART_H = isMobile ? 260 : 220;
-  const PAD_L = isMobile ? 36 : 44;
+  const PAD_L = isMobile ? 36 : 64;
   const PAD_R = isMobile ? 8 : 16;
   const PAD_B = isMobile ? 48 : 32;
   const PAD_T = 16;
@@ -67,8 +67,8 @@ export function BarChart({ data }: { data: DataPoint[] }) {
                 x={PAD_L - 8}
                 y={y + 4}
                 textAnchor="end"
-                className="fill-[#4A6B7A]"
-                style={{ fontSize: isMobile ? 9 : 10 }}
+                className="fill-[#4A6B7A] w-32"
+                style={{ fontSize: isMobile ? 9 : 16 }}
               >
                 {Math.round(maxValue * p).toLocaleString("es-AR")}
               </text>
@@ -113,7 +113,7 @@ export function BarChart({ data }: { data: DataPoint[] }) {
                   isMobile ? `rotate(-45, ${cx}, ${CHART_H - 10})` : undefined
                 }
                 className="fill-[#6B8A99]"
-                style={{ fontSize: isMobile ? 9 : 10 }}
+                style={{ fontSize: isMobile ? 9 : 16 }}
               >
                 {d.label}
               </text>
@@ -126,11 +126,11 @@ export function BarChart({ data }: { data: DataPoint[] }) {
       <div className="flex items-center justify-center gap-4 mt-2">
         <div className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-[2px] bg-[#27C7B8]" />
-          <span className="text-[10px] text-[#6B8A99]">Ingresos</span>
+          <span className="text-xs sm:text-base text-[#6B8A99]">Ingresos</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="size-2.5 rounded-[2px] bg-[#E61919]" />
-          <span className="text-[10px] text-[#6B8A99]">Egresos</span>
+          <span className="text-xs sm:text-base text-[#6B8A99]">Egresos</span>
         </div>
       </div>
     </div>
