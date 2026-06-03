@@ -354,7 +354,7 @@ export function FinancesClient({
               {items.map((tx) => (
                 <div
                   key={tx.id}
-                  className="flex items-start gap-3 px-4 md:px-5 py-3 md:py-4"
+                  className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4"
                 >
                   <div
                     className={cn(
