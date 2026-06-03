@@ -54,6 +54,16 @@ export default async function CoachDashboardPage({
   if (!user?.id || !["ADMIN", "COACH"].includes(user.role ?? "")) redirect("/");
   if (!user.gymId) redirect("/");
 
+  const coach = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: {
+      name: true,
+      gym: { select: { logoUrl: true, phone: true } },
+    },
+  });
+
+  const firstName = coach?.name?.split(" ")[0] ?? "Coach";
+
   const { week, discipline } = await searchParams;
   const weekStart = getWeekStart(week);
   const weekParam = toWeekParam(weekStart);
@@ -80,14 +90,41 @@ export default async function CoachDashboardPage({
   );
 
   return (
-    <CoachWeeklyClient
-      disciplines={disciplines}
-      weekParam={weekParam}
-      prevWeek={prevWeek}
-      nextWeek={nextWeek}
-      filteredSlotsPerDay={filteredSlotsPerDay}
-      weekStart={weekStart}
-      discipline={discipline}
-    />
+    <div className="space-y-5">
+      {/* Saludo */}
+      <div className="pt-2">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            {coach?.gym?.logoUrl && (
+              <div className="shrink-0 w-20 h-20 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-1.5">
+                <img
+                  src={coach.gym.logoUrl}
+                  alt="Logo del gimnasio"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            )}
+            <div>
+              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+                Hola, {firstName}
+              </h1>
+              <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+                Estas son tus clases de la semana.
+              </p>
+            </div>
+          </div>
+          </div>
+      </div>
+
+      <CoachWeeklyClient
+        disciplines={disciplines}
+        weekParam={weekParam}
+        prevWeek={prevWeek}
+        nextWeek={nextWeek}
+        filteredSlotsPerDay={filteredSlotsPerDay}
+        weekStart={weekStart}
+        discipline={discipline}
+      />
+    </div>
   );
 }

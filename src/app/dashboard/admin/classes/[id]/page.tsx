@@ -225,6 +225,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         }))}
         emptyMessage="Nadie reservó esta clase todavía."
         accent="emerald"
+        allowRemove={isAdmin}
       />
 
       {/* Lista de espera */}
@@ -239,6 +240,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
             user: b.user,
           }))}
           accent="orange"
+          allowRemove={isAdmin}
         />
       )}
     </div>
