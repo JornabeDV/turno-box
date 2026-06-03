@@ -21,9 +21,8 @@ interface Props {
   packs: PackRow[];
 }
 
-export function PacksListClient({ packs: initial }: Props) {
+export function PacksListClient({ packs }: Props) {
   const router = useRouter();
-  const [packs, setPacks] = useState(initial);
   const [editing, setEditing] = useState<PackData | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -33,7 +32,6 @@ export function PacksListClient({ packs: initial }: Props) {
     startTransition(async () => {
       const res = await deletePackAction(confirmDeleteId);
       if (res.success) {
-        setPacks((prev) => prev.filter((p) => p.id !== confirmDeleteId));
         setConfirmDeleteId(null);
         toast.success("Abono eliminado");
         router.refresh();

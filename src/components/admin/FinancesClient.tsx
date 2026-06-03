@@ -612,7 +612,7 @@ function MetricCard({
       {change !== null && (
         <p
           className={cn(
-            "text-xs font-medium mt-1",
+            "text-xs sm:text-sm font-medium mt-1",
             change >= 0 ? "text-[#27C7B8]" : "text-[#E61919]",
           )}
         >

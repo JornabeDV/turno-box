@@ -169,7 +169,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
                     <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5 line-clamp-2">
                       {item.body}
                     </p>
-                    <div className="flex items-center gap-3 mt-1.5 text-[11px] md:text-xs">
+                    <div className="flex items-center gap-3 mt-1.5 text-[11px] md:text-sm">
                       <span className={cls}>{label}</span>
                       <span className="text-[#4A6B7A]">
                         {item.publishAt.toLocaleDateString("es-AR", {
@@ -248,7 +248,7 @@ export const NewsListClient = forwardRef<NewsListRef, Props>(
                   }
                   required
                   rows={4}
-                  className="w-full rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 py-2.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] resize-none focus:outline-none focus:border-[#F78837] transition-colors"
+                  className="w-full rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 py-2.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] resize-none focus:outline-none focus:border-[#F78837] transition-colors"
                   placeholder="Escribí el contenido del aviso..."
                 />
               </div>

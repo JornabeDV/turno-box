@@ -189,3 +189,33 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Sonner toast sizing ─────────────────────────────────────────────────── */
+[data-sonner-toast] {
+  font-size: 14px !important;
+  padding: 12px 16px !important;
+  min-height: auto !important;
+}
+
+[data-sonner-toast] [data-title] {
+  font-size: 14px !important;
+}
+
+[data-sonner-toast] [data-description] {
+  font-size: 13px !important;
+}
+
+@media (min-width: 768px) {
+  [data-sonner-toast] {
+    font-size: 16px !important;
+    padding: 18px 24px !important;
+  }
+
+  [data-sonner-toast] [data-title] {
+    font-size: 16px !important;
+  }
+
+  [data-sonner-toast] [data-description] {
+    font-size: 15px !important;
+  }
+}

@@ -56,7 +56,7 @@ export function EditCoachModal({ open, onClose, coach }: Props) {
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Editar coach"
-      size="sm"
+      size="md"
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
@@ -102,7 +102,7 @@ export function EditCoachModal({ open, onClose, coach }: Props) {
             placeholder="Dejar en blanco para no cambiar"
             className={inputClass}
           />
-          <p className="text-[11px] text-[#4A6B7A]">
+          <p className="text-[11px] sm:text-sm text-[#4A6B7A]">
             Solo completá si querés cambiar la contraseña actual.
           </p>
         </div>
