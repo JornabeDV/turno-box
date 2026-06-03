@@ -86,7 +86,7 @@ export default async function LoginPage({
                 href="/gyms"
                 className="text-[#27C7B8] hover:text-[#20A898] transition-colors"
               >
-                Seleccioná tu box para ingresar
+                Seleccioná tu gimnasio para ingresar
               </Link>
             </>
           )}

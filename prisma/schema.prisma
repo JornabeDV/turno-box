@@ -105,6 +105,8 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   birthDate     DateTime? // fecha de nacimiento (para próximos cumpleaños)
+  phone         String?   // teléfono del alumno (importado desde Excel)
+  invitedAt     DateTime? // cuándo se envió la invitación de activación
 
   gymId String?
   gym   Gym?    @relation(fields: [gymId], references: [id], onDelete: SetNull)
