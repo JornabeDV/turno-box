@@ -37,6 +37,8 @@ export default async function ClassDetailPage({
   if (!gymId) redirect("/");
 
   const classDate = toClassDate(new Date(date));
+  // Fecha para mostrar al usuario (con offset ARG, no UTC)
+  const displayDate = new Date(`${date}T00:00:00-03:00`);
 
   const gymClass = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, isActive: true, deletedAt: null },
@@ -130,7 +132,7 @@ export default async function ClassDetailPage({
         <div className="flex items-center gap-2.5 text-sm text-[#EAEAEA]">
           <CalendarIcon size={16} className="text-[#6B8A99] shrink-0" />
           <span className="capitalize font-[family-name:var(--font-oswald)]">
-            {classDate.toLocaleDateString("es-AR", {
+            {displayDate.toLocaleDateString("es-AR", {
               weekday: "long",
               day: "numeric",
               month: "long",

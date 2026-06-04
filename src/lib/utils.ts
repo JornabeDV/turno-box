@@ -14,11 +14,14 @@ export function formatTime(time: string): string {
 }
 
 // Formatea fecha a "Lun 7 Abr"
+// Las fechas de clase se almacenan como UTC medianoche; forzamos UTC para
+// evitar que la conversión a zona horaria local cambie el día visible.
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("es-AR", {
     weekday: "short",
     day: "numeric",
     month: "short",
+    timeZone: "UTC",
   });
 }
 

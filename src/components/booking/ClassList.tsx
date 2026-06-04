@@ -35,8 +35,12 @@ export function ClassList({ initialSlots, initialDate, gymId, userId, availableD
     }
   }
 
-  const dateStr = date.toISOString().split("T")[0];
-  const todayStr = new Date().toISOString().split("T")[0];
+  const dateStr = date.toLocaleDateString("sv-SE", {
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
+  const todayStr = new Date().toLocaleDateString("sv-SE", {
+    timeZone: "America/Argentina/Buenos_Aires",
+  });
   const isToday = dateStr === todayStr;
 
   const visibleSlots = isToday

@@ -80,7 +80,8 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                   <p className="text-[11px] text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
                     {new Date(b.classDate).toLocaleDateString("es-AR", {
                       day: "numeric", month: "short", year: "numeric",
-                    })}
+                      timeZone: "UTC",
+                    })
                     {" · "}
                     {formatTime(b.class.startTime)} – {formatTime(b.class.endTime)}
                   </p>
