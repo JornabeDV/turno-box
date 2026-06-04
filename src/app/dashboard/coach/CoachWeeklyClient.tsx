@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getTodayInGymTimezone } from "@/lib/utils";
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { DisciplinesManager } from "@/components/admin/DisciplinesManager";
 import type { ClassSlot } from "@/types";
@@ -47,7 +47,7 @@ export function CoachWeeklyClient({
   weekStart,
   discipline,
 }: Props) {
-  const today = new Date();
+  const today = getTodayInGymTimezone();
   const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
   function formatShortDate(date: Date): string {

@@ -47,6 +47,18 @@ export function toClassDate(date: Date): Date {
   return d;
 }
 
+const GYM_TIMEZONE = "America/Argentina/Buenos_Aires";
+
+// Devuelve la fecha de "hoy" según la timezone del gimnasio,
+// evitando desfasajes cuando el servidor corre en UTC y el usuario en ARG.
+export function getTodayInGymTimezone(): Date {
+  const todayStr = new Date().toLocaleDateString("sv-SE", {
+    timeZone: GYM_TIMEZONE,
+  });
+  const [y, m, d] = todayStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 // Cupos → variante de badge
 export function spotsVariant(
   available: number,
