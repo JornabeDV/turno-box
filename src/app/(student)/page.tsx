@@ -123,27 +123,27 @@ export default async function HomePage() {
               </div>
             )}
             <div>
-            <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
-              Hola, {firstName}
-            </h1>
-            <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
-              Listo para superar tus marcas hoy.
-            </p>
+              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+                Hola, {firstName}
+              </h1>
+              <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+                Listo para superar tus marcas hoy.
+              </p>
             </div>
-
           </div>
           {user.gym?.phone && <WhatsAppLink phone={user.gym.phone} />}
         </div>
 
         {sub && (
-          <a href="/credits" className="mt-2 inline-flex items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
-            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
+          <a href="/credits" className="flex-col w-max mt-4 inline-flex items-start">
+            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
               {sub.remaining} {sub.remaining === 1 ? "CLASE" : "CLASES"}{" "}
               restantes
             </span>
             {daysLeft !== null && daysLeft <= 7 && (
-              <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837]">
-                · {daysLeft} {daysLeft === 1 ? "día" : "días"} para el vencimiento
+              <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] mt-4 items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
+                · {daysLeft} {daysLeft === 1 ? "día" : "días"} para el
+                vencimiento
               </span>
             )}
           </a>
