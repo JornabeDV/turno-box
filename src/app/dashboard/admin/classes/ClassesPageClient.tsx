@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getTodayInGymTimezone } from "@/lib/utils";
 import {
   PlusIcon,
   CaretLeftIcon,
@@ -64,7 +64,7 @@ export function ClassesPageClient({
   discipline,
 }: Props) {
   const [showClassModal, setShowClassModal] = useState(false);
-  const today = new Date();
+  const today = getTodayInGymTimezone();
   const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
   function formatShortDate(date: Date): string {

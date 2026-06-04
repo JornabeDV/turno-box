@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getClassSlotsForDay } from "@/lib/queries/classes";
+import { getTodayInGymTimezone } from "@/lib/utils";
 import { CoachWeeklyClient } from "./CoachWeeklyClient";
 import type { Metadata } from "next";
 
@@ -23,8 +24,7 @@ function getWeekStart(dateStr?: string): Date {
     const [y, m, d] = dateStr.split("-").map(Number);
     base = new Date(y, m - 1, d);
   } else {
-    const now = new Date();
-    base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    base = getTodayInGymTimezone();
   }
   const day = base.getDay();
   const diff = day === 0 ? -6 : 1 - day;

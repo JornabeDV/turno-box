@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getTodayInGymTimezone } from "@/lib/utils";
 import { deleteClassAction } from "@/actions/classes";
 import {
   PlusIcon,
@@ -34,8 +34,7 @@ function getWeekStart(dateStr?: string): Date {
     const [y, m, d] = dateStr.split("-").map(Number);
     base = new Date(y, m - 1, d);
   } else {
-    const now = new Date();
-    base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    base = getTodayInGymTimezone();
   }
   const day = base.getDay();
   const diff = day === 0 ? -6 : 1 - day;
