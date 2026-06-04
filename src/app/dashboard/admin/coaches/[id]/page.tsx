@@ -10,6 +10,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 type Props = { params: Promise<{ id: string }> };
 
