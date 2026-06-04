@@ -8,6 +8,7 @@ interface TimePickerProps {
   value: string;
   onChange: (time: string) => void;
   label?: string;
+  error?: string;
   className?: string;
 }
 
@@ -22,6 +23,7 @@ export function TimePicker({
   value,
   onChange,
   label,
+  error,
   className,
 }: TimePickerProps) {
   const [open, setOpen] = useState(false);
@@ -52,6 +54,7 @@ export function TimePicker({
           "flex items-center justify-between gap-2",
           "focus:outline-none focus:border-[#F78837]",
           "transition-colors hover:border-[#6B8A99]",
+          error && "border-[#E61919] focus:border-[#E61919]",
         )}
       >
         <span className="flex items-center gap-2">
@@ -97,6 +100,9 @@ export function TimePicker({
             ))}
           </div>
         </div>
+      )}
+      {error && (
+        <p className="mt-1 text-xs text-[#E61919]">{error}</p>
       )}
     </div>
   );

@@ -69,6 +69,9 @@ export function ClassModal({
   const [dayOfWeek, setDayOfWeek] = useState(gymClass?.dayOfWeek ?? "MONDAY");
   const [coachId, setCoachId] = useState(gymClass?.coachId ?? "");
   const [startTime, setStartTime] = useState(gymClass?.startTime ?? "07:00");
+  const [maxCapacity, setMaxCapacity] = useState(
+    gymClass?.maxCapacity?.toString() ?? "12",
+  );
 
   function addOneHour(time: string): string {
     const [h, m] = time.split(":").map(Number);
@@ -79,6 +82,38 @@ export function ClassModal({
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Validación inline por campo
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  function validateForm(): boolean {
+    const errors: Record<string, string> = {};
+
+    if (!disciplineId) {
+      errors.disciplineId = "Seleccioná una disciplina";
+    }
+    if (!dayOfWeek) {
+      errors.dayOfWeek = "Seleccioná un día";
+    }
+    if (!startTime) {
+      errors.startTime = "Seleccioná un horario de inicio";
+    }
+    const capacityNum = Number(maxCapacity);
+    if (!maxCapacity || Number.isNaN(capacityNum) || capacityNum < 1 || capacityNum > 100) {
+      errors.maxCapacity = "El cupo debe ser un número entre 1 y 100";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
+  const isFormValid =
+    disciplineId !== "" &&
+    dayOfWeek !== "" &&
+    startTime !== "" &&
+    maxCapacity !== "" &&
+    Number(maxCapacity) >= 1 &&
+    Number(maxCapacity) <= 100;
+
   function handleClose() {
     setError(null);
     onClose();
@@ -87,6 +122,11 @@ export function ClassModal({
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+
+    if (!validateForm()) {
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     formData.set("disciplineId", disciplineId);
     formData.set("dayOfWeek", dayOfWeek);
@@ -111,6 +151,8 @@ export function ClassModal({
         setDayOfWeek("MONDAY");
         setStartTime("07:00");
         setCoachId("");
+        setMaxCapacity("12");
+        setFieldErrors({});
         handleClose();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error inesperado");
@@ -134,24 +176,58 @@ export function ClassModal({
         <SelectInput
           name="disciplineId"
           value={disciplineId}
-          onChange={setDisciplineId}
+          onChange={(v) => {
+            setDisciplineId(v);
+            if (fieldErrors.disciplineId) {
+              setFieldErrors((prev) => {
+                const next = { ...prev };
+                delete next.disciplineId;
+                return next;
+              });
+            }
+          }}
           options={disciplines.map((d) => ({ value: d.id, label: d.name }))}
           label="Disciplina"
           required
+          error={fieldErrors.disciplineId}
         />
 
         {/* Día */}
         <SelectInput
           name="dayOfWeek"
           value={dayOfWeek}
-          onChange={setDayOfWeek}
+          onChange={(v) => {
+            setDayOfWeek(v);
+            if (fieldErrors.dayOfWeek) {
+              setFieldErrors((prev) => {
+                const next = { ...prev };
+                delete next.dayOfWeek;
+                return next;
+              });
+            }
+          }}
           options={DAYS}
           label="Día"
           required
+          error={fieldErrors.dayOfWeek}
         />
 
         {/* Horario */}
-        <TimePicker label="Inicio" value={startTime} onChange={setStartTime} />
+        <TimePicker
+          label="Inicio"
+          value={startTime}
+          onChange={(v) => {
+            setStartTime(v);
+            if (fieldErrors.startTime) {
+              setFieldErrors((prev) => {
+                const next = { ...prev };
+                delete next.startTime;
+                return next;
+              });
+            }
+          }}
+          error={fieldErrors.startTime}
+        />
         <input type="hidden" name="startTime" value={startTime} />
         <input type="hidden" name="endTime" value={addOneHour(startTime)} />
 
@@ -167,9 +243,22 @@ export function ClassModal({
             min={1}
             max={100}
             required
-            defaultValue={gymClass?.maxCapacity ?? 12}
-            className={inputClass}
+            value={maxCapacity}
+            onChange={(e) => {
+              setMaxCapacity(e.target.value);
+              if (fieldErrors.maxCapacity) {
+                setFieldErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.maxCapacity;
+                  return next;
+                });
+              }
+            }}
+            className={`${inputClass} ${fieldErrors.maxCapacity ? "border-[#E61919] focus:border-[#E61919]" : ""}`}
           />
+          {fieldErrors.maxCapacity && (
+            <p className="text-xs text-[#E61919]">{fieldErrors.maxCapacity}</p>
+          )}
         </div>
 
         {/* Coach */}
@@ -226,6 +315,7 @@ export function ClassModal({
             variant="brand"
             size="md"
             loading={isPending}
+            disabled={!isFormValid}
             className="sm:flex-1"
           >
             {isEditing ? "Guardar" : "Crear"}
