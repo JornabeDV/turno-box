@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { BackButton } from "@/components/ui/BackButton";
 import { PackCard } from "@/components/billing/PackCard";
 import { PaymentToast } from "@/components/billing/PaymentToast";
 import { CreditCard, Fingerprint, Lock } from "@phosphor-icons/react/dist/ssr";
@@ -26,6 +27,7 @@ export default async function PacksPage({
 
   return (
     <section className="space-y-5 pt-4">
+      <BackButton href="/" />
       <PaymentToast error={error} info={info} />
 
       {/* Header */}

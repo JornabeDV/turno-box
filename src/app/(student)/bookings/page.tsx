@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { BookingCardItem } from "@/components/booking/BookingCardItem";
+import { BackButton } from "@/components/ui/BackButton";
 import { CalendarBlank } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 
@@ -38,7 +39,8 @@ export default async function BookingsPage() {
   });
 
   return (
-    <section className="pt-4">
+    <section className="pt-4 space-y-4">
+      <BackButton href="/" />
       <div className="mb-5">
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
           Mis turnos
