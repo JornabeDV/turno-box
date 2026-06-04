@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { sendPushToUser } from "@/lib/push";
 
 /**
  * Endpoint de test para verificar que un usuario recibe notificaciones push.
- * Solo funciona si estás logueado como ADMIN o STUDENT.
  *
- * curl -X POST https://tu-app.com/api/cron/test-push \
- *   -H "x-cron-secret: TU_CRON_SECRET"
+ * Uso:
+ *   curl -X POST https://tu-app.com/api/cron/test-push \
+ *     -H "x-cron-secret: TU_CRON_SECRET" \
+ *     -H "Content-Type: application/json" \
+ *     -d '{"userId":"USER_ID_AQUI"}'
  */
 
 export async function POST(req: NextRequest) {
@@ -16,16 +17,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  const session = await auth();
-  const user = session?.user as { id?: string; role?: string } | undefined;
-  if (!user?.id) {
+  const body = (await req.json().catch(() => ({}))) as { userId?: string };
+  const userId = body.userId;
+
+  if (!userId) {
     return NextResponse.json(
-      { error: "No hay sesión activa. Este endpoint requiere que estés logueado en el navegador." },
-      { status: 401 }
+      { error: "Falta userId en el body" },
+      { status: 400 }
     );
   }
 
-  const result = await sendPushToUser(user.id, {
+  const result = await sendPushToUser(userId, {
     title: "🔔 Test de notificación",
     body: "Si ves esto, las notificaciones push están funcionando correctamente.",
     url: "/",
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    userId: user.id,
+    userId,
     result,
   });
 }
