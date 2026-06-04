@@ -7,10 +7,10 @@ import { ResendInvitationButton } from "@/components/admin/ResendInvitationButto
 import { AdjustCreditsForm } from "@/components/admin/AdjustCreditsForm";
 import { FreezeCreditsButton } from "@/components/admin/FreezeCreditsButton";
 import { getStudentFreezeStatus } from "@/actions/freezes";
-import Link from "next/link";
-import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
+import { BackButton } from "@/components/ui/BackButton";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -96,13 +96,7 @@ export default async function StudentDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-5xl space-y-6">
-      <Link
-        href="/dashboard/admin/students"
-        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
-      >
-        <ArrowLeftIcon size={13} />
-        Alumnos
-      </Link>
+      <BackButton href="/dashboard/admin/students" />
 
       {/* Header del alumno */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">

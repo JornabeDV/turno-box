@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef } from "react";
+import { useRouter } from "next/navigation";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
 import { Button } from "@/components/ui/Button";
-import { NewsListClient, type NewsListRef } from "./NewsListClient";
+import { NewsListClient } from "./NewsListClient";
 import type { Announcement } from "@prisma/client";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export function AdminNewsClient({ announcements }: Props) {
-  const newsRef = useRef<NewsListRef>(null);
+  const router = useRouter();
 
   return (
     <div className="space-y-6">
@@ -27,13 +27,13 @@ export function AdminNewsClient({ announcements }: Props) {
         <Button
           variant="brand"
           size="md"
-          onClick={() => newsRef.current?.openCreate()}
+          onClick={() => router.push("/dashboard/admin/news/create")}
         >
           <PlusIcon size={14} weight="bold" />
           Nueva noticia
         </Button>
       </div>
-      <NewsListClient ref={newsRef} announcements={announcements} />
+      <NewsListClient announcements={announcements} />
     </div>
   );
 }

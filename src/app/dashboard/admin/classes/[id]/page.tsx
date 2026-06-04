@@ -5,8 +5,7 @@ import { toClassDate, formatTime, formatDate } from "@/lib/utils";
 import { AttendeesList } from "@/components/admin/AttendeesList";
 import { OccupancyBar } from "@/components/admin/OccupancyBar";
 import { ClassDetailActions } from "./ClassDetailActions";
-import Link from "next/link";
-import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
+import { BackButton } from "@/components/ui/BackButton";
 import type { Metadata } from "next";
 
 const DAY_LABELS: Record<string, string> = {
@@ -110,13 +109,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   return (
     <div className="max-w-5xl space-y-6">
       {/* Back */}
-      <Link
-        href="/dashboard/admin/classes"
-        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
-      >
-        <ArrowLeftIcon size={13} />
-        Clases
-      </Link>
+      <BackButton href="/dashboard/admin/classes" />
 
       {/* Header de la clase */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">

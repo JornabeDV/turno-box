@@ -24,7 +24,7 @@ export function SignOutButton({ iconOnly = false, callbackUrl = "/auth/login" }:
   return (
     <button
       onClick={() => signOut({ redirectTo: callbackUrl })}
-      className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#1A4A63] bg-transparent text-sm font-medium text-[#6B8A99] hover:border-[#E61919] hover:text-[#E61919] active:scale-[0.98] transition-all duration-150 cursor-pointer"
+      className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#1A4A63] bg-transparent text-sm sm:text-base font-medium text-[#6B8A99] hover:border-[#E61919] hover:text-[#E61919] active:scale-[0.98] transition-all duration-150 cursor-pointer"
     >
       <SignOut size={17} />
       <span className="uppercase tracking-wide text-xs">Cerrar sesión</span>

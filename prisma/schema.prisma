@@ -419,6 +419,7 @@ model Announcement {
   gymId     String
   title     String
   body      String
+  imageUrl  String?
   pinned    Boolean   @default(false)
   publishAt DateTime  @default(now())
   expiresAt DateTime?
