@@ -15,6 +15,7 @@ interface SelectProps {
   options: SelectOption[];
   placeholder?: string;
   label?: string;
+  error?: string;
   className?: string;
 }
 
@@ -24,6 +25,7 @@ export function Select({
   options,
   placeholder = "Seleccionar",
   label,
+  error,
   className,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
@@ -57,6 +59,7 @@ export function Select({
           "focus:outline-none focus:border-[#F78837]",
           "transition-colors hover:border-[#6B8A99]",
           selected ? "text-[#EAEAEA]" : "text-[#4A6B7A]",
+          error && "border-[#E61919] focus:border-[#E61919]",
         )}
       >
         <span>{selected?.label || placeholder}</span>
@@ -95,6 +98,9 @@ export function Select({
           </div>
         </div>
       )}
+      {error && (
+        <p className="mt-1 text-xs text-[#E61919]">{error}</p>
+      )}
     </div>
   );
 }
@@ -107,6 +113,7 @@ interface SelectInputProps {
   placeholder?: string;
   label?: string;
   required?: boolean;
+  error?: string;
   className?: string;
 }
 
@@ -118,6 +125,7 @@ export function SelectInput({
   placeholder,
   label,
   required,
+  error,
   className,
 }: SelectInputProps) {
   return (
@@ -128,6 +136,7 @@ export function SelectInput({
         options={options}
         placeholder={placeholder}
         label={label}
+        error={error}
         className={className}
       />
       <input type="hidden" name={name} value={value} />
