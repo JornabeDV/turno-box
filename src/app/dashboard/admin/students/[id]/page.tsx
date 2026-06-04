@@ -5,6 +5,8 @@ import { toClassDate, formatDate, formatTime } from "@/lib/utils";
 import { ToggleStudentButton } from "@/components/admin/ToggleStudentButton";
 import { ResendInvitationButton } from "@/components/admin/ResendInvitationButton";
 import { AdjustCreditsForm } from "@/components/admin/AdjustCreditsForm";
+import { FreezeCreditsButton } from "@/components/admin/FreezeCreditsButton";
+import { getStudentFreezeStatus } from "@/actions/freezes";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
@@ -47,7 +49,7 @@ export default async function StudentDetailPage({ params }: Props) {
 
   const today = toClassDate(new Date());
 
-  const [upcoming, creditBalance] = await Promise.all([
+  const [upcoming, creditBalance, freezeStatus] = await Promise.all([
     prisma.booking.findMany({
       where: {
         userId: id,
@@ -76,6 +78,7 @@ export default async function StudentDetailPage({ params }: Props) {
       where: { userId_gymId: { userId: id, gymId: user.gymId } },
       select: { availableCredits: true },
     }),
+    getStudentFreezeStatus(id),
   ]);
 
   const initials = student.name
@@ -124,8 +127,12 @@ export default async function StudentDetailPage({ params }: Props) {
                   {student.email}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <ResendInvitationButton studentId={student.id} />
+                <FreezeCreditsButton
+                  studentId={student.id}
+                  initialIsPaused={freezeStatus.isPaused}
+                />
                 <ToggleStudentButton
                   studentId={student.id}
                   initialIsActive={student.isActive}
@@ -186,6 +193,16 @@ export default async function StudentDetailPage({ params }: Props) {
                     : "Pendiente"}
                 </p>
               </div>
+              {freezeStatus.isPaused && (
+                <div>
+                  <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                    Abono
+                  </p>
+                  <p className="text-xs md:text-sm font-medium mt-0.5 text-[#F78837]">
+                    Pausado
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

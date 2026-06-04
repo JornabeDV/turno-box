@@ -86,6 +86,7 @@ model Gym {
   gymTransactions  GymTransaction[]
 
   announcements Announcement[]
+  creditFreezes CreditFreeze[]
 
   @@map("gyms")
 }
@@ -129,6 +130,7 @@ model User {
 
   // Password reset
   passwordResetTokens PasswordResetToken[]
+  creditFreezes CreditFreeze[]
 
   @@map("users")
 }
@@ -427,4 +429,25 @@ model Announcement {
 
   @@index([gymId, publishAt])
   @@map("announcements")
+}
+
+// CreditFreeze — pausas individuales o masivas de vencimiento de créditos
+model CreditFreeze {
+  id               String    @id @default(cuid())
+  gymId            String
+  userId           String?   // null = pausa masiva del gym
+  startedAt        DateTime  @default(now())
+  endedAt          DateTime? // null = pausa activa
+  reason           String
+  createdBy        String    // admin user id
+  paymentSnapshots Json      // { [paymentId]: { originalExpiresAt: string | null } }
+
+  gym  Gym   @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([gymId, userId, endedAt])
+  @@map("credit_freezes")
 }

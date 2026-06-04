@@ -2,7 +2,10 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { AddPackButton } from "@/components/admin/AddPackButton";
+import { GlobalFreezeButton } from "@/components/admin/GlobalFreezeButton";
+import { getGlobalFreezeStatus } from "@/actions/freezes";
 import { PacksListClient } from "./PacksListClient";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Abonos" };
@@ -15,25 +18,31 @@ export default async function AdminPacksPage() {
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
-  const [packs, totalRevenue] = await Promise.all([
+  const [packs, globalFreeze, activeUsersByPack] = await Promise.all([
     prisma.pack.findMany({
       where: { gymId: user.gymId },
       orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
-      include: {
-        _count: { select: { payments: { where: { status: "APPROVED" } } } },
-      },
     }),
-    prisma.payment.aggregate({
-      where: { gymId: user.gymId, status: "APPROVED" },
-      _sum: { amountPaid: true },
-    }),
+    getGlobalFreezeStatus(user.gymId),
+    prisma.$queryRaw<
+      { packId: string; activeUsers: bigint }[]
+    >`
+      SELECT p."packId", COUNT(DISTINCT p."userId") AS "activeUsers"
+      FROM payments p
+      WHERE p."gymId" = ${user.gymId}
+        AND p.status = 'APPROVED'
+        AND (p."expiresAt" > NOW() OR p."expiresAt" IS NULL)
+      GROUP BY p."packId"
+    `,
   ]);
 
-  const revenue = Number(totalRevenue._sum.amountPaid ?? 0);
+  const activeMap = new Map(
+    activeUsersByPack.map((row) => [row.packId, Number(row.activeUsers)]),
+  );
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
           <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
             Admin
@@ -42,33 +51,29 @@ export default async function AdminPacksPage() {
             Abonos
           </h2>
         </div>
-        <AddPackButton />
+        <div className="flex items-center gap-2">
+          <GlobalFreezeButton initialIsPaused={globalFreeze.isPaused} />
+          <AddPackButton />
+        </div>
       </div>
 
-      {/* Métrica de ingresos */}
-      {revenue > 0 && (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 flex items-center gap-3">
-          <div className="size-9 rounded-[2px] bg-[#27C7B8]/10 text-[#27C7B8] flex items-center justify-center shrink-0">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-[#27C7B8] tabular-nums">
-              {new Intl.NumberFormat("es-AR", {
-                style: "currency",
-                currency: "ARS",
-                maximumFractionDigits: 0,
-              }).format(revenue)}
+      {globalFreeze.isPaused && globalFreeze.freeze && (
+        <div className={cn(
+          "flex items-center gap-3 px-4 py-3 border",
+          "bg-[#F78837]/10 border-[#F78837]/20"
+        )}>
+          <span className="size-2 rounded-full bg-[#F78837] animate-pulse" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm sm:text-base font-medium text-[#EAEAEA]">
+              Abonos pausados masivamente
             </p>
-            <p className="text-xs md:text-sm text-[#6B8A99]">Ingresos totales</p>
+            <p className="text-xs sm:text-sm text-[#6B8A99]">
+              {globalFreeze.freeze.reason} — desde el{" "}
+              {globalFreeze.freeze.startedAt.toLocaleDateString("es-AR", {
+                day: "numeric",
+                month: "short",
+              })}
+            </p>
           </div>
         </div>
       )}
@@ -83,7 +88,11 @@ export default async function AdminPacksPage() {
         </div>
       ) : (
         <PacksListClient
-          packs={packs.map((p) => ({ ...p, price: Number(p.price) }))}
+          packs={packs.map((p) => ({
+            ...p,
+            price: Number(p.price),
+            activeUsers: activeMap.get(p.id) ?? 0,
+          }))}
         />
       )}
     </div>
