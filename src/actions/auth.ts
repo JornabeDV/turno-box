@@ -23,6 +23,7 @@ export async function registerAction(
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
     birthDate: formData.get("birthDate"),
+    gymId: formData.get("gymId"),
   };
 
   const parsed = registerSchema.safeParse(raw);
