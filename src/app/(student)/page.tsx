@@ -69,6 +69,7 @@ export default async function HomePage() {
           id: true,
           title: true,
           body: true,
+          imageUrl: true,
           pinned: true,
           publishAt: true,
         },
@@ -156,27 +157,38 @@ export default async function HomePage() {
           {announcements.map((a) => (
             <div
               key={a.id}
-              className={`border p-3 ${
+              className={`border overflow-hidden ${
                 a.pinned
                   ? "border-[#F78837]/30 bg-[#F78837]/5"
                   : "border-[#1A4A63] bg-[#0E2A38]"
               }`}
             >
-              <div className="flex items-center gap-2 mb-1">
-                {a.pinned && (
-                  <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1 pt-0.5">
-                    Fijado
-                  </span>
-                )}
-                <p
-                  className={`text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}
-                >
-                  {a.title}
+              {a.imageUrl && (
+                <div className="w-full aspect-video overflow-hidden bg-[#0A1F2A]">
+                  <img
+                    src={a.imageUrl}
+                    alt={a.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="p-3">
+                <div className="flex items-center gap-2 mb-1">
+                  {a.pinned && (
+                    <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1 pt-0.5">
+                      Fijado
+                    </span>
+                  )}
+                  <p
+                    className={`text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}
+                  >
+                    {a.title}
+                  </p>
+                </div>
+                <p className="text-xs text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
+                  {a.body}
                 </p>
               </div>
-              <p className="text-xs text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
-                {a.body}
-              </p>
             </div>
           ))}
         </div>

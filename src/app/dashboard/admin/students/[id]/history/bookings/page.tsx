@@ -2,8 +2,9 @@ import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate, formatTime } from "@/lib/utils";
+import { BackButton } from "@/components/ui/BackButton";
 import Link from "next/link";
-import { ArrowLeftIcon, CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -72,13 +73,7 @@ export default async function StudentBookingsHistoryPage({ params, searchParams 
 
   return (
     <div className="max-w-5xl space-y-6">
-      <Link
-        href={`/dashboard/admin/students/${id}`}
-        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
-      >
-        <ArrowLeftIcon size={13} />
-        Volver al alumno
-      </Link>
+      <BackButton href={`/dashboard/admin/students/${id}`} />
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight">

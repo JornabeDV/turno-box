@@ -4,9 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { toClassDate, formatTime } from "@/lib/utils";
 import { ToggleCoachButton } from "@/components/admin/ToggleCoachButton";
 import { EditCoachButton } from "@/components/admin/EditCoachButton";
-import Link from "next/link";
+import { BackButton } from "@/components/ui/BackButton";
 import {
-  ArrowLeftIcon,
   PencilSimpleIcon,
 } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
@@ -126,13 +125,7 @@ export default async function CoachDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-5xl space-y-6">
-      <Link
-        href="/dashboard/admin/coaches"
-        className="inline-flex items-center gap-1.5 text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
-      >
-        <ArrowLeftIcon size={13} />
-        Coaches
-      </Link>
+      <BackButton href="/dashboard/admin/coaches" />
 
       {/* Header */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
