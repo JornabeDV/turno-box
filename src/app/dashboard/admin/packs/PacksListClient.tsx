@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 type PackRow = PackData & {
   currency: string;
   isActive: boolean;
-  _count: { payments: number };
+  activeUsers: number;
 };
 
 interface Props {
@@ -91,12 +91,12 @@ export function PacksListClient({ packs }: Props) {
               </p>
             </div>
 
-            {/* Ventas */}
+            {/* Alumnos activos */}
             <div className="text-right shrink-0 hidden sm:block">
               <p className="text-xs md:text-sm font-mono font-bold text-[#EAEAEA] tabular-nums">
-                {pack._count.payments}
+                {pack.activeUsers}
               </p>
-              <p className="text-xs md:text-sm text-[#4A6B7A]">ventas</p>
+              <p className="text-xs md:text-sm text-[#4A6B7A]">activos</p>
             </div>
 
             {/* Toggle */}

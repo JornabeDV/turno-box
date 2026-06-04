@@ -18,16 +18,27 @@ export default async function AdminPacksPage() {
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
-  const [packs, globalFreeze] = await Promise.all([
+  const [packs, globalFreeze, activeUsersByPack] = await Promise.all([
     prisma.pack.findMany({
       where: { gymId: user.gymId },
       orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
-      include: {
-        _count: { select: { payments: { where: { status: "APPROVED" } } } },
-      },
     }),
     getGlobalFreezeStatus(user.gymId),
+    prisma.$queryRaw<
+      { packId: string; activeUsers: bigint }[]
+    >`
+      SELECT p."packId", COUNT(DISTINCT p."userId") AS "activeUsers"
+      FROM payments p
+      WHERE p."gymId" = ${user.gymId}
+        AND p.status = 'APPROVED'
+        AND (p."expiresAt" > NOW() OR p."expiresAt" IS NULL)
+      GROUP BY p."packId"
+    `,
   ]);
+
+  const activeMap = new Map(
+    activeUsersByPack.map((row) => [row.packId, Number(row.activeUsers)]),
+  );
 
   return (
     <div className="space-y-6">
@@ -77,7 +88,11 @@ export default async function AdminPacksPage() {
         </div>
       ) : (
         <PacksListClient
-          packs={packs.map((p) => ({ ...p, price: Number(p.price) }))}
+          packs={packs.map((p) => ({
+            ...p,
+            price: Number(p.price),
+            activeUsers: activeMap.get(p.id) ?? 0,
+          }))}
         />
       )}
     </div>
