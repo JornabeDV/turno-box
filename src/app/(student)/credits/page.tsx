@@ -199,7 +199,7 @@ export default async function CreditsPage({ searchParams }: Props) {
                   nextExpiry <= 7 ? "text-[#F78837]" : "text-[#EAEAEA]",
                 )}
               >
-                {nextExpiry <= 0 ? "Vencido" : `${nextExpiry} días`}
+                {nextExpiry <= 0 ? "Vencido" : `${nextExpiry} ${nextExpiry === 1 ? "día" : "días"}`}
               </p>
             </div>
           )}

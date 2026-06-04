@@ -4,7 +4,7 @@ import { sendPushToUser } from "@/lib/push";
 
 /**
  * Envía notificaciones push a estudiantes que cumplen años hoy.
- * Se ejecuta una vez al día (recomendado a las 9:00 AM).
+ * Se ejecuta una vez al día (recomendado a las 9:30 AM).
  */
 
 export async function POST(req: NextRequest) {
@@ -14,10 +14,9 @@ export async function POST(req: NextRequest) {
   }
 
   const today = new Date();
-  const month = today.getMonth() + 1; // 1-12
-  const day = today.getDate();        // 1-31
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
 
-  // PostgreSQL extrae mes y día con EXTRACT
   const birthdays = await prisma.$queryRaw<
     { id: string; name: string | null }[]
   >`
@@ -30,24 +29,24 @@ export async function POST(req: NextRequest) {
       AND EXTRACT(DAY FROM "birthDate") = ${day}
   `;
 
-  let sent = 0;
+  const results: { userId: string; name: string; pushResult: unknown }[] = [];
 
   for (const student of birthdays) {
     const firstName = student.name?.split(" ")[0] ?? "Campeón";
 
-    sendPushToUser(student.id, {
+    const pushResult = await sendPushToUser(student.id, {
       title: `🎉 ¡Feliz cumpleaños, ${firstName}!`,
-      body: "El equipo de BEE BOX te desea un gran día. Vení a entrenar y festejá con nosotros.",
+      body: "El equipo te desea un gran día. Vení a entrenar y festejá con nosotros.",
       url: "/",
       tag: `birthday-${today.getFullYear()}`,
-    }).catch(() => {});
+    });
 
-    sent++;
+    results.push({ userId: student.id, name: firstName, pushResult });
   }
 
   return NextResponse.json({
     ok: true,
-    sent,
     total: birthdays.length,
+    results,
   });
 }

@@ -142,7 +142,7 @@ export default async function HomePage() {
             </span>
             {daysLeft !== null && daysLeft <= 7 && (
               <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] mt-4 items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
-                · {daysLeft} {daysLeft === 1 ? "día" : "días"} para el
+                {daysLeft} {daysLeft === 1 ? "día" : "días"} para el
                 vencimiento
               </span>
             )}
