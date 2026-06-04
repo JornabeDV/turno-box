@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { cn, formatTime, toClassDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
+import { BackButton } from "@/components/ui/BackButton";
 import { BookingActions } from "@/components/booking/BookingActions";
 import {
   CalendarIcon,
@@ -10,9 +11,7 @@ import {
   UserIcon,
   UsersIcon,
   InfoIcon,
-  CaretLeftIcon,
 } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Detalle de clase" };
@@ -37,6 +36,8 @@ export default async function ClassDetailPage({
   if (!gymId) redirect("/");
 
   const classDate = toClassDate(new Date(date));
+  // Fecha para mostrar al usuario (con offset ARG, no UTC)
+  const displayDate = new Date(`${date}T00:00:00-03:00`);
 
   const gymClass = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, isActive: true, deletedAt: null },
@@ -101,14 +102,7 @@ export default async function ClassDetailPage({
 
   return (
     <section className="pt-4 pb-8 space-y-4">
-      {/* Back */}
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
-      >
-        <CaretLeftIcon size={14} />
-        Volver
-      </Link>
+      <BackButton href="/" />
 
       {/* Título */}
       <div className="flex items-center justify-between gap-3">
@@ -130,7 +124,7 @@ export default async function ClassDetailPage({
         <div className="flex items-center gap-2.5 text-sm text-[#EAEAEA]">
           <CalendarIcon size={16} className="text-[#6B8A99] shrink-0" />
           <span className="capitalize font-[family-name:var(--font-oswald)]">
-            {classDate.toLocaleDateString("es-AR", {
+            {displayDate.toLocaleDateString("es-AR", {
               weekday: "long",
               day: "numeric",
               month: "long",

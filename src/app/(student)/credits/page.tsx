@@ -2,6 +2,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { BackButton } from "@/components/ui/BackButton";
 import Link from "next/link";
 import {
   Clock,
@@ -142,6 +143,7 @@ export default async function CreditsPage({ searchParams }: Props) {
 
   return (
     <section className="pt-4 space-y-5">
+      <BackButton href="/" />
       {/* Título */}
       <div className="flex items-center justify-between">
         <div>

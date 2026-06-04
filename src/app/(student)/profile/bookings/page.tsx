@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { ArrowLeftIcon } from "@phosphor-icons/react/dist/ssr";
+import { BackButton } from "@/components/ui/BackButton";
 import { formatTime, cn } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -43,13 +43,7 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
 
   return (
     <section className="pt-4 space-y-4">
-      <Link
-        href="/profile"
-        className="inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
-      >
-        <ArrowLeftIcon size={13} />
-        Perfil
-      </Link>
+      <BackButton href="/profile" />
 
       <div>
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
@@ -80,6 +74,7 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                   <p className="text-[11px] text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
                     {new Date(b.classDate).toLocaleDateString("es-AR", {
                       day: "numeric", month: "short", year: "numeric",
+                      timeZone: "UTC",
                     })}
                     {" · "}
                     {formatTime(b.class.startTime)} – {formatTime(b.class.endTime)}
