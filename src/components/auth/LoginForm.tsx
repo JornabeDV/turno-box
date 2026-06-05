@@ -100,7 +100,7 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
             Contraseña
           </label>
           <Link
-            href="/forgot-password"
+            href={preselectedGym ? `/forgot-password?gymSlug=${preselectedGym.slug}` : "/forgot-password"}
             className="text-[11px] sm:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wide text-[#27C7B8] hover:text-[#20A898] transition-colors"
           >
             Olvidaste tu contraseña?
