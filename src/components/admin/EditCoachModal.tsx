@@ -42,7 +42,7 @@ export function EditCoachModal({ open, onClose, coach }: Props) {
     startTransition(async () => {
       const result = await updateCoachAction(coach.id, formData);
       if (result.success) {
-        toast.success("Coach actualizado");
+        toast.success("Profesor actualizado");
         router.refresh();
         handleClose();
       } else {
@@ -55,7 +55,7 @@ export function EditCoachModal({ open, onClose, coach }: Props) {
     <Dialog
       open={open}
       onOpenChange={(o) => !o && handleClose()}
-      title="Editar coach"
+      title="Editar profesor"
       size="md"
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
@@ -85,7 +85,7 @@ export function EditCoachModal({ open, onClose, coach }: Props) {
             type="email"
             required
             defaultValue={coach.email}
-            placeholder="coach@gimnasio.com"
+            placeholder="profesor@gimnasio.com"
             className={inputClass}
           />
         </div>

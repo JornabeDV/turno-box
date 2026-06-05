@@ -47,12 +47,12 @@ export function Hero() {
               <div className="w-2.5 h-2.5 rounded-full bg-[#27C7B8]" />
             </div>
             <span className="text-[10px] lg:text-xs font-[family-name:var(--font-jetbrains)] text-[#4A6B7A] uppercase tracking-wider ml-2">
-              Panel de admin
+              Panel General de admin
             </span>
           </div>
           <img
             src="/landing_3.png"
-            alt="Dashboard de BoxTurno con métricas del gimnasio"
+            alt="Panel General de BoxTurno con métricas del gimnasio"
             className="w-full"
           />
         </div>

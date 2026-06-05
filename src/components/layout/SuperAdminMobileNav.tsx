@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard/super-admin", label: "Dashboard", Icon: ChartBarIcon },
+  { href: "/dashboard/super-admin", label: "Panel General", Icon: ChartBarIcon },
   { href: "/dashboard/super-admin/gyms", label: "Gimnasios", Icon: BuildingsIcon },
   { href: "/dashboard/super-admin/gyms/new", label: "Crear Gimnasio", Icon: PlusCircleIcon },
 ];

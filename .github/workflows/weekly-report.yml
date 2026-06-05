@@ -1,0 +1,28 @@
+name: Weekly Metrics Report
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"   # todos los lunes a las 9:00 AM UTC
+  workflow_dispatch:
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call weekly report endpoint
+        run: |
+          body=$(curl -s -w "\n%{http_code}" \
+            -X POST "${{ secrets.APP_URL }}/api/cron/weekly-report" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json")
+
+          status=$(echo "$body" | tail -n1)
+          response=$(echo "$body" | head -n -1)
+
+          echo "Status:   $status"
+          echo "Response: $response"
+
+          if [ "$status" != "200" ]; then
+            echo "Endpoint returned $status — fallo"
+            exit 1
+          fi

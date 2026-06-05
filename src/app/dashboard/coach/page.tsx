@@ -62,7 +62,7 @@ export default async function CoachDashboardPage({
     },
   });
 
-  const firstName = coach?.name?.split(" ")[0] ?? "Coach";
+  const firstName = coach?.name?.split(" ")[0] ?? "Profesor";
 
   const { week, discipline } = await searchParams;
   const weekStart = getWeekStart(week);

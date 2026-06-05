@@ -7,8 +7,8 @@ export function AppPreview() {
     },
     {
       src: "/landing_mobile_2.png",
-      alt: "Dashboard admin en BoxTurno",
-      label: "Dashboard admin",
+      alt: "Panel General de admin en BoxTurno",
+      label: "Panel General de admin",
     },
     {
       src: "/landing_mobile_3.png",

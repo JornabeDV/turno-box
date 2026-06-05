@@ -59,7 +59,7 @@ Esto evita que atacantes puedan enumerar emails válidos en el sistema.
 
 ### Servicio Utilizado: Resend
 - API Key configurada en `.env`: `RESEND_API_KEY`
-- Emails enviados desde: `Box Turno <noreply@bebox.com>`
+- Emails enviados desde: `Box Turno <noreply@boxturno.com.ar>`
 
 ### Variables de Entorno Requeridas
 ```env

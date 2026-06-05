@@ -166,7 +166,7 @@ export function ClassForm({
       {coaches.length > 0 && (
         <div className="space-y-1.5">
           <label htmlFor="coachId" className={labelClass}>
-            Coach <span className="text-[#4A6B7A] normal-case">(opcional)</span>
+            Profesor <span className="text-[#4A6B7A] normal-case">(opcional)</span>
           </label>
           <select
             id="coachId"

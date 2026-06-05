@@ -8,7 +8,7 @@ import { UpcomingBirthdays } from "@/components/admin/UpcomingBirthdays";
 import { toClassDate } from "@/lib/utils";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Dashboard Admin" };
+export const metadata: Metadata = { title: "Panel General Admin" };
 
 /** Días hasta el próximo cumpleaños (0 = hoy, ≤30). */
 function daysUntilBirthday(birthDate: Date, today: Date): number {
@@ -148,7 +148,7 @@ export default async function AdminDashboardPage() {
           Hoy
         </p>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
-          Dashboard
+          Panel General
         </h2>
       </div>
 

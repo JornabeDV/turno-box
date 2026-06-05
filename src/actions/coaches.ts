@@ -83,7 +83,7 @@ export async function updateCoachAction(coachId: string, formData: FormData): Pr
     select: { id: true, email: true },
   });
 
-  if (!coach) return { success: false, error: "Coach no encontrado." };
+  if (!coach) return { success: false, error: "Profesor no encontrado." };
 
   if (email !== coach.email) {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -115,7 +115,7 @@ export async function toggleCoachActiveAction(
     select: { isActive: true },
   });
 
-  if (!coach) return { success: false, error: "Coach no encontrado." };
+  if (!coach) return { success: false, error: "Profesor no encontrado." };
 
   const updated = await prisma.user.update({
     where: { id: coachId },

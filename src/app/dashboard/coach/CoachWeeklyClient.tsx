@@ -80,7 +80,7 @@ export function CoachWeeklyClient({
       {/* Header */}
       <div>
         <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
-          Coach
+          Profesor
         </p>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
           Mis clases

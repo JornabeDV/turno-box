@@ -21,7 +21,7 @@ export default async function SuperAdminDashboardPage() {
           Super Admin
         </p>
         <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
-          Dashboard
+          Panel General
         </h2>
       </div>
 
