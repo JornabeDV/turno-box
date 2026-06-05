@@ -7,12 +7,14 @@ type Props = {
   studentId: string;
   initialIsActive: boolean;
   fullWidth?: boolean;
+  className?: string;
 };
 
 export function ToggleStudentButton({
   studentId,
   initialIsActive,
   fullWidth = false,
+  className,
 }: Props) {
   return (
     <ToggleActiveButton
@@ -21,6 +23,7 @@ export function ToggleStudentButton({
       entityLabel="alumno"
       action={toggleStudentActiveAction}
       fullWidth={fullWidth}
+      className={className}
     />
   );
 }

@@ -15,12 +15,14 @@ type Props = {
   studentId: string;
   initialIsPaused: boolean;
   fullWidth?: boolean;
+  className?: string;
 };
 
 export function FreezeCreditsButton({
   studentId,
   initialIsPaused,
   fullWidth = false,
+  className,
 }: Props) {
   const [isPaused, setIsPaused] = useState(initialIsPaused);
   const [open, setOpen] = useState(false);
@@ -72,7 +74,7 @@ export function FreezeCreditsButton({
           size="md"
           onClick={handleResume}
           disabled={isPending}
-          className="gap-1.5"
+          className={cn("gap-1.5", className)}
           fullWidth={fullWidth}
         >
           <PlayIcon size={14} weight="fill" />
@@ -85,7 +87,7 @@ export function FreezeCreditsButton({
           size="md"
           onClick={handleOpen}
           disabled={isPending}
-          className="gap-1.5"
+          className={cn("gap-1.5", className)}
           fullWidth={fullWidth}
         >
           <PauseIcon size={14} weight="fill" />

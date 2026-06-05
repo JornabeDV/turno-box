@@ -122,26 +122,20 @@ export default async function StudentDetailPage({ params }: Props) {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
-                <div className="w-full sm:w-auto">
-                  <ResendInvitationButton
-                    studentId={student.id}
-                    fullWidth
-                  />
-                </div>
-                <div className="w-full sm:w-auto">
-                  <FreezeCreditsButton
-                    studentId={student.id}
-                    initialIsPaused={freezeStatus.isPaused}
-                    fullWidth
-                  />
-                </div>
-                <div className="w-full sm:w-auto">
-                  <ToggleStudentButton
-                    studentId={student.id}
-                    initialIsActive={student.isActive}
-                    fullWidth
-                  />
-                </div>
+                <ResendInvitationButton
+                  studentId={student.id}
+                  className="w-full sm:w-auto"
+                />
+                <FreezeCreditsButton
+                  studentId={student.id}
+                  initialIsPaused={freezeStatus.isPaused}
+                  className="w-full sm:w-auto"
+                />
+                <ToggleStudentButton
+                  studentId={student.id}
+                  initialIsActive={student.isActive}
+                  className="w-full sm:w-auto"
+                />
               </div>
             </div>
             <div className="grid grid-cols-2 sm:flex gap-y-3 gap-x-4 sm:items-start sm:gap-4 md:gap-6 mt-3 pt-3 border-t border-[#1A4A63]">

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
+import { cn } from "@/lib/utils";
 import type { ActionResult } from "@/types";
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
   entityLabel: string; // "alumno" | "coach" | "abono"
   action: (id: string) => Promise<ActionResult<{ isActive: boolean }>>;
   fullWidth?: boolean;
+  className?: string;
 };
 
 export function ToggleActiveButton({
@@ -21,6 +23,7 @@ export function ToggleActiveButton({
   entityLabel,
   action,
   fullWidth = false,
+  className,
 }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -65,6 +68,7 @@ export function ToggleActiveButton({
         onClick={handleOpen}
         disabled={isPending}
         fullWidth={fullWidth}
+        className={cn(className)}
       >
         {isActive ? "Desactivar" : "Activar"}
       </Button>
