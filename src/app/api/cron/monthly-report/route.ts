@@ -9,6 +9,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
+  const configCheck = {
+    resendConfigured: !!process.env.RESEND_API_KEY,
+    resendFrom: process.env.RESEND_FROM_EMAIL,
+    appUrl: process.env.NEXT_PUBLIC_URL,
+  };
+
+  console.log("[MONTHLY REPORT] Config:", JSON.stringify(configCheck));
+
   // Mes anterior
   const today = new Date();
   const end = new Date(today.getFullYear(), today.getMonth(), 0);
@@ -19,9 +27,12 @@ export async function POST(req: NextRequest) {
 
   const monthName = start.toLocaleDateString("es-AR", { month: "long", year: "numeric" });
   const periodLabel = `mensual (${monthName})`;
+  console.log("[MONTHLY REPORT] Period:", periodLabel);
 
   const gyms = await prisma.gym.findMany({ select: { id: true, name: true } });
-  const results: { gym: string; sent: number; failed: number }[] = [];
+  console.log("[MONTHLY REPORT] Gyms found:", gyms.length);
+
+  const results: { gym: string; gymId: string; adminsFound: number; emails: string[]; sent: number; failed: number; errors: string[] }[] = [];
 
   for (const gym of gyms) {
     const admins = await prisma.user.findMany({
@@ -29,8 +40,11 @@ export async function POST(req: NextRequest) {
       select: { email: true },
     });
 
-    if (admins.length === 0) {
-      results.push({ gym: gym.name, sent: 0, failed: 0 });
+    const emails = admins.map((a) => a.email).filter(Boolean) as string[];
+    console.log(`[MONTHLY REPORT] Gym "${gym.name}" (${gym.id}): ${admins.length} admins, ${emails.length} valid emails`);
+
+    if (emails.length === 0) {
+      results.push({ gym: gym.name, gymId: gym.id, adminsFound: admins.length, emails: [], sent: 0, failed: 0, errors: ["No hay admins con email"] });
       continue;
     }
 
@@ -38,14 +52,29 @@ export async function POST(req: NextRequest) {
 
     let sent = 0;
     let failed = 0;
-    for (const admin of admins) {
-      if (!admin.email) continue;
-      const ok = await sendMetricsReportEmail(admin.email, gym.name, report);
-      ok ? sent++ : failed++;
+    const errors: string[] = [];
+
+    for (const email of emails) {
+      try {
+        const ok = await sendMetricsReportEmail(email, gym.name, report);
+        if (ok) {
+          sent++;
+          console.log(`[MONTHLY REPORT] Email sent to ${email} for gym ${gym.name}`);
+        } else {
+          failed++;
+          errors.push(`Failed to send to ${email}`);
+          console.error(`[MONTHLY REPORT] Email failed to ${email} for gym ${gym.name}`);
+        }
+      } catch (err) {
+        failed++;
+        const msg = err instanceof Error ? err.message : String(err);
+        errors.push(`Exception sending to ${email}: ${msg}`);
+        console.error(`[MONTHLY REPORT] Exception sending to ${email}:`, msg);
+      }
     }
 
-    results.push({ gym: gym.name, sent, failed });
+    results.push({ gym: gym.name, gymId: gym.id, adminsFound: admins.length, emails, sent, failed, errors });
   }
 
-  return NextResponse.json({ ok: true, period: periodLabel, results });
+  return NextResponse.json({ ok: true, period: periodLabel, config: configCheck, results });
 }
