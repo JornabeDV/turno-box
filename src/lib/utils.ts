@@ -59,6 +59,12 @@ export function getTodayInGymTimezone(): Date {
   return new Date(y, m - 1, d);
 }
 
+// Parsea "YYYY-MM-DD" a una fecha local sin desfasajes de timezone.
+export function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 // Cupos → variante de badge
 export function spotsVariant(
   available: number,

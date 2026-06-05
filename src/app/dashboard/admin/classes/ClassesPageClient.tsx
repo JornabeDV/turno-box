@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { formatTime, getTodayInGymTimezone } from "@/lib/utils";
+import { formatTime, getTodayInGymTimezone, parseLocalDate } from "@/lib/utils";
 import {
   PlusIcon,
   CaretLeftIcon,
@@ -48,7 +48,7 @@ interface Props {
   nextWeek: string;
   filteredSlotsPerDay: ClassSlot[][];
   totalClasses: number;
-  weekStart: Date;
+  weekStartStr: string;
   discipline?: string;
 }
 
@@ -60,7 +60,7 @@ export function ClassesPageClient({
   nextWeek,
   filteredSlotsPerDay,
   totalClasses,
-  weekStart,
+  weekStartStr,
   discipline,
 }: Props) {
   const [showClassModal, setShowClassModal] = useState(false);
