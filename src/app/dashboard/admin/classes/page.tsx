@@ -125,7 +125,7 @@ export default async function ClassesPage({
       nextWeek={nextWeek}
       filteredSlotsPerDay={filteredSlotsPerDay}
       totalClasses={totalClasses}
-      weekStart={weekStart}
+      weekStartStr={weekParam}
       discipline={discipline}
     />
   );

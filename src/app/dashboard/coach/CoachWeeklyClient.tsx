@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { formatTime, getTodayInGymTimezone } from "@/lib/utils";
+import { formatTime, getTodayInGymTimezone, parseLocalDate } from "@/lib/utils";
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 import { DisciplinesManager } from "@/components/admin/DisciplinesManager";
 import type { ClassSlot } from "@/types";
@@ -34,7 +34,7 @@ interface Props {
   prevWeek: string;
   nextWeek: string;
   filteredSlotsPerDay: ClassSlot[][];
-  weekStart: Date;
+  weekStartStr: string;
   discipline?: string;
 }
 
@@ -44,7 +44,7 @@ export function CoachWeeklyClient({
   prevWeek,
   nextWeek,
   filteredSlotsPerDay,
-  weekStart,
+  weekStartStr,
   discipline,
 }: Props) {
   const today = getTodayInGymTimezone();

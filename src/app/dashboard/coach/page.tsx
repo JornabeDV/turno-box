@@ -122,7 +122,7 @@ export default async function CoachDashboardPage({
         prevWeek={prevWeek}
         nextWeek={nextWeek}
         filteredSlotsPerDay={filteredSlotsPerDay}
-        weekStart={weekStart}
+        weekStartStr={weekParam}
         discipline={discipline}
       />
     </div>
