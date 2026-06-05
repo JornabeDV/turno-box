@@ -23,6 +23,7 @@ function TestPushButton() {
       expired: number;
       errors: number;
       vapidReady: boolean;
+      details?: { subscriptionId: string; statusCode?: number; message?: string }[];
     };
   } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -82,7 +83,15 @@ function TestPushButton() {
           )}
           {result.result.errors > 0 && (
             <p className="text-[#F78837]">
-              ⚠️ Hubo {result.result.errors} error/es al enviar. Revisá los logs del servidor.
+              ⚠️ Hubo {result.result.errors} error/es al enviar.
+              {result.result.details && result.result.details[0]?.statusCode && (
+                <> Código HTTP: <strong>{result.result.details[0].statusCode}</strong>.</>
+              )}
+              {result.result.details && result.result.details[0]?.message && (
+                <span className="block mt-1 break-words">
+                  Mensaje: {result.result.details[0].message}
+                </span>
+              )}
             </p>
           )}
           {!result.result.vapidReady && (

@@ -126,20 +126,18 @@ export function ClassesPageClient({
         <Link
           href={`/dashboard/admin/classes?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="outline">
-            <CaretLeftIcon size={14} weight="bold" />
-            Anterior
+          <Button size="md" variant="outline" className="px-3 md:px-5" aria-label="Semana anterior">
+            <CaretLeftIcon size={20} weight="bold" />
           </Button>
         </Link>
-        <p className="text-base md:text-xl font-medium text-[#EAEAEA] tabular-nums whitespace-nowrap">
+        <p className="text-lg md:text-xl font-medium text-[#EAEAEA] tabular-nums whitespace-nowrap">
           {formatWeekRange(weekStart, addDays(weekStart, 6))}
         </p>
         <Link
           href={`/dashboard/admin/classes?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="outline">
-            Siguiente
-            <CaretRightIcon size={14} weight="bold" />
+          <Button size="md" variant="outline" className="px-3 md:px-5" aria-label="Semana siguiente">
+            <CaretRightIcon size={20} weight="bold" />
           </Button>
         </Link>
       </div>

@@ -103,7 +103,7 @@ export default async function StudentDetailPage({ params }: Props) {
         <div className="flex items-start gap-4">
           <div
             className={cn(
-              "size-14 border flex items-center justify-center text-xl font-bold shrink-0",
+              "size-12 md:size-14 border flex items-center justify-center text-lg md:text-xl font-bold shrink-0",
               student.isActive
                 ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
                 : "bg-[#0E2A38] border-[#1A4A63] text-[#4A6B7A]",
@@ -112,7 +112,7 @@ export default async function StudentDetailPage({ params }: Props) {
             {initials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="min-w-0">
                 <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight truncate">
                   {student.name ?? "Sin nombre"}
@@ -121,19 +121,30 @@ export default async function StudentDetailPage({ params }: Props) {
                   {student.email}
                 </p>
               </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <ResendInvitationButton studentId={student.id} />
-                <FreezeCreditsButton
-                  studentId={student.id}
-                  initialIsPaused={freezeStatus.isPaused}
-                />
-                <ToggleStudentButton
-                  studentId={student.id}
-                  initialIsActive={student.isActive}
-                />
+              <div className="flex flex-col sm:flex-row md:items-center gap-2 w-full md:w-auto">
+                <div className="w-full sm:w-auto">
+                  <ResendInvitationButton
+                    studentId={student.id}
+                    fullWidth
+                  />
+                </div>
+                <div className="w-full sm:w-auto">
+                  <FreezeCreditsButton
+                    studentId={student.id}
+                    initialIsPaused={freezeStatus.isPaused}
+                    fullWidth
+                  />
+                </div>
+                <div className="w-full sm:w-auto">
+                  <ToggleStudentButton
+                    studentId={student.id}
+                    initialIsActive={student.isActive}
+                    fullWidth
+                  />
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
+            <div className="grid grid-cols-2 sm:flex gap-y-3 gap-x-4 sm:items-start sm:gap-4 md:gap-6 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
                 <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                   Desde
