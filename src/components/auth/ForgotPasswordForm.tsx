@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { WarningCircle, CheckCircle, Envelope } from "@phosphor-icons/react";
 
-export function ForgotPasswordForm() {
+interface ForgotPasswordFormProps {
+  gymSlug?: string;
+}
+
+export function ForgotPasswordForm({ gymSlug }: ForgotPasswordFormProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,12 +51,15 @@ export function ForgotPasswordForm() {
           <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
             Email enviado
           </h3>
-          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          <p className="text-sm sm:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
             Si existe una cuenta con ese email, recibirás instrucciones para resetear tu contraseña.
           </p>
         </div>
         <Button
-          onClick={() => router.push("/auth/login")}
+          onClick={() => {
+            const redirectUrl = gymSlug ? `/auth/login?gymSlug=${gymSlug}` : "/auth/login";
+            router.push(redirectUrl);
+          }}
           fullWidth
           size="lg"
           className="mt-4"
@@ -65,18 +72,9 @@ export function ForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div>
-        <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
-          Olvidé mi contraseña
-        </h3>
-        <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)]">
-          Ingresá tu email y te enviaremos un enlace para resetear tu contraseña.
-        </p>
-      </div>
-
       {/* Email */}
       <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
+        <label htmlFor="email" className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Email
         </label>
         <div className="relative">
@@ -84,7 +82,7 @@ export function ForgotPasswordForm() {
           <input
             id="email" name="email" type="email" autoComplete="email" required
             placeholder="email@alumno.com"
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
         </div>
       </div>
