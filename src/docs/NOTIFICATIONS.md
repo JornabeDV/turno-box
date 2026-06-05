@@ -209,7 +209,7 @@ Documentación completa de todas las notificaciones push implementadas en el sis
 ```json
 {
   "title": "💰 Nuevo pago recibido",
-  "body": "[Nombre del alumno] pagó $[monto]",
+  "body": "Juan Pérez · $15000 · Pack 8 clases",
   "url": "/dashboard/admin/payments",
   "tag": "admin-payment"
 }

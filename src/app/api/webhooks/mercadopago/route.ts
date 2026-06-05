@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     if (mpData.status === "approved") {
       const payment = await prisma.payment.findUnique({
         where: { id: paymentId },
-        select: { status: true, userId: true, creditsGranted: true, amountPaid: true, gymId: true, user: { select: { name: true } } },
+        select: { status: true, userId: true, creditsGranted: true, amountPaid: true, gymId: true, user: { select: { name: true, email: true } }, pack: { select: { name: true } } },
       });
 
       // credited = true solo si esta llamada hizo la acreditación
@@ -73,9 +73,11 @@ export async function POST(req: NextRequest) {
 
         const userName = payment!.user?.name ?? "Un usuario";
         const amountStr = String(payment!.amountPaid);
+        const packName = payment!.pack?.name ?? "";
+        const packPart = packName ? ` · ${packName}` : "";
         sendPushToGymAdmins(payment!.gymId, {
           title: "💰 Nuevo pago recibido",
-          body: `${userName} pagó $${amountStr}`,
+          body: `${userName} · $${amountStr}${packPart}`,
           url: "/admin/payments",
           tag: "admin-payment",
         }).catch(() => {});
