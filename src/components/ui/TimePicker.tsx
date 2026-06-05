@@ -12,8 +12,8 @@ interface TimePickerProps {
   className?: string;
 }
 
-// 06:00 → 21:00 en intervalos de 30 minutos
-const HOURS = Array.from({ length: 31 }, (_, i) => {
+// 06:00 → 23:00 en intervalos de 30 minutos
+const HOURS = Array.from({ length: 35 }, (_, i) => {
   const hour = 6 + Math.floor(i / 2);
   const minute = (i % 2) * 30;
   return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
@@ -42,7 +42,7 @@ export function TimePicker({
   return (
     <div className={cn("relative", className)} ref={ref}>
       {label && (
-        <label className="text-xs font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-name:var(--font-oswald)]">
+        <label className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-   name:var(--font-oswald)]">
           {label}
         </label>
       )}
@@ -101,9 +101,7 @@ export function TimePicker({
           </div>
         </div>
       )}
-      {error && (
-        <p className="mt-1 text-xs text-[#E61919]">{error}</p>
-      )}
+      {error && <p className="mt-1 text-xs text-[#E61919]">{error}</p>}
     </div>
   );
 }

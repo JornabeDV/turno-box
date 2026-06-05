@@ -176,17 +176,24 @@ export async function cancelBookingAction(
     return { success: false, error: "No autenticado." };
   }
 
-  const userId = session.user.id;
+  const currentUserId = session.user.id;
+  const currentUserRole = (session.user as { role?: string }).role ?? "";
   const gymId  = (session.user as { gymId?: string }).gymId ?? "";
+  const isAdmin = currentUserRole === "ADMIN" || currentUserRole === "SUPER_ADMIN";
 
   const booking = await prisma.booking.findFirst({
-    where: { id: bookingId, userId, deletedAt: null },
+    where: isAdmin
+      ? { id: bookingId, deletedAt: null }
+      : { id: bookingId, userId: currentUserId, deletedAt: null },
     select: {
-      id: true, status: true, classId: true, classDate: true,
+      id: true, status: true, classId: true, classDate: true, userId: true,
       class: { select: { startTime: true, gym: { select: { cancelWindowHours: true } } } },
     },
   });
   if (!booking) return { success: false, error: "Reserva no encontrada." };
+
+  // El userId para reembolsos/créditos es el dueño de la reserva, no el admin que cancela
+  const bookingUserId = booking.userId;
 
   // No permitir cancelar si ya está cancelada
   if (booking.status === "CANCELLED") {
@@ -220,7 +227,7 @@ export async function cancelBookingAction(
         SET "availableCredits" = "availableCredits" + 1,
             "version"           = "version" + 1,
             "updatedAt"        = now()
-        WHERE "userId" = ${userId} AND "gymId" = ${gymId}
+        WHERE "userId" = ${bookingUserId} AND "gymId" = ${gymId}
       `;
 
       // Recuperar el paymentId del CONSUME original para mantener trazabilidad
@@ -231,7 +238,7 @@ export async function cancelBookingAction(
 
       await tx.creditTransaction.create({
         data: {
-          userId,
+          userId: bookingUserId,
           gymId,
           type:      "REFUND",
           amount:    +1,
