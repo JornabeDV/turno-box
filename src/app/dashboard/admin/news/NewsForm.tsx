@@ -135,16 +135,11 @@ export function NewsForm({ announcement }: Props) {
   return (
     <div className="max-w-xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div className="space-y-2">
         <BackButton href="/dashboard/admin/news" />
-        <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
-            Admin
-          </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
-            {isEditing ? "Editar noticia" : "Nueva noticia"}
-          </h2>
-        </div>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          {isEditing ? "Editar noticia" : "Nueva noticia"}
+        </h2>
       </div>
 
       {/* Form */}

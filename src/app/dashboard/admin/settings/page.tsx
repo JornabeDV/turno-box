@@ -14,18 +14,24 @@ export default async function AdminSettingsPage() {
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
-  const gym = await prisma.gym.findUnique({
-    where: { id: user.gymId },
-    select: {
-      name: true,
-      logoUrl: true,
-      address: true,
-      phone: true,
-      cancelWindowHours: true,
-      waitlistEnabled: true,
-      slug: true,
-    },
-  });
+  const [gym, currentUser] = await Promise.all([
+    prisma.gym.findUnique({
+      where: { id: user.gymId },
+      select: {
+        name: true,
+        logoUrl: true,
+        address: true,
+        phone: true,
+        cancelWindowHours: true,
+        waitlistEnabled: true,
+        slug: true,
+      },
+    }),
+    prisma.user.findUnique({
+      where: { id: user.id },
+      select: { name: true },
+    }),
+  ]);
   if (!gym) redirect("/");
 
   return (
@@ -38,7 +44,7 @@ export default async function AdminSettingsPage() {
           Configuración
         </h2>
       </div>
-      <SettingsClient gym={gym} />
+      <SettingsClient gym={gym} adminName={currentUser?.name ?? ""} />
     </div>
   );
 }

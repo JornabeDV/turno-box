@@ -16,6 +16,7 @@ import {
   MegaphoneIcon,
   ChartLineUpIcon,
   ReceiptIcon,
+  ChartPieSliceIcon,
 } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +44,11 @@ const NAV_ITEMS = [
     href: "/dashboard/admin/finances",
     label: "Finanzas",
     Icon: ChartLineUpIcon,
+  },
+  {
+    href: "/dashboard/admin/metrics",
+    label: "Métricas",
+    Icon: ChartPieSliceIcon,
   },
   { href: "/dashboard/admin/news", label: "Noticias", Icon: MegaphoneIcon },
   { href: "/dashboard/admin/settings", label: "Configuración", Icon: GearIcon },
