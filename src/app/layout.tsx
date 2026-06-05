@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Oswald, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 const oswald = Oswald({
@@ -61,6 +62,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
       </head>
       <body className="min-h-dvh bg-[#0A1F2A] text-[#EAEAEA] antialiased">
+        <ServiceWorkerRegister />
         {children}
         <Toaster
           position="top-center"
