@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
 
     const { email } = parsed.data;
 
-    // Buscar usuario
+    // Buscar usuario con su gimnasio
     const user = await prisma.user.findUnique({
       where: { email },
-      select: { id: true, name: true, isActive: true },
+      select: { id: true, name: true, isActive: true, gym: { select: { slug: true } } },
     });
 
     if (!user || !user.isActive) {
@@ -48,7 +48,10 @@ export async function POST(req: NextRequest) {
     });
 
     // Enviar email con el enlace de reset
-    const resetUrl = `${process.env.NEXT_PUBLIC_URL}/reset-password/${token}`;
+    const gymSlug = user.gym?.slug;
+    const resetUrl = gymSlug
+      ? `${process.env.NEXT_PUBLIC_URL}/reset-password/${token}?gymSlug=${gymSlug}`
+      : `${process.env.NEXT_PUBLIC_URL}/reset-password/${token}`;
     const emailSent = await sendPasswordResetEmail(email, resetUrl, user.name || undefined);
 
     if (!emailSent) {
