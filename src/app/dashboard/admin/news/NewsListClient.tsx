@@ -61,7 +61,10 @@ export function NewsListClient({ announcements: initial }: Props) {
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-3 px-4 md:px-5 py-4 group"
+                onClick={() =>
+                  router.push(`/dashboard/admin/news/${item.id}/edit`)
+                }
+                className="flex items-center gap-3 px-4 md:px-5 py-4 group cursor-pointer hover:bg-white/[0.03] transition-colors"
               >
                 {/* Pin indicator */}
                 <div className="mt-0.5 shrink-0">
@@ -123,15 +126,19 @@ export function NewsListClient({ announcements: initial }: Props) {
                 {/* Actions */}
                 <div className="flex items-center gap-1 shrink-0">
                   <button
-                    onClick={() =>
-                      router.push(`/dashboard/admin/news/${item.id}/edit`)
-                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/dashboard/admin/news/${item.id}/edit`);
+                    }}
                     className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#143D52] transition-all"
                   >
                     <PencilSimpleIcon size={16} weight="bold" />
                   </button>
                   <button
-                    onClick={() => setConfirmDeleteId(item.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConfirmDeleteId(item.id);
+                    }}
                     className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all"
                   >
                     <TrashIcon size={16} weight="bold" />

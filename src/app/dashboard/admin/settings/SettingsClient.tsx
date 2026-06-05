@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { SelectInput } from "@/components/ui/Select";
 import { updateGymSettingsAction } from "@/actions/gym";
-import { changePasswordAction } from "@/actions/profile";
+import { changePasswordAction, updateProfileAction } from "@/actions/profile";
 import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash, UploadSimple, X } from "@phosphor-icons/react";
 import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
 import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
@@ -121,9 +121,11 @@ const inputClass =
 const labelClass =
   "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
 
-export function SettingsClient({ gym }: { gym: GymSettings }) {
+export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName: string }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [profilePending, startProfileTransition] = useTransition();
+  const [adminNameState, setAdminNameState] = useState(adminName);
 
   const [form, setForm] = useState({
     name: gym.name,
@@ -209,6 +211,50 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
 
   return (
     <div className="space-y-6">
+      {/* ── Datos del administrador ─────────────────────────────────────── */}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const fd = new FormData(e.currentTarget);
+          startProfileTransition(async () => {
+            const res = await updateProfileAction(fd);
+            if (res.success) {
+              toast.success("Nombre actualizado");
+              router.refresh();
+            } else {
+              toast.error(res.error);
+            }
+          });
+        }}
+        className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4"
+      >
+        <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+          Datos del administrador
+        </h3>
+        <div className="space-y-1.5">
+          <label className={labelClass}>Nombre</label>
+          <input
+            name="name"
+            value={adminNameState}
+            onChange={(e) => setAdminNameState(e.target.value)}
+            required
+            className={inputClass}
+            placeholder="Tu nombre"
+          />
+        </div>
+        <div className="flex justify-end">
+          <Button
+            type="submit"
+            variant="brand"
+            loading={profilePending}
+            className="min-w-32"
+            size="md"
+          >
+            Guardar nombre
+          </Button>
+        </div>
+      </form>
+
       {/* ── Configuración del Gimnasio ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">

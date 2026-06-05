@@ -60,6 +60,13 @@ enum DayOfWeek {
   SUNDAY
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
 // ─── GYM (root del tenant) ────────────────────────────────────────────────────
 
 model Gym {
@@ -108,6 +115,7 @@ model User {
   birthDate     DateTime? // fecha de nacimiento (para próximos cumpleaños)
   phone         String?   // teléfono del alumno (importado desde Excel)
   invitedAt     DateTime? // cuándo se envió la invitación de activación
+  gender        Gender?   // género para métricas de participación
 
   gymId String?
   gym   Gym?    @relation(fields: [gymId], references: [id], onDelete: SetNull)
