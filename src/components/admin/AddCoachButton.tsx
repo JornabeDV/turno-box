@@ -12,7 +12,7 @@ export function AddCoachButton() {
     <>
       <Button size="md" variant="brand" onClick={() => setOpen(true)}>
         <PlusIcon size={14} weight="bold" />
-        Agregar coach
+        Agregar profesor
       </Button>
       <CreateCoachModal open={open} onClose={() => setOpen(false)} />
     </>

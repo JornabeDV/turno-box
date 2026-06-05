@@ -212,13 +212,13 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
 
           {/* Filtros de fecha */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <div className="flex items-center gap-0.5 bg-[#0E2A38] border border-[#1A4A63] px-0.5 py-0.5">
+            <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-0.5 bg-[#0E2A38] border border-[#1A4A63] px-0.5 py-0.5 w-full sm:w-auto">
               {PRESETS.map((p) => (
                 <button
                   key={p.days}
                   onClick={() => applyPreset(p.days)}
                   className={cn(
-                    "px-2 py-3 text-xs font-medium uppercase tracking-wider rounded-[2px] transition-all duration-150",
+                    "w-full sm:w-auto px-1 sm:px-2 py-3 text-xs font-medium uppercase tracking-wider rounded-[2px] transition-all duration-150 whitespace-nowrap",
                     activePreset === p.days
                       ? "bg-[#F78837] text-[#0A1F2A]"
                       : "text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0A1F2A]"
@@ -228,7 +228,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                 </button>
               ))}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
               <DatePicker
                 value={startDate}
                 onChange={(v) => {
@@ -237,9 +237,9 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                 }}
                 allowFuture
                 showYearPicker={false}
-                className="w-48"
+                className="w-full sm:w-48"
               />
-              <span className="text-xs text-[#4A6B7A]">a</span>
+              <span className="hidden sm:inline text-xs text-[#4A6B7A]">a</span>
               <DatePicker
                 value={endDate}
                 onChange={(v) => {
@@ -248,7 +248,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                 }}
                 allowFuture
                 showYearPicker={false}
-                className="w-48"
+                className="w-full sm:w-48"
               />
             </div>
           </div>
@@ -371,7 +371,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
               )}
             </SectionCard>
 
-            <SectionCard title="Por coach" subtitle="Ocupación promedio" delay={0.25}>
+            <SectionCard title="Por profesor" subtitle="Ocupación promedio" delay={0.25}>
               {data.byCoach.length > 0 ? (
                 <BarChartPremium
                   layout="vertical"
@@ -383,7 +383,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                   }))}
                 />
               ) : (
-                <EmptyState message="Sin coaches con datos" />
+                <EmptyState message="Sin profesores con datos" />
               )}
             </SectionCard>
 

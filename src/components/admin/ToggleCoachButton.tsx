@@ -10,7 +10,7 @@ export function ToggleCoachButton({ coachId, initialIsActive }: Props) {
     <ToggleActiveButton
       userId={coachId}
       initialIsActive={initialIsActive}
-      entityLabel="coach"
+      entityLabel="profesor"
       action={toggleCoachActiveAction}
     />
   );

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     where: { id },
     select: { name: true, email: true },
   });
-  return { title: coach?.name ?? coach?.email ?? "Coach" };
+  return { title: coach?.name ?? coach?.email ?? "Profesor" };
 }
 
 const DAY_LABELS: Record<string, string> = {
@@ -160,7 +160,7 @@ export default async function CoachDetailPage({ params }: Props) {
             <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
                 <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
-                  Coach desde
+                  Profesor desde
                 </p>
                 <p className="text-xs md:text-sm text-[#EAEAEA] font-medium mt-0.5">
                   {new Date(coach.createdAt).toLocaleDateString("es-AR", {
@@ -221,7 +221,7 @@ export default async function CoachDetailPage({ params }: Props) {
         {Object.keys(grouped).length === 0 ? (
           <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
             <p className="text-sm md:text-base text-[#4A6B7A]">
-              Este coach no tiene clases asignadas.
+              Este profesor no tiene clases asignadas.
             </p>
             <p className="text-xs md:text-sm text-[#4A6B7A] mt-1">
               Podés asignarle clases desde{" "}

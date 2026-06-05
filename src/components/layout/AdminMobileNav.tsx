@@ -21,7 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard/admin", label: "Dashboard", Icon: ChartBarIcon },
+  { href: "/dashboard/admin", label: "Panel General", Icon: ChartBarIcon },
   {
     href: "/dashboard/admin/classes",
     label: "Clases",
@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   },
   { href: "/dashboard/admin/disciplines", label: "Disciplinas", Icon: TagIcon },
   { href: "/dashboard/admin/students", label: "Alumnos", Icon: UsersIcon },
-  { href: "/dashboard/admin/coaches", label: "Coaches", Icon: BarbellIcon },
+  { href: "/dashboard/admin/coaches", label: "Profesores", Icon: BarbellIcon },
   {
     href: "/dashboard/admin/packs",
     label: "Abonos",

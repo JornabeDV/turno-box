@@ -18,11 +18,11 @@ import {
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/dashboard/admin", label: "Dashboard", Icon: ChartBar },
+  { href: "/dashboard/admin", label: "Panel General", Icon: ChartBar },
   { href: "/dashboard/admin/classes", label: "Clases", Icon: CalendarBlank },
   { href: "/dashboard/admin/disciplines", label: "Disciplinas", Icon: Tag },
   { href: "/dashboard/admin/students", label: "Alumnos", Icon: Users },
-  { href: "/dashboard/admin/coaches", label: "Coaches", Icon: Barbell },
+  { href: "/dashboard/admin/coaches", label: "Profesores", Icon: Barbell },
   {
     href: "/dashboard/admin/packs",
     label: "Abonos",

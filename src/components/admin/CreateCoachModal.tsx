@@ -38,7 +38,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
     startTransition(async () => {
       const result = await createCoachAction(formData);
       if (result.success) {
-        toast.success("Coach creado");
+        toast.success("Profesor creado");
         router.refresh();
         handleClose();
       } else {
@@ -51,7 +51,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
     <Dialog
       open={open}
       onOpenChange={(o) => !o && handleClose()}
-      title="Agregar coach"
+      title="Agregar profesor"
       size="md"
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +79,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
             name="email"
             type="email"
             required
-            placeholder="coach@gimnasio.com"
+            placeholder="profesor@gimnasio.com"
             className={inputClass}
           />
         </div>
@@ -122,7 +122,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
             className="sm:flex-1"
             loading={isPending}
           >
-            Crear coach
+            Crear profesor
           </Button>
         </div>
       </form>

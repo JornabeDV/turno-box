@@ -79,7 +79,7 @@ export default async function ProfilePage() {
   const streak      = calcStreak(allBookingDates.map((b) => b.classDate));
   const hasPassword = !!user.passwordHash;
 
-  const roleLabel = { ADMIN: "Administrador", COACH: "Coach", STUDENT: "Alumno" }[
+  const roleLabel = { ADMIN: "Administrador", COACH: "Profesor", STUDENT: "Alumno" }[
     (session.user as { role?: string }).role ?? "STUDENT"
   ] ?? "Alumno";
 

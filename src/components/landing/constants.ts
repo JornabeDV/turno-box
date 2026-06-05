@@ -23,7 +23,7 @@ export const FEATURES = [
   },
   {
     iconName: "Gear",
-    title: "Panel de admin",
+    title: "Panel General de admin",
     desc: "Gestión completa de alumnos, clases, profesores y actividades.",
   },
   {
@@ -59,7 +59,7 @@ export const PLANS = [
       "Alumnos ilimitados",
       "Sistema de créditos",
       "Historial de pagos",
-      "Panel de métricas",
+      "Panel General de métricas",
       "Soporte prioritario",
     ],
     highlighted: true,

@@ -274,7 +274,7 @@ export function ClassModal({
                 label: c.name || "Sin nombre",
               })),
             ]}
-            label="Coach (opcional)"
+            label="Profesor (opcional)"
           />
         )}
 

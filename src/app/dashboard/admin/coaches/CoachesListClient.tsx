@@ -53,7 +53,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
       if (res.success) {
         setCoaches((prev) => prev.filter((c) => c.id !== confirmDeleteId));
         setConfirmDeleteId(null);
-        toast.success("Coach eliminado");
+        toast.success("Profesor eliminado");
       } else {
         toast.error(res.error);
       }
@@ -170,7 +170,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
       <Dialog
         open={!!confirmDeleteId}
         onOpenChange={(o) => !o && setConfirmDeleteId(null)}
-        title="Eliminar coach"
+        title="Eliminar profesor"
         description="Esta acción no se puede deshacer."
         size="md"
       >

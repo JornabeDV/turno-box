@@ -7,7 +7,7 @@ import { MetricCard } from "@/components/admin/MetricCard";
 import { CoachesListClient } from "./CoachesListClient";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Coaches" };
+export const metadata: Metadata = { title: "Profesores" };
 
 const DAY_LABELS: Record<string, string> = {
   MONDAY: "Lun",
@@ -83,7 +83,7 @@ export default async function CoachesPage() {
             Admin
           </p>
           <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
-            Coaches
+            Profesores
           </h2>
         </div>
         <AddCoachButton />
@@ -107,7 +107,7 @@ export default async function CoachesPage() {
 
       {coaches.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99]">No hay coaches registrados.</p>
+          <p className="text-sm md:text-base text-[#6B8A99]">No hay profesores registrados.</p>
         </div>
       ) : (
         <CoachesListClient
