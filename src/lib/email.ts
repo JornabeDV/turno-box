@@ -1,4 +1,6 @@
 import { Resend } from "resend";
+import { renderToBuffer } from "@react-pdf/renderer";
+import { MetricsReportPDF } from "@/components/pdf/MetricsReportPDF";
 import type { MetricsReport } from "@/lib/queries/metrics";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -177,81 +179,64 @@ export async function sendMetricsReportEmail(
   report: MetricsReport
 ) {
   if (!resend) {
-    console.warn("[EMAIL] Resend not configured, skipping email send");
-    return true;
+    console.error("[EMAIL] RESEND_API_KEY no está configurado. No se puede enviar el reporte.");
+    return false;
   }
 
-  const { kpis, byDiscipline, byCoach, byGender, byDayOfWeek, topClasses, periodLabel } = report;
-
-  const occupancyColor = kpis.occupancyRate > 80 ? "#27C7B8" : "#F78837";
-  const cancellationColor = kpis.cancellationRate > 15 ? "#E61919" : "#EAEAEA";
-  const retentionColor = kpis.retentionRate > 70 ? "#27C7B8" : "#F78837";
-  const riskColor = kpis.atRiskStudents > 10 ? "#E61919" : "#EAEAEA";
-
-  const html = `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reporte de metricas - ${gymName}</title>
-      </head>
-      <body style="font-family: Arial, sans-serif; line-height: 1.5; color: #EAEAEA; background-color: #0A1F2A; margin: 0; padding: 20px;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #0E2A38; border: 1px solid #1A4A63;">
-          <div style="padding: 24px; border-bottom: 1px solid #1A4A63;">
-            <h1 style="color: #EAEAEA; font-size: 20px; margin: 0 0 4px;">${gymName}</h1>
-            <p style="color: #6B8A99; font-size: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.1em;">Reporte ${periodLabel}</p>
-          </div>
-
-          <div style="padding: 24px;">
-            <h2 style="color: #6B8A99; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 16px;">Indicadores principales</h2>
-            <table width="100%" cellpadding="0" cellspacing="0" style="background: #0A1F2A; border: 1px solid #1A4A63;">
-              ${kpiRow("Reservas confirmadas", String(kpis.totalBookings), "#EAEAEA")}
-              ${kpiRow("Ocupacion promedio", `${kpis.occupancyRate}%`, occupancyColor)}
-              ${kpiRow("Tasa de cancelacion", `${kpis.cancellationRate}%`, cancellationColor)}
-              ${kpiRow("Alumnos activos", String(kpis.activeStudents), "#EAEAEA")}
-              ${kpiRow("Retencion", `${kpis.retentionRate}%`, retentionColor)}
-              ${kpiRow("Alumnos en riesgo", String(kpis.atRiskStudents), riskColor)}
-            </table>
-
-            ${byDiscipline.length > 0 ? topList("Top disciplinas por ocupacion", byDiscipline.slice(0, 5).map((d) => ({ name: d.name, value: `${d.occupancy}%` }))) : ""}
-
-            ${byCoach.length > 0 ? topList("Top profesores por ocupación", byCoach.slice(0, 5).map((c) => ({ name: c.name, value: `${c.occupancy}%` }))) : ""}
-
-            ${byDayOfWeek.length > 0 ? topList("Dias mas concurridos", byDayOfWeek.sort((a, b) => b.occupancy - a.occupancy).slice(0, 5).map((d) => ({ name: d.label, value: `${d.occupancy}%` }))) : ""}
-
-            ${topClasses.length > 0 ? topList("Clases mas concurridas", topClasses.slice(0, 5).map((c) => ({ name: `${c.name} ${c.time}hs`, value: `${c.occupancy}%` }))) : ""}
-
-            ${byGender.length > 0 ? `
-              <h3 style="color: #6B8A99; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin: 24px 0 12px;">Participacion por genero</h3>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background: #0A1F2A; border: 1px solid #1A4A63;">
-                ${byGender.map((g) => `
-                  <tr>
-                    <td style="padding: 8px 16px; color: #EAEAEA; font-size: 13px;">${g.label}</td>
-                    <td style="padding: 8px 16px; color: #F78837; font-size: 13px; font-weight: bold; text-align: right;">${g.bookings} (${g.percentage}%)</td>
-                  </tr>
-                `).join("")}
-              </table>
-            ` : ""}
-
-            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #1A4A63;">
-              <p style="color: #4A6B7A; font-size: 12px; margin: 0;">
-                Para ver el detalle completo ingresa al panel de administracion en
-                <a href="${process.env.NEXT_PUBLIC_URL}/dashboard/admin/metrics" style="color: #F78837; text-decoration: none;">Metricas</a>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </body>
-    </html>
-  `;
-
   try {
+    // Generar PDF
+    const pdfBuffer = await renderToBuffer(
+      MetricsReportPDF({ gymName, report })
+    );
+    const pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
+
+    const { kpis, periodLabel } = report;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Reporte de metricas - ${gymName}</title>
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.5; color: #EAEAEA; background-color: #0A1F2A; margin: 0; padding: 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #0E2A38; border: 1px solid #1A4A63; padding: 24px;">
+            <h1 style="color: #EAEAEA; font-size: 20px; margin: 0 0 4px;">${gymName}</h1>
+            <p style="color: #6B8A99; font-size: 12px; margin: 0 0 24px; text-transform: uppercase; letter-spacing: 0.1em;">Reporte ${periodLabel}</p>
+
+            <p style="color: #EAEAEA; font-size: 14px; margin: 0 0 16px;">
+              Adjunto encontraras el reporte completo con las metricas del periodo.
+            </p>
+
+            <div style="background: #0A1F2A; border: 1px solid #1A4A63; padding: 16px; margin-bottom: 24px;">
+              <p style="color: #6B8A99; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 12px;">Resumen rapido</p>
+              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Reservas:</strong> ${kpis.totalBookings}</p>
+              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Ocupacion:</strong> ${kpis.occupancyRate}%</p>
+              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Cancelacion:</strong> ${kpis.cancellationRate}%</p>
+              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Retencion:</strong> ${kpis.retentionRate}%</p>
+            </div>
+
+            <p style="color: #4A6B7A; font-size: 12px; margin: 0;">
+              Para ver el detalle interactivo ingresa al panel de administracion en
+              <a href="${process.env.NEXT_PUBLIC_URL}/dashboard/admin/metrics" style="color: #F78837; text-decoration: none;">Metricas</a>.
+            </p>
+          </div>
+        </body>
+      </html>
+    `;
+
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL || "Box Turno <noreply@boxturno.com.ar>",
       to,
       subject: `[${gymName}] Reporte ${periodLabel}`,
       html,
+      attachments: [
+        {
+          filename: `reporte_${gymName.toLowerCase().replace(/\s+/g, "_")}_${periodLabel.replace(/[^a-z0-9]/gi, "_")}.pdf`,
+          content: pdfBase64,
+        },
+      ],
     });
 
     if (error) {
@@ -262,7 +247,7 @@ export async function sendMetricsReportEmail(
     console.log("[REPORT EMAIL SENT]", data);
     return true;
   } catch (error) {
-    console.error("[REPORT EMAIL SEND ERROR]", error);
+    console.error("[REPORT PDF/EMAIL ERROR]", error);
     return false;
   }
 }

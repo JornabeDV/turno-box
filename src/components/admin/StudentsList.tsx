@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import Link from "next/link";
 import { ToggleStudentButton } from "@/components/admin/ToggleStudentButton";
-import { MagnifyingGlassIcon } from "@phosphor-icons/react";
+import {
+  MagnifyingGlassIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 type Student = {
@@ -15,20 +20,39 @@ type Student = {
   upcomingCount: number;
 };
 
-type Props = { students: Student[] };
+type Props = {
+  students: Student[];
+  totalPages: number;
+  currentPage: number;
+  query: string;
+  total: number;
+};
 
-export function StudentsList({ students }: Props) {
+export function StudentsList({
+  students,
+  totalPages,
+  currentPage,
+  query,
+  total,
+}: Props) {
   const router = useRouter();
-  const [query, setQuery] = useState("");
 
-  const filtered = query.trim()
-    ? students.filter((s) => {
-        const q = query.toLowerCase();
-        return (
-          s.name?.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)
-        );
-      })
-    : students;
+  const buildLink = (page: number, q: string) => {
+    const params = new URLSearchParams();
+    if (page > 1) params.set("page", String(page));
+    if (q) params.set("q", q);
+    const qs = params.toString();
+    return `/dashboard/admin/students${qs ? `?${qs}` : ""}`;
+  };
+
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSearch = (value: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      router.replace(buildLink(1, value.trim()));
+    }, 300);
+  };
 
   return (
     <div className="space-y-4">
@@ -41,14 +65,14 @@ export function StudentsList({ students }: Props) {
         <input
           type="search"
           placeholder="Buscar por nombre o email…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          defaultValue={query}
+          onChange={(e) => handleSearch(e.target.value)}
           className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] pl-9 pr-4 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
       </div>
 
       {/* Lista */}
-      {filtered.length === 0 ? (
+      {students.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-12 text-center">
           <p className="text-sm md:text-base text-[#6B8A99]">
             {query
@@ -59,7 +83,7 @@ export function StudentsList({ students }: Props) {
       ) : (
         <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
           <div className="divide-y divide-[#1A4A63]">
-            {filtered.map((s, i) => {
+            {students.map((s, i) => {
               const initials = s.name
                 ? s.name
                     .split(" ")
@@ -137,10 +161,32 @@ export function StudentsList({ students }: Props) {
         </div>
       )}
 
-      <p className="text-xs md:text-sm text-[#4A6B7A] px-1">
-        {filtered.length} {filtered.length === 1 ? "alumno" : "alumnos"}
-        {query && ` · filtrando por "${query}"`}
-      </p>
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <Link
+            href={buildLink(currentPage - 1, query)}
+            className={cn(
+              "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+              currentPage <= 1 && "pointer-events-none opacity-30",
+            )}
+          >
+            <CaretLeftIcon size={18} weight="bold" />
+          </Link>
+          <span className="text-xs md:text-sm text-[#6B8A99] tabular-nums">
+            Página {currentPage} de {totalPages}
+          </span>
+          <Link
+            href={buildLink(currentPage + 1, query)}
+            className={cn(
+              "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+              currentPage >= totalPages && "pointer-events-none opacity-30",
+            )}
+          >
+            <CaretRightIcon size={18} weight="bold" />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

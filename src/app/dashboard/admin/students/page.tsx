@@ -10,7 +10,13 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Alumnos" };
 
-export default async function StudentsPage() {
+const PAGE_SIZE = 20;
+
+type Props = {
+  searchParams: Promise<{ page?: string; q?: string }>;
+};
+
+export default async function StudentsPage({ searchParams }: Props) {
   const session = await auth();
   const user = session?.user as
     | { id?: string; role?: string; gymId?: string }
@@ -18,34 +24,79 @@ export default async function StudentsPage() {
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
+  const { page: pageParam, q } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const skip = (page - 1) * PAGE_SIZE;
+  const search = q?.trim();
+
   const today = toClassDate(new Date());
 
-  const students = await prisma.user.findMany({
-    where: { gymId: user.gymId, role: "STUDENT" },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      isActive: true,
-      createdAt: true,
-      _count: {
-        select: {
-          bookings: {
-            where: {
-              status: "CONFIRMED",
-              classDate: { gte: today },
-              deletedAt: null,
+  const baseWhere = {
+    gymId: user.gymId,
+    role: "STUDENT" as const,
+  };
+
+  const listWhere = search
+    ? {
+        ...baseWhere,
+        OR: [
+          { name: { contains: search, mode: "insensitive" as const } },
+          { email: { contains: search, mode: "insensitive" as const } },
+        ],
+      }
+    : baseWhere;
+
+  const [students, total, allForMetrics] = await Promise.all([
+    prisma.user.findMany({
+      where: listWhere,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        isActive: true,
+        createdAt: true,
+        _count: {
+          select: {
+            bookings: {
+              where: {
+                status: "CONFIRMED",
+                classDate: { gte: today },
+                deletedAt: null,
+              },
             },
           },
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: PAGE_SIZE,
+    }),
+    prisma.user.count({ where: listWhere }),
+    prisma.user.findMany({
+      where: baseWhere,
+      select: {
+        isActive: true,
+        _count: {
+          select: {
+            bookings: {
+              where: {
+                status: "CONFIRMED",
+                classDate: { gte: today },
+                deletedAt: null,
+              },
+            },
+          },
+        },
+      },
+    }),
+  ]);
 
-  const active = students.filter((s) => s.isActive).length;
-  const inactive = students.length - active;
-  const withBookings = students.filter((s) => s._count.bookings > 0).length;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const active = allForMetrics.filter((s) => s.isActive).length;
+  const inactive = allForMetrics.length - active;
+  const withBookings = allForMetrics.filter(
+    (s) => s._count.bookings > 0
+  ).length;
 
   const rows = students.map((s) => ({
     id: s.id,
@@ -74,7 +125,11 @@ export default async function StudentsPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <MetricCard label="Total" value={students.length} icon="users" />
+        <MetricCard
+          label="Total"
+          value={allForMetrics.length}
+          icon="users"
+        />
         <MetricCard
           label="Activos"
           value={active}
@@ -96,7 +151,13 @@ export default async function StudentsPage() {
         </p>
       )}
 
-      <StudentsList students={rows} />
+      <StudentsList
+        students={rows}
+        totalPages={totalPages}
+        currentPage={page}
+        query={search || ""}
+        total={total}
+      />
     </div>
   );
 }
