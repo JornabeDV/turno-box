@@ -11,6 +11,90 @@ import { changePasswordAction } from "@/actions/profile";
 import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash, UploadSimple, X } from "@phosphor-icons/react";
 import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
 import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
+import { testPushNotificationAction } from "@/actions/push-test";
+
+function TestPushButton() {
+  const [result, setResult] = useState<{
+    success: boolean;
+    error?: string;
+    result?: {
+      subscriptionsFound: number;
+      sent: number;
+      expired: number;
+      errors: number;
+      vapidReady: boolean;
+    };
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleTest() {
+    setLoading(true);
+    setResult(null);
+    const res = await testPushNotificationAction();
+    setResult(res as typeof result);
+    setLoading(false);
+  }
+
+  return (
+    <div className="pt-2 border-t border-[#1A4A63] mt-2">
+      <div className="flex items-center gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          size="md"
+          onClick={handleTest}
+          loading={loading}
+        >
+          🔔 Probar notificación push
+        </Button>
+        {result && (
+          <span
+            className={
+              result.success && result.result && result.result.sent > 0
+                ? "text-xs text-[#27C7B8]"
+                : "text-xs text-[#F78837]"
+            }
+          >
+            {result.success && result.result && result.result.sent > 0
+              ? "Notificación enviada"
+              : result.error || "No se pudo enviar"}
+          </span>
+        )}
+      </div>
+
+      {result && (
+        <div className="mt-3 bg-[#0A1F2A] border border-[#1A4A63] p-3 rounded-[2px] font-mono text-xs text-[#6B8A99] overflow-x-auto">
+          <pre>{JSON.stringify(result, null, 2)}</pre>
+        </div>
+      )}
+
+      {result?.success && result.result && (
+        <div className="mt-2 space-y-1 text-xs text-[#6B8A99]">
+          {result.result.subscriptionsFound === 0 && (
+            <p className="text-[#F78837]">
+              ⚠️ No hay suscripciones guardadas para tu usuario. Activá el toggle de arriba.
+            </p>
+          )}
+          {result.result.subscriptionsFound > 0 && result.result.sent === 0 && (
+            <p className="text-[#F78837]">
+              ⚠️ Hay {result.result.subscriptionsFound} suscripción/es pero ninguna llegó. Revisá que el navegador permita notificaciones y que el service worker esté activo.
+            </p>
+          )}
+          {result.result.errors > 0 && (
+            <p className="text-[#F78837]">
+              ⚠️ Hubo {result.result.errors} error/es al enviar. Revisá los logs del servidor.
+            </p>
+          )}
+          {!result.result.vapidReady && (
+            <p className="text-red-400">
+              ❌ Las claves VAPID no están configuradas. Revisá las variables de entorno.
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type GymSettings = {
   name: string;
@@ -345,6 +429,9 @@ export function SettingsClient({ gym }: { gym: GymSettings }) {
         <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">Notificaciones</h3>
         <PushNotificationToggle />
         <PushNotificationHelp />
+
+        {/* Test push */}
+        <TestPushButton />
       </div>
 
       {/* ── Sección: Cambiar contraseña ─────────────────────────────────── */}

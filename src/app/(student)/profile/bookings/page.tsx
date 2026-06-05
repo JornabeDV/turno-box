@@ -18,7 +18,10 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
 
   const userId = session.user.id;
   const { limit: limitParam } = await searchParams;
-  const limit = Math.max(PAGE_SIZE, Math.min(200, Number(limitParam) || PAGE_SIZE));
+  const limit = Math.max(
+    PAGE_SIZE,
+    Math.min(200, Number(limitParam) || PAGE_SIZE),
+  );
 
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
@@ -30,8 +33,19 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
       deletedAt: null,
     },
     select: {
-      id: true, status: true, classDate: true,
-      class: { select: { startTime: true, endTime: true, color: true, dayOfWeek: true, coach: { select: { name: true } }, discipline: { select: { name: true } } } },
+      id: true,
+      status: true,
+      classDate: true,
+      class: {
+        select: {
+          startTime: true,
+          endTime: true,
+          color: true,
+          dayOfWeek: true,
+          coach: { select: { name: true } },
+          discipline: { select: { name: true } },
+        },
+      },
     },
     orderBy: { classDate: "desc" },
     take: limit + 1,
@@ -49,11 +63,16 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
         <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
           Historial de turnos
         </h2>
+        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+          Turnos anteriores y su estado
+        </p>
       </div>
 
       {items.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">Aún no tenés turnos.</p>
+          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+            Aún no tenés turnos.
+          </p>
         </div>
       ) : (
         <>
@@ -65,27 +84,36 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                   style={{ backgroundColor: b.class.color ?? "#F78837" }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className={cn(
-                    "text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-tight truncate",
-                    b.status === "CANCELLED" ? "text-[#4A6B7A] line-through" : "text-[#EAEAEA]"
-                  )}>
+                  <p
+                    className={cn(
+                      "text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-tight truncate",
+                      b.status === "CANCELLED"
+                        ? "text-[#4A6B7A] line-through"
+                        : "text-[#EAEAEA]",
+                    )}
+                  >
                     {b.class.discipline?.name ?? "Sin disciplina"}
                   </p>
                   <p className="text-[11px] text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
                     {new Date(b.classDate).toLocaleDateString("es-AR", {
-                      day: "numeric", month: "short", year: "numeric",
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
                       timeZone: "UTC",
                     })}
                     {" · "}
-                    {formatTime(b.class.startTime)} – {formatTime(b.class.endTime)}
+                    {formatTime(b.class.startTime)} –{" "}
+                    {formatTime(b.class.endTime)}
                   </p>
                 </div>
-                <span className={cn(
-                  "text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider shrink-0",
-                  b.status === "CONFIRMED" && "text-[#27C7B8]",
-                  b.status === "CANCELLED" && "text-[#4A6B7A]",
-                  b.status === "WAITLISTED" && "text-[#F78837]",
-                )}>
+                <span
+                  className={cn(
+                    "text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider shrink-0",
+                    b.status === "CONFIRMED" && "text-[#27C7B8]",
+                    b.status === "CANCELLED" && "text-[#4A6B7A]",
+                    b.status === "WAITLISTED" && "text-[#F78837]",
+                  )}
+                >
                   {b.status === "CONFIRMED" && "Asistió"}
                   {b.status === "CANCELLED" && "Canceló"}
                   {b.status === "WAITLISTED" && "En lista"}
