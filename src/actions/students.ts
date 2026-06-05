@@ -139,14 +139,16 @@ export async function adjustCreditsAction(
 
   revalidatePath(`/dashboard/admin/students/${studentId}`);
 
-  // Notificar al alumno del ajuste (fire-and-forget)
+  // Notificar al alumno del ajuste
   const sign = amount > 0 ? "+" : "";
   sendPushToUser(studentId, {
     title: "El gym ajustó tu saldo",
     body: `${sign}${amount} crédito${Math.abs(amount) !== 1 ? "s" : ""}. Saldo actual: ${result}.`,
     url: "/credits",
     tag: "credit-adjustment",
-  }).catch(() => {});
+  }).catch((err) => {
+    console.error("[adjustCreditsAction] push failed for student", studentId, err);
+  });
 
   return { success: true, data: { newBalance: result } };
 }

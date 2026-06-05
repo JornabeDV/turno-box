@@ -144,7 +144,7 @@ export async function bookClassAction(
     revalidatePath("/bookings");
     revalidatePath("/classes/[classId]");
 
-    // Notificación push (fire-and-forget, no bloquea la respuesta)
+    // Notificación push (no bloquea la respuesta)
     const pushBody =
       result.status === "CONFIRMED"
         ? "Tu reserva fue confirmada. ¡Nos vemos en el gym!"
@@ -154,7 +154,9 @@ export async function bookClassAction(
       body: pushBody,
       url: "/bookings",
       tag: "booking",
-    }).catch(() => {});
+    }).catch((err) => {
+      console.error("[bookClassAction] push failed for user", userId, err);
+    });
 
     return { success: true, data: { status: result.status as "CONFIRMED" | "WAITLISTED", bookingId: result.bookingId } };
 
@@ -333,7 +335,9 @@ export async function cancelBookingAction(
       body: "Se liberó un cupo y tu reserva fue confirmada.",
       url: "/bookings",
       tag: "waitlist-promoted",
-    }).catch(() => {});
+    }).catch((err) => {
+      console.error("[cancelBookingAction] push failed for promoted user", promotedUserId, err);
+    });
   }
 
   return { success: true, data: undefined };

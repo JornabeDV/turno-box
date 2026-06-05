@@ -166,7 +166,7 @@ export async function deleteClassAction(classId: string): Promise<void> {
     data: { deletedAt: new Date(), isActive: false },
   });
 
-  // Notificar a cada alumno afectado (fire-and-forget)
+  // Notificar a cada alumno afectado
   if (gymClass && gymClass.bookings.length > 0) {
     const userIds = [...new Set(gymClass.bookings.map((b) => b.userId))];
     const label = gymClass.discipline?.name ?? "Clase";
@@ -176,7 +176,9 @@ export async function deleteClassAction(classId: string): Promise<void> {
         body: `${label} (${gymClass.startTime}hs) fue cancelada por el gym. Contactate con nosotros si tenés dudas.`,
         url: "/",
         tag: "class-cancelled",
-      }).catch(() => {});
+      }).catch((err) => {
+        console.error("[deleteClassAction] push failed for user", userId, err);
+      });
     }
   }
 
