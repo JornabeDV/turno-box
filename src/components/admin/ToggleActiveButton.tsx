@@ -12,6 +12,7 @@ type Props = {
   initialIsActive: boolean;
   entityLabel: string; // "alumno" | "coach" | "abono"
   action: (id: string) => Promise<ActionResult<{ isActive: boolean }>>;
+  fullWidth?: boolean;
 };
 
 export function ToggleActiveButton({
@@ -19,6 +20,7 @@ export function ToggleActiveButton({
   initialIsActive,
   entityLabel,
   action,
+  fullWidth = false,
 }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -62,6 +64,7 @@ export function ToggleActiveButton({
         size="md"
         onClick={handleOpen}
         disabled={isPending}
+        fullWidth={fullWidth}
       >
         {isActive ? "Desactivar" : "Activar"}
       </Button>

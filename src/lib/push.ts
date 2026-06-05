@@ -23,12 +23,19 @@ export interface PushPayload {
   tag?: string;
 }
 
+export interface PushErrorDetail {
+  subscriptionId: string;
+  statusCode?: number;
+  message?: string;
+}
+
 export interface PushResult {
   subscriptionsFound: number;
   sent: number;
   expired: number;
   errors: number;
   vapidReady: boolean;
+  details?: PushErrorDetail[];
 }
 
 type RawSub = { id: string; endpoint: string; p256dh: string; auth: string };
@@ -43,6 +50,7 @@ async function dispatchToSubs(subs: RawSub[], payload: PushPayload): Promise<Pus
   }
 
   const expired: string[] = [];
+  const details: PushErrorDetail[] = [];
   let sent = 0;
   let errors = 0;
 
@@ -55,11 +63,18 @@ async function dispatchToSubs(subs: RawSub[], payload: PushPayload): Promise<Pus
         );
         return { ok: true };
       } catch (err: unknown) {
-        const e = err as { statusCode?: number; message?: string };
+        const e = err as { statusCode?: number; message?: string; body?: string };
+        const detail: PushErrorDetail = {
+          subscriptionId: sub.id,
+          statusCode: e.statusCode,
+          message: e.message || (err instanceof Error ? err.message : String(err)),
+        };
+        details.push(detail);
+
         if (e.statusCode === 404 || e.statusCode === 410) {
           expired.push(sub.id);
         } else {
-          console.error("[push] sendNotification failed:", e.statusCode, e.message);
+          console.error("[push] sendNotification failed:", e.statusCode, e.message, e.body);
         }
         return { ok: false, statusCode: e.statusCode };
       }
@@ -75,7 +90,14 @@ async function dispatchToSubs(subs: RawSub[], payload: PushPayload): Promise<Pus
     await prisma.pushSubscription.deleteMany({ where: { id: { in: expired } } });
   }
 
-  return { subscriptionsFound: subs.length, sent, expired: expired.length, errors, vapidReady: true };
+  return {
+    subscriptionsFound: subs.length,
+    sent,
+    expired: expired.length,
+    errors,
+    vapidReady: true,
+    details,
+  };
 }
 
 /** Envía una notificación push a todos los dispositivos de un usuario. */

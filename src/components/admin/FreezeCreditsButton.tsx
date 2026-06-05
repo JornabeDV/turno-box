@@ -14,9 +14,14 @@ import { PauseIcon, PlayIcon } from "@phosphor-icons/react";
 type Props = {
   studentId: string;
   initialIsPaused: boolean;
+  fullWidth?: boolean;
 };
 
-export function FreezeCreditsButton({ studentId, initialIsPaused }: Props) {
+export function FreezeCreditsButton({
+  studentId,
+  initialIsPaused,
+  fullWidth = false,
+}: Props) {
   const [isPaused, setIsPaused] = useState(initialIsPaused);
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
@@ -68,6 +73,7 @@ export function FreezeCreditsButton({ studentId, initialIsPaused }: Props) {
           onClick={handleResume}
           disabled={isPending}
           className="gap-1.5"
+          fullWidth={fullWidth}
         >
           <PlayIcon size={14} weight="fill" />
           Reanudar
@@ -80,6 +86,7 @@ export function FreezeCreditsButton({ studentId, initialIsPaused }: Props) {
           onClick={handleOpen}
           disabled={isPending}
           className="gap-1.5"
+          fullWidth={fullWidth}
         >
           <PauseIcon size={14} weight="fill" />
           Pausar

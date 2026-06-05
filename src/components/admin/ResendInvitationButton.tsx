@@ -4,8 +4,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { resendInvitationAction } from "@/actions/import";
 import { PaperPlaneTilt, CheckCircle } from "@phosphor-icons/react";
+import { cn } from "@/lib/utils";
 
-export function ResendInvitationButton({ studentId }: { studentId: string }) {
+export function ResendInvitationButton({
+  studentId,
+  fullWidth = false,
+  className,
+}: {
+  studentId: string;
+  fullWidth?: boolean;
+  className?: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -26,6 +35,8 @@ export function ResendInvitationButton({ studentId }: { studentId: string }) {
       onClick={handleClick}
       loading={loading}
       disabled={sent}
+      fullWidth={fullWidth}
+      className={cn(className)}
     >
       {sent ? (
         <>

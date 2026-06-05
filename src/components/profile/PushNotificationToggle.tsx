@@ -16,9 +16,31 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return output;
 }
 
+async function ensureServiceWorker(): Promise<ServiceWorkerRegistration | null> {
+  if (!("serviceWorker" in navigator)) return null;
+
+  // Si ya hay uno listo, lo usamos
+  const ready = await navigator.serviceWorker.ready.catch(() => null);
+  if (ready?.active) return ready;
+
+  // Si no, intentamos registrar /sw.js manualmente
+  console.log("[PushToggle] Intentando registrar /sw.js manualmente...");
+  try {
+    const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+    console.log("[PushToggle] Service Worker registrado:", reg.scope);
+    // Esperamos a que esté listo
+    const activated = await navigator.serviceWorker.ready;
+    return activated;
+  } catch (err) {
+    console.error("[PushToggle] No se pudo registrar /sw.js:", err);
+    return null;
+  }
+}
+
 export function PushNotificationToggle() {
   const [permission, setPermission] = useState<PermissionState>("default");
   const [hasSubscription, setHasSubscription] = useState(false);
+  const [hasSw, setHasSw] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,20 +53,33 @@ export function PushNotificationToggle() {
     const perm = Notification.permission as PermissionState;
     setPermission(perm);
 
-    // Verificar si realmente existe una suscripción push activa
-    if (perm === "granted") {
-      navigator.serviceWorker.ready
-        .then((reg) => reg.pushManager.getSubscription())
-        .then((sub) => setHasSubscription(!!sub))
-        .catch(() => setHasSubscription(false));
-    }
+    // Verificamos el estado real del SW y la suscripción push
+    navigator.serviceWorker.ready
+      .then((reg) => {
+        setHasSw(!!reg.active);
+        return reg.pushManager.getSubscription();
+      })
+      .then((sub) => setHasSubscription(!!sub))
+      .catch(() => {
+        setHasSw(false);
+        setHasSubscription(false);
+      });
   }, []);
 
   async function subscribe() {
     setLoading(true);
     setError(null);
     try {
-      const reg = await navigator.serviceWorker.ready;
+      // 1. Asegurar que el SW esté registrado
+      const reg = await ensureServiceWorker();
+      if (!reg?.active) {
+        throw new Error(
+          "No se pudo activar el Service Worker. Revisá en DevTools > Console si hay errores al cargar /sw.js"
+        );
+      }
+      setHasSw(true);
+
+      // 2. Suscribirse a push
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(
@@ -57,6 +92,7 @@ export function PushNotificationToggle() {
         keys: { p256dh: string; auth: string };
       };
 
+      // 3. Guardar en el servidor
       const res = await fetch("/api/push/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,14 +100,17 @@ export function PushNotificationToggle() {
       });
 
       if (!res.ok) {
-        throw new Error("Error guardando la suscripción en el servidor");
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Error guardando la suscripción en el servidor");
       }
 
       setPermission("granted");
       setHasSubscription(true);
+      setError(null);
     } catch (e) {
       console.error("[PushToggle] subscribe failed:", e);
-      setError("No se pudo activar. Verificá que el navegador permita notificaciones.");
+      const message = e instanceof Error ? e.message : "Error desconocido";
+      setError(message);
       setPermission(Notification.permission as PermissionState);
       setHasSubscription(false);
     } finally {
@@ -157,6 +196,12 @@ export function PushNotificationToggle() {
           </button>
         )}
       </div>
+
+      {hasSw === false && (
+        <p className="text-xs text-[#F78837]">
+          ⚠️ No se detecta el Service Worker. Al activar el toggle se intentará registrar automáticamente.
+        </p>
+      )}
 
       {error && (
         <p className="text-xs text-red-400 font-[family-name:var(--font-jetbrains)]">
