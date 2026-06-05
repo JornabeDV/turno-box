@@ -64,6 +64,7 @@ export function ClassesPageClient({
   discipline,
 }: Props) {
   const [showClassModal, setShowClassModal] = useState(false);
+  const weekStart = parseLocalDate(weekStartStr);
   const today = getTodayInGymTimezone();
   const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 

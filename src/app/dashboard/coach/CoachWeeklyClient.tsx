@@ -47,6 +47,7 @@ export function CoachWeeklyClient({
   weekStartStr,
   discipline,
 }: Props) {
+  const weekStart = parseLocalDate(weekStartStr);
   const today = getTodayInGymTimezone();
   const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
