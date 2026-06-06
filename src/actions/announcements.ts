@@ -59,10 +59,10 @@ export async function createAnnouncementAction(
   const body = String(formData.get("body") ?? "").trim();
   const pinned = formData.get("pinned") === "true";
   const publishAt = formData.get("publishAt")
-    ? new Date(String(formData.get("publishAt")))
+    ? new Date(`${String(formData.get("publishAt"))}T12:00:00Z`)
     : new Date();
   const expiresAt = formData.get("expiresAt")
-    ? new Date(String(formData.get("expiresAt")))
+    ? new Date(`${String(formData.get("expiresAt"))}T12:00:00Z`)
     : null;
 
   if (!title || !body) return { success: false, error: "Título y contenido son obligatorios." };
@@ -112,10 +112,10 @@ export async function updateAnnouncementAction(
   const body = String(formData.get("body") ?? "").trim();
   const pinned = formData.get("pinned") === "true";
   const publishAt = formData.get("publishAt")
-    ? new Date(String(formData.get("publishAt")))
+    ? new Date(`${String(formData.get("publishAt"))}T12:00:00Z`)
     : new Date();
   const expiresAt = formData.get("expiresAt")
-    ? new Date(String(formData.get("expiresAt")))
+    ? new Date(`${String(formData.get("expiresAt"))}T12:00:00Z`)
     : null;
 
   if (!title || !body) return { success: false, error: "Título y contenido son obligatorios." };

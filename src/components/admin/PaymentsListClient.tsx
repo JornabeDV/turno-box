@@ -4,7 +4,7 @@ import { useState, useTransition, useEffect } from "react";
 import { getAllPaymentsAction } from "@/actions/payments";
 import { Select } from "@/components/ui/Select";
 import { cn } from "@/lib/utils";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
 
 type PaymentItem = {
   id: string;
@@ -180,9 +180,12 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
             <button
               disabled={offset === 0 || isPending}
               onClick={() => setOffset((o) => Math.max(0, o - limit))}
-              className="flex items-center gap-1 text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
+              className={cn(
+                "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+                (offset === 0 || isPending) && "opacity-30 pointer-events-none",
+              )}
             >
-              <CaretLeft size={14} /> Anterior
+              <CaretLeftIcon size={18} weight="bold" />
             </button>
             <span className="text-xs md:text-sm text-[#4A6B7A]">
               {offset + 1} – {Math.min(offset + limit, total)} de {total}
@@ -190,9 +193,12 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
             <button
               disabled={offset + limit >= total || isPending}
               onClick={() => setOffset((o) => o + limit)}
-              className="flex items-center gap-1 text-xs text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-30 transition-colors"
+              className={cn(
+                "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+                (offset + limit >= total || isPending) && "opacity-30 pointer-events-none",
+              )}
             >
-              Siguiente <CaretRight size={14} />
+              <CaretRightIcon size={18} weight="bold" />
             </button>
           </div>
         )}

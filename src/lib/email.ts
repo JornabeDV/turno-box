@@ -148,26 +148,28 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string, us
   }
 }
 
-function kpiRow(label: string, value: string, color: string) {
+function kpiCard(label: string, value: string, color: string) {
   return `
-    <tr>
-      <td style="padding: 12px 16px; border-bottom: 1px solid #1A4A63; color: #6B8A99; font-size: 14px;">${label}</td>
-      <td style="padding: 12px 16px; border-bottom: 1px solid #1A4A63; color: ${color}; font-size: 18px; font-weight: bold; text-align: right;">${value}</td>
-    </tr>
+    <td style="width: 50%; padding: 4px;">
+      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px 12px; text-align: center;">
+        <div style="font-size: 20px; font-weight: 700; color: ${color}; margin-bottom: 4px;">${value}</div>
+        <div style="font-size: 10px; color: #64748B; text-transform: uppercase; letter-spacing: 0.08em;">${label}</div>
+      </div>
+    </td>
   `;
 }
 
 function topList(title: string, items: { name: string; value: string }[]) {
   const rows = items.map((i) => `
     <tr>
-      <td style="padding: 8px 16px; color: #EAEAEA; font-size: 13px;">${i.name}</td>
-      <td style="padding: 8px 16px; color: #F78837; font-size: 13px; font-weight: bold; text-align: right;">${i.value}</td>
+      <td style="padding: 10px 14px; color: #334155; font-size: 13px; border-bottom: 1px solid #F1F5F9;">${i.name}</td>
+      <td style="padding: 10px 14px; color: #F78837; font-size: 13px; font-weight: 700; text-align: right; border-bottom: 1px solid #F1F5F9;">${i.value}</td>
     </tr>
   `).join("");
 
   return `
-    <h3 style="color: #6B8A99; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; margin: 24px 0 12px;">${title}</h3>
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: #0A1F2A; border: 1px solid #1A4A63;">
+    <h3 style="color: #64748B; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin: 20px 0 10px; font-weight: 600;">${title}</h3>
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden;">
       ${rows}
     </table>
   `;
@@ -192,6 +194,11 @@ export async function sendMetricsReportEmail(
 
     const { kpis, periodLabel } = report;
 
+    const occupancyColor = kpis.occupancyRate > 80 ? "#27C7B8" : kpis.occupancyRate > 50 ? "#F78837" : "#E61919";
+    const cancellationColor = kpis.cancellationRate > 15 ? "#E61919" : "#27C7B8";
+    const retentionColor = kpis.retentionRate > 70 ? "#27C7B8" : "#F78837";
+    const riskColor = kpis.atRiskStudents > 10 ? "#E61919" : "#64748B";
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -200,28 +207,72 @@ export async function sendMetricsReportEmail(
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Reporte de metricas - ${gymName}</title>
         </head>
-        <body style="font-family: Arial, sans-serif; line-height: 1.5; color: #EAEAEA; background-color: #0A1F2A; margin: 0; padding: 20px;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #0E2A38; border: 1px solid #1A4A63; padding: 24px;">
-            <h1 style="color: #EAEAEA; font-size: 20px; margin: 0 0 4px;">${gymName}</h1>
-            <p style="color: #6B8A99; font-size: 12px; margin: 0 0 24px; text-transform: uppercase; letter-spacing: 0.1em;">Reporte ${periodLabel}</p>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #334155; background-color: #F1F5F9; margin: 0; padding: 24px 16px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 560px; margin: 0 auto; background-color: #FFFFFF; border-radius: 16px; overflow: hidden; border: 1px solid #E2E8F0;">
+            <tr>
+              <td style="padding: 28px 28px 0;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="vertical-align: middle;">
+                      <h1 style="color: #0F172A; font-size: 20px; margin: 0 0 4px; font-weight: 700;">${gymName}</h1>
+                      <p style="color: #64748B; font-size: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;">Reporte ${periodLabel}</p>
+                    </td>
+                    <td style="width: 52px; text-align: right; vertical-align: middle;">
+                      <div style="display: inline-block; width: 44px; height: 44px; background: #FFF7ED; border-radius: 50%; padding: 6px; line-height: 0;">
+                        <img src="${process.env.NEXT_PUBLIC_URL}/icons/image.png?v=2" alt="Box Turno" width="32" height="32" style="display: block; border-radius: 50%;">
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
 
-            <p style="color: #EAEAEA; font-size: 14px; margin: 0 0 16px;">
-              Adjunto encontraras el reporte completo con las metricas del periodo.
-            </p>
+            <tr><td style="padding: 20px 28px 0;"><div style="height: 1px; background: #F1F5F9;"></div></td></tr>
 
-            <div style="background: #0A1F2A; border: 1px solid #1A4A63; padding: 16px; margin-bottom: 24px;">
-              <p style="color: #6B8A99; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 12px;">Resumen rapido</p>
-              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Reservas:</strong> ${kpis.totalBookings}</p>
-              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Ocupacion:</strong> ${kpis.occupancyRate}%</p>
-              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Cancelacion:</strong> ${kpis.cancellationRate}%</p>
-              <p style="color: #EAEAEA; font-size: 14px; margin: 4px 0;"><strong>Retencion:</strong> ${kpis.retentionRate}%</p>
-            </div>
+            <tr>
+              <td style="padding: 24px 28px 0;">
+                <p style="color: #475569; font-size: 14px; margin: 0 0 20px; line-height: 1.6;">
+                  Adjunto encontraras el reporte completo con las metricas del periodo. A continuacion un resumen rapido:
+                </p>
 
-            <p style="color: #4A6B7A; font-size: 12px; margin: 0;">
-              Para ver el detalle interactivo ingresa al panel de administracion en
-              <a href="${process.env.NEXT_PUBLIC_URL}/dashboard/admin/metrics" style="color: #F78837; text-decoration: none;">Metricas</a>.
-            </p>
-          </div>
+                <p style="color: #94A3B8; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; margin: 0 0 10px; font-weight: 600;">Resumen rapido</p>
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    ${kpiCard("Reservas", String(kpis.totalBookings), "#0F172A")}
+                    ${kpiCard("Ocupacion", `${kpis.occupancyRate}%`, occupancyColor)}
+                  </tr>
+                  <tr>
+                    ${kpiCard("Cancelacion", `${kpis.cancellationRate}%`, cancellationColor)}
+                    ${kpiCard("Retencion", `${kpis.retentionRate}%`, retentionColor)}
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding: 24px 28px;">
+                <div style="text-align: center; margin: 4px 0 20px;">
+                  <a href="${process.env.NEXT_PUBLIC_URL}/dashboard/admin/metrics" style="background-color: #F78837; color: #FFFFFF; padding: 12px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600; font-size: 14px;">
+                    Ver metricas en el panel
+                  </a>
+                </div>
+
+                <p style="color: #94A3B8; font-size: 12px; margin: 0; text-align: center;">
+                  Para ver el detalle interactivo ingresa al panel de administracion.
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 560px; margin: 16px auto 0;">
+            <tr>
+              <td style="text-align: center; padding: 12px;">
+                <p style="color: #94A3B8; font-size: 11px; margin: 0;">
+                  Generado automaticamente por Box Turno
+                </p>
+              </td>
+            </tr>
+          </table>
         </body>
       </html>
     `;

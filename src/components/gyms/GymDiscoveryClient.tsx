@@ -89,11 +89,11 @@ export function GymDiscoveryClient({ initialGyms, initialQuery }: Props) {
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-base truncate">
+                <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-base sm:text-lg truncate">
                   {gym.name}
                 </h3>
                 {gym.address && (
-                  <p className="text-xs text-[#6B8A99] truncate font-[family-name:var(--font-oswald)]">
+                  <p className="text-xs sm:text-sm text-[#6B8A99] truncate font-[family-name:var(--font-oswald)]">
                     {gym.address}
                   </p>
                 )}

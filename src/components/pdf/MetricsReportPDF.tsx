@@ -8,15 +8,16 @@ import {
 import type { MetricsReport } from "@/lib/queries/metrics";
 
 const COLORS = {
-  bg: "#0A1F2A",
-  card: "#0E2A38",
-  border: "#1A4A63",
-  textPrimary: "#EAEAEA",
-  textSecondary: "#6B8A99",
-  textMuted: "#4A6B7A",
+  bg: "#FFFFFF",
+  card: "#F8FAFC",
+  border: "#E2E8F0",
+  textPrimary: "#0F172A",
+  textSecondary: "#64748B",
+  textMuted: "#94A3B8",
   brand: "#F78837",
   teal: "#27C7B8",
   danger: "#E61919",
+  white: "#FFFFFF",
 };
 
 const styles = StyleSheet.create({
@@ -26,12 +27,18 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica",
   },
   header: {
-    borderBottom: `1px solid ${COLORS.border}`,
+    borderBottom: `2px solid ${COLORS.brand}`,
     paddingBottom: 16,
-    marginBottom: 24,
+    marginBottom: 28,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flex: 1,
   },
   gymName: {
-    fontSize: 20,
+    fontSize: 22,
     color: COLORS.textPrimary,
     fontWeight: "bold",
     marginBottom: 4,
@@ -40,79 +47,109 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: COLORS.textSecondary,
     textTransform: "uppercase",
-    letterSpacing: 1,
+    letterSpacing: 1.2,
+  },
+  logoBadge: {
+    width: 48,
+    height: 48,
+    backgroundColor: "#FFF7ED",
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoText: {
+    fontSize: 10,
+    color: COLORS.brand,
+    fontWeight: "bold",
   },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 11,
     color: COLORS.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 1,
     marginBottom: 12,
-    marginTop: 24,
+    marginTop: 26,
+    fontWeight: "bold",
   },
   kpiGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    justifyContent: "space-between",
   },
   kpiCard: {
-    width: "31.5%",
+    width: "31.8%",
     backgroundColor: COLORS.card,
     border: `1px solid ${COLORS.border}`,
-    padding: 12,
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 10,
   },
   kpiValue: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   kpiLabel: {
     fontSize: 9,
     color: COLORS.textSecondary,
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
   },
   table: {
     backgroundColor: COLORS.card,
     border: `1px solid ${COLORS.border}`,
+    borderRadius: 8,
+    overflow: "hidden",
   },
   tableRow: {
     flexDirection: "row",
     borderBottom: `1px solid ${COLORS.border}`,
-    padding: "8px 12px",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     alignItems: "center",
   },
   tableRowLast: {
     flexDirection: "row",
-    padding: "8px 12px",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     alignItems: "center",
+  },
+  barRowLeft: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  barName: {
+    fontSize: 10,
+    color: COLORS.textPrimary,
+    marginBottom: 6,
+  },
+  barContainer: {
+    height: 6,
+    backgroundColor: "#E2E8F0",
+    borderRadius: 3,
+    width: "100%",
+  },
+  barFill: {
+    height: 6,
+    backgroundColor: COLORS.brand,
+    borderRadius: 3,
+  },
+  tableCellRight: {
+    fontSize: 11,
+    fontWeight: "bold",
+    color: COLORS.brand,
+    textAlign: "right",
+    width: 50,
   },
   tableCell: {
     fontSize: 10,
     color: COLORS.textPrimary,
     flex: 1,
   },
-  tableCellRight: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: COLORS.brand,
-    textAlign: "right",
-    width: 60,
-  },
-  barContainer: {
-    height: 4,
-    backgroundColor: COLORS.bg,
-    marginTop: 4,
-    width: "100%",
-  },
-  barFill: {
-    height: 4,
-    backgroundColor: COLORS.brand,
-  },
   footer: {
-    marginTop: 32,
+    marginTop: 36,
     borderTop: `1px solid ${COLORS.border}`,
-    paddingTop: 12,
+    paddingTop: 14,
   },
   footerText: {
     fontSize: 9,
@@ -143,8 +180,8 @@ function BarRow({ name, value, max }: { name: string; value: number; max: number
   const pct = max > 0 ? (value / max) * 100 : 0;
   return (
     <View style={styles.tableRow}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.tableCell}>{name}</Text>
+      <View style={styles.barRowLeft}>
+        <Text style={styles.barName}>{name}</Text>
         <View style={styles.barContainer}>
           <View style={[styles.barFill, { width: `${pct}%` }]} />
         </View>
@@ -157,21 +194,28 @@ function BarRow({ name, value, max }: { name: string; value: number; max: number
 export function MetricsReportPDF({ gymName, report }: { gymName: string; report: MetricsReport }) {
   const { kpis, byDiscipline, byCoach, byDayOfWeek, topClasses, byGender } = report;
 
-  const occupancyColor = kpis.occupancyRate > 80 ? COLORS.teal : COLORS.brand;
-  const cancellationColor = kpis.cancellationRate > 15 ? COLORS.danger : COLORS.textPrimary;
+  const occupancyColor = kpis.occupancyRate > 80 ? COLORS.teal : kpis.occupancyRate > 50 ? COLORS.brand : COLORS.danger;
+  const cancellationColor = kpis.cancellationRate > 15 ? COLORS.danger : COLORS.teal;
   const retentionColor = kpis.retentionRate > 70 ? COLORS.teal : COLORS.brand;
-  const riskColor = kpis.atRiskStudents > 10 ? COLORS.danger : COLORS.textPrimary;
+  const riskColor = kpis.atRiskStudents > 10 ? COLORS.danger : COLORS.textSecondary;
 
   const maxDiscipline = Math.max(1, ...byDiscipline.map((d) => d.occupancy));
   const maxCoach = Math.max(1, ...byCoach.map((c) => c.occupancy));
+
+  const sortedDays = [...byDayOfWeek].sort((a, b) => b.occupancy - a.occupancy);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.gymName}>{gymName}</Text>
-          <Text style={styles.period}>Reporte {report.periodLabel}</Text>
+          <View style={styles.headerLeft}>
+            <Text style={styles.gymName}>{gymName}</Text>
+            <Text style={styles.period}>Reporte {report.periodLabel}</Text>
+          </View>
+          <View style={styles.logoBadge}>
+            <Text style={styles.logoText}>BT</Text>
+          </View>
         </View>
 
         {/* KPIs */}
@@ -190,7 +234,7 @@ export function MetricsReportPDF({ gymName, report }: { gymName: string; report:
           <>
             <Text style={styles.sectionTitle}>Disciplinas por ocupacion</Text>
             <View style={styles.table}>
-              {byDiscipline.slice(0, 5).map((d, i) => (
+              {byDiscipline.slice(0, 5).map((d) => (
                 <BarRow key={d.id} name={d.name} value={d.occupancy} max={maxDiscipline} />
               ))}
             </View>
@@ -202,7 +246,7 @@ export function MetricsReportPDF({ gymName, report }: { gymName: string; report:
           <>
             <Text style={styles.sectionTitle}>Coaches por ocupacion</Text>
             <View style={styles.table}>
-              {byCoach.slice(0, 5).map((c, i) => (
+              {byCoach.slice(0, 5).map((c) => (
                 <BarRow key={c.id} name={c.name} value={c.occupancy} max={maxCoach} />
               ))}
             </View>
@@ -210,11 +254,11 @@ export function MetricsReportPDF({ gymName, report }: { gymName: string; report:
         )}
 
         {/* Dias */}
-        {byDayOfWeek.length > 0 && (
+        {sortedDays.length > 0 && (
           <>
             <Text style={styles.sectionTitle}>Dias de la semana</Text>
             <View style={styles.table}>
-              {[...byDayOfWeek].sort((a, b) => b.occupancy - a.occupancy).slice(0, 7).map((d, i, arr) => (
+              {sortedDays.slice(0, 7).map((d, i, arr) => (
                 <TableRow key={d.day} name={d.label} value={`${d.occupancy}%`} isLast={i === arr.length - 1} />
               ))}
             </View>
