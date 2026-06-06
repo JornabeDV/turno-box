@@ -79,7 +79,7 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
           <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
             Contraseña cambiada
           </h3>
-          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          <p className="text-sm sm:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
             Tu contraseña ha sido actualizada exitosamente. Serás redirigido al
             login en unos segundos...
           </p>
