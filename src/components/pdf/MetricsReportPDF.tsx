@@ -8,12 +8,12 @@ import {
 import type { MetricsReport } from "@/lib/queries/metrics";
 
 const COLORS = {
-  bg: "#0B1A23",
-  card: "#0F2532",
-  border: "#1A4A63",
-  textPrimary: "#F0F2F5",
-  textSecondary: "#8BA3B0",
-  textMuted: "#4A6B7A",
+  bg: "#FFFFFF",
+  card: "#F8FAFC",
+  border: "#E2E8F0",
+  textPrimary: "#0F172A",
+  textSecondary: "#64748B",
+  textMuted: "#94A3B8",
   brand: "#F78837",
   teal: "#27C7B8",
   danger: "#E61919",
@@ -30,10 +30,16 @@ const styles = StyleSheet.create({
     borderBottom: `2px solid ${COLORS.brand}`,
     paddingBottom: 16,
     marginBottom: 28,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flex: 1,
   },
   gymName: {
     fontSize: 22,
-    color: COLORS.white,
+    color: COLORS.textPrimary,
     fontWeight: "bold",
     marginBottom: 4,
   },
@@ -42,6 +48,19 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 1.2,
+  },
+  logoBadge: {
+    width: 48,
+    height: 48,
+    backgroundColor: "#FFF7ED",
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoText: {
+    fontSize: 10,
+    color: COLORS.brand,
+    fontWeight: "bold",
   },
   sectionTitle: {
     fontSize: 11,
@@ -61,8 +80,8 @@ const styles = StyleSheet.create({
     width: "31.8%",
     backgroundColor: COLORS.card,
     border: `1px solid ${COLORS.border}`,
-    borderRadius: 6,
-    padding: 14,
+    borderRadius: 8,
+    padding: 16,
     marginBottom: 10,
   },
   kpiValue: {
@@ -79,7 +98,7 @@ const styles = StyleSheet.create({
   table: {
     backgroundColor: COLORS.card,
     border: `1px solid ${COLORS.border}`,
-    borderRadius: 6,
+    borderRadius: 8,
     overflow: "hidden",
   },
   tableRow: {
@@ -105,13 +124,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   barContainer: {
-    height: 5,
-    backgroundColor: COLORS.bg,
+    height: 6,
+    backgroundColor: "#E2E8F0",
     borderRadius: 3,
     width: "100%",
   },
   barFill: {
-    height: 5,
+    height: 6,
     backgroundColor: COLORS.brand,
     borderRadius: 3,
   },
@@ -190,8 +209,13 @@ export function MetricsReportPDF({ gymName, report }: { gymName: string; report:
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.gymName}>{gymName}</Text>
-          <Text style={styles.period}>Reporte {report.periodLabel}</Text>
+          <View style={styles.headerLeft}>
+            <Text style={styles.gymName}>{gymName}</Text>
+            <Text style={styles.period}>Reporte {report.periodLabel}</Text>
+          </View>
+          <View style={styles.logoBadge}>
+            <Text style={styles.logoText}>BT</Text>
+          </View>
         </View>
 
         {/* KPIs */}

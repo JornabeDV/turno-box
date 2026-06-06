@@ -217,8 +217,10 @@ export async function sendMetricsReportEmail(
                       <h1 style="color: #0F172A; font-size: 20px; margin: 0 0 4px; font-weight: 700;">${gymName}</h1>
                       <p style="color: #64748B; font-size: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;">Reporte ${periodLabel}</p>
                     </td>
-                    <td style="width: 48px; text-align: right; vertical-align: middle;">
-                      <img src="${process.env.NEXT_PUBLIC_URL}/icons/image.png?v=2" alt="Box Turno" width="40" height="40" style="display: block; border-radius: 8px;">
+                    <td style="width: 52px; text-align: right; vertical-align: middle;">
+                      <div style="display: inline-block; width: 44px; height: 44px; background: #FFF7ED; border-radius: 50%; padding: 6px; line-height: 0;">
+                        <img src="${process.env.NEXT_PUBLIC_URL}/icons/image.png?v=2" alt="Box Turno" width="32" height="32" style="display: block; border-radius: 50%;">
+                      </div>
                     </td>
                   </tr>
                 </table>

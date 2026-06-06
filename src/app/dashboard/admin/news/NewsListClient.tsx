@@ -106,6 +106,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                     <span className={cls}>{label}</span>
                     <span className="text-[#4A6B7A]">
                       {item.publishAt.toLocaleDateString("es-AR", {
+                        timeZone: "UTC",
                         day: "numeric",
                         month: "short",
                         year: "numeric",
@@ -115,6 +116,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                       <span className="text-[#4A6B7A]">
                         · vence{" "}
                         {item.expiresAt.toLocaleDateString("es-AR", {
+                          timeZone: "UTC",
                           day: "numeric",
                           month: "short",
                         })}
