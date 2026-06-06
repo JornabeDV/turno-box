@@ -119,6 +119,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                           timeZone: "UTC",
                           day: "numeric",
                           month: "short",
+                          year: "numeric",
                         })}
                       </span>
                     )}
