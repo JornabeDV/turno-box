@@ -6,7 +6,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { TimePicker } from "@/components/ui/TimePicker";
 import { SelectInput } from "@/components/ui/Select";
-import { createClassAction, updateClassAction } from "@/actions/classes";
+import { createClassAction, updateClassAction, updateClassInstanceAction } from "@/actions/classes";
 
 const DAYS = [
   { value: "MONDAY", label: "Lunes" },
@@ -44,6 +44,7 @@ interface Props {
   class?: ClassData; // undefined = crear, defined = editar
   coaches: Coach[];
   disciplines: Discipline[];
+  instanceDate?: string; // si está presente, edita solo esa instancia
 }
 
 const inputClass =
@@ -61,8 +62,10 @@ export function ClassModal({
   class: gymClass,
   coaches,
   disciplines,
+  instanceDate,
 }: Props) {
   const isEditing = !!gymClass;
+  const isInstanceEdit = isEditing && !!instanceDate;
   const [disciplineId, setDisciplineId] = useState(
     gymClass?.disciplineId ?? "",
   );
@@ -139,7 +142,10 @@ export function ClassModal({
 
     startTransition(async () => {
       try {
-        if (isEditing) {
+        if (isInstanceEdit) {
+          await updateClassInstanceAction(gymClass.id, instanceDate, formData);
+          toast.success("Cambios guardados para esta fecha");
+        } else if (isEditing) {
           await updateClassAction(gymClass.id, formData);
           toast.success("Clase guardada");
         } else {
@@ -164,7 +170,7 @@ export function ClassModal({
     <Dialog
       open={open}
       onOpenChange={(o) => !o && handleClose()}
-      title={isEditing ? "Editar clase" : "Nueva clase"}
+      title={isInstanceEdit ? `Editar clase del ${instanceDate}` : isEditing ? "Editar clase base (todas las semanas)" : "Nueva clase"}
       size="md"
       className="max-sm:h-screen max-sm:max-h-screen max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col max-sm:overflow-y-auto"
     >
@@ -192,25 +198,26 @@ export function ClassModal({
           error={fieldErrors.disciplineId}
         />
 
-        {/* Día */}
-        <SelectInput
-          name="dayOfWeek"
-          value={dayOfWeek}
-          onChange={(v) => {
-            setDayOfWeek(v);
-            if (fieldErrors.dayOfWeek) {
-              setFieldErrors((prev) => {
-                const next = { ...prev };
-                delete next.dayOfWeek;
-                return next;
-              });
-            }
-          }}
-          options={DAYS}
-          label="Día"
-          required
-          error={fieldErrors.dayOfWeek}
-        />
+        {!isInstanceEdit && (
+          <SelectInput
+            name="dayOfWeek"
+            value={dayOfWeek}
+            onChange={(v) => {
+              setDayOfWeek(v);
+              if (fieldErrors.dayOfWeek) {
+                setFieldErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.dayOfWeek;
+                  return next;
+                });
+              }
+            }}
+            options={DAYS}
+            label="Día"
+            required
+            error={fieldErrors.dayOfWeek}
+          />
+        )}
 
         {/* Horario */}
         <TimePicker

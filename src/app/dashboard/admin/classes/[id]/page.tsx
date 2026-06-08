@@ -46,7 +46,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   const targetDate = date ? new Date(date) : new Date();
   const classDate = toClassDate(targetDate);
 
-  const [gymClass, bookings, coaches, disciplines] = await Promise.all([
+  const [gymClass, bookings, coaches, disciplines, classOverride, gymClosure] = await Promise.all([
     prisma.gymClass.findFirst({
       where: { id, gymId: user.gymId, deletedAt: null },
       select: {
@@ -98,6 +98,12 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
           orderBy: { name: "asc" },
         })
       : Promise.resolve([]),
+    prisma.classOverride.findUnique({
+      where: { gymClassId_date: { gymClassId: id, date: classDate } },
+    }),
+    prisma.gymClosure.findUnique({
+      where: { gymId_date: { gymId: user.gymId, date: classDate } },
+    }),
   ]);
 
   if (!gymClass) notFound();
@@ -106,10 +112,36 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   const waitlisted = bookings.filter((b) => b.status === "WAITLISTED");
   const isAdmin = user.role === "ADMIN";
 
+  // Valores efectivos: override puntual o template base
+  const effectiveMaxCapacity = classOverride?.maxCapacity ?? gymClass.maxCapacity;
+  const effectiveStartTime = classOverride?.startTime ?? gymClass.startTime;
+  const effectiveEndTime = classOverride?.endTime ?? gymClass.endTime;
+  const effectiveCoachId = classOverride?.coachId ?? gymClass.coachId;
+  const effectiveDescription = classOverride?.description ?? gymClass.description;
+  const effectiveColor = classOverride?.color ?? gymClass.color;
+  const effectiveCoachName = coaches.find((c) => c.id === effectiveCoachId)?.name ?? gymClass.coach?.name ?? null;
+
   return (
     <div className="max-w-5xl space-y-6">
       {/* Back */}
       <BackButton href="/dashboard/admin/classes" />
+
+      {/* Alertas de override o cierre */}
+      {gymClosure && (
+        <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-4 py-3">
+          <p className="text-sm font-semibold text-[#E61919]">
+            Gimnasio cerrado el {formatDate(targetDate)}
+            {gymClosure.reason ? ` — ${gymClosure.reason}` : ""}
+          </p>
+        </div>
+      )}
+      {classOverride?.isCancelled && (
+        <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-4 py-3">
+          <p className="text-sm font-semibold text-[#E61919]">
+            Esta clase está cancelada para el {formatDate(targetDate)}
+          </p>
+        </div>
+      )}
 
       {/* Header de la clase */}
       <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
@@ -125,13 +157,13 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               </h2>
               <p className="text-sm md:text-base text-[#6B8A99] mt-0.5">
                 {DAY_LABELS[gymClass.dayOfWeek]} · {formatDate(targetDate)} ·{" "}
-                {formatTime(gymClass.startTime)} –{" "}
-                {formatTime(gymClass.endTime)}
-                {gymClass.coach?.name && ` · ${gymClass.coach.name}`}
+                {formatTime(effectiveStartTime)} –{" "}
+                {formatTime(effectiveEndTime)}
+                {effectiveCoachName && ` · ${effectiveCoachName}`}
               </p>
-              {gymClass.description && (
+              {effectiveDescription && (
                 <p className="text-xs md:text-sm text-[#4A6B7A] mt-1.5">
-                  {gymClass.description}
+                  {effectiveDescription}
                 </p>
               )}
             </div>
@@ -143,17 +175,18 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               <ClassDetailActions
                 classData={{
                   id: gymClass.id,
-                  description: gymClass.description,
+                  description: effectiveDescription,
                   dayOfWeek: gymClass.dayOfWeek,
-                  startTime: gymClass.startTime,
-                  endTime: gymClass.endTime,
-                  maxCapacity: gymClass.maxCapacity,
-                  color: gymClass.color,
-                  coachId: gymClass.coachId,
-                  disciplineId: gymClass.disciplineId,
+                  startTime: effectiveStartTime,
+                  endTime: effectiveEndTime,
+                  maxCapacity: effectiveMaxCapacity,
+                  color: effectiveColor,
+                  coachId: effectiveCoachId,
+                  disciplineId: classOverride?.disciplineId ?? gymClass.disciplineId,
                 }}
                 coaches={coaches}
                 disciplines={disciplines}
+                date={date}
               />
             </div>
           )}
@@ -166,7 +199,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               Capacidad
             </p>
             <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
-              {gymClass.maxCapacity} cupos
+              {effectiveMaxCapacity} cupos
             </p>
           </div>
           <div>
@@ -192,7 +225,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               Disponibles
             </p>
             <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
-              {Math.max(0, gymClass.maxCapacity - confirmed.length)}
+              {Math.max(0, effectiveMaxCapacity - confirmed.length)}
             </p>
           </div>
         </div>
@@ -201,7 +234,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         <OccupancyBar
           confirmed={confirmed.length}
           waitlisted={waitlisted.length}
-          max={gymClass.maxCapacity}
+          max={effectiveMaxCapacity}
           large
         />
       </div>

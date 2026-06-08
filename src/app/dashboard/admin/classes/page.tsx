@@ -100,11 +100,23 @@ export default async function ClassesPage({
     date: addDays(weekStart, i),
   }));
 
-  const slotsPerDay = await Promise.all(
-    weekDays.map(({ date }) =>
-      getClassSlotsForDay(user.gymId!, date, user.id!),
+  const [slotsPerDay, closures] = await Promise.all([
+    Promise.all(
+      weekDays.map(({ date }) =>
+        getClassSlotsForDay(user.gymId!, date, user.id!),
+      ),
     ),
-  );
+    prisma.gymClosure.findMany({
+      where: {
+        gymId: user.gymId,
+        date: {
+          gte: new Date(weekDays[0].date.toISOString().split("T")[0]),
+          lte: new Date(weekDays[6].date.toISOString().split("T")[0]),
+        },
+      },
+      select: { date: true, reason: true },
+    }),
+  ]);
 
   // Filtrar por disciplina seleccionada (por nombre de disciplina en el slot)
   const filteredSlotsPerDay = slotsPerDay.map((slots) =>
@@ -127,6 +139,7 @@ export default async function ClassesPage({
       totalClasses={totalClasses}
       weekStartStr={weekParam}
       discipline={discipline}
+      closures={closures}
     />
   );
 }

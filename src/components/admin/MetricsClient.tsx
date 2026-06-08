@@ -7,6 +7,9 @@ import type { MetricsResult } from "@/types/metrics";
 import { AreaChartPremium } from "./metrics/AreaChartPremium";
 import { BarChartPremium } from "./metrics/BarChartPremium";
 import { PieChartPremium } from "./metrics/PieChartPremium";
+import { HeatmapChart } from "./metrics/HeatmapChart";
+import { HeatmapDayDiscipline } from "./metrics/HeatmapDayDiscipline";
+import { HeatmapCoachHour } from "./metrics/HeatmapCoachHour";
 import { DatePicker } from "@/components/ui/DatePicker";
 import { cn } from "@/lib/utils";
 import {
@@ -403,28 +406,48 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
         )}
       </div>
 
-      {/* Fila 3: Horarios pico + Top clases */}
+      {/* Fila 3: Horarios pico + Cancelaciones + Top clases */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
         {isPending ? (
           <>
-            <ChartSkeleton />
+            <div className="space-y-4 md:space-y-5">
+              <ChartSkeleton />
+              <ChartSkeleton />
+            </div>
             <ChartSkeleton />
           </>
         ) : (
           <>
-            <SectionCard title="Horarios pico" subtitle="Ocupación por franja horaria" delay={0.35}>
-              {data.byHour.length > 0 ? (
-                <BarChartPremium
-                  layout="horizontal"
-                  color="#27C7B8"
-                  height={240}
-                  data={data.byHour.map((h) => ({ label: h.label, value: h.occupancy }))}
-                />
-              ) : (
-                <EmptyState message="Sin datos por horario" />
-              )}
-            </SectionCard>
+            {/* Columna izquierda: Horarios + Cancelaciones */}
+            <div className="space-y-4 md:space-y-5">
+              <SectionCard title="Horarios pico" subtitle="Ocupación por franja horaria" delay={0.35}>
+                {data.byHour.length > 0 ? (
+                  <BarChartPremium
+                    layout="horizontal"
+                    color="#27C7B8"
+                    height={220}
+                    data={data.byHour.map((h) => ({ label: h.label, value: h.occupancy }))}
+                  />
+                ) : (
+                  <EmptyState message="Sin datos por horario" />
+                )}
+              </SectionCard>
 
+              <SectionCard title="Cancelaciones por horario" subtitle="Tasa de cancelación por franja" delay={0.38}>
+                {data.byHourCancellation.length > 0 ? (
+                  <BarChartPremium
+                    layout="horizontal"
+                    color="#E61919"
+                    height={220}
+                    data={data.byHourCancellation.map((h) => ({ label: h.label, value: h.rate }))}
+                  />
+                ) : (
+                  <EmptyState message="Sin datos por horario" />
+                )}
+              </SectionCard>
+            </div>
+
+            {/* Columna derecha: Top clases */}
             <SectionCard title="Clases más concurridas" subtitle="Top 10 por ocupación" delay={0.4}>
               {data.topClasses.length > 0 ? (
                 <div className="space-y-3">
@@ -461,6 +484,49 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                 </div>
               ) : (
                 <EmptyState message="Sin clases con datos" />
+              )}
+            </SectionCard>
+          </>
+        )}
+      </div>
+
+      {/* Fila 4: Heatmap Horario × Disciplina */}
+      <div className="grid grid-cols-1 gap-4 md:gap-5">
+        {isPending ? (
+          <ChartSkeleton />
+        ) : (
+          <SectionCard title="Ocupación por horario y disciplina" subtitle="Qué disciplinas funcionan en cada franja" delay={0.45}>
+            {data.byHourDiscipline.length > 0 ? (
+              <HeatmapChart data={data.byHourDiscipline} />
+            ) : (
+              <EmptyState message="Sin datos cruzados" />
+            )}
+          </SectionCard>
+        )}
+      </div>
+
+      {/* Fila 5: Día × Disciplina + Coach × Horario */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
+        {isPending ? (
+          <>
+            <ChartSkeleton />
+            <ChartSkeleton />
+          </>
+        ) : (
+          <>
+            <SectionCard title="Ocupación por día y disciplina" subtitle="Qué disciplinas pegan cada día" delay={0.5}>
+              {data.byDayDiscipline.length > 0 ? (
+                <HeatmapDayDiscipline data={data.byDayDiscipline} />
+              ) : (
+                <EmptyState message="Sin datos cruzados" />
+              )}
+            </SectionCard>
+
+            <SectionCard title="Ocupación por coach y horario" subtitle="Qué coach tiene más demanda en cada franja" delay={0.55}>
+              {data.byCoachHour.length > 0 ? (
+                <HeatmapCoachHour data={data.byCoachHour} />
+              ) : (
+                <EmptyState message="Sin datos cruzados" />
               )}
             </SectionCard>
           </>

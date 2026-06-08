@@ -94,6 +94,7 @@ model Gym {
 
   announcements Announcement[]
   creditFreezes CreditFreeze[]
+  closures      GymClosure[]
 
   @@map("gyms")
 }
@@ -243,6 +244,7 @@ model GymClass {
   discipline   Discipline  @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 
   bookings Booking[]
+  overrides ClassOverride[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -250,6 +252,43 @@ model GymClass {
   @@index([gymId, dayOfWeek])
   @@index([gymId, isActive])
   @@map("gym_classes")
+}
+
+model ClassOverride {
+  id           String    @id @default(cuid())
+  gymClassId   String
+  date         DateTime  @db.Date
+  isCancelled  Boolean   @default(false)
+
+  // Campos editables para override puntual (null = usar valor del template)
+  startTime    String?
+  endTime      String?
+  maxCapacity  Int?
+  color        String?
+  description  String?
+  coachId      String?
+  disciplineId String?
+
+  gymClass     GymClass  @relation(fields: [gymClassId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now())
+
+  @@unique([gymClassId, date])
+  @@index([gymClassId])
+  @@map("class_overrides")
+}
+
+model GymClosure {
+  id        String   @id @default(cuid())
+  gymId     String
+  date      DateTime @db.Date
+  reason    String?
+  createdAt DateTime @default(now())
+
+  gym Gym @relation(fields: [gymId], references: [id], onDelete: Cascade)
+
+  @@unique([gymId, date])
+  @@map("gym_closures")
 }
 
 // ─── BOOKING ──────────────────────────────────────────────────────────────────
