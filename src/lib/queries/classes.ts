@@ -47,6 +47,12 @@ export async function getClassSlotsForDay(
 
   const classDate = toClassDate(date);
 
+  // 1. Si el gym está cerrado ese día, no hay slots
+  const closure = await prisma.gymClosure.findUnique({
+    where: { gymId_date: { gymId, date: classDate } },
+  });
+  if (closure) return [];
+
   const classes = await prisma.gymClass.findMany({
     where: {
       gymId,
@@ -68,6 +74,19 @@ export async function getClassSlotsForDay(
       disciplineId: true,
       coach: { select: { name: true } },
       discipline: { select: { name: true } },
+      overrides: {
+        where: { date: classDate },
+        select: {
+          isCancelled: true,
+          startTime: true,
+          endTime: true,
+          maxCapacity: true,
+          color: true,
+          description: true,
+          coachId: true,
+          disciplineId: true,
+        },
+      },
       bookings: {
         where: {
           classDate,
@@ -83,36 +102,44 @@ export async function getClassSlotsForDay(
     },
   });
 
-  return classes.map((c) => {
-    type Booking = typeof c.bookings[number];
-    const confirmed = c.bookings.filter((b: Booking) => b.status === "CONFIRMED");
-    const confirmedCount = confirmed.length;
-    const availableSpots = Math.max(0, c.maxCapacity - confirmedCount);
-    const userBooking = c.bookings.find((b: Booking) => b.userId === userId);
+  return classes
+    .map((c) => {
+      const override = c.overrides[0];
+      if (override?.isCancelled) return null;
 
-    return {
-      id: c.id,
-      name: c.discipline?.name ?? "Sin disciplina",
-      description: c.description,
-      dayOfWeek: c.dayOfWeek,
-      startTime: c.startTime,
-      endTime: c.endTime,
-      maxCapacity: c.maxCapacity,
-      color: c.color,
-      coachId: c.coachId,
-      disciplineId: c.disciplineId,
-      coachName: c.coach?.name ?? null,
-      disciplineName: c.discipline?.name ?? null,
-      confirmedCount,
-      availableSpots,
-      isFull: availableSpots === 0,
-      userBooking: userBooking
-        ? {
-            id: userBooking.id,
-            status: userBooking.status,
-            waitlistPos: userBooking.waitlistPos,
-          }
-        : null,
-    };
-  });
+      type Booking = (typeof c.bookings)[number];
+      const confirmed = c.bookings.filter(
+        (b: Booking) => b.status === "CONFIRMED"
+      );
+      const confirmedCount = confirmed.length;
+      const effectiveMaxCapacity = override?.maxCapacity ?? c.maxCapacity;
+      const availableSpots = Math.max(0, effectiveMaxCapacity - confirmedCount);
+      const userBooking = c.bookings.find((b: Booking) => b.userId === userId);
+
+      return {
+        id: c.id,
+        name: c.discipline?.name ?? "Sin disciplina",
+        description: override?.description ?? c.description,
+        dayOfWeek: c.dayOfWeek,
+        startTime: override?.startTime ?? c.startTime,
+        endTime: override?.endTime ?? c.endTime,
+        maxCapacity: effectiveMaxCapacity,
+        color: override?.color ?? c.color,
+        coachId: override?.coachId ?? c.coachId,
+        disciplineId: override?.disciplineId ?? c.disciplineId,
+        coachName: c.coach?.name ?? null,
+        disciplineName: c.discipline?.name ?? null,
+        confirmedCount,
+        availableSpots,
+        isFull: availableSpots === 0,
+        userBooking: userBooking
+          ? {
+              id: userBooking.id,
+              status: userBooking.status,
+              waitlistPos: userBooking.waitlistPos,
+            }
+          : null,
+      };
+    })
+    .filter(Boolean) as ClassSlot[];
 }

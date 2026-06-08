@@ -31,7 +31,7 @@ export function DisciplinesManager({
       <button
         onClick={() => navigate()}
         className={[
-          "inline-flex items-center px-3 h-7 rounded-full text-xs sm:text-sm font-medium transition-colors",
+          "inline-flex items-center px-3 h-7 rounded-full text-xs sm:text-sm font-medium transition-colors cursor-pointer",
           !currentDiscipline
             ? "bg-zinc-100 text-zinc-900"
             : "bg-[#0E2A38] text-[#6B8A99] hover:bg-[#143D52] hover:text-[#EAEAEA]",
@@ -50,7 +50,7 @@ export function DisciplinesManager({
               "inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-xs sm:text-sm font-medium transition-colors",
               isActive
                 ? "text-zinc-900"
-                : "bg-[#0E2A38] text-[#6B8A99] hover:bg-[#143D52] hover:text-[#EAEAEA]",
+                : "bg-[#0E2A38] text-[#6B8A99] hover:bg-[#143D52] hover:text-[#EAEAEA] cursor-pointer",
             ].join(" ")}
             style={
               isActive ? { backgroundColor: d.color ?? "#f97316" } : undefined

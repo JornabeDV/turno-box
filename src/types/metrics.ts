@@ -15,4 +15,8 @@ export type MetricsResult = {
   byHour: { hour: number; label: string; bookings: number; capacity: number; occupancy: number }[];
   byDayOfWeek: { day: string; label: string; bookings: number; capacity: number; occupancy: number }[];
   topClasses: { id: string; name: string; time: string; coach: string | null; bookings: number; capacity: number; occupancy: number }[];
+  byHourDiscipline: { hour: number; label: string; disciplineId: string; disciplineName: string; color: string | null; bookings: number; capacity: number; occupancy: number }[];
+  byDayDiscipline: { day: string; label: string; disciplineId: string; disciplineName: string; color: string | null; bookings: number; capacity: number; occupancy: number }[];
+  byCoachHour: { hour: number; label: string; coachId: string; coachName: string; bookings: number; capacity: number; occupancy: number }[];
+  byHourCancellation: { hour: number; label: string; total: number; cancelled: number; rate: number }[];
 };

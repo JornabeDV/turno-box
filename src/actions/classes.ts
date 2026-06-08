@@ -18,6 +18,16 @@ const classSchema = z.object({
   disciplineId: z.string().min(1, "La disciplina es requerida"),
 });
 
+const instanceSchema = z.object({
+  description: z.string().optional(),
+  startTime: z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:MM requerido"),
+  endTime:   z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:MM requerido"),
+  maxCapacity: z.coerce.number().int().min(1).max(100),
+  color: z.string().optional(),
+  coachId: z.string().optional(),
+  disciplineId: z.string().min(1, "La disciplina es requerida"),
+});
+
 async function requireAdmin() {
   const session = await auth();
   const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
@@ -184,4 +194,180 @@ export async function deleteClassAction(classId: string): Promise<void> {
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
+}
+
+// ── CANCELAR UNA INSTANCIA PUNTUAL ──────────────────────────────
+export async function deleteClassInstanceAction(
+  classId: string,
+  dateStr: string
+): Promise<void> {
+  const { gymId } = await requireAdmin();
+
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) throw new Error("Gym no encontrado.");
+
+  const classDate = new Date(dateStr);
+  classDate.setUTCHours(0, 0, 0, 0);
+
+  // Verificar que la clase existe
+  const gymClass = await prisma.gymClass.findFirst({
+    where: { id: classId, gymId, deletedAt: null },
+    select: { startTime: true, discipline: { select: { name: true } } },
+  });
+  if (!gymClass) throw new Error("Clase no encontrada.");
+
+  // Crear override de cancelación (upsert)
+  await prisma.classOverride.upsert({
+    where: { gymClassId_date: { gymClassId: classId, date: classDate } },
+    update: { isCancelled: true },
+    create: { gymClassId: classId, date: classDate, isCancelled: true },
+  });
+
+  // Cancelar bookings y reembolsar créditos
+  const bookings = await prisma.booking.findMany({
+    where: {
+      classId,
+      classDate,
+      status: { in: ["CONFIRMED", "WAITLISTED"] },
+      deletedAt: null,
+    },
+    select: { id: true, userId: true, status: true },
+  });
+
+  if (bookings.length > 0) {
+    const userIds = [...new Set(bookings.map((b) => b.userId))];
+
+    await prisma.$transaction(async (tx) => {
+      for (const booking of bookings) {
+        // Cancelar reserva
+        await tx.booking.update({
+          where: { id: booking.id },
+          data: { status: "CANCELLED", cancelledAt: new Date() },
+        });
+
+        // Reembolsar crédito solo si estaba CONFIRMED
+        if (booking.status === "CONFIRMED") {
+          await tx.$executeRaw`
+            UPDATE user_credit_balances
+            SET "availableCredits" = "availableCredits" + 1,
+                "version"           = "version" + 1,
+                "updatedAt"        = now()
+            WHERE "userId" = ${booking.userId} AND "gymId" = ${gymId}
+          `;
+
+          const consumeTx = await tx.creditTransaction.findFirst({
+            where: { bookingId: booking.id, type: "CONSUME" },
+            select: { paymentId: true },
+          });
+
+          await tx.creditTransaction.create({
+            data: {
+              userId: booking.userId,
+              gymId,
+              type: "REFUND",
+              amount: +1,
+              bookingId: booking.id,
+              ...(consumeTx?.paymentId ? { paymentId: consumeTx.paymentId } : {}),
+            },
+          });
+        }
+      }
+    });
+
+    // Notificar afectados
+    const label = gymClass.discipline?.name ?? "Clase";
+    const formattedDate = classDate.toLocaleDateString("es-AR", {
+      day: "numeric",
+      month: "short",
+    });
+    for (const userId of userIds) {
+      sendPushToUser(userId, {
+        title: "Clase cancelada",
+        body: `${label} (${gymClass.startTime}hs) del ${formattedDate} fue cancelada por el gym.`,
+        url: "/",
+        tag: "class-cancelled",
+      }).catch((err) => {
+        console.error("[deleteClassInstanceAction] push failed for user", userId, err);
+      });
+    }
+  }
+
+  revalidatePath("/dashboard/admin/classes");
+  revalidatePath(`/dashboard/admin/classes/${classId}`);
+}
+
+// ── EDITAR UNA INSTANCIA PUNTUAL ────────────────────────────────
+export async function updateClassInstanceAction(
+  classId: string,
+  dateStr: string,
+  formData: FormData
+): Promise<void> {
+  const { gymId } = await requireAdmin();
+
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) throw new Error("Gym no encontrado.");
+
+  const existing = await prisma.gymClass.findFirst({
+    where: { id: classId, gymId, deletedAt: null },
+  });
+  if (!existing) throw new Error("Clase no encontrada.");
+
+  const raw = {
+    description: formData.get("description"),
+    startTime: formData.get("startTime"),
+    endTime: formData.get("endTime"),
+    maxCapacity: formData.get("maxCapacity"),
+    color: formData.get("color") || undefined,
+    coachId: formData.get("coachId") || undefined,
+    disciplineId: formData.get("disciplineId"),
+  };
+
+  const parsed = instanceSchema.parse(raw);
+
+  const classDate = new Date(dateStr);
+  classDate.setUTCHours(0, 0, 0, 0);
+
+  await prisma.classOverride.upsert({
+    where: { gymClassId_date: { gymClassId: classId, date: classDate } },
+    update: { ...parsed, isCancelled: false },
+    create: { gymClassId: classId, date: classDate, isCancelled: false, ...parsed },
+  });
+
+  revalidatePath("/dashboard/admin/classes");
+  revalidatePath(`/dashboard/admin/classes/${classId}`);
+}
+
+// ── GYM CLOSURES ────────────────────────────────────────────────
+export async function createGymClosureAction(
+  dateStr: string,
+  reason?: string
+): Promise<void> {
+  const { gymId } = await requireAdmin();
+
+  const gym = await prisma.gym.findUnique({ where: { id: gymId } });
+  if (!gym) throw new Error("Gym no encontrado.");
+
+  const date = new Date(dateStr);
+  date.setUTCHours(0, 0, 0, 0);
+
+  await prisma.gymClosure.upsert({
+    where: { gymId_date: { gymId, date } },
+    update: { reason: reason || null },
+    create: { gymId, date, reason: reason || null },
+  });
+
+  revalidatePath("/dashboard/admin/classes");
+}
+
+export async function deleteGymClosureAction(dateStr: string): Promise<void> {
+  const { gymId } = await requireAdmin();
+
+  const date = new Date(dateStr);
+  date.setUTCHours(0, 0, 0, 0);
+
+  await prisma.gymClosure.deleteMany({
+    where: { gymId, date },
+  });
+
+  revalidatePath("/dashboard/admin/classes");
 }
