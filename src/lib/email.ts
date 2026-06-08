@@ -217,9 +217,9 @@ export async function sendMetricsReportEmail(
                       <h1 style="color: #0F172A; font-size: 20px; margin: 0 0 4px; font-weight: 700;">${gymName}</h1>
                       <p style="color: #64748B; font-size: 12px; margin: 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;">Reporte ${periodLabel}</p>
                     </td>
-                    <td style="width: 52px; text-align: right; vertical-align: middle;">
-                      <div style="display: inline-block; width: 44px; height: 44px; background: #FFF7ED; border-radius: 50%; padding: 6px; line-height: 0;">
-                        <img src="${process.env.NEXT_PUBLIC_URL}/icons/image.png?v=2" alt="Box Turno" width="32" height="32" style="display: block; border-radius: 50%;">
+                    <td style="width: 56px; text-align: right; vertical-align: middle;">
+                      <div style="display: inline-block; width: 48px; height: 48px; background: #FFF7ED; border-radius: 50%; padding: 8px; line-height: 0; box-sizing: border-box;">
+                        <img src="${process.env.NEXT_PUBLIC_URL}/icons/logo_solo.png?v=2" alt="Box Turno" width="32" height="32" style="display: block; border-radius: 50%;">
                       </div>
                     </td>
                   </tr>
@@ -253,7 +253,7 @@ export async function sendMetricsReportEmail(
               <td style="padding: 24px 28px;">
                 <div style="text-align: center; margin: 4px 0 20px;">
                   <a href="${process.env.NEXT_PUBLIC_URL}/dashboard/admin/metrics" style="background-color: #F78837; color: #FFFFFF; padding: 12px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600; font-size: 14px;">
-                    Ver metricas en el panel
+                    Ver métricas en el sistema
                   </a>
                 </div>
 
