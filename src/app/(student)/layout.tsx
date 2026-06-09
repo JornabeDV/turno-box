@@ -26,7 +26,10 @@ export default async function StudentLayout({
   return (
     <div className="flex flex-col min-h-dvh">
       <Header showCredits logoSrc={logoSrc} gymName={gymName} />
-      <main className="flex-1 main-student-safe max-w-2xl mx-auto w-full px-4">
+      <main
+        className="flex-1 max-w-2xl mx-auto w-full px-4"
+        style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}
+      >
         {/* padding dinámico para que el contenido no quede detrás de la BottomNav + safe area iOS */}
         {children}
       </main>
