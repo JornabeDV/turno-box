@@ -6,9 +6,13 @@ import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { updateCoachAction } from "@/actions/coaches";
+import { Eye, EyeSlash } from "@phosphor-icons/react";
 
 const inputClass =
   "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+
+const passwordInputClass =
+  "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] pl-3.5 pr-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
 
 const labelClass =
   "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
@@ -26,6 +30,7 @@ interface Props {
 export function EditCoachModal({ open, onClose, coach }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -94,14 +99,24 @@ export function EditCoachModal({ open, onClose, coach }: Props) {
           <label htmlFor="edit-coach-password" className={labelClass}>
             Nueva contraseña
           </label>
-          <input
-            id="edit-coach-password"
-            name="password"
-            type="password"
-            minLength={6}
-            placeholder="Dejar en blanco para no cambiar"
-            className={inputClass}
-          />
+          <div className="relative">
+            <input
+              id="edit-coach-password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              minLength={6}
+              placeholder="Dejar en blanco para no cambiar"
+              className={passwordInputClass}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           <p className="text-[11px] sm:text-sm text-[#4A6B7A]">
             Solo completá si querés cambiar la contraseña actual.
           </p>

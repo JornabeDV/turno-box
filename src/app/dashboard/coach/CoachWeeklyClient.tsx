@@ -99,21 +99,19 @@ export function CoachWeeklyClient({
         <Link
           href={`/dashboard/coach?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="outline">
-            <CaretLeftIcon size={14} weight="bold" />
-            Anterior
+          <Button size="md" variant="outline" className="px-3 md:px-5" aria-label="Semana anterior">
+            <CaretLeftIcon size={20} weight="bold" />
           </Button>
         </Link>
-        <p className="text-sm md:text-base font-medium text-[#EAEAEA] tabular-nums">
+        <p className="text-lg md:text-xl font-medium text-[#EAEAEA] tabular-nums whitespace-nowrap">
           {formatShortDate(weekStart)} –{" "}
           {formatShortDate(addDays(weekStart, 6))}
         </p>
         <Link
           href={`/dashboard/coach?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
-          <Button size="md" variant="outline">
-            Siguiente
-            <CaretRightIcon size={14} weight="bold" />
+          <Button size="md" variant="outline" className="px-3 md:px-5" aria-label="Semana siguiente">
+            <CaretRightIcon size={20} weight="bold" />
           </Button>
         </Link>
       </div>
