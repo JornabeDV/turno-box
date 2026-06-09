@@ -59,7 +59,6 @@ export async function getClassSlotsForDay(
       dayOfWeek,
       isActive: true,
       deletedAt: null,
-      ...(filterCoachId ? { coachId: filterCoachId } : {}),
     },
     orderBy: { startTime: "asc" },
     select: {
@@ -102,7 +101,22 @@ export async function getClassSlotsForDay(
     },
   });
 
-  return classes
+  // Obtener nombres de coaches que aparecen en overrides para mostrar correctamente
+  const overrideCoachIds = classes
+    .flatMap((c) => c.overrides)
+    .map((o) => o.coachId)
+    .filter(Boolean) as string[];
+
+  const coachNameMap = new Map<string, string>();
+  if (overrideCoachIds.length > 0) {
+    const coaches = await prisma.user.findMany({
+      where: { id: { in: overrideCoachIds } },
+      select: { id: true, name: true },
+    });
+    coaches.forEach((coach) => coachNameMap.set(coach.id, coach.name ?? "Sin nombre"));
+  }
+
+  const mapped = classes
     .map((c) => {
       const override = c.overrides[0];
       if (override?.isCancelled) return null;
@@ -127,7 +141,10 @@ export async function getClassSlotsForDay(
         color: override?.color ?? c.color,
         coachId: override?.coachId ?? c.coachId,
         disciplineId: override?.disciplineId ?? c.disciplineId,
-        coachName: c.coach?.name ?? null,
+        coachName:
+          override?.coachId != null
+            ? coachNameMap.get(override.coachId) ?? null
+            : c.coach?.name ?? null,
         disciplineName: c.discipline?.name ?? null,
         confirmedCount,
         availableSpots,
@@ -142,4 +159,11 @@ export async function getClassSlotsForDay(
       };
     })
     .filter(Boolean) as ClassSlot[];
+
+  // Filtrar por coach considerando tanto template como override
+  if (filterCoachId) {
+    return mapped.filter((slot) => slot.coachId === filterCoachId);
+  }
+
+  return mapped;
 }

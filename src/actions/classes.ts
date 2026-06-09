@@ -62,6 +62,7 @@ export async function createClassAction(formData: FormData) {
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath("/dashboard/coach");
 }
 
 export async function updateClassAction(classId: string, formData: FormData) {
@@ -95,6 +96,7 @@ export async function updateClassAction(classId: string, formData: FormData) {
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath("/dashboard/coach");
 }
 
 export async function duplicateDayAction(
@@ -194,6 +196,7 @@ export async function deleteClassAction(classId: string): Promise<void> {
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
+  revalidatePath("/dashboard/coach");
 }
 
 // ── CANCELAR UNA INSTANCIA PUNTUAL ──────────────────────────────
@@ -294,6 +297,7 @@ export async function deleteClassInstanceAction(
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
+  revalidatePath("/dashboard/coach");
 }
 
 // ── EDITAR UNA INSTANCIA PUNTUAL ────────────────────────────────
@@ -335,6 +339,7 @@ export async function updateClassInstanceAction(
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
+  revalidatePath("/dashboard/coach");
 }
 
 // ── GYM CLOSURES ────────────────────────────────────────────────

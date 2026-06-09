@@ -22,6 +22,35 @@ function parseHour(time: string): number {
   return parseInt(time.split(":")[0], 10);
 }
 
+function getAge(birthDate: Date): number {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+  return age;
+}
+
+function getAgeRange(age: number | null): string {
+  if (age === null) return "UNKNOWN";
+  if (age < 18) return "UNDER_18";
+  if (age <= 24) return "18_24";
+  if (age <= 34) return "25_34";
+  if (age <= 44) return "35_44";
+  if (age <= 54) return "45_54";
+  return "55_PLUS";
+}
+
+const AGE_RANGE_ORDER = ["UNDER_18", "18_24", "25_34", "35_44", "45_54", "55_PLUS", "UNKNOWN"] as const;
+const AGE_RANGE_LABELS: Record<string, string> = {
+  UNDER_18: "< 18",
+  "18_24": "18-24",
+  "25_34": "25-34",
+  "35_44": "35-44",
+  "45_54": "45-54",
+  "55_PLUS": "55+",
+  UNKNOWN: "Sin especificar",
+};
+
 function confirmedCount(bookings: { status: string }[]): number {
   return bookings.filter((b) => b.status === "CONFIRMED").length;
 }
@@ -47,6 +76,7 @@ export type MetricsReport = {
   byDayDiscipline: { day: string; label: string; disciplineId: string; disciplineName: string; color: string | null; bookings: number; capacity: number; occupancy: number }[];
   byCoachHour: { hour: number; label: string; coachId: string; coachName: string; bookings: number; capacity: number; occupancy: number }[];
   byHourCancellation: { hour: number; label: string; total: number; cancelled: number; rate: number }[];
+  byAgeRange: { range: string; label: string; bookings: number; students: number }[];
   periodLabel: string;
 };
 
@@ -67,7 +97,7 @@ export async function calculateMetricsReport(
       coach: { select: { id: true, name: true } },
       bookings: {
         where: { classDate: { gte: start, lte: end }, deletedAt: null },
-        select: { status: true, user: { select: { gender: true } } },
+        select: { status: true, userId: true, user: { select: { gender: true, birthDate: true } } },
       },
     },
   });
@@ -366,9 +396,45 @@ export async function calculateMetricsReport(
     .sort((a, b) => a.hour - b.hour)
     .map((h) => ({ ...h, rate: h.total > 0 ? Math.round((h.cancelled / h.total) * 100) : 0 }));
 
+  // ── Por rango de edad ──
+  const ageRangeBookings: Record<string, number> = {};
+  const ageRangeStudents = new Map<string, Set<string>>();
+  for (const c of classes) {
+    for (const b of c.bookings) {
+      if (b.status !== "CONFIRMED") continue;
+      const birthDate = b.user?.birthDate;
+      const age = birthDate ? getAge(birthDate) : null;
+      const range = getAgeRange(age);
+      ageRangeBookings[range] = (ageRangeBookings[range] || 0) + 1;
+      if (!ageRangeStudents.has(range)) ageRangeStudents.set(range, new Set());
+      ageRangeStudents.get(range)!.add(b.userId);
+    }
+  }
+
+  // También traer distribución de TODOS los alumnos activos (incluyendo los que no reservaron)
+  const allActiveStudents = await prisma.user.findMany({
+    where: { gymId, role: "STUDENT", isActive: true },
+    select: { birthDate: true },
+  });
+  const totalStudentsByRange: Record<string, number> = {};
+  for (const s of allActiveStudents) {
+    const age = s.birthDate ? getAge(s.birthDate) : null;
+    const range = getAgeRange(age);
+    totalStudentsByRange[range] = (totalStudentsByRange[range] || 0) + 1;
+  }
+
+  const byAgeRange = AGE_RANGE_ORDER
+    .filter((range) => (ageRangeBookings[range] || 0) > 0 || (totalStudentsByRange[range] || 0) > 0)
+    .map((range) => ({
+      range,
+      label: AGE_RANGE_LABELS[range],
+      bookings: ageRangeBookings[range] || 0,
+      students: totalStudentsByRange[range] || 0,
+    }));
+
   return {
     kpis: { totalBookings, totalCapacity, occupancyRate, cancellationRate, activeStudents, atRiskStudents: atRiskCount, retentionRate },
     dailyTrend, byDiscipline, byCoach, byGender, byHour, byDayOfWeek, topClasses,
-    byHourDiscipline, byDayDiscipline, byCoachHour, byHourCancellation, periodLabel,
+    byHourDiscipline, byDayDiscipline, byCoachHour, byHourCancellation, byAgeRange, periodLabel,
   };
 }
