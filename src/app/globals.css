@@ -76,8 +76,16 @@ body {
 ::-webkit-scrollbar-thumb { background: #1A4A63; border-radius: 0; }
 
 /* ── Safe area iOS ─────────────────────────────────────────────────────────── */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
 .bottom-nav-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.main-student-safe {
+  padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── Animaciones ───────────────────────────────────────────────────────────── */

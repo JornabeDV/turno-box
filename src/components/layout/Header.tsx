@@ -35,7 +35,7 @@ export async function Header({
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#1A4A63] bg-[#0A1F2A]">
+    <header className="sticky top-0 z-40 border-b border-[#1A4A63] bg-[#0A1F2A] safe-area-top">
       <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6 lg:px-8 max-w-5xl lg:max-w-6xl mx-auto">
         <div className="flex items-center gap-3">
           {mobileMenuSlot}

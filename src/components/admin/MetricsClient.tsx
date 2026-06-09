@@ -132,8 +132,8 @@ function SectionCard({
       className={cn("bg-[#0E2A38] border border-[#1A4A63]", className)}
     >
       <div className="px-4 md:px-5 pt-4 md:pt-5 pb-1">
-        <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider">{title}</h3>
-        {subtitle && <p className="text-[10px] md:text-xs text-[#4A6B7A] mt-0.5">{subtitle}</p>}
+        <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider">{title}</h3>
+        {subtitle && <p className="text-xs md:text-sm text-[#4A6B7A] mt-0.5">{subtitle}</p>}
       </div>
       <div className="p-4 md:p-5 pt-3">{children}</div>
     </motion.div>
@@ -395,7 +395,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                 <BarChartPremium
                   layout="horizontal"
                   color="#F78837"
-                  height={220}
+                  height={280}
                   data={data.byDayOfWeek.map((d) => ({ label: d.label, value: d.occupancy }))}
                 />
               ) : (
@@ -425,7 +425,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                   <BarChartPremium
                     layout="horizontal"
                     color="#27C7B8"
-                    height={220}
+                    height={280}
                     data={data.byHour.map((h) => ({ label: h.label, value: h.occupancy }))}
                   />
                 ) : (
@@ -438,7 +438,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                   <BarChartPremium
                     layout="horizontal"
                     color="#E61919"
-                    height={220}
+                    height={280}
                     data={data.byHourCancellation.map((h) => ({ label: h.label, value: h.rate }))}
                   />
                 ) : (
@@ -463,13 +463,13 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                         <p className="text-sm font-medium text-[#EAEAEA] truncate">
                           {c.name}
                         </p>
-                        <p className="text-[10px] text-[#4A6B7A] mt-0.5">
+                        <p className="text-[10px] sm:text-sm text-[#4A6B7A] mt-0.5">
                           {c.time} {c.coach ? `· ${c.coach}` : ""}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-sm font-bold text-[#EAEAEA] tabular-nums">{c.occupancy}%</p>
-                        <p className="text-[10px] text-[#4A6B7A]">
+                        <p className="text-[10px] sm:text-xs text-[#4A6B7A]">
                           {c.bookings}/{c.capacity}
                         </p>
                       </div>
@@ -490,18 +490,43 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
         )}
       </div>
 
-      {/* Fila 4: Heatmap Horario × Disciplina */}
-      <div className="grid grid-cols-1 gap-4 md:gap-5">
+      {/* Fila 4: Distribución por edad */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
         {isPending ? (
-          <ChartSkeleton />
+          <>
+            <ChartSkeleton />
+            <ChartSkeleton />
+          </>
         ) : (
-          <SectionCard title="Ocupación por horario y disciplina" subtitle="Qué disciplinas funcionan en cada franja" delay={0.45}>
-            {data.byHourDiscipline.length > 0 ? (
-              <HeatmapChart data={data.byHourDiscipline} />
-            ) : (
-              <EmptyState message="Sin datos cruzados" />
-            )}
-          </SectionCard>
+          <>
+            <SectionCard title="Distribución por edad" subtitle="Alumnos activos por rango etario" delay={0.45}>
+              {data.byAgeRange.length > 0 ? (
+                <BarChartPremium
+                  layout="horizontal"
+                  color="#F78837"
+                  height={280}
+                  unit=""
+                  data={data.byAgeRange.map((a) => ({ label: a.label, value: a.students }))}
+                />
+              ) : (
+                <EmptyState message="Sin datos de edad registrados" />
+              )}
+            </SectionCard>
+
+            <SectionCard title="Participación por edad" subtitle="Reservas confirmadas por rango etario" delay={0.48}>
+              {data.byAgeRange.length > 0 ? (
+                <BarChartPremium
+                  layout="horizontal"
+                  color="#27C7B8"
+                  height={280}
+                  unit=""
+                  data={data.byAgeRange.map((a) => ({ label: a.label, value: a.bookings }))}
+                />
+              ) : (
+                <EmptyState message="Sin datos de edad registrados" />
+              )}
+            </SectionCard>
+          </>
         )}
       </div>
 

@@ -66,21 +66,21 @@ export function ClassDetailActions({ classData, coaches, disciplines, date }: Pr
         <div className="flex flex-col gap-2 w-full sm:w-auto">
           <div className="flex items-center gap-2">
             <Button size="md" variant="outline" className="flex-1" onClick={() => setEditInstanceOpen(true)}>
-              <PencilSimpleIcon size={14} />
+              <PencilSimpleIcon size={14} className="max-sm:hidden" />
               Editar esta clase
             </Button>
-            <Button size="md" variant="outline" className="flex-1" onClick={() => setEditOpen(true)}>
-              <PencilSimpleIcon size={14} />
+            <Button size="md" variant="outline" className="flex-1 sm:whitespace-nowrap" onClick={() => setEditOpen(true)}>
+              <PencilSimpleIcon size={14} className="max-sm:hidden" />
               Editar todas las semanas
             </Button>
           </div>
           <div className="flex items-center gap-2">
-            <Button size="md" variant="danger" className="flex-1" onClick={() => setDeleteInstanceOpen(true)}>
-              <TrashIcon size={14} />
+            <Button size="md" variant="danger" className="flex-1 " onClick={() => setDeleteInstanceOpen(true)}>
+              <TrashIcon size={14} className="max-sm:hidden" />
               Eliminar esta clase
             </Button>
-            <Button size="md" variant="danger" className="flex-1" onClick={() => setDeleteOpen(true)}>
-              <TrashIcon size={14} />
+            <Button size="md" variant="danger" className="flex-1 sm:whitespace-nowrap" onClick={() => setDeleteOpen(true)}>
+              <TrashIcon size={14} className="max-sm:hidden" />
               Eliminar todas las semanas
             </Button>
           </div>

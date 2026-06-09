@@ -145,6 +145,76 @@ Todas las métricas se calculan dentro de un rango de fechas seleccionado:
   - Replicar horarios exitosos
   - Detectar clases que consistentemente se llenan (para considerar aumentar cupo)
 
+### Ocupacion por Horario y Disciplina (Heatmap)
+- **Que muestra**: Matriz de calor que cruza franjas horarias (filas) contra disciplinas (columnas).
+- **Datos por celda**:
+  - Porcentaje de ocupacion de esa disciplina en ese horario
+  - Cantidad de reservas confirmadas (numero inferior)
+  - Color de la celda segun intensidad de ocupacion (escala de baja a alta)
+- **Como se calcula**:
+  ```
+  reservas confirmadas de disciplina X en horario Y / capacidad total de disciplina X en horario Y * 100
+  ```
+- **Para que sirve**:
+  - Saber que disciplinas funcionan en cada franja horaria
+  - Detectar combinaciones horario+disciplina con baja demanda
+  - Optimizar la grilla semanal moviendo disciplinas a horarios donde pegan mejor
+
+### Ocupacion por Dia y Disciplina (Heatmap)
+- **Que muestra**: Matriz de calor que cruza dias de la semana (filas) contra disciplinas (columnas).
+- **Datos por celda**:
+  - Porcentaje de ocupacion de esa disciplina en ese dia
+  - Cantidad de reservas confirmadas
+  - Color segun nivel de ocupacion
+- **Como se calcula**:
+  ```
+  reservas confirmadas de disciplina X en dia Y / capacidad total de disciplina X en dia Y * 100
+  ```
+- **Para que sirve**:
+  - Identificar que disciplinas "pegan" cada dia
+  - Detectar dias donde una disciplina no tiene demanda
+  - Decidir si eliminar o reemplazar disciplinas en dias debiles
+
+### Ocupacion por Coach y Horario (Heatmap)
+- **Que muestra**: Matriz de calor que cruza franjas horarias (filas) contra coaches (columnas).
+- **Datos por celda**:
+  - Porcentaje de ocupacion de las clases de ese coach en ese horario
+  - Cantidad de reservas confirmadas
+  - Color segun nivel de ocupacion
+- **Como se calcula**:
+  ```
+  reservas confirmadas en clases del coach X en horario Y / capacidad total del coach X en horario Y * 100
+  ```
+- **Para que sirve**:
+  - Ver que coach tiene mas demanda en cada franja
+  - Distribuir coaches mas efectivos en horarios pico
+  - Identificar horarios donde un coach especifico no atrae alumnos
+  - Planificar la grilla de coaches de forma data-driven
+
+### Distribucion por Edad (Barras Horizontales)
+- **Que muestra**: Cantidad de alumnos activos agrupados por rango etario.
+- **Rangos**:
+  - `< 18`: Menores de edad
+  - `18-24`: Jovenes adultos
+  - `25-34`: Millennials (core tipico del CrossFit)
+  - `35-44`: Adultos jovenes
+  - `45-54`: Adultos medios
+  - `55+`: Masters / Senior
+  - `Sin especificar`: Alumnos sin fecha de nacimiento registrada
+- **Como se calcula**: Se toma la `birthDate` de cada alumno activo y se calcula la edad actual. Luego se agrupa en los rangos definidos.
+- **Para que sirve**:
+  - Conocer la demografia del gimnasio
+  - Ajustar la comunicacion y marketing al rango etario predominante
+  - Detectar si hay rangos de edad sub-representados
+
+### Participacion por Edad (Barras Horizontales)
+- **Que muestra**: Cantidad de reservas confirmadas agrupadas por rango etario del alumno.
+- **Como se calcula**: De cada reserva confirmada en el periodo, se toma la edad del alumno que reservo y se agrupa por rango.
+- **Para que sirve**:
+  - Saber que edades son las que mas entrenan
+  - Comparar "base de alumnos" vs "participacion real": puede haber muchos alumnos de 25-34 pero los que mas reservan son los de 35-44
+  - Disenar clases especificas para el rango etario mas activo
+
 ---
 
 ## Glosario de Terminos

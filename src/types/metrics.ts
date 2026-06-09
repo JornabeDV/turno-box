@@ -19,4 +19,5 @@ export type MetricsResult = {
   byDayDiscipline: { day: string; label: string; disciplineId: string; disciplineName: string; color: string | null; bookings: number; capacity: number; occupancy: number }[];
   byCoachHour: { hour: number; label: string; coachId: string; coachName: string; bookings: number; capacity: number; occupancy: number }[];
   byHourCancellation: { hour: number; label: string; total: number; cancelled: number; rate: number }[];
+  byAgeRange: { range: string; label: string; bookings: number; students: number }[];
 };

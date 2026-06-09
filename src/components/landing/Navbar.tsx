@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#1A4A63] bg-[#0A1F2A]/95 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 border-b border-[#1A4A63] bg-[#0A1F2A]/95 backdrop-blur-sm safe-area-top">
       <div className="max-w-7xl mx-auto max-sm:px-4 h-14 flex items-center justify-between">
         <Link href="/landing" className="flex items-center">
           <img
