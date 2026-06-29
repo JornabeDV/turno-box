@@ -18,6 +18,7 @@ export default async function AdminSettingsPage() {
     prisma.gym.findUnique({
       where: { id: user.gymId },
       select: {
+        id: true,
         name: true,
         logoUrl: true,
         address: true,
@@ -25,6 +26,8 @@ export default async function AdminSettingsPage() {
         cancelWindowHours: true,
         waitlistEnabled: true,
         slug: true,
+        mpAccessToken: true,
+        mpWebhookSecret: true,
       },
     }),
     prisma.user.findUnique({

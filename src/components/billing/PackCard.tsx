@@ -17,9 +17,10 @@ type SerializedPack = {
 type Props = {
   pack: SerializedPack;
   index?: number;
+  disabled?: boolean;
 };
 
-export function PackCard({ pack, index = 0 }: Props) {
+export function PackCard({ pack, index = 0, disabled = false }: Props) {
   const [isPending, startTransition] = useTransition();
 
   function handleBuy() {
@@ -110,10 +111,12 @@ export function PackCard({ pack, index = 0 }: Props) {
         {/* CTA */}
         <button
           onClick={handleBuy}
-          disabled={isPending}
+          disabled={isPending || disabled}
           className="w-full h-12 bg-[#F78837] text-[#0A1F2A] font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm active:scale-[0.98] transition-transform disabled:opacity-50 disabled:pointer-events-none"
         >
-          {isPending ? (
+          {disabled ? (
+            "No disponible"
+          ) : isPending ? (
             <span className="flex items-center justify-center gap-2">
               <span className="size-4 rounded-full border-2 border-[#0A1F2A] border-t-transparent animate-spin" />
               Procesando...

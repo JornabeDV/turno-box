@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { MercadoPagoConfig, Preference } from "mercadopago";
+import { Preference } from "mercadopago";
+import { getMpAccessToken, createMpClient } from "@/lib/mercadopago";
 import type { ActionResult } from "@/types";
 
 async function requireStudent() {
@@ -24,6 +25,14 @@ export async function createCheckoutAction(
   });
   if (!pack) return { success: false, error: "Abono no encontrado." };
 
+  const mpAccessToken = await getMpAccessToken(gymId);
+  if (!mpAccessToken) {
+    return {
+      success: false,
+      error: "El gimnasio no tiene Mercado Pago configurado.",
+    };
+  }
+
   const validityDays = pack.validityDays ?? 30;
   const expiresAt = new Date(Date.now() + validityDays * 86_400_000);
 
@@ -41,9 +50,7 @@ export async function createCheckoutAction(
     },
   });
 
-  const mpClient = new MercadoPagoConfig({
-    accessToken: process.env.MP_ACCESS_TOKEN!,
-  });
+  const mpClient = createMpClient(mpAccessToken);
 
   const preference = new Preference(mpClient);
   const result = await preference.create({
@@ -65,7 +72,7 @@ export async function createCheckoutAction(
       },
       // auto_return requiere HTTPS público — solo aplica en producción
       ...(process.env.NEXT_PUBLIC_URL?.startsWith("https") ? { auto_return: "approved" as const } : {}),
-      notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhooks/mercadopago`,
+      notification_url: `${process.env.NEXT_PUBLIC_URL}/api/webhooks/mercadopago?gymId=${gymId}`,
     },
   });
 

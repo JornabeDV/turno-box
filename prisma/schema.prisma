@@ -73,12 +73,14 @@ model Gym {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique // "crossfit-norte" → subdomain o path
-  logoUrl   String?
-  address   String?
-  phone     String?
-  timezone  String   @default("America/Argentina/Buenos_Aires")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  logoUrl         String?
+  address         String?
+  phone           String?
+  timezone        String   @default("America/Argentina/Buenos_Aires")
+  mpAccessToken   String?  // Access Token de producción de Mercado Pago
+  mpWebhookSecret String?  // Secreto para validar firma de webhooks
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   users       User[]
   classes     GymClass[]

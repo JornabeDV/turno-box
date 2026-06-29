@@ -20,10 +20,18 @@ export default async function PacksPage({
 
   const { error, info } = await searchParams;
 
-  const packs = await prisma.pack.findMany({
-    where: { gymId: user.gymId, isActive: true },
-    orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
-  });
+  const [packs, gym] = await Promise.all([
+    prisma.pack.findMany({
+      where: { gymId: user.gymId, isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
+    }),
+    prisma.gym.findUnique({
+      where: { id: user.gymId },
+      select: { mpAccessToken: true },
+    }),
+  ]);
+
+  const mpConfigured = !!gym?.mpAccessToken;
 
   return (
     <section className="space-y-5 pt-4">
@@ -40,6 +48,18 @@ export default async function PacksPage({
         </p>
       </div>
 
+      {/* Estado de configuración de MP */}
+      {!mpConfigured && (
+        <div className="bg-[#0E2A38] border border-[#F78837]/40 px-4 py-6">
+          <p className="text-sm text-[#F78837] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+            Pagos online no disponibles
+          </p>
+          <p className="text-xs text-[#6B8A99] mt-1 font-[family-name:var(--font-jetbrains)]">
+            El gimnasio todavía no configuró Mercado Pago. Contactá a la administración para comprar abonos.
+          </p>
+        </div>
+      )}
+
       {/* Lista de packs */}
       {packs.length === 0 ? (
         <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
@@ -54,6 +74,7 @@ export default async function PacksPage({
               key={pack.id}
               pack={{ ...pack, price: Number(pack.price) }}
               index={i}
+              disabled={!mpConfigured}
             />
           ))}
         </div>

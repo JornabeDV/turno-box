@@ -25,6 +25,8 @@ CREATE TABLE "gyms" (
     "address" TEXT,
     "phone" TEXT,
     "timezone" TEXT NOT NULL DEFAULT 'America/Argentina/Buenos_Aires',
+    "mpAccessToken" TEXT,
+    "mpWebhookSecret" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "cancelWindowHours" INTEGER NOT NULL DEFAULT 2,

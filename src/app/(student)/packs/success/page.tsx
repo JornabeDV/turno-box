@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { approvePaymentIfValid } from "@/lib/approvePayment";
+import { getMpAccessToken } from "@/lib/mercadopago";
 import { sendPushToUser } from "@/lib/push";
 import Link from "next/link";
 import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
@@ -23,12 +24,17 @@ export default async function PaymentSuccessPage({
 
   const payment = await prisma.payment.findFirst({
     where: { id: paymentId, userId: user.id },
-    select: { id: true, status: true, creditsGranted: true, userId: true, pack: { select: { name: true } } },
+    select: { id: true, status: true, creditsGranted: true, userId: true, gymId: true, pack: { select: { name: true } } },
   });
   if (!payment) redirect("/packs");
 
   if (payment.status !== "APPROVED") {
-    const credited = await approvePaymentIfValid(payment.id);
+    const mpAccessToken = await getMpAccessToken(payment.gymId);
+    if (!mpAccessToken) {
+      // Sin token no se puede verificar el pago; redirigir a packs
+      redirect("/packs");
+    }
+    const credited = await approvePaymentIfValid(payment.id, mpAccessToken);
     if (credited) {
       sendPushToUser(payment.userId, {
         title: "Abono acreditado",
