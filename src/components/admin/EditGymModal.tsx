@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { EyeIcon, EyeSlashIcon } from "@phosphor-icons/react";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { updateGymAction } from "@/actions/super-admin";
@@ -22,12 +23,15 @@ interface Props {
     slug: string;
     address: string | null;
     phone: string | null;
+    admin: { id: string; email: string } | null;
   };
 }
 
 export function EditGymModal({ open, onClose, gym }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -119,6 +123,76 @@ export function EditGymModal({ open, onClose, gym }: Props) {
               defaultValue={gym.phone ?? ""}
               className={inputClass}
             />
+          </div>
+        </div>
+
+        <div className="border-t border-[#1A4A63] pt-4 md:pt-5 space-y-4 md:space-y-5">
+          <p className="text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider">
+            Administrador del gimnasio
+          </p>
+
+          <div className="space-y-1.5">
+            <label htmlFor="edit-gym-admin-email" className={labelClass}>
+              Email del admin
+            </label>
+            <input
+              id="edit-gym-admin-email"
+              name="adminEmail"
+              type="email"
+              defaultValue={gym.admin?.email ?? ""}
+              placeholder="admin@gimnasio.com"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label htmlFor="edit-gym-admin-password" className={labelClass}>
+                Nueva contraseña
+              </label>
+              <div className="relative">
+                <input
+                  id="edit-gym-admin-password"
+                  name="adminPassword"
+                  type={showPassword ? "text" : "password"}
+                  minLength={6}
+                  placeholder="Dejar en blanco para no cambiar"
+                  className={`${inputClass} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#EAEAEA] transition-colors p-1"
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showPassword ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label htmlFor="edit-gym-admin-confirm-password" className={labelClass}>
+                Confirmar contraseña
+              </label>
+              <div className="relative">
+                <input
+                  id="edit-gym-admin-confirm-password"
+                  name="confirmAdminPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  minLength={6}
+                  placeholder="Repetir nueva contraseña"
+                  className={`${inputClass} pr-12`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#EAEAEA] transition-colors p-1"
+                  aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                >
+                  {showConfirmPassword ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

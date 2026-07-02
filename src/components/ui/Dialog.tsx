@@ -55,6 +55,7 @@ export function Dialog({
                     sizeClass[size],
                     className,
                     "bg-[#0E2A38] border border-[#1A4A63] p-6 shadow-2xl",
+                    "max-h-[100dvh] overflow-y-auto",
                     "focus:outline-none",
                   )}
                   initial={{ opacity: 0, x: "-50%", y: "-46%", scale: 0.97 }}

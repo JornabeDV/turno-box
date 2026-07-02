@@ -131,6 +131,7 @@ export async function getGymsListAction(): Promise<
       phone: string | null;
       createdAt: Date;
       _count: { users: number };
+      admin: { id: string; email: string } | null;
     }>
   >
 > {
@@ -142,10 +143,21 @@ export async function getGymsListAction(): Promise<
       _count: {
         select: { users: true },
       },
+      users: {
+        where: { role: "ADMIN" },
+        select: { id: true, email: true },
+        take: 1,
+      },
     },
   });
 
-  return { success: true, data: gyms };
+  return {
+    success: true,
+    data: gyms.map((gym) => ({
+      ...gym,
+      admin: gym.users[0] ?? null,
+    })),
+  };
 }
 
 export async function getGymByIdAction(
@@ -182,6 +194,13 @@ const updateGymSchema = z.object({
     .regex(slugRegex, "El slug solo puede contener letras minúsculas, números y guiones"),
   address: z.string().max(200).optional().or(z.literal("")),
   phone: z.string().max(30).optional().or(z.literal("")),
+  adminEmail: z.string().email("Email inválido").optional().or(z.literal("")),
+  adminPassword: z
+    .string()
+    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .optional()
+    .or(z.literal("")),
+  confirmAdminPassword: z.string().optional().or(z.literal("")),
 });
 
 export async function updateGymAction(
@@ -195,6 +214,9 @@ export async function updateGymAction(
     slug: formData.get("slug"),
     address: formData.get("address"),
     phone: formData.get("phone"),
+    adminEmail: formData.get("adminEmail"),
+    adminPassword: formData.get("adminPassword"),
+    confirmAdminPassword: formData.get("confirmAdminPassword"),
   };
 
   const parsed = updateGymSchema.safeParse(raw);
@@ -202,7 +224,8 @@ export async function updateGymAction(
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { name, slug, address, phone } = parsed.data;
+  const { name, slug, address, phone, adminEmail, adminPassword, confirmAdminPassword } =
+    parsed.data;
   const normalizedSlug = slug.toLowerCase().trim();
 
   // Verificar que el gym existe
@@ -223,15 +246,77 @@ export async function updateGymAction(
     return { success: false, error: "Ya existe un gimnasio con ese slug. Elegí otro." };
   }
 
-  await prisma.gym.update({
-    where: { id },
-    data: {
-      name,
-      slug: normalizedSlug,
-      address: address || null,
-      phone: phone || null,
-    },
-  });
+  const wantsAdminUpdate = adminEmail || adminPassword;
+
+  if (wantsAdminUpdate && adminPassword !== confirmAdminPassword) {
+    return { success: false, error: "Las contraseñas del admin no coinciden" };
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.gym.update({
+        where: { id },
+        data: {
+          name,
+          slug: normalizedSlug,
+          address: address || null,
+          phone: phone || null,
+        },
+      });
+
+      if (!wantsAdminUpdate) return;
+
+      const normalizedEmail = adminEmail ? adminEmail.toLowerCase().trim() : undefined;
+      const existingAdmin = await tx.user.findFirst({
+        where: { gymId: id, role: "ADMIN" },
+      });
+
+      if (normalizedEmail) {
+        const emailConflict = await tx.user.findFirst({
+          where: {
+            email: normalizedEmail,
+            NOT: existingAdmin ? { id: existingAdmin.id } : undefined,
+          },
+          select: { id: true },
+        });
+        if (emailConflict) {
+          throw new Error("Ya existe un usuario con ese email.");
+        }
+      }
+
+      if (existingAdmin) {
+        const data: { email?: string; passwordHash?: string } = {};
+        if (normalizedEmail && normalizedEmail !== existingAdmin.email) {
+          data.email = normalizedEmail;
+        }
+        if (adminPassword) {
+          data.passwordHash = await bcrypt.hash(adminPassword, 12);
+        }
+        if (Object.keys(data).length > 0) {
+          await tx.user.update({
+            where: { id: existingAdmin.id },
+            data,
+          });
+        }
+      } else {
+        if (!normalizedEmail || !adminPassword) {
+          throw new Error("Para crear un admin debés proporcionar email y contraseña.");
+        }
+        await tx.user.create({
+          data: {
+            email: normalizedEmail,
+            passwordHash: await bcrypt.hash(adminPassword, 12),
+            role: "ADMIN",
+            gymId: id,
+            isActive: true,
+          },
+        });
+      }
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Error al actualizar el gimnasio";
+    return { success: false, error: message };
+  }
 
   return { success: true, data: { id } };
 }
