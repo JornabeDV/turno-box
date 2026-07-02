@@ -5,7 +5,15 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
 import { createGymWithAdminAction } from "@/actions/super-admin";
-import { Copy, Check, Link as LinkIcon, WarningCircle, CheckCircle } from "@phosphor-icons/react";
+import {
+  Copy,
+  Check,
+  Link as LinkIcon,
+  WarningCircle,
+  CheckCircle,
+  Eye,
+  EyeSlash,
+} from "@phosphor-icons/react";
 
 const inputClass =
   "w-full h-12 md:h-14 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
@@ -17,8 +25,13 @@ export function SuperAdminCreateGymClient() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<{ gymId: string; slug: string } | null>(null);
+  const [success, setSuccess] = useState<{
+    gymId: string;
+    slug: string;
+  } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -57,7 +70,7 @@ export function SuperAdminCreateGymClient() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ── Datos del Gimnasio ── */}
         <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
-          <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+          <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Datos del gimnasio
           </h3>
 
@@ -108,7 +121,7 @@ export function SuperAdminCreateGymClient() {
 
         {/* ── Datos del Admin ── */}
         <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
-          <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+          <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Datos del administrador
           </h3>
 
@@ -136,26 +149,46 @@ export function SuperAdminCreateGymClient() {
 
             <div className="space-y-1.5">
               <label className={labelClass}>Contraseña temporal *</label>
-              <input
-                name="adminPassword"
-                type="password"
-                required
-                minLength={6}
-                className={inputClass}
-                placeholder="Mínimo 6 caracteres"
-              />
+              <div className="relative">
+                <input
+                  name="adminPassword"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  className={`${inputClass} pr-11`}
+                  placeholder="Mínimo 6 caracteres"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-1.5">
               <label className={labelClass}>Confirmar contraseña *</label>
-              <input
-                name="confirmPassword"
-                type="password"
-                required
-                minLength={6}
-                className={inputClass}
-                placeholder="Repetí la contraseña"
-              />
+              <div className="relative">
+                <input
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  className={`${inputClass} pr-11`}
+                  placeholder="Repetí la contraseña"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -192,14 +225,17 @@ export function SuperAdminCreateGymClient() {
           </div>
 
           <p className="text-xs md:text-sm text-[#6B8A99]">
-            Compartí este link con los alumnos del gimnasio para que se registren
-            automáticamente vinculados:
+            Compartí este link con los alumnos del gimnasio para que se
+            registren automáticamente vinculados:
           </p>
 
           <div className="flex items-center gap-2 md:gap-3">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 md:gap-3 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 h-12 md:h-14 rounded-[2px]">
-                <LinkIcon size={14} className="text-[#4A6B7A] shrink-0 md:size-4" />
+                <LinkIcon
+                  size={14}
+                  className="text-[#4A6B7A] shrink-0 md:size-4"
+                />
                 <span className="text-sm md:text-base text-[#EAEAEA] truncate">
                   {typeof window !== "undefined"
                     ? `${window.location.origin}/join/${success.slug}`

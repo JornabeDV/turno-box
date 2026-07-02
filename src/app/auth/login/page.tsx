@@ -94,7 +94,7 @@ export default async function LoginPage({
 
         {/* Legal footer */}
         <div className="mt-10 text-center space-y-1">
-          <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
+          <p className="text-[10px] sm:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
             © 2026 Box Turno. Todos los derechos reservados.
           </p>
         </div>

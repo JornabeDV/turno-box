@@ -38,17 +38,17 @@ export function SuperAdminSidebar() {
       </div>
 
       {NAV_ITEMS.map(({ href, label, Icon }) => {
-        const active = pathname === href || pathname.startsWith(href + "/");
+        const active = pathname === href;
         return (
           <Link
             key={href}
             href={href}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm sm:text-base font-medium transition-all duration-150",
-              "active:scale-[0.97]",
+              "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm sm:text-base font-medium transition-colors duration-150",
+              "active:scale-[0.97] border",
               active
-                ? "bg-[#F78837]/10 text-[#F78837] border border-[#F78837]/20"
-                : "text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0A1F2A]",
+                ? "bg-[#F78837]/10 text-[#F78837] border-[#F78837]/20"
+                : "text-[#6B8A99] border-transparent hover:text-[#EAEAEA] hover:bg-[#143D52]",
             )}
           >
             <Icon weight={active ? "fill" : "regular"} size={18} />

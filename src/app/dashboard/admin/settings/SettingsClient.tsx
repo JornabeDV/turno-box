@@ -239,7 +239,7 @@ export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName
         }}
         className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4"
       >
-        <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+            <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
           Datos del administrador
         </h3>
         <div className="space-y-1.5">
@@ -269,7 +269,7 @@ export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName
       {/* ── Configuración del Gimnasio ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
-          <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+            <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Datos del gimnasio
           </h3>
 
