@@ -36,6 +36,8 @@ interface Props {
   filteredSlotsPerDay: ClassSlot[][];
   weekStartStr: string;
   discipline?: string;
+  basePath?: string;
+  backLabel?: string;
 }
 
 export function CoachWeeklyClient({
@@ -46,6 +48,8 @@ export function CoachWeeklyClient({
   filteredSlotsPerDay,
   weekStartStr,
   discipline,
+  basePath = "/dashboard/coach",
+  backLabel = "Mis clases",
 }: Props) {
   const weekStart = parseLocalDate(weekStartStr);
   const today = getTodayInGymTimezone();
@@ -91,13 +95,13 @@ export function CoachWeeklyClient({
       <DisciplinesManager
         disciplines={disciplines}
         weekParam={weekParam}
-        basePath="/dashboard/coach"
+        basePath={basePath}
       />
 
       {/* Navegación de semana */}
       <div className="flex items-center justify-between gap-4">
         <Link
-          href={`/dashboard/coach?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
+          href={`${basePath}?week=${prevWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
           <Button size="md" variant="outline" className="px-3 md:px-5" aria-label="Semana anterior">
             <CaretLeftIcon size={20} weight="bold" />
@@ -108,7 +112,7 @@ export function CoachWeeklyClient({
           {formatShortDate(addDays(weekStart, 6))}
         </p>
         <Link
-          href={`/dashboard/coach?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
+          href={`${basePath}?week=${nextWeek}${discipline ? `&discipline=${encodeURIComponent(discipline)}` : ""}`}
         >
           <Button size="md" variant="outline" className="px-3 md:px-5" aria-label="Semana siguiente">
             <CaretRightIcon size={20} weight="bold" />
@@ -195,7 +199,7 @@ export function CoachWeeklyClient({
                       return (
                         <Link
                           key={slot.id}
-                          href={`/dashboard/coach/classes/${slot.id}?date=${isoDate(date)}`}
+                          href={`${basePath}/${slot.id}?date=${isoDate(date)}`}
                           className="bg-[#0E2A38] border border-[#1A4A63] p-3 flex flex-col gap-2.5"
                         >
                           {/* Color + nombre */}

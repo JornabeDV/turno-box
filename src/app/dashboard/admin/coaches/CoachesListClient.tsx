@@ -24,6 +24,7 @@ export type CoachRow = {
   id: string;
   name: string | null;
   email: string;
+  role: string;
   isActive: boolean;
   classCount: number;
   overrideCount: number;
@@ -108,6 +109,11 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                   >
                     {coach.name ?? "Sin nombre"}
                   </p>
+                  {coach.role === "ADMIN" && (
+                    <p className="text-[10px] md:text-xs text-[#F78837] uppercase tracking-wider">
+                      Administrador
+                    </p>
+                  )}
                 </div>
 
                 {/* Días que enseña */}
@@ -150,24 +156,29 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                   )}
                 </div>
 
-                {/* Toggle */}
-                <div onClick={(e) => e.stopPropagation()}>
+                {/* Acciones */}
+                <div
+                  className="flex items-center gap-2 shrink-0"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <ToggleCoachButton
                     coachId={coach.id}
                     initialIsActive={coach.isActive}
                   />
+                  {coach.role !== "ADMIN" ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmDeleteId(coach.id);
+                      }}
+                      className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
+                    >
+                      <TrashIcon size={16} weight="bold" />
+                    </button>
+                  ) : (
+                    <div className="size-8 shrink-0" aria-hidden="true" />
+                  )}
                 </div>
-
-                {/* Eliminar */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setConfirmDeleteId(coach.id);
-                  }}
-                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
-                >
-                  <TrashIcon size={16} weight="bold" />
-                </button>
               </div>
             );
           })}

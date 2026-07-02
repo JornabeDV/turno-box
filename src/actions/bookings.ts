@@ -581,39 +581,47 @@ export async function addStudentToClassAction(
   }
 }
 
-export async function markClassAttendanceTakenAction(
-  classId: string,
-  dateStr: string
-): Promise<ActionResult> {
+export async function toggleBookingAttendanceAction(
+  bookingId: string,
+): Promise<ActionResult<{ attendedAt: Date | null }>> {
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "No autenticado." };
 
   const userId = session.user.id;
   const role = (session.user as { role?: string }).role ?? "";
   const gymId = (session.user as { gymId?: string }).gymId ?? "";
-  const classDate = toClassDate(new Date(dateStr));
+
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, deletedAt: null },
+    select: {
+      id: true,
+      attendedAt: true,
+      classId: true,
+      classDate: true,
+      class: { select: { gymId: true } },
+    },
+  });
+  if (!booking) return { success: false, error: "Reserva no encontrada." };
+  if (booking.class.gymId !== gymId) return { success: false, error: "Gimnasio no coincide." };
 
   try {
-    await requireClassManager(classId, classDate, userId, gymId, role);
+    await requireClassManager(booking.classId, booking.classDate, userId, gymId, role);
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : "No autorizado." };
   }
 
+  const newAttendedAt = booking.attendedAt ? null : new Date();
+
   try {
-    await prisma.booking.updateMany({
-      where: {
-        classId,
-        classDate,
-        deletedAt: null,
-        status: "CONFIRMED",
-      },
-      data: { attendedAt: new Date() },
+    await prisma.booking.update({
+      where: { id: bookingId },
+      data: { attendedAt: newAttendedAt },
     });
 
-    revalidateBookingPaths(classId);
-    return { success: true, data: undefined };
+    revalidateBookingPaths(booking.classId);
+    return { success: true, data: { attendedAt: newAttendedAt } };
   } catch (e: unknown) {
-    console.error("[markClassAttendanceTakenAction]", e);
-    return { success: false, error: "Error al confirmar asistencia." };
+    console.error("[toggleBookingAttendanceAction]", e);
+    return { success: false, error: "Error al actualizar la asistencia." };
   }
 }

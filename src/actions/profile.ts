@@ -24,6 +24,8 @@ export async function updateProfileAction(formData: FormData): Promise<ActionRes
   });
 
   revalidatePath("/profile");
+  revalidatePath("/dashboard/admin");
+  revalidatePath("/dashboard/admin/settings");
   return { success: true, data: undefined };
 }
 

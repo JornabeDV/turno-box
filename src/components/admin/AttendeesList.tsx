@@ -59,7 +59,7 @@ export function AttendeesList({
 
       <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
         {bookings.length === 0 ? (
-          <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-8">
+          <p className="text-xs md:text-base text-[#4A6B7A] text-center py-8">
             {emptyMessage ?? "Sin registros."}
           </p>
         ) : (

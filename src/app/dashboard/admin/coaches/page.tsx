@@ -48,11 +48,12 @@ export default async function CoachesPage() {
   ][new Date().getDay()];
 
   const coaches = await prisma.user.findMany({
-    where: { gymId: user.gymId, role: "COACH" },
+    where: { gymId: user.gymId, role: { in: ["COACH", "ADMIN"] } },
     select: {
       id: true,
       name: true,
       email: true,
+      role: true,
       isActive: true,
       createdAt: true,
       taughtClasses: {
@@ -143,6 +144,7 @@ export default async function CoachesPage() {
             id: coach.id,
             name: coach.name,
             email: coach.email,
+            role: coach.role,
             isActive: coach.isActive,
             classCount: coach.taughtClasses.length,
             overrideCount: overridesByCoach[coach.id] ?? 0,

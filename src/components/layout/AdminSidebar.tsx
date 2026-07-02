@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   ChartBar,
   CalendarBlank,
+  CalendarCheck,
   Users,
   Barbell,
   CurrencyCircleDollar,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard/admin", label: "Panel General", Icon: ChartBar },
+  { href: "/dashboard/admin/my-classes", label: "Mis clases", Icon: CalendarCheck },
   { href: "/dashboard/admin/classes", label: "Clases", Icon: CalendarBlank },
   { href: "/dashboard/admin/disciplines", label: "Disciplinas", Icon: Tag },
   { href: "/dashboard/admin/students", label: "Alumnos", Icon: Users },

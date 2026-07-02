@@ -32,7 +32,7 @@ export default async function AdminSettingsPage() {
     }),
     prisma.user.findUnique({
       where: { id: user.id },
-      select: { name: true },
+      select: { name: true, email: true },
     }),
   ]);
   if (!gym) redirect("/");
@@ -47,7 +47,11 @@ export default async function AdminSettingsPage() {
           Configuración
         </h2>
       </div>
-      <SettingsClient gym={gym} adminName={currentUser?.name ?? ""} />
+      <SettingsClient
+        gym={gym}
+        adminName={currentUser?.name ?? ""}
+        adminEmail={currentUser?.email ?? ""}
+      />
     </div>
   );
 }

@@ -22,6 +22,19 @@ export async function Header({
   const gymSlug = (session?.user as { gymSlug?: string | null } | undefined)?.gymSlug;
   const signOutUrl = gymSlug ? `/auth/login?gymSlug=${gymSlug}` : "/auth/login";
 
+  let displayName: string | null = session?.user?.name ?? null;
+  let displayEmail: string | null = session?.user?.email ?? null;
+  if (session?.user?.id) {
+    const freshUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { name: true, email: true },
+    });
+    if (freshUser) {
+      displayName = freshUser.name;
+      displayEmail = freshUser.email;
+    }
+  }
+
   let credits: number | null = null;
   if (showCredits && session?.user?.id) {
     const user = session.user as { id: string; gymId?: string };
@@ -61,7 +74,7 @@ export async function Header({
           {credits !== null && <CreditsBadge credits={credits} />}
           {session?.user && (
             <span className="text-[11px] md:text-sm text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
-              {session.user.name ?? session.user.email}
+              {displayName ?? displayEmail}
             </span>
           )}
           {showSignOut && <SignOutButton iconOnly callbackUrl={signOutUrl} />}
