@@ -1,12 +1,13 @@
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { toClassDate, formatTime } from "@/lib/utils";
+import { toClassDate, formatTime, formatDate } from "@/lib/utils";
 import { ToggleCoachButton } from "@/components/admin/ToggleCoachButton";
 import { EditCoachButton } from "@/components/admin/EditCoachButton";
 import { BackButton } from "@/components/ui/BackButton";
 import {
   PencilSimpleIcon,
+  CalendarIcon,
 } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -98,6 +99,36 @@ export default async function CoachDetailPage({ params }: Props) {
     orderBy: [{ dayOfWeek: "asc" }, { startTime: "asc" }],
   });
 
+  // Clases puntuales (overrides) futuras asignadas a este coach
+  const upcomingOverrides = await prisma.classOverride.findMany({
+    where: {
+      coachId: id,
+      date: { gte: today },
+      isCancelled: false,
+      gymClass: { gymId: user.gymId, deletedAt: null },
+    },
+    select: {
+      id: true,
+      date: true,
+      startTime: true,
+      endTime: true,
+      maxCapacity: true,
+      color: true,
+      description: true,
+      gymClass: {
+        select: {
+          id: true,
+          discipline: { select: { name: true, color: true } },
+          startTime: true,
+          endTime: true,
+          maxCapacity: true,
+          color: true,
+        },
+      },
+    },
+    orderBy: [{ date: "asc" }, { startTime: "asc" }],
+  });
+
   const grouped = DAY_ORDER.reduce<Record<string, typeof classes>>(
     (acc, day) => {
       const dayClasses = classes.filter((c) => c.dayOfWeek === day);
@@ -176,6 +207,11 @@ export default async function CoachDetailPage({ params }: Props) {
                 </p>
                 <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
                   {classes.length}
+                  {upcomingOverrides.length > 0 && (
+                    <span className="text-[#F78837] ml-1">
+                      +{upcomingOverrides.length}
+                    </span>
+                  )}
                 </p>
               </div>
               {totalTodayConfirmed > 0 && (
@@ -205,6 +241,58 @@ export default async function CoachDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Clases puntuales */}
+      {upcomingOverrides.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-3 px-1">
+            <span className="size-1.5 rounded-full bg-[#F78837]" />
+            <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+              Clases puntuales asignadas
+            </h3>
+            <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-[#F78837]">
+              {upcomingOverrides.length}
+            </span>
+          </div>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
+            {upcomingOverrides.map((o) => {
+              const start = o.startTime ?? o.gymClass.startTime;
+              const end = o.endTime ?? o.gymClass.endTime;
+              const maxCapacity = o.maxCapacity ?? o.gymClass.maxCapacity;
+              const color = o.color ?? o.gymClass.color;
+              const disciplineName = o.gymClass.discipline?.name ?? "Sin disciplina";
+              return (
+                <div
+                  key={o.id}
+                  className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4"
+                >
+                  <span
+                    className="size-2 rounded-full shrink-0"
+                    style={{ backgroundColor: color ?? "#f97316" }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate">
+                      {disciplineName}
+                    </p>
+                    <p className="text-xs md:text-sm text-[#6B8A99] font-mono tabular-nums">
+                      {formatDate(o.date)} · {formatTime(start)} – {formatTime(end)}
+                    </p>
+                    {o.description && (
+                      <p className="text-xs text-[#4A6B7A] mt-0.5">{o.description}</p>
+                    )}
+                  </div>
+                  <Link
+                    href={`/dashboard/admin/classes/${o.gymClass.id}?date=${o.date.toISOString().slice(0, 10)}`}
+                    className="size-8 rounded-md flex items-center justify-center text-[#4A6B7A] hover:text-[#6B8A99] hover:bg-white/[0.04] transition-all shrink-0"
+                  >
+                    <PencilSimpleIcon size={16} />
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Horario semanal */}
       <div>

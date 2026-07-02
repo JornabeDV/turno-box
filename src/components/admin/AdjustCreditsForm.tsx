@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { adjustCreditsAction } from "@/actions/students";
 import { cn } from "@/lib/utils";
+import { DatePicker } from "@/components/ui/DatePicker";
 import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react";
 
 const MANUAL_METHODS = ["EFECTIVO", "TRANSFERENCIA", "TARJETA"];
@@ -40,6 +41,12 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
   const [amountPaid, setAmountPaid] = useState("");
   const [method, setMethod] = useState("EFECTIVO");
   const [validityDays, setValidityDays] = useState("30");
+  const [validityMode, setValidityMode] = useState<"days" | "date">("days");
+  const [expiresAt, setExpiresAt] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 30);
+    return d.toISOString().slice(0, 10);
+  });
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -52,6 +59,8 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
     fd.set("amountPaid", amountPaid.replace(/\D/g, ""));
     fd.set("method", method);
     fd.set("validityDays", validityDays);
+    fd.set("validityMode", validityMode);
+    fd.set("expiresAt", expiresAt);
     fd.set("note", note);
 
     startTransition(async () => {
@@ -61,6 +70,13 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         setAmount("");
         setAmountPaid("");
         setNote("");
+        setValidityDays("30");
+        setValidityMode("days");
+        setExpiresAt(() => {
+          const d = new Date();
+          d.setDate(d.getDate() + 30);
+          return d.toISOString().slice(0, 10);
+        });
         const delta = Number(amount);
         toast.success(
           delta > 0
@@ -195,28 +211,70 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
 
         <p className="text-[10px] md:text-xs text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
 
-        {/* Días de validez */}
+        {/* Validez del abono */}
         <div>
           <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider mb-1.5">
             Validez del abono
           </p>
-          <div className="flex gap-2">
-            {["7", "15", "30", "90"].map((d) => (
-              <button
-                key={d}
-                type="button"
-                onClick={() => setValidityDays(d)}
-                className={cn(
-                  "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
-                  validityDays === d
-                    ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
-                    : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
-                )}
-              >
-                {d} días
-              </button>
-            ))}
+          <div className="flex gap-2 mb-2">
+            <button
+              type="button"
+              onClick={() => setValidityMode("days")}
+              className={cn(
+                "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                validityMode === "days"
+                  ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
+                  : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
+              )}
+            >
+              Por días
+            </button>
+            <button
+              type="button"
+              onClick={() => setValidityMode("date")}
+              className={cn(
+                "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                validityMode === "date"
+                  ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
+                  : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
+              )}
+            >
+              Por fecha
+            </button>
           </div>
+
+          {validityMode === "days" ? (
+            <div className="flex gap-2">
+              {["7", "15", "30", "90"].map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setValidityDays(d)}
+                  className={cn(
+                    "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                    validityDays === d
+                      ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
+                      : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
+                  )}
+                >
+                  {d} días
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-1.5">
+              <DatePicker
+                value={expiresAt}
+                onChange={setExpiresAt}
+                allowFuture
+                showYearPicker={false}
+                className="w-full"
+              />
+              <p className="text-[10px] text-[#4A6B7A]">
+                Vence a las 23:59 hs del día seleccionado.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Nota obligatoria */}

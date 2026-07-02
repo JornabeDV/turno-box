@@ -39,47 +39,71 @@ export default async function CoachClassDetailPage({
   const targetDate = date ? new Date(date) : new Date();
   const classDate = toClassDate(targetDate);
 
-  const gymClass = await prisma.gymClass.findFirst({
-    where: {
-      id,
-      gymId: user.gymId,
-      // coaches solo ven sus propias clases; admins ven todas
-      ...(user.role === "COACH" ? { coachId: user.id } : {}),
-      deletedAt: null,
-    },
-    select: {
-      id: true,
-      startTime: true,
-      endTime: true,
-      maxCapacity: true,
-      color: true,
-      description: true,
-      coach: { select: { name: true } },
-      discipline: { select: { name: true } },
-    },
-  });
+  const [gymClass, classOverride, bookings] = await Promise.all([
+    prisma.gymClass.findFirst({
+      where: { id, gymId: user.gymId, deletedAt: null },
+      select: {
+        id: true,
+        dayOfWeek: true,
+        startTime: true,
+        endTime: true,
+        maxCapacity: true,
+        color: true,
+        description: true,
+        coachId: true,
+        coach: { select: { name: true } },
+        discipline: { select: { name: true } },
+      },
+    }),
+    prisma.classOverride.findUnique({
+      where: { gymClassId_date: { gymClassId: id, date: classDate } },
+    }),
+    prisma.booking.findMany({
+      where: {
+        classId: id,
+        classDate,
+        deletedAt: null,
+        status: { in: ["CONFIRMED", "WAITLISTED"] },
+      },
+      orderBy: [{ status: "asc" }, { createdAt: "asc" }],
+      select: {
+        id: true,
+        status: true,
+        waitlistPos: true,
+        createdAt: true,
+        user: { select: { id: true, name: true, email: true, image: true } },
+      },
+    }),
+  ]);
 
   if (!gymClass) notFound();
 
-  const bookings = await prisma.booking.findMany({
-    where: {
-      classId: id,
-      classDate,
-      deletedAt: null,
-      status: { in: ["CONFIRMED", "WAITLISTED"] },
-    },
-    orderBy: [{ status: "asc" }, { createdAt: "asc" }],
-    select: {
-      id: true,
-      status: true,
-      waitlistPos: true,
-      createdAt: true,
-      user: { select: { id: true, name: true, email: true, image: true } },
-    },
-  });
+  // Un coach solo puede ver la clase si es su coach base o si tiene un override
+  // asignado para esta fecha. Un admin puede ver cualquier clase de su gym.
+  const effectiveCoachId = classOverride?.coachId ?? gymClass.coachId;
+  if (
+    user.role === "COACH" &&
+    gymClass.coachId !== user.id &&
+    classOverride?.coachId !== user.id
+  ) {
+    notFound();
+  }
+
+  // Si el override cancela la clase, mostramos el mensaje igual que el admin.
+  const isCancelled = classOverride?.isCancelled ?? false;
 
   const confirmed = bookings.filter((b) => b.status === "CONFIRMED");
   const waitlisted = bookings.filter((b) => b.status === "WAITLISTED");
+
+  const effectiveStartTime = classOverride?.startTime ?? gymClass.startTime;
+  const effectiveEndTime = classOverride?.endTime ?? gymClass.endTime;
+  const effectiveMaxCapacity = classOverride?.maxCapacity ?? gymClass.maxCapacity;
+  const effectiveColor = classOverride?.color ?? gymClass.color;
+  const effectiveDescription = classOverride?.description ?? gymClass.description;
+  const effectiveCoachName =
+    effectiveCoachId === gymClass.coachId
+      ? gymClass.coach?.name ?? null
+      : null; // coach puntual: no mostramos nombre a menos que esté en la relación
 
   return (
     <div className="space-y-6">
@@ -96,60 +120,72 @@ export default async function CoachClassDetailPage({
         <div className="flex items-start gap-3 mb-4">
           <span
             className="size-3 rounded-full mt-1.5 shrink-0"
-            style={{ backgroundColor: gymClass.color ?? "#f97316" }}
+            style={{ backgroundColor: effectiveColor ?? "#f97316" }}
           />
           <div className="flex-1 min-w-0">
             <h2 className="text-xl font-bold text-[#EAEAEA] tracking-tight">
               {gymClass.discipline?.name ?? "Sin disciplina"}
             </h2>
             <p className="text-sm text-[#6B8A99] mt-0.5">
-              {formatDate(targetDate)} · {formatTime(gymClass.startTime)} –{" "}
-              {formatTime(gymClass.endTime)}
-              {gymClass.coach?.name && ` · ${gymClass.coach.name}`}
+              {formatDate(targetDate)} · {formatTime(effectiveStartTime)} –{" "}
+              {formatTime(effectiveEndTime)}
+              {effectiveCoachName && ` · ${effectiveCoachName}`}
             </p>
-            {gymClass.description && (
+            {effectiveDescription && (
               <p className="text-xs text-[#4A6B7A] mt-1.5">
-                {gymClass.description}
+                {effectiveDescription}
               </p>
             )}
           </div>
         </div>
 
-        <OccupancyBar
-          confirmed={confirmed.length}
-          waitlisted={waitlisted.length}
-          max={gymClass.maxCapacity}
-          large
-        />
+        {isCancelled ? (
+          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-4 py-3">
+            <p className="text-sm font-semibold text-[#E61919]">
+              Esta clase está cancelada para el {formatDate(targetDate)}
+            </p>
+          </div>
+        ) : (
+          <OccupancyBar
+            confirmed={confirmed.length}
+            waitlisted={waitlisted.length}
+            max={effectiveMaxCapacity}
+            large
+          />
+        )}
       </div>
 
-      <AttendeesList
-        title="Confirmados"
-        bookings={confirmed.map((b) => ({
-          id: b.id,
-          status: "CONFIRMED" as const,
-          waitlistPos: null,
-          createdAt: b.createdAt,
-          user: b.user,
-        }))}
-        emptyMessage="Nadie reservó esta clase todavía."
-        accent="emerald"
-        allowRemove={false}
-      />
+      {!isCancelled && (
+        <>
+          <AttendeesList
+            title="Confirmados"
+            bookings={confirmed.map((b) => ({
+              id: b.id,
+              status: "CONFIRMED" as const,
+              waitlistPos: null,
+              createdAt: b.createdAt,
+              user: b.user,
+            }))}
+            emptyMessage="Nadie reservó esta clase todavía."
+            accent="emerald"
+            allowRemove={false}
+          />
 
-      {waitlisted.length > 0 && (
-        <AttendeesList
-          title="Lista de espera"
-          bookings={waitlisted.map((b) => ({
-            id: b.id,
-            status: "WAITLISTED" as const,
-            waitlistPos: b.waitlistPos,
-            createdAt: b.createdAt,
-            user: b.user,
-          }))}
-          accent="orange"
-          allowRemove={false}
-        />
+          {waitlisted.length > 0 && (
+            <AttendeesList
+              title="Lista de espera"
+              bookings={waitlisted.map((b) => ({
+                id: b.id,
+                status: "WAITLISTED" as const,
+                waitlistPos: b.waitlistPos,
+                createdAt: b.createdAt,
+                user: b.user,
+              }))}
+              accent="orange"
+              allowRemove={false}
+            />
+          )}
+        </>
       )}
     </div>
   );
