@@ -71,7 +71,7 @@ export function TodayClassesTable({
                   {c.name}
                 </p>
                 {c.coach?.name && (
-                  <p className="text-[11px] md:text-xs text-[#4A6B7A] truncate">
+                  <p className="text-[11px] md:text-sm text-[#4A6B7A] truncate">
                     {c.coach.name}
                   </p>
                 )}

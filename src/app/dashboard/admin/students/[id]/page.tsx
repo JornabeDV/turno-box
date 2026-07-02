@@ -217,7 +217,7 @@ export default async function StudentDetailPage({ params }: Props) {
       <div>
         <div className="flex items-center gap-2 mb-2 px-1">
           <span className="size-1.5 rounded-full bg-[#27C7B8]" />
-          <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Próximos turnos
           </h3>
           <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-[#27C7B8]">

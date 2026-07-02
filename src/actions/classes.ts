@@ -7,15 +7,21 @@ import { sendPushToUser } from "@/lib/push";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
 
+const dayOfWeekEnum = z.enum(["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"]);
+
 const classSchema = z.object({
   description: z.string().optional(),
-  dayOfWeek: z.enum(["MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"]),
+  dayOfWeek: dayOfWeekEnum,
   startTime: z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:MM requerido"),
   endTime:   z.string().regex(/^\d{2}:\d{2}$/, "Formato HH:MM requerido"),
   maxCapacity: z.coerce.number().int().min(1).max(100),
   color: z.string().optional(),
   coachId: z.string().optional(),
   disciplineId: z.string().min(1, "La disciplina es requerida"),
+});
+
+const createClassSchema = classSchema.omit({ dayOfWeek: true }).extend({
+  dayOfWeek: z.array(dayOfWeekEnum).min(1, "Seleccioná al menos un día"),
 });
 
 const instanceSchema = z.object({
@@ -37,7 +43,9 @@ async function requireAdmin() {
   return { userId: user.id, gymId: user.gymId };
 }
 
-export async function createClassAction(formData: FormData) {
+export async function createClassAction(
+  formData: FormData,
+): Promise<{ created: number; skipped: number }> {
   const { gymId } = await requireAdmin();
 
   // Verificar que el gym existe
@@ -46,7 +54,7 @@ export async function createClassAction(formData: FormData) {
 
   const raw = {
     description: formData.get("description"),
-    dayOfWeek: formData.get("dayOfWeek"),
+    dayOfWeek: formData.getAll("dayOfWeek"),
     startTime: formData.get("startTime"),
     endTime: formData.get("endTime"),
     maxCapacity: formData.get("maxCapacity"),
@@ -55,18 +63,40 @@ export async function createClassAction(formData: FormData) {
     disciplineId: formData.get("disciplineId"),
   };
 
-  const parsed = classSchema.parse(raw);
+  const parsed = createClassSchema.parse(raw);
+  const { dayOfWeek, ...classData } = parsed;
 
-  const newClass = await prisma.gymClass.create({
-    data: { ...parsed, gymId },
+  // Evitar duplicados: misma disciplina + horario + día
+  const existing = await prisma.gymClass.findMany({
+    where: { gymId, dayOfWeek: { in: dayOfWeek }, deletedAt: null },
+    select: { dayOfWeek: true, disciplineId: true, startTime: true },
   });
+  const existingKeys = new Set(
+    existing.map((c) => `${c.dayOfWeek}|${c.disciplineId}|${c.startTime}`),
+  );
+
+  let created = 0;
+  let skipped = 0;
+
+  for (const day of dayOfWeek) {
+    if (existingKeys.has(`${day}|${parsed.disciplineId}|${parsed.startTime}`)) {
+      skipped++;
+      continue;
+    }
+    const newClass = await prisma.gymClass.create({
+      data: { ...classData, dayOfWeek: day, gymId },
+    });
+    created++;
+    if (newClass.coachId) {
+      revalidatePath(`/dashboard/admin/coaches/${newClass.coachId}`);
+    }
+  }
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath("/dashboard/coach");
   revalidatePath("/dashboard/admin/coaches");
-  if (newClass.coachId) {
-    revalidatePath(`/dashboard/admin/coaches/${newClass.coachId}`);
-  }
+
+  return { created, skipped };
 }
 
 export async function updateClassAction(classId: string, formData: FormData) {
