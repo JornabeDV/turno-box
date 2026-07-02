@@ -70,9 +70,36 @@ export default async function CoachesPage() {
     orderBy: { name: "asc" },
   });
 
+  // Clases puntuales (overrides) futuras asignadas a cada coach
+  const upcomingOverrides = await prisma.classOverride.findMany({
+    where: {
+      date: { gte: today },
+      isCancelled: false,
+      coachId: { in: coaches.map((c) => c.id) },
+    },
+    select: { coachId: true, date: true },
+  });
+
+  const overridesByCoach = upcomingOverrides.reduce<Record<string, number>>(
+    (acc, o) => {
+      if (!o.coachId) return acc;
+      acc[o.coachId] = (acc[o.coachId] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
+
+  const todayOverrideCoachIds = new Set(
+    upcomingOverrides
+      .filter((o) => o.coachId && o.date.getTime() === today.getTime())
+      .map((o) => o.coachId as string),
+  );
+
   const active = coaches.filter((c) => c.isActive).length;
-  const teachingToday = coaches.filter((c) =>
-    c.taughtClasses.some((cls) => cls.dayOfWeek === dayOfWeek),
+  const teachingToday = coaches.filter(
+    (c) =>
+      c.taughtClasses.some((cls) => cls.dayOfWeek === dayOfWeek) ||
+      todayOverrideCoachIds.has(c.id),
   ).length;
 
   return (
@@ -118,6 +145,7 @@ export default async function CoachesPage() {
             email: coach.email,
             isActive: coach.isActive,
             classCount: coach.taughtClasses.length,
+            overrideCount: overridesByCoach[coach.id] ?? 0,
             todayAttendees: coach.taughtClasses
               .filter((cls) => cls.dayOfWeek === dayOfWeek)
               .reduce((acc, cls) => acc + cls.bookings.length, 0),

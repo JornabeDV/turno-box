@@ -194,12 +194,63 @@ export async function cancelBookingAction(
   });
   if (!booking) return { success: false, error: "Reserva no encontrada." };
 
-  // El userId para reembolsos/créditos es el dueño de la reserva, no el admin que cancela
+  return runCancelBooking(booking, gymId);
+}
+
+// ── HELPERS Y ACCIONES PARA COACHES / ADMINS ────────────────────────
+
+async function requireClassManager(
+  classId: string,
+  classDate: Date,
+  userId: string,
+  gymId: string,
+  role: string
+): Promise<void> {
+  if (role === "ADMIN" || role === "SUPER_ADMIN") return;
+
+  const gymClass = await prisma.gymClass.findFirst({
+    where: { id: classId, gymId, deletedAt: null },
+    select: { coachId: true },
+  });
+  if (!gymClass) throw new Error("Clase no encontrada.");
+
+  if (gymClass.coachId === userId) return;
+
+  const override = await prisma.classOverride.findUnique({
+    where: { gymClassId_date: { gymClassId: classId, date: classDate } },
+    select: { coachId: true },
+  });
+  if (override?.coachId === userId) return;
+
+  throw new Error("No autorizado para gestionar esta clase.");
+}
+
+function revalidateBookingPaths(classId: string, userId?: string) {
+  revalidatePath("/");
+  revalidatePath("/bookings");
+  revalidatePath("/dashboard/coach");
+  revalidatePath(`/dashboard/coach/classes/${classId}`);
+  revalidatePath(`/dashboard/admin/classes/${classId}`);
+  if (userId) revalidatePath(`/dashboard/admin/students/${userId}`);
+}
+
+async function runCancelBooking(
+  booking: {
+    id: string;
+    status: string;
+    classId: string;
+    classDate: Date;
+    userId: string;
+    class: { startTime: string; gym?: { cancelWindowHours?: number | null } | null };
+  },
+  gymId: string
+): Promise<ActionResult> {
+  // El userId para reembolsos/créditos es el dueño de la reserva, no el admin/coach que cancela
   const bookingUserId = booking.userId;
 
   // No permitir cancelar si ya está cancelada
   if (booking.status === "CANCELLED") {
-    return { success: true, data: undefined }; // No es error, ya está cancelada
+    return { success: true, data: undefined };
   }
 
   // ── Calcular si está dentro de la ventana de cancelación con reembolso ──
@@ -218,7 +269,7 @@ export async function cancelBookingAction(
     const promotedUserId = await prisma.$transaction(async (tx: Tx): Promise<string | null> => {
     // Cancelar reserva
     await tx.booking.update({
-      where: { id: bookingId },
+      where: { id: booking.id },
       data: { status: "CANCELLED", cancelledAt: new Date() },
     });
 
@@ -324,9 +375,7 @@ export async function cancelBookingAction(
     return null;
   });
 
-  revalidatePath("/");
-  revalidatePath("/bookings");
-  revalidatePath("/classes/[classId]");
+  revalidateBookingPaths(booking.classId, bookingUserId);
 
   // Push fuera del transaction para evitar conflictos con el connection pool
   if (promotedUserId) {
@@ -343,5 +392,228 @@ export async function cancelBookingAction(
   return { success: true, data: undefined };
   } catch (e: unknown) {
     return { success: false, error: "Error al cancelar." };
+  }
+}
+
+export async function removeBookingByCoachAction(
+  bookingId: string
+): Promise<ActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "No autenticado." };
+
+  const userId = session.user.id;
+  const role = (session.user as { role?: string }).role ?? "";
+  const gymId = (session.user as { gymId?: string }).gymId ?? "";
+
+  const booking = await prisma.booking.findFirst({
+    where: { id: bookingId, deletedAt: null },
+    select: {
+      id: true, status: true, classId: true, classDate: true, userId: true,
+      class: { select: { gymId: true, startTime: true, gym: { select: { cancelWindowHours: true } } } },
+    },
+  });
+  if (!booking) return { success: false, error: "Reserva no encontrada." };
+  if (booking.class.gymId !== gymId) return { success: false, error: "Gimnasio no coincide." };
+
+  try {
+    await requireClassManager(booking.classId, booking.classDate, userId, gymId, role);
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "No autorizado." };
+  }
+
+  // Un coach/admin siempre puede eliminar; el reembolso sigue la regla de ventana
+  return runCancelBooking(booking, gymId);
+}
+
+export async function addStudentToClassAction(
+  classId: string,
+  dateStr: string,
+  targetUserId: string
+): Promise<ActionResult<{ status: "CONFIRMED" | "WAITLISTED"; bookingId: string }>> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "No autenticado." };
+
+  const userId = session.user.id;
+  const role = (session.user as { role?: string }).role ?? "";
+  const gymId = (session.user as { gymId?: string }).gymId;
+  const classDate = toClassDate(new Date(dateStr));
+
+  if (!gymId) return { success: false, error: "Sin gimnasio asignado." };
+
+  try {
+    await requireClassManager(classId, classDate, userId, gymId, role);
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "No autorizado." };
+  }
+
+  const [gymClass, targetUser, existingBooking] = await Promise.all([
+    prisma.gymClass.findFirst({
+      where: { id: classId, gymId, isActive: true, deletedAt: null },
+      select: { id: true, maxCapacity: true, gym: { select: { waitlistEnabled: true } } },
+    }),
+    prisma.user.findFirst({
+      where: { id: targetUserId, gymId, role: "STUDENT" },
+      select: { id: true },
+    }),
+    prisma.booking.findFirst({
+      where: { userId: targetUserId, classId, classDate, deletedAt: null },
+      select: { id: true, status: true },
+    }),
+  ]);
+
+  if (!gymClass) return { success: false, error: "Clase no encontrada." };
+  if (!targetUser) return { success: false, error: "Alumno no encontrado." };
+  if (existingBooking && existingBooking.status !== "CANCELLED") {
+    return { success: false, error: "El alumno ya tiene una reserva para esta clase." };
+  }
+
+  const existingBookingId = existingBooking?.id ?? null;
+
+  try {
+    const result = await prisma.$transaction(async (tx: Tx) => {
+      // Verificar créditos del alumno
+      const balanceRows = await tx.$queryRaw<{ availableCredits: number }[]>`
+        SELECT "availableCredits"
+        FROM user_credit_balances
+        WHERE "userId" = ${targetUserId} AND "gymId" = ${gymId}
+        FOR UPDATE
+      `;
+
+      const balance = balanceRows[0];
+      if (!balance || balance.availableCredits < 1) {
+        throw Object.assign(new Error("El alumno no tiene créditos disponibles."), { code: "NO_CREDITS" });
+      }
+
+      // Verificar cupo
+      const confirmedCount = await tx.booking.count({
+        where: { classId, classDate, status: "CONFIRMED", deletedAt: null },
+      });
+      const isFull = confirmedCount >= gymClass.maxCapacity;
+
+      if (isFull && !gymClass.gym?.waitlistEnabled) {
+        throw Object.assign(
+          new Error("La clase está completa y la lista de espera no está habilitada."),
+          { code: "CLASS_FULL_NO_WAITLIST" }
+        );
+      }
+
+      let waitlistPos: number | null = null;
+      if (isFull) {
+        const agg = await tx.booking.aggregate({
+          where: { classId, classDate, status: "WAITLISTED", deletedAt: null },
+          _max: { waitlistPos: true },
+        });
+        waitlistPos = (agg._max.waitlistPos ?? 0) + 1;
+      }
+
+      const status = isFull ? "WAITLISTED" : "CONFIRMED";
+
+      // Crear o reactivar reserva
+      const booking = existingBookingId
+        ? await tx.booking.update({
+            where: { id: existingBookingId },
+            data: { status, waitlistPos, cancelledAt: null },
+          })
+        : await tx.booking.create({
+            data: { userId: targetUserId, classId, classDate, status, waitlistPos },
+          });
+
+      // Consumir crédito solo si CONFIRMED
+      if (status === "CONFIRMED") {
+        await tx.$executeRaw`
+          UPDATE user_credit_balances
+          SET "availableCredits" = "availableCredits" - 1,
+              "version"           = "version" + 1,
+              "updatedAt"        = now()
+          WHERE "userId" = ${targetUserId} AND "gymId" = ${gymId}
+        `;
+
+        const now = new Date();
+        const activePayments = await tx.payment.findMany({
+          where: {
+            userId: targetUserId,
+            gymId,
+            status: "APPROVED",
+            OR: [{ expiresAt: { gt: now } }, { expiresAt: null }],
+          },
+          select: {
+            id: true,
+            creditsGranted: true,
+            creditTxs: { select: { amount: true } },
+          },
+          orderBy: { expiresAt: "asc" },
+        });
+
+        let targetPaymentId: string | null = null;
+        for (const p of activePayments) {
+          const remaining = p.creditTxs.reduce((s, t) => s + t.amount, 0);
+          if (remaining > 0) {
+            targetPaymentId = p.id;
+            break;
+          }
+        }
+
+        await tx.creditTransaction.create({
+          data: {
+            userId: targetUserId,
+            gymId,
+            type: "CONSUME",
+            amount: -1,
+            bookingId: booking.id,
+            ...(targetPaymentId ? { paymentId: targetPaymentId } : {}),
+          },
+        });
+      }
+
+      return { status, bookingId: booking.id };
+    });
+
+    revalidateBookingPaths(classId, targetUserId);
+
+    return { success: true, data: { status: result.status as "CONFIRMED" | "WAITLISTED", bookingId: result.bookingId } };
+  } catch (e: unknown) {
+    const err = e as { code?: string; message?: string };
+    if (err.code === "NO_CREDITS") return { success: false, error: err.message! };
+    if (err.code === "CLASS_FULL_NO_WAITLIST") return { success: false, error: err.message! };
+    if (err.code === "P2002") return { success: false, error: "El alumno ya tiene una reserva para esta clase." };
+    console.error("[addStudentToClassAction]", e);
+    return { success: false, error: "Error al agregar el alumno." };
+  }
+}
+
+export async function markClassAttendanceTakenAction(
+  classId: string,
+  dateStr: string
+): Promise<ActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "No autenticado." };
+
+  const userId = session.user.id;
+  const role = (session.user as { role?: string }).role ?? "";
+  const gymId = (session.user as { gymId?: string }).gymId ?? "";
+  const classDate = toClassDate(new Date(dateStr));
+
+  try {
+    await requireClassManager(classId, classDate, userId, gymId, role);
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "No autorizado." };
+  }
+
+  try {
+    await prisma.booking.updateMany({
+      where: {
+        classId,
+        classDate,
+        deletedAt: null,
+        status: "CONFIRMED",
+      },
+      data: { attendedAt: new Date() },
+    });
+
+    revalidateBookingPaths(classId);
+    return { success: true, data: undefined };
+  } catch (e: unknown) {
+    console.error("[markClassAttendanceTakenAction]", e);
+    return { success: false, error: "Error al confirmar asistencia." };
   }
 }

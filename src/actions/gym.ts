@@ -14,6 +14,8 @@ const gymSettingsSchema = z.object({
   phone:              z.string().max(30).optional().or(z.literal("")),
   cancelWindowHours:  z.coerce.number().refine((v) => [0.5, 1, 2].includes(v), "Valor de ventana inválido"),
   waitlistEnabled:    z.boolean(),
+  mpAccessToken:      z.string().max(500).optional().or(z.literal("")),
+  mpWebhookSecret:    z.string().max(500).optional().or(z.literal("")),
 });
 
 async function getAdminUser() {
@@ -58,6 +60,8 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
     phone:             formData.get("phone"),
     cancelWindowHours: formData.get("cancelWindowHours"),
     waitlistEnabled:   formData.get("waitlistEnabled") === "true",
+    mpAccessToken:     formData.get("mpAccessToken"),
+    mpWebhookSecret:   formData.get("mpWebhookSecret"),
   });
 
   if (!parsed.success) {
@@ -73,6 +77,8 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
       phone:             parsed.data.phone    || null,
       cancelWindowHours: parsed.data.cancelWindowHours,
       waitlistEnabled:   parsed.data.waitlistEnabled,
+      mpAccessToken:     parsed.data.mpAccessToken?.trim() || null,
+      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim() || null,
     },
   });
 

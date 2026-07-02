@@ -1,12 +1,16 @@
 import { prisma } from "@/lib/prisma";
-import { MercadoPagoConfig, Payment as MPPayment } from "mercadopago";
+import { createMpClient } from "@/lib/mercadopago";
+import { Payment as MPPayment } from "mercadopago";
 
 /**
  * Verifica el pago con MercadoPago y acredita los créditos si está aprobado.
  * Es idempotente: si el pago ya está APPROVED en la DB, no hace nada.
  * Retorna true si los créditos quedaron acreditados.
  */
-export async function approvePaymentIfValid(paymentId: string): Promise<boolean> {
+export async function approvePaymentIfValid(
+  paymentId: string,
+  accessToken: string
+): Promise<boolean> {
   const payment = await prisma.payment.findUnique({
     where: { id: paymentId },
   });
@@ -17,7 +21,7 @@ export async function approvePaymentIfValid(paymentId: string): Promise<boolean>
 
   // Consultar estado real en MP usando el providerOrderId (preference_id)
   // Si aún no tiene providerPaymentId, buscamos por external_reference
-  const mpClient = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN! });
+  const mpClient = createMpClient(accessToken);
   const mpApi    = new MPPayment(mpClient);
 
   let mpStatus: string | null | undefined = null;

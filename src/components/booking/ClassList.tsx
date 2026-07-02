@@ -68,9 +68,9 @@ export function ClassList({ initialSlots, initialDate, gymId, userId, availableD
       )}
 
       {/* Título de sección */}
-      <div className="pt-2">
-        <div className="flex items-center justify-between border-b border-[#1A4A63] pb-2">
-          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg">
+      <div className="pt-2 md:pt-4">
+        <div className="flex items-center justify-between border-b border-[#1A4A63] pb-2 md:pb-3">
+          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg md:text-2xl">
             Clases disponibles {isToday ? "hoy" : ""}
           </h3>
         </div>
@@ -82,16 +82,16 @@ export function ClassList({ initialSlots, initialDate, gymId, userId, availableD
           Array.from({ length: 3 }).map((_, i) => (
             <div
               key={i}
-              className="bg-[#0E2A38] border border-[#1A4A63] h-[140px] animate-pulse"
+              className="bg-[#0E2A38] border border-[#1A4A63] h-[140px] md:h-[180px] animate-pulse"
             />
           ))
         ) : visibleSlots.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center border border-[#1A4A63] bg-[#0E2A38]">
-            <CalendarBlank size={28} className="text-[#1A4A63] mb-3" />
-            <p className="text-sm font-[family-name:var(--font-oswald)] font-medium text-[#6B8A99] uppercase tracking-wide">
+          <div className="flex flex-col items-center justify-center py-16 md:py-20 text-center border border-[#1A4A63] bg-[#0E2A38]">
+            <CalendarBlank size={28} className="text-[#1A4A63] mb-3 md:mb-4 md:size-10" />
+            <p className="text-sm md:text-base font-[family-name:var(--font-oswald)] font-medium text-[#6B8A99] uppercase tracking-wide">
               Sin clases este día
             </p>
-            <p className="text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A] mt-1">
+            <p className="text-xs md:text-sm font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A] mt-1 md:mt-2">
               Probá con otro día de la semana
             </p>
           </div>

@@ -26,6 +26,7 @@ export type CoachRow = {
   email: string;
   isActive: boolean;
   classCount: number;
+  overrideCount: number;
   todayAttendees: number;
   teachingDays: string[];
 };
@@ -136,6 +137,12 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                     {coach.classCount}{" "}
                     {coach.classCount === 1 ? "clase" : "clases"}
                   </span>
+                  {coach.overrideCount > 0 && (
+                    <span className="text-[10px] md:text-xs text-[#F78837] tabular-nums">
+                      +{coach.overrideCount} puntual
+                      {coach.overrideCount === 1 ? "" : "es"}
+                    </span>
+                  )}
                   {coach.todayAttendees > 0 && (
                     <span className="text-[10px] md:text-xs text-[#27C7B8] tabular-nums">
                       {coach.todayAttendees} hoy

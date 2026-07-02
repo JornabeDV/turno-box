@@ -44,7 +44,7 @@ export function OccupancyBar({
             <span className="text-lg md:text-xl text-[#4A6B7A] font-mono">/{max}</span>
           </div>
           <div className="text-right">
-            <p className="text-xs md:text-sm text-[#6B8A99]">
+            <p className="text-xs md:text-base text-[#6B8A99]">
               {available > 0 ? (
                 <span className="text-[#27C7B8]">
                   {available} {available === 1 ? "cupo libre" : "cupos libres"}
@@ -60,7 +60,7 @@ export function OccupancyBar({
         </div>
 
         {/* Barra */}
-        <div className="h-2.5 w-full rounded-full bg-[#0E2A38] overflow-hidden">
+        <div className="h-2.5 w-full rounded-full bg-[#1A4A63]/40 overflow-hidden">
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500",
@@ -71,7 +71,7 @@ export function OccupancyBar({
         </div>
 
         {/* Etiqueta % */}
-        <p className="text-[10px] md:text-xs text-[#4A6B7A] font-mono">
+        <p className="text-xs md:text-sm text-[#4A6B7A] font-mono">
           {Math.round(pct)}% de ocupación
         </p>
       </div>
@@ -81,7 +81,7 @@ export function OccupancyBar({
   // Versión compacta — para la tabla del dashboard
   return (
     <div className="flex items-center gap-2 min-w-[80px]">
-      <div className="flex-1 h-1.5 rounded-full bg-[#0E2A38] overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-[#1A4A63]/40 overflow-hidden">
         <div
           className={cn("h-full rounded-full", barColor)}
           style={{ width: `${pct}%` }}

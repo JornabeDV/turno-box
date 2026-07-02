@@ -71,7 +71,7 @@ export function PushNotificationHelp() {
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between text-left"
       >
-        <span className="flex items-center gap-2 text-xs md:text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+        <span className="flex items-center gap-2 text-xs md:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
           <QuestionIcon size={14} />
           ¿Cómo recibir notificaciones cuando la app está cerrada?
         </span>
@@ -123,7 +123,7 @@ export function PushNotificationHelp() {
               <button
                 type="button"
                 onClick={() => setOs("unknown")}
-                className="ml-auto text-[11px] md:text-xs text-[#4A6B7A] underline underline-offset-2 hover:text-[#6B8A99]"
+                className="ml-auto text-[11px] md:text-sm text-[#4A6B7A] underline underline-offset-2 hover:text-[#6B8A99]"
               >
                 cambiar
               </button>

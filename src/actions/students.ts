@@ -54,6 +54,8 @@ export async function adjustCreditsAction(
     amountPaid:   z.coerce.number().min(0).max(999999).default(0),
     method:       z.string().optional(),
     validityDays: z.coerce.number().int().min(1).max(365).default(30),
+    validityMode: z.enum(["days", "date"]).default("days"),
+    expiresAt:    z.string().optional(),
   });
 
   const parsed = schema.safeParse({
@@ -62,6 +64,8 @@ export async function adjustCreditsAction(
     amountPaid:   formData.get("amountPaid"),
     method:       formData.get("method"),
     validityDays: formData.get("validityDays"),
+    validityMode: formData.get("validityMode"),
+    expiresAt:    formData.get("expiresAt"),
   });
   if (!parsed.success) return { success: false, error: parsed.error.issues[0].message };
 
@@ -71,7 +75,20 @@ export async function adjustCreditsAction(
   });
   if (!student) return { success: false, error: "Alumno no encontrado." };
 
-  const { amount, note, amountPaid, validityDays } = parsed.data;
+  const { amount, note, amountPaid, validityDays, validityMode, expiresAt: expiresAtInput } = parsed.data;
+
+  // Calcular fecha de vencimiento
+  let expiresAt: Date;
+  if (validityMode === "date" && expiresAtInput) {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(expiresAtInput)) {
+      return { success: false, error: "Fecha de vencimiento inválida." };
+    }
+    // Fin del día en America/Argentina/Buenos_Aires (UTC-3)
+    expiresAt = new Date(`${expiresAtInput}T23:59:59-03:00`);
+  } else {
+    expiresAt = new Date(Date.now() + validityDays * 86_400_000);
+  }
 
   const result = await prisma.$transaction(async (tx: Tx) => {
     // Leer balance actual para calcular el nuevo valor
@@ -89,7 +106,6 @@ export async function adjustCreditsAction(
     });
 
     // Registrar el pago asociado (incluso si es $0, para trazabilidad completa)
-    const expiresAt = new Date(Date.now() + validityDays * 86_400_000);
     const payment = await tx.payment.create({
       data: {
         gymId,
@@ -114,6 +130,7 @@ export async function adjustCreditsAction(
         amount,
         note,
         paymentId: payment.id,
+        expiresAt,
       },
     });
 
@@ -292,4 +309,51 @@ export async function createStudentAction(
 
   revalidatePath("/dashboard/admin/students");
   return { success: true, data: { id: user.id } };
+}
+
+// ── Búsqueda de alumnos para coach/admin ─────────────────────────────────────
+export async function searchStudentsAction(
+  query: string
+): Promise<ActionResult<{ id: string; name: string | null; email: string; credits: number }[]>> {
+  const session = await auth();
+  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  if (!user?.id || !user.gymId) return { success: false, error: "No autenticado." };
+  if (!["ADMIN", "COACH", "SUPER_ADMIN"].includes(user.role ?? "")) {
+    return { success: false, error: "No autorizado." };
+  }
+
+  const gymId = user.gymId;
+  const like = `%${query.trim().toLowerCase()}%`;
+
+  const students = await prisma.user.findMany({
+    where: {
+      gymId,
+      role: "STUDENT",
+      OR: [
+        { name: { contains: query.trim(), mode: "insensitive" } },
+        { email: { contains: query.trim(), mode: "insensitive" } },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      creditBalances: {
+        where: { gymId },
+        select: { availableCredits: true },
+      },
+    },
+    orderBy: { name: "asc" },
+    take: 20,
+  });
+
+  return {
+    success: true,
+    data: students.map((s) => ({
+      id: s.id,
+      name: s.name,
+      email: s.email,
+      credits: s.creditBalances[0]?.availableCredits ?? 0,
+    })),
+  };
 }

@@ -5,12 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Formatea "07:00" → "7:00 AM" / "08:30" → "8:30 AM"
+// Formatea "07:00" → "07:00" / "20:00" → "20:00" (formato 24 hs)
 export function formatTime(time: string): string {
   const [h, m] = time.split(":").map(Number);
-  const period = h < 12 ? "AM" : "PM";
-  const hour = h % 12 || 12;
-  return `${hour}:${m.toString().padStart(2, "0")} ${period}`;
+  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
 }
 
 // Formatea fecha a "Lun 7 Abr"

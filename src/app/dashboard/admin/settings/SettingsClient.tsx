@@ -106,6 +106,7 @@ function TestPushButton() {
 }
 
 type GymSettings = {
+  id: string;
   name: string;
   logoUrl: string | null;
   address: string | null;
@@ -113,6 +114,8 @@ type GymSettings = {
   cancelWindowHours: number;
   waitlistEnabled: boolean;
   slug: string;
+  mpAccessToken: string | null;
+  mpWebhookSecret: string | null;
 };
 
 const inputClass =
@@ -134,7 +137,15 @@ export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName
     phone: gym.phone ?? "",
     cancelWindowHours: String(gym.cancelWindowHours),
     waitlistEnabled: gym.waitlistEnabled,
+    mpAccessToken: gym.mpAccessToken ?? "",
+    mpWebhookSecret: gym.mpWebhookSecret ?? "",
   });
+
+  const webhookUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/api/webhooks/mercadopago?gymId=${gym.id}`
+      : `/api/webhooks/mercadopago?gymId=${gym.id}`;
+  const mpConfigured = !!form.mpAccessToken.trim();
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(gym.logoUrl);
@@ -425,6 +436,98 @@ export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName
           </div>
         </div>
 
+        {/* ── Sección: Mercado Pago ───────────────────────────────────────── */}
+        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+              Mercado Pago
+            </h3>
+            <span
+              className={cn(
+                "text-[10px] uppercase tracking-wider px-2 py-0.5 border",
+                mpConfigured
+                  ? "text-[#27C7B8] border-[#27C7B8]/40 bg-[#27C7B8]/10"
+                  : "text-[#F78837] border-[#F78837]/40 bg-[#F78837]/10"
+              )}
+            >
+              {mpConfigured ? "Configurado" : "No configurado"}
+            </span>
+          </div>
+
+          <p className="text-xs md:text-sm text-[#6B8A99]">
+            Configurá la cuenta de Mercado Pago del gimnasio para que los alumnos
+            compren abonos online y el dinero ingrese directamente a tu cuenta.
+          </p>
+
+          <div className="space-y-1.5">
+            <label className={labelClass}>Access Token de producción</label>
+            <input
+              name="mpAccessToken"
+              value={form.mpAccessToken}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, mpAccessToken: e.target.value }))
+              }
+              className={inputClass}
+              placeholder="APP_USR-..."
+              type="password"
+              autoComplete="off"
+            />
+            <p className="text-xs text-[#6B8A99]">
+              Lo encontrás en Mercado Pago → Tu negocio → Configuración → Credenciales de producción.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className={labelClass}>Webhook Secret (opcional)</label>
+            <input
+              name="mpWebhookSecret"
+              value={form.mpWebhookSecret}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, mpWebhookSecret: e.target.value }))
+              }
+              className={inputClass}
+              placeholder="Secreto para validar notificaciones"
+              type="password"
+              autoComplete="off"
+            />
+            <p className="text-xs text-[#6B8A99]">
+              Secreto que configurás en Mercado Pago para validar que las notificaciones sean reales.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className={labelClass}>URL del webhook</label>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 h-12 rounded-[2px]">
+                  <LinkIcon size={14} className="text-[#4A6B7A] shrink-0" />
+                  <span className="text-sm md:text-base text-[#EAEAEA] truncate">
+                    {webhookUrl}
+                  </span>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(webhookUrl);
+                    toast.success("URL copiada");
+                  } catch {
+                    toast.error("No se pudo copiar");
+                  }
+                }}
+                className="shrink-0"
+              >
+                <Copy size={16} />
+              </Button>
+            </div>
+            <p className="text-xs text-[#6B8A99]">
+              Copiá esta URL en Mercado Pago → Tu negocio → Configuración → Notificaciones.
+            </p>
+          </div>
+        </div>
+
         {/* ── Guardar ─────────────────────────────────────────────────────── */}
         <div className="flex justify-end">
           <Button
@@ -433,7 +536,6 @@ export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName
             loading={isPending}
             className="min-w-32"
             size="md"
-
           >
             Guardar cambios
           </Button>

@@ -57,12 +57,16 @@ export async function createClassAction(formData: FormData) {
 
   const parsed = classSchema.parse(raw);
 
-  await prisma.gymClass.create({
+  const newClass = await prisma.gymClass.create({
     data: { ...parsed, gymId },
   });
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath("/dashboard/coach");
+  revalidatePath("/dashboard/admin/coaches");
+  if (newClass.coachId) {
+    revalidatePath(`/dashboard/admin/coaches/${newClass.coachId}`);
+  }
 }
 
 export async function updateClassAction(classId: string, formData: FormData) {
@@ -97,6 +101,13 @@ export async function updateClassAction(classId: string, formData: FormData) {
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath("/dashboard/coach");
+  revalidatePath("/dashboard/admin/coaches");
+  if (existing.coachId && existing.coachId !== parsed.coachId) {
+    revalidatePath(`/dashboard/admin/coaches/${existing.coachId}`);
+  }
+  if (parsed.coachId) {
+    revalidatePath(`/dashboard/admin/coaches/${parsed.coachId}`);
+  }
 }
 
 export async function duplicateDayAction(
@@ -145,6 +156,7 @@ export async function duplicateDayAction(
   }
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath("/dashboard/admin/coaches");
   return { success: true, data: { created, skipped } };
 }
 
@@ -161,6 +173,7 @@ export async function deleteClassAction(classId: string): Promise<void> {
     where: { id: classId, gymId, deletedAt: null },
     select: {
       startTime: true,
+      coachId: true,
       discipline: { select: { name: true } },
       bookings: {
         where: {
@@ -197,6 +210,10 @@ export async function deleteClassAction(classId: string): Promise<void> {
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
   revalidatePath("/dashboard/coach");
+  revalidatePath("/dashboard/admin/coaches");
+  if (gymClass?.coachId) {
+    revalidatePath(`/dashboard/admin/coaches/${gymClass.coachId}`);
+  }
 }
 
 // ── CANCELAR UNA INSTANCIA PUNTUAL ──────────────────────────────
@@ -298,6 +315,7 @@ export async function deleteClassInstanceAction(
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
   revalidatePath("/dashboard/coach");
+  revalidatePath("/dashboard/admin/coaches");
 }
 
 // ── EDITAR UNA INSTANCIA PUNTUAL ────────────────────────────────
@@ -340,6 +358,13 @@ export async function updateClassInstanceAction(
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
   revalidatePath("/dashboard/coach");
+  revalidatePath("/dashboard/admin/coaches");
+  if (parsed.coachId) {
+    revalidatePath(`/dashboard/admin/coaches/${parsed.coachId}`);
+  }
+  if (existing.coachId && existing.coachId !== parsed.coachId) {
+    revalidatePath(`/dashboard/admin/coaches/${existing.coachId}`);
+  }
 }
 
 // ── GYM CLOSURES ────────────────────────────────────────────────

@@ -174,7 +174,7 @@ export function NewsListClient({ announcements: initial }: Props) {
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-base font-semibold text-[#EAEAEA] truncate">
+                    <p className="text-base md:text-lg font-semibold text-[#EAEAEA] truncate">
                       {item.title}
                     </p>
                     <p className="text-sm text-[#6B8A99] mt-0.5 line-clamp-2">

@@ -41,7 +41,7 @@ export async function Header({
           {mobileMenuSlot}
           {/* Nombre del box */}
           {gymName ? (
-            <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-xl leading-none">
+            <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-xl md:text-2xl leading-none">
               {gymName}
             </span>
           ) : logoSrc ? (
@@ -60,7 +60,7 @@ export async function Header({
         <div className="flex items-center gap-3">
           {credits !== null && <CreditsBadge credits={credits} />}
           {session?.user && (
-            <span className="text-[11px] md:text-xs text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
+            <span className="text-[11px] md:text-sm text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
               {session.user.name ?? session.user.email}
             </span>
           )}
