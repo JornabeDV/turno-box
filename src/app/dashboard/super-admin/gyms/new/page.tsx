@@ -1,8 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SuperAdminCreateGymClient } from "./SuperAdminCreateGymClient";
-import { ArrowLeft } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
+import { BackButton } from "@/components/ui/BackButton";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Crear Gimnasio" };
@@ -14,13 +13,8 @@ export default async function SuperAdminCreateGymPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link
-          href="/dashboard/super-admin/gyms"
-          className="text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
-        >
-          <ArrowLeft size={18} />
-        </Link>
+      <div className="space-y-3">
+        <BackButton href="/dashboard/super-admin/gyms" />
         <div>
           <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
             Super Admin
