@@ -8,6 +8,7 @@ import {
   ListIcon,
   ChartBarIcon,
   CalendarBlankIcon,
+  CalendarCheckIcon,
   UsersIcon,
   BarbellIcon,
   CurrencyCircleDollarIcon,
@@ -22,6 +23,11 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/dashboard/admin", label: "Panel General", Icon: ChartBarIcon },
+  {
+    href: "/dashboard/admin/my-classes",
+    label: "Mis clases",
+    Icon: CalendarCheckIcon,
+  },
   {
     href: "/dashboard/admin/classes",
     label: "Clases",

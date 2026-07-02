@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { toast } from "sonner";
-import { TrashIcon } from "@phosphor-icons/react";
+import { TrashIcon, CheckIcon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
-import { removeBookingByCoachAction } from "@/actions/bookings";
+import { Button } from "@/components/ui/Button";
+import { Dialog } from "@/components/ui/Dialog";
+import { removeBookingByCoachAction, toggleBookingAttendanceAction } from "@/actions/bookings";
 
 type Booking = {
   id: string;
@@ -45,16 +47,49 @@ export function CoachAttendeesList({
   accent,
 }: Props) {
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+  const [attendedMap, setAttendedMap] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(bookings.map((b) => [b.id, !!b.attendedAt]))
+  );
   const [isPending, startTransition] = useTransition();
+  const [attendancePending, setAttendancePending] = useState<Set<string>>(new Set());
+  const [removeTarget, setRemoveTarget] = useState<Booking | null>(null);
+
+  useEffect(() => {
+    setAttendedMap(Object.fromEntries(bookings.map((b) => [b.id, !!b.attendedAt])));
+  }, [bookings]);
 
   function handleRemove(bookingId: string) {
     startTransition(async () => {
       const result = await removeBookingByCoachAction(bookingId);
+      setRemoveTarget(null);
       if (result.success) {
         setRemovedIds((prev) => new Set(prev).add(bookingId));
         toast.success("Alumno eliminado");
       } else {
         toast.error(result.error ?? "No se pudo eliminar al alumno");
+      }
+    });
+  }
+
+  const removeTargetName = removeTarget?.user.name ?? removeTarget?.user.email ?? "este alumno";
+
+  function handleToggleAttendance(bookingId: string) {
+    setAttendancePending((prev) => new Set(prev).add(bookingId));
+    startTransition(async () => {
+      const result = await toggleBookingAttendanceAction(bookingId);
+      setAttendancePending((prev) => {
+        const next = new Set(prev);
+        next.delete(bookingId);
+        return next;
+      });
+      if (result.success && result.data) {
+        setAttendedMap((prev) => ({
+          ...prev,
+          [bookingId]: !!result.data?.attendedAt,
+        }));
+        toast.success(result.data.attendedAt ? "Asistencia marcada" : "Asistencia desmarcada");
+      } else {
+        toast.error(result.error ?? "No se pudo actualizar la asistencia");
       }
     });
   }
@@ -106,7 +141,7 @@ export function CoachAttendeesList({
                   )}
                 >
                   {/* Posición / espera */}
-                  <span className="text-xs md:text-base font-mono text-[#4A6B7A] w-5 md:w-6 text-right shrink-0">
+                  <span className="text-xs md:text-base font-mono text-[#4A6B7A] w-5 md:w-6 text-left shrink-0">
                     {b.status === "WAITLISTED" ? `#${b.waitlistPos}` : `${i + 1}`}
                   </span>
 
@@ -143,11 +178,34 @@ export function CoachAttendeesList({
                     })}
                   </span>
 
+                  {/* Asistencia */}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleAttendance(b.id)}
+                    disabled={attendancePending.has(b.id)}
+                    className={cn(
+                      "size-8 md:size-10 cursor-pointer rounded-[2px] flex items-center justify-center transition-all active:scale-90 disabled:opacity-40 shrink-0 border",
+                      attendedMap[b.id]
+                        ? "bg-[#27C7B8] border-[#27C7B8] text-[#0A1F2A]"
+                        : "border-[#1A4A63] text-[#6B8A99] hover:border-[#27C7B8] hover:text-[#27C7B8]"
+                    )}
+                    aria-label={attendedMap[b.id] ? "Desmarcar asistencia" : "Marcar asistencia"}
+                  >
+                    {attendedMap[b.id] && (
+                      <CheckIcon size={16} weight="bold" className="md:size-5" />
+                    )}
+                  </button>
+
                   {/* Eliminar */}
                   <button
-                    onClick={() => handleRemove(b.id)}
+                    type="button"
+                    onClick={() => setRemoveTarget(b)}
                     disabled={isPending}
-                    className="size-8 md:size-10 cursor-pointer rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#E61919]/10 transition-all active:scale-90 disabled:opacity-40 shrink-0"
+                    className={cn(
+                      "size-8 md:size-10 cursor-pointer rounded-[2px] flex items-center justify-center transition-all active:scale-90 disabled:opacity-40 shrink-0 border",
+                      "border-[#1A4A63] text-[#6B8A99] hover:border-[#E61919] hover:text-[#E61919]"
+                    )}
+                    aria-label="Eliminar alumno"
                   >
                     <TrashIcon size={16} weight="bold" className="md:size-5" />
                   </button>
@@ -157,6 +215,36 @@ export function CoachAttendeesList({
           </div>
         )}
       </div>
+
+      <Dialog
+        open={!!removeTarget}
+        onOpenChange={(open) => !open && setRemoveTarget(null)}
+        title="Eliminar alumno"
+        description={`¿Estás seguro de que querés eliminar a ${removeTargetName} de la clase?`}
+        size="sm"
+      >
+        <div className="flex flex-col sm:flex-row gap-3 mt-6">
+          <Button
+            type="button"
+            variant="outline"
+            size="md"
+            fullWidth
+            onClick={() => setRemoveTarget(null)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="button"
+            variant="danger"
+            size="md"
+            fullWidth
+            loading={isPending}
+            onClick={() => removeTarget && handleRemove(removeTarget.id)}
+          >
+            Eliminar
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
 }

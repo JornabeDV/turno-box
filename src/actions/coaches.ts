@@ -58,6 +58,16 @@ export async function createCoachAction(formData: FormData): Promise<ActionResul
 export async function deleteCoachAction(coachId: string): Promise<ActionResult> {
   const { gymId } = await requireAdmin();
 
+  const coach = await prisma.user.findFirst({
+    where: { id: coachId, gymId, role: { in: ["COACH", "ADMIN"] } },
+    select: { role: true },
+  });
+
+  if (!coach) return { success: false, error: "Profesor no encontrado." };
+  if (coach.role === "ADMIN") {
+    return { success: false, error: "No se puede eliminar un administrador desde el panel de profesores." };
+  }
+
   await prisma.user.deleteMany({ where: { id: coachId, gymId, role: "COACH" } });
 
   revalidatePath("/dashboard/admin/coaches");
@@ -86,7 +96,7 @@ export async function updateCoachAction(coachId: string, formData: FormData): Pr
   const { name, email, password } = parsed.data;
 
   const coach = await prisma.user.findFirst({
-    where: { id: coachId, gymId, role: "COACH" },
+    where: { id: coachId, gymId, role: { in: ["COACH", "ADMIN"] } },
     select: { id: true, email: true },
   });
 
@@ -118,7 +128,7 @@ export async function toggleCoachActiveAction(
   const { gymId } = await requireAdmin();
 
   const coach = await prisma.user.findFirst({
-    where: { id: coachId, gymId, role: "COACH" },
+    where: { id: coachId, gymId, role: { in: ["COACH", "ADMIN"] } },
     select: { isActive: true },
   });
 

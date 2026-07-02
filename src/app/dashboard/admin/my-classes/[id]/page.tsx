@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: gymClass?.discipline?.name ?? "Detalle de clase" };
 }
 
-export default async function CoachClassDetailPage({
+export default async function AdminMyClassDetailPage({
   params,
   searchParams,
 }: Props) {
@@ -30,7 +30,7 @@ export default async function CoachClassDetailPage({
   const user = session?.user as
     | { id?: string; role?: string; gymId?: string }
     | undefined;
-  if (!user?.id || !["ADMIN", "COACH"].includes(user.role ?? "")) redirect("/");
+  if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
   const targetDate = date ? new Date(date) : new Date();
@@ -76,14 +76,9 @@ export default async function CoachClassDetailPage({
 
   if (!gymClass) notFound();
 
-  // Un coach solo puede ver la clase si es su coach base o si tiene un override
-  // asignado para esta fecha. Un admin puede ver cualquier clase de su gym.
+  // En "Mis clases" el admin solo puede ver sus propias clases.
   const effectiveCoachId = classOverride?.coachId ?? gymClass.coachId;
-  if (
-    user.role === "COACH" &&
-    gymClass.coachId !== user.id &&
-    classOverride?.coachId !== user.id
-  ) {
+  if (gymClass.coachId !== user.id && classOverride?.coachId !== user.id) {
     notFound();
   }
 
@@ -117,7 +112,7 @@ export default async function CoachClassDetailPage({
       classDate={classDate}
       effectiveCoachName={effectiveCoachName}
       isCancelled={isCancelled}
-      backHref="/dashboard/coach"
+      backHref="/dashboard/admin/my-classes"
     />
   );
 }

@@ -54,11 +54,12 @@ export default async function CoachDetailPage({ params }: Props) {
   if (!user.gymId) redirect("/");
 
   const coach = await prisma.user.findFirst({
-    where: { id, gymId: user.gymId, role: "COACH" },
+    where: { id, gymId: user.gymId, role: { in: ["COACH", "ADMIN"] } },
     select: {
       id: true,
       name: true,
       email: true,
+      role: true,
       isActive: true,
       createdAt: true,
     },
@@ -179,6 +180,11 @@ export default async function CoachDetailPage({ params }: Props) {
                   {coach.name ?? "Sin nombre"}
                 </h2>
                 <p className="text-sm md:text-base text-[#6B8A99] truncate">{coach.email}</p>
+                {coach.role === "ADMIN" && (
+                  <p className="text-[10px] md:text-xs text-[#F78837] uppercase tracking-wider">
+                    Administrador
+                  </p>
+                )}
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <EditCoachButton coach={coach} />

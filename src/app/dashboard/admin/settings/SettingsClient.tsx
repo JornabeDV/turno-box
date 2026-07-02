@@ -124,7 +124,15 @@ const inputClass =
 const labelClass =
   "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
 
-export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName: string }) {
+export function SettingsClient({
+  gym,
+  adminName,
+  adminEmail,
+}: {
+  gym: GymSettings;
+  adminName: string;
+  adminEmail: string;
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [profilePending, startProfileTransition] = useTransition();
@@ -252,6 +260,20 @@ export function SettingsClient({ gym, adminName }: { gym: GymSettings; adminName
             className={inputClass}
             placeholder="Tu nombre"
           />
+        </div>
+        <div className="space-y-1.5">
+          <label className={labelClass}>Email</label>
+          <input
+            type="email"
+            value={adminEmail}
+            readOnly
+            disabled
+            className={cn(inputClass, "opacity-60 cursor-not-allowed")}
+            placeholder="admin@ejemplo.com"
+          />
+          <p className="text-xs md:text-base text-[#6B8A99]">
+            El email no se puede modificar.
+          </p>
         </div>
         <div className="flex justify-end">
           <Button
