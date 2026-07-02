@@ -62,7 +62,7 @@ export function EditGymModal({ open, onClose, gym }: Props) {
       open={open}
       onOpenChange={(o) => !o && handleClose()}
       title="Editar gimnasio"
-      size="md"
+      size="lg"
     >
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
         <div className="space-y-1.5">
