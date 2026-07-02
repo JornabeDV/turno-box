@@ -52,21 +52,21 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
   const nextLimit = limit + PAGE_SIZE;
 
   return (
-    <section className="pt-4 space-y-4">
+    <section className="pt-4 md:pt-8 space-y-4 md:space-y-6">
       <BackButton href="/profile" />
 
       <div>
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl md:text-4xl">
           Historial de abonos
         </h2>
-        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+        <p className="text-sm md:text-lg text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
           Movimientos de compras y ajustes
         </p>
       </div>
 
       {entries.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">Aún no tenés movimientos.</p>
+        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 md:px-6 md:py-20 text-center">
+          <p className="text-sm md:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">Aún no tenés movimientos.</p>
         </div>
       ) : (
         <>
@@ -76,16 +76,16 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
               const isPurchase   = tx.type === "PURCHASE";
 
               return (
-                <div key={tx.id} className="flex items-center gap-3 px-4 py-3.5">
+                <div key={tx.id} className="flex items-center gap-3 md:gap-4 px-4 py-3.5 md:px-6 md:py-5">
                   <div
-                    className={`size-9 border flex items-center justify-center shrink-0 ${
+                    className={`size-9 md:size-12 border flex items-center justify-center shrink-0 ${
                       isAdjustment
                         ? "border-[#1A4A63] bg-[#0A1F2A]"
                         : "border-[#F78837]/30 bg-[#F78837]/10"
                     }`}
                   >
                     <span
-                      className={`text-sm font-[family-name:var(--font-oswald)] font-bold leading-none ${
+                      className={`text-sm md:text-base font-[family-name:var(--font-oswald)] font-bold leading-none ${
                         isAdjustment
                           ? tx.amount > 0
                             ? "text-[#27C7B8]"
@@ -102,17 +102,17 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">
+                    <p className="text-sm md:text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">
                       {isAdjustment
                         ? "Carga Administrativa"
                         : tx.payment?.pack?.name ?? "Compra de pack"}
                     </p>
                     {isAdjustment && tx.note && (
-                      <p className="text-[11px] text-[#6B8A99] truncate mt-0.5 font-[family-name:var(--font-oswald)]">
+                      <p className="text-[11px] md:text-sm text-[#6B8A99] truncate mt-0.5 md:mt-1 font-[family-name:var(--font-oswald)]">
                         {tx.note}
                       </p>
                     )}
-                    <p className="text-[11px] text-[#4A6B7A] tabular-nums mt-0.5 font-[family-name:var(--font-jetbrains)]">
+                    <p className="text-[11px] md:text-sm text-[#4A6B7A] tabular-nums mt-0.5 md:mt-1 font-[family-name:var(--font-jetbrains)]">
                       {(tx.payment?.paidAt ?? tx.createdAt).toLocaleDateString("es-AR", {
                         day: "numeric", month: "short", year: "numeric",
                       })}
@@ -128,7 +128,7 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
                   </div>
 
                   {tx.payment && (
-                    <span className="text-xs font-[family-name:var(--font-jetbrains)] font-semibold text-[#EAEAEA] tabular-nums shrink-0">
+                    <span className="text-xs md:text-sm font-[family-name:var(--font-jetbrains)] font-semibold text-[#EAEAEA] tabular-nums shrink-0">
                       {new Intl.NumberFormat("es-AR", {
                         style: "currency",
                         currency: tx.payment.currency,

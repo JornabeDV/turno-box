@@ -75,6 +75,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         id: true,
         status: true,
         waitlistPos: true,
+        attendedAt: true,
         createdAt: true,
         user: { select: { id: true, name: true, email: true, image: true } },
       },
@@ -110,6 +111,8 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
 
   const confirmed = bookings.filter((b) => b.status === "CONFIRMED");
   const waitlisted = bookings.filter((b) => b.status === "WAITLISTED");
+  const attendedCount = confirmed.filter((b) => b.attendedAt).length;
+  const allAttended = confirmed.length > 0 && attendedCount === confirmed.length;
   const isAdmin = user.role === "ADMIN";
 
   // Valores efectivos: override puntual o template base
@@ -203,16 +206,24 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
             </p>
           </div>
           <div>
-            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
               Confirmados
             </p>
             <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
               {confirmed.length}
             </p>
           </div>
+          <div>
+            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+              Presentes
+            </p>
+            <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
+              {attendedCount}
+            </p>
+          </div>
           {waitlisted.length > 0 && (
             <div>
-              <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+              <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
                 En espera
               </p>
               <p className="text-xs md:text-sm font-bold text-[#F78837] mt-0.5">
@@ -221,7 +232,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
             </div>
           )}
           <div>
-            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
               Disponibles
             </p>
             <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">

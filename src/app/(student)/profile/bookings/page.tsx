@@ -29,13 +29,13 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
   const bookings = await prisma.booking.findMany({
     where: {
       userId,
-      classDate: { lt: today },
       deletedAt: null,
     },
     select: {
       id: true,
       status: true,
       classDate: true,
+      createdAt: true,
       class: {
         select: {
           startTime: true,
@@ -47,7 +47,7 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
         },
       },
     },
-    orderBy: { classDate: "desc" },
+    orderBy: { createdAt: "desc" },
     take: limit + 1,
   });
 
@@ -56,76 +56,86 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
   const nextLimit = limit + PAGE_SIZE;
 
   return (
-    <section className="pt-4 space-y-4">
+    <section className="pt-4 md:pt-8 space-y-4 md:space-y-6">
       <BackButton href="/profile" />
 
       <div>
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl md:text-4xl">
           Historial de turnos
         </h2>
-        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
-          Turnos anteriores y su estado
+        <p className="text-sm md:text-lg text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
+          Todos tus turnos y su estado
         </p>
       </div>
 
       {items.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 md:px-6 md:py-20 text-center">
+          <p className="text-sm md:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
             Aún no tenés turnos.
           </p>
         </div>
       ) : (
         <>
           <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
-            {items.map((b) => (
-              <div key={b.id} className="flex items-center gap-3 px-4 py-3.5">
-                <span
-                  className="size-1.5 shrink-0"
-                  style={{ backgroundColor: b.class.color ?? "#F78837" }}
-                />
-                <div className="flex-1 min-w-0">
-                  <p
+            {items.map((b) => {
+              const isPast = new Date(b.classDate) < today;
+              return (
+                <div key={b.id} className="flex items-center gap-3 md:gap-4 px-4 py-3.5 md:px-6 md:py-5">
+                  <span
                     className={cn(
-                      "text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-tight truncate",
-                      b.status === "CANCELLED"
-                        ? "text-[#4A6B7A] line-through"
-                        : "text-[#EAEAEA]",
+                      "size-1.5 md:size-2 shrink-0",
+                      b.status === "CANCELLED" && "bg-[#4A6B7A]",
+                      b.status === "WAITLISTED" && "bg-[#F78837]",
+                      b.status === "CONFIRMED" && isPast && "bg-emerald-600",
+                      b.status === "CONFIRMED" && !isPast && "bg-[#27C7B8]",
+                    )}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={cn(
+                        "text-sm md:text-lg font-[family-name:var(--font-oswald)] font-bold uppercase tracking-tight truncate",
+                        b.status === "CANCELLED"
+                          ? "text-[#4A6B7A] line-through"
+                          : "text-[#EAEAEA]",
+                      )}
+                    >
+                      {b.class.discipline?.name ?? "Sin disciplina"}
+                    </p>
+                    <p className="text-[11px] md:text-sm text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
+                      {new Date(b.classDate).toLocaleDateString("es-AR", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      })}
+                      {" · "}
+                      {formatTime(b.class.startTime)} –{" "}
+                      {formatTime(b.class.endTime)}
+                    </p>
+                  </div>
+                  <span
+                    className={cn(
+                      "text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider shrink-0",
+                      b.status === "CONFIRMED" && isPast && "text-emerald-600",
+                      b.status === "CONFIRMED" && !isPast && "text-[#27C7B8]",
+                      b.status === "CANCELLED" && "text-[#4A6B7A]",
+                      b.status === "WAITLISTED" && "text-[#F78837]",
                     )}
                   >
-                    {b.class.discipline?.name ?? "Sin disciplina"}
-                  </p>
-                  <p className="text-[11px] text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
-                    {new Date(b.classDate).toLocaleDateString("es-AR", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    })}
-                    {" · "}
-                    {formatTime(b.class.startTime)} –{" "}
-                    {formatTime(b.class.endTime)}
-                  </p>
+                    {b.status === "CONFIRMED" && isPast && "Asistió"}
+                    {b.status === "CONFIRMED" && !isPast && "Confirmado"}
+                    {b.status === "CANCELLED" && "Canceló"}
+                    {b.status === "WAITLISTED" && "En lista"}
+                  </span>
                 </div>
-                <span
-                  className={cn(
-                    "text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider shrink-0",
-                    b.status === "CONFIRMED" && "text-[#27C7B8]",
-                    b.status === "CANCELLED" && "text-[#4A6B7A]",
-                    b.status === "WAITLISTED" && "text-[#F78837]",
-                  )}
-                >
-                  {b.status === "CONFIRMED" && "Asistió"}
-                  {b.status === "CANCELLED" && "Canceló"}
-                  {b.status === "WAITLISTED" && "En lista"}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {hasMore && (
             <Link
               href={`/profile/bookings?limit=${nextLimit}`}
-              className="w-full flex items-center justify-center h-12 border border-[#1A4A63] text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
+              className="w-full flex items-center justify-center h-12 md:h-14 border border-[#1A4A63] text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
             >
               Ver más
             </Link>

@@ -84,35 +84,35 @@ export default async function ProfilePage() {
   ] ?? "Alumno";
 
   return (
-    <section className="pt-4 space-y-5">
+    <section className="pt-4 md:pt-8 space-y-5 md:space-y-8">
       {/* Header */}
       <div>
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl md:text-4xl">
           Perfil
         </h2>
-        <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+        <p className="text-sm md:text-lg text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
           Tus datos y estadísticas
         </p>
       </div>
 
       {/* ── Bloque 1: Datos personales ───────────────────────────────────── */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-5 animate-in">
-        <div className="flex items-center gap-4">
-          <div className="size-14 border border-[#F78837]/30 bg-[#F78837]/10 flex items-center justify-center text-xl font-bold text-[#F78837] shrink-0 font-[family-name:var(--font-oswald)]">
+      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-8 space-y-5 md:space-y-8 animate-in">
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="size-14 md:size-20 border border-[#F78837]/30 bg-[#F78837]/10 flex items-center justify-center text-xl md:text-3xl font-bold text-[#F78837] shrink-0 font-[family-name:var(--font-oswald)]">
             {user.name?.[0]?.toUpperCase() ?? user.email?.[0]?.toUpperCase() ?? "?"}
           </div>
           <div className="min-w-0">
-            <p className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate">
+            <p className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight truncate md:text-xl">
               {user.name ?? "Sin nombre"}
             </p>
-            <p className="text-xs text-[#6B8A99] truncate font-[family-name:var(--font-jetbrains)]">{user.email}</p>
-            <span className="inline-block mt-1 text-[10px] font-medium border border-[#1A4A63] text-[#6B8A99] px-2 py-0.5 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+            <p className="text-xs md:text-sm text-[#6B8A99] truncate font-[family-name:var(--font-jetbrains)]">{user.email}</p>
+            <span className="inline-block mt-1 md:mt-1.5 text-[10px] md:text-xs font-medium border border-[#1A4A63] text-[#6B8A99] px-2 py-0.5 md:px-2.5 md:py-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
               {roleLabel}
             </span>
           </div>
         </div>
 
-        <div className="border-t border-[#1A4A63] pt-4">
+        <div className="border-t border-[#1A4A63] pt-4 md:pt-6">
           <EditProfileForm
             name={user.name}
             birthDate={user.birthDate ? user.birthDate.toISOString().split("T")[0] : null}
@@ -122,23 +122,23 @@ export default async function ProfilePage() {
 
       {/* ── Bloque 2: Estadísticas ───────────────────────────────────────── */}
       <div>
-        <h3 className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3">
+        <h3 className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3 md:mb-4">
           Mis estadísticas
         </h3>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 text-center">
-            <p className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-[#F78837] tabular-nums">{statsThisMonth}</p>
-            <p className="text-[10px] text-[#6B8A99] mt-1 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">Este mes</p>
+        <div className="grid grid-cols-3 gap-3 md:gap-4">
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 md:p-6 text-center">
+            <p className="text-2xl md:text-4xl font-[family-name:var(--font-oswald)] font-bold text-[#F78837] tabular-nums">{statsThisMonth}</p>
+            <p className="text-[10px] md:text-xs text-[#6B8A99] mt-1 md:mt-2 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">Este mes</p>
           </div>
-          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 text-center">
-            <p className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] tabular-nums">{statsTotal}</p>
-            <p className="text-[10px] text-[#6B8A99] mt-1 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">Total clases</p>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 md:p-6 text-center">
+            <p className="text-2xl md:text-4xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] tabular-nums">{statsTotal}</p>
+            <p className="text-[10px] md:text-xs text-[#6B8A99] mt-1 md:mt-2 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">Total clases</p>
           </div>
-          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 text-center">
-            <p className={`text-2xl font-[family-name:var(--font-oswald)] font-bold tabular-nums ${streak > 0 ? "text-[#F78837]" : "text-[#4A6B7A]"}`}>
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 md:p-6 text-center">
+            <p className={`text-2xl md:text-4xl font-[family-name:var(--font-oswald)] font-bold tabular-nums ${streak > 0 ? "text-[#F78837]" : "text-[#4A6B7A]"}`}>
               {streak}
             </p>
-            <p className="text-[10px] text-[#6B8A99] mt-1 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-[#6B8A99] mt-1 md:mt-2 leading-tight font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
               {streak === 1 ? "Día racha" : "Días racha"}
             </p>
           </div>
@@ -146,37 +146,37 @@ export default async function ProfilePage() {
       </div>
 
       {/* ── Bloque 3: Links al historial ─────────────────────────────────────── */}
-      <div className="space-y-3">
+      <div className="space-y-3 md:space-y-4">
         <Link
           href="/profile/bookings"
-          className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 flex items-center justify-between active:scale-[0.99] transition-transform"
+          className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 md:px-6 md:py-5 flex items-center justify-between active:scale-[0.99] transition-transform"
         >
           <div>
-            <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">Historial de turnos</p>
-            <p className="text-xs text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">Todas tus reservas pasadas y próximas</p>
+            <p className="text-sm md:text-xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">Historial de turnos</p>
+            <p className="text-xs md:text-base text-[#6B8A99] mt-0.5 md:mt-1 font-[family-name:var(--font-oswald)]">Todas tus reservas pasadas y próximas</p>
           </div>
-          <CaretRightIcon size={16} className="text-[#4A6B7A] shrink-0" />
+          <CaretRightIcon size={16} className="text-[#4A6B7A] shrink-0 md:size-5" />
         </Link>
 
         <Link
           href="/profile/history"
-          className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 flex items-center justify-between active:scale-[0.99] transition-transform"
+          className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 md:px-6 md:py-5 flex items-center justify-between active:scale-[0.99] transition-transform"
         >
           <div>
-            <p className="text-sm font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">Historial de abonos</p>
-            <p className="text-xs text-[#6B8A99] mt-0.5 font-[family-name:var(--font-oswald)]">Abonos comprados y ajustes de créditos</p>
+            <p className="text-sm md:text-xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">Historial de abonos</p>
+            <p className="text-xs md:text-base text-[#6B8A99] mt-0.5 md:mt-1 font-[family-name:var(--font-oswald)]">Abonos comprados y ajustes de créditos</p>
           </div>
-          <CaretRightIcon size={16} className="text-[#4A6B7A] shrink-0" />
+          <CaretRightIcon size={16} className="text-[#4A6B7A] shrink-0 md:size-5" />
         </Link>
       </div>
 
       {/* ── Cambio de contraseña ─────────────────────────────────────────── */}
       {hasPassword && (
         <div>
-          <h3 className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3">
+          <h3 className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3 md:mb-4">
             Cambiar contraseña
           </h3>
-          <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
+          <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-8">
             <ChangePasswordForm />
           </div>
         </div>
@@ -184,10 +184,10 @@ export default async function ProfilePage() {
 
       {/* ── Notificaciones push ──────────────────────────────────────────── */}
       <div>
-        <h3 className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3">
+        <h3 className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-3 md:mb-4">
           Notificaciones
         </h3>
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
+        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-8">
           <PushNotificationToggle />
           <PushNotificationHelp />
         </div>

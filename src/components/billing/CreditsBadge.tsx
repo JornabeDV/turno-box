@@ -20,10 +20,10 @@ export function CreditsBadge({ credits, href = "/credits" }: Props) {
           : "border-[#27C7B8]/40 text-[#27C7B8] hover:bg-[#27C7B8]/10"
       )}
     >
-      <span className="text-sm">
+      <span className="text-sm md:text-base">
         {credits}
       </span>
-      <span className="text-sm">{credits === 1 ? "CLASE" : "CLASES"}</span>
+      <span className="text-sm md:text-base">{credits === 1 ? "CLASE" : "CLASES"}</span>
     </Link>
   );
 }

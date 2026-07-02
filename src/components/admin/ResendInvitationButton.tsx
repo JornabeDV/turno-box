@@ -31,7 +31,7 @@ export function ResendInvitationButton({
   return (
     <Button
       variant="outline"
-      size="sm"
+      size="md"
       onClick={handleClick}
       loading={loading}
       disabled={sent}

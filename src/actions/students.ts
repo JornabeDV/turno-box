@@ -310,3 +310,50 @@ export async function createStudentAction(
   revalidatePath("/dashboard/admin/students");
   return { success: true, data: { id: user.id } };
 }
+
+// ── Búsqueda de alumnos para coach/admin ─────────────────────────────────────
+export async function searchStudentsAction(
+  query: string
+): Promise<ActionResult<{ id: string; name: string | null; email: string; credits: number }[]>> {
+  const session = await auth();
+  const user = session?.user as { id?: string; role?: string; gymId?: string } | undefined;
+  if (!user?.id || !user.gymId) return { success: false, error: "No autenticado." };
+  if (!["ADMIN", "COACH", "SUPER_ADMIN"].includes(user.role ?? "")) {
+    return { success: false, error: "No autorizado." };
+  }
+
+  const gymId = user.gymId;
+  const like = `%${query.trim().toLowerCase()}%`;
+
+  const students = await prisma.user.findMany({
+    where: {
+      gymId,
+      role: "STUDENT",
+      OR: [
+        { name: { contains: query.trim(), mode: "insensitive" } },
+        { email: { contains: query.trim(), mode: "insensitive" } },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      creditBalances: {
+        where: { gymId },
+        select: { availableCredits: true },
+      },
+    },
+    orderBy: { name: "asc" },
+    take: 20,
+  });
+
+  return {
+    success: true,
+    data: students.map((s) => ({
+      id: s.id,
+      name: s.name,
+      email: s.email,
+      credits: s.creditBalances[0]?.availableCredits ?? 0,
+    })),
+  };
+}

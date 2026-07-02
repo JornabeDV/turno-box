@@ -44,55 +44,55 @@ export function ClassCardCompact({ slot, dateStr, index }: Props) {
         !isConfirmed && slot.userBooking?.status === "WAITLISTED" && "border-l-2 border-l-[#F78837]"
       )}
     >
-      <div className="p-4">
+      <div className="p-4 md:p-6">
         {/* Fila superior: turno + badge */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
+        <div className="flex items-center justify-between mb-2 md:mb-3">
+          <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
             {timeLabel}
           </span>
           <Badge variant={badgeVariant} />
         </div>
 
         {/* Horario grande */}
-        <div className="flex items-baseline gap-2 mb-3">
-          <span className="text-xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
+        <div className="flex items-baseline gap-2 md:gap-3 mb-3 md:mb-4">
+          <span className="text-xl md:text-3xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
             {formatTime(slot.startTime)}
           </span>
-          <span className="text-xs text-[#4A6B7A]">—</span>
-          <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#6B8A99] uppercase">
+          <span className="text-xs md:text-sm text-[#4A6B7A]">—</span>
+          <span className="text-sm md:text-base font-[family-name:var(--font-jetbrains)] text-[#6B8A99] uppercase">
             {formatTime(slot.endTime)}
           </span>
         </div>
 
         {/* Nombre de clase */}
-        <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-base uppercase tracking-tight mb-3">
+        <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-base md:text-xl uppercase tracking-tight mb-3 md:mb-4">
           {slot.name}
         </h3>
 
         {/* Fila inferior: cupos + CTA */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs font-[family-name:var(--font-jetbrains)] uppercase text-[#6B8A99]">
+          <div className="flex items-center gap-1.5 md:gap-2">
+            <span className="text-xs md:text-sm font-[family-name:var(--font-jetbrains)] uppercase text-[#6B8A99]">
               Cupos
             </span>
-            <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#27C7B8] uppercase">
+            <span className="text-sm md:text-base font-[family-name:var(--font-jetbrains)] text-[#27C7B8] uppercase">
               {String(slot.confirmedCount).padStart(2, "0")}/{String(slot.maxCapacity).padStart(2, "0")}
             </span>
-            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
+            <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
               reservado
             </span>
           </div>
 
           {isConfirmed ? (
-            <span className="inline-flex items-center px-3 py-1.5 bg-[#27C7B8] text-[#0A1F2A] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
+            <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 bg-[#27C7B8] text-[#0A1F2A] text-xs md:text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
               Clase reservada
             </span>
           ) : isFull ? (
-            <span className="inline-flex items-center px-3 py-1.5 border border-[#E61919] text-[#E61919] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
+            <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 border border-[#E61919] text-[#E61919] text-xs md:text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
               Lista de espera
             </span>
           ) : (
-            <span className="inline-flex items-center px-3 py-1.5 border border-[#F78837] text-[#F78837] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
+            <span className="inline-flex items-center px-3 py-1.5 md:px-4 md:py-2 border border-[#F78837] text-[#F78837] text-xs md:text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide">
               Reservar clase
             </span>
           )}

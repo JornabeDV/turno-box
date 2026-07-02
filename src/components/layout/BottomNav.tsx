@@ -28,7 +28,7 @@ export function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center gap-1 py-2.5 px-1 transition-all duration-150",
+                "flex flex-col items-center gap-1 md:gap-1.5 py-2.5 px-1 md:py-4 md:px-2 transition-all duration-150",
                 "active:scale-[0.97]",
                 active
                   ? "bg-[#F78837] text-[#0A1F2A]"
@@ -38,9 +38,9 @@ export function BottomNav() {
               <Icon
                 weight="regular"
                 size={22}
-                className="transition-transform duration-150"
+                className="transition-transform duration-150 md:size-7"
               />
-              <span className="text-[10px] font-medium uppercase tracking-wide font-[family-name:var(--font-oswald)]">
+              <span className="text-[10px] md:text-xs font-medium uppercase tracking-wide font-[family-name:var(--font-oswald)]">
                 {label}
               </span>
             </Link>

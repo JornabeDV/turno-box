@@ -30,6 +30,7 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString("es-AR", {
     day: "numeric",
     month: "short",
+    timeZone: "UTC",
   });
 }
 
@@ -88,6 +89,7 @@ export function BookingHistoryList({ bookings }: BookingHistoryListProps) {
                     {new Date(b.cancelledAt).toLocaleDateString("es-AR", {
                       day: "numeric",
                       month: "short",
+                      timeZone: "UTC",
                     })}
                   </span>
                 )}

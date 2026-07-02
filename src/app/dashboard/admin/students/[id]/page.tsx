@@ -271,14 +271,14 @@ export default async function StudentDetailPage({ params }: Props) {
         <div className="flex gap-3">
           <Link
             href={`/dashboard/admin/students/${id}/history/bookings`}
-            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-base text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
           >
             <span className="size-1.5 rounded-full bg-[#27C7B8]" />
             Turnos
           </Link>
           <Link
             href={`/dashboard/admin/students/${id}/history/credits`}
-            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-base text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
           >
             <span className="size-1.5 rounded-full bg-[#F78837]" />
             Créditos

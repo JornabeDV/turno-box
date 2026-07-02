@@ -105,10 +105,10 @@ export default async function CoachDashboardPage({
               </div>
             )}
             <div>
-              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl md:text-4xl leading-none">
                 Hola, {firstName}
               </h1>
-              <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+              <p className="text-sm md:text-base text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
                 Estas son tus clases de la semana.
               </p>
             </div>

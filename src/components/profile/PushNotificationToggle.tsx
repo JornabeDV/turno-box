@@ -151,11 +151,11 @@ export function PushNotificationToggle() {
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="size-9 md:size-10 border border-[#1A4A63] bg-[#0A1F2A] flex items-center justify-center shrink-0">
+          <div className="size-9 md:size-12 border border-[#1A4A63] bg-[#0A1F2A] flex items-center justify-center shrink-0">
             {isGranted ? (
-              <BellIcon size={18} className="text-[#F78837]" weight="fill" />
+              <BellIcon size={18} className="text-[#F78837] md:size-5" weight="fill" />
             ) : (
-              <BellSlashIcon size={18} className="text-[#4A6B7A]" weight="fill" />
+              <BellSlashIcon size={18} className="text-[#4A6B7A] md:size-5" weight="fill" />
             )}
           </div>
           <div>
@@ -179,7 +179,7 @@ export function PushNotificationToggle() {
             onClick={isGranted ? unsubscribe : subscribe}
             disabled={loading}
             className={[
-              "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200",
+              "relative inline-flex h-6 w-11 md:h-7 md:w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200",
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F78837]",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               isGranted ? "bg-[#F78837]" : "bg-[#1A4A63]",
@@ -189,8 +189,8 @@ export function PushNotificationToggle() {
           >
             <span
               className={[
-                "pointer-events-none inline-block size-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
-                isGranted ? "translate-x-5" : "translate-x-0",
+                "pointer-events-none inline-block size-5 md:size-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                isGranted ? "translate-x-5 md:translate-x-7" : "translate-x-0",
               ].join(" ")}
             />
           </button>
@@ -198,13 +198,13 @@ export function PushNotificationToggle() {
       </div>
 
       {hasSw === false && (
-        <p className="text-xs text-[#F78837]">
+        <p className="text-xs md:text-sm text-[#F78837]">
           ⚠️ No se detecta el Service Worker. Al activar el toggle se intentará registrar automáticamente.
         </p>
       )}
 
       {error && (
-        <p className="text-xs text-red-400 font-[family-name:var(--font-jetbrains)]">
+        <p className="text-xs md:text-sm text-red-400 font-[family-name:var(--font-jetbrains)]">
           {error}
         </p>
       )}

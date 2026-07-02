@@ -94,14 +94,14 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
   const isNegative = Number(amount) < 0;
 
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
+    <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
       <div className="flex items-center justify-between">
         <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider">
           Créditos disponibles
         </h3>
         <span
           className={cn(
-            "text-2xl font-black tabular-nums leading-none",
+            "text-2xl md:text-4xl font-black tabular-nums leading-none",
             balance === 0
               ? "text-[#E61919]"
               : balance <= 3
@@ -116,17 +116,17 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* Atajos rápidos */}
         <div>
-          <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider mb-2">
+          <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider mb-2 md:mb-3">
             Acreditar rápido
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 md:gap-3">
             {QUICK_AMOUNTS.map((n) => (
               <button
                 key={n}
                 type="button"
                 onClick={() => setAmount(String(n))}
                 className={cn(
-                  "flex-1 py-1.5 rounded-[2px] border text-xs font-bold transition-all active:scale-95",
+                  "flex-1 py-1.5 md:py-2.5 rounded-[2px] border text-xs md:text-sm font-bold transition-all active:scale-95",
                   amount === String(n)
                     ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
                     : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
@@ -147,7 +147,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
               onChange={(e) => setAmount(e.target.value)}
               placeholder="Monto (+8 o -2)"
               required
-              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
+              className="w-full h-12 md:h-14 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
             />
           </div>
           <div className="flex-1 relative">
@@ -165,19 +165,19 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
                 });
               }}
               placeholder="Monto pagado"
-              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
+              className="w-full h-12 md:h-14 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors tabular-nums"
             />
           </div>
           {preview !== null && (
             <div
               className={cn(
-                "h-12 px-3 rounded-[2px] border flex items-center gap-1 text-xs font-bold tabular-nums shrink-0",
+                "h-12 md:h-14 px-3 md:px-4 rounded-[2px] border flex items-center gap-1 md:gap-1.5 text-xs md:text-sm font-bold tabular-nums shrink-0",
                 isNegative
                   ? "bg-[#E61919]/10 border-[#E61919]/20 text-[#E61919]"
                   : "bg-[#27C7B8]/10 border-[#27C7B8]/20 text-[#27C7B8]",
               )}
             >
-              <ArrowRightIcon size={10} />
+              <ArrowRightIcon size={10} className="md:size-3" />
               {Math.max(0, preview)}
             </div>
           )}
@@ -186,17 +186,17 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         {/* Método de pago (solo si hay monto pagado) */}
         {Number(amountPaid.replace(/\D/g, "")) > 0 && (
           <div>
-            <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider mb-1.5">
+            <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider mb-1.5 md:mb-2">
               Método de pago
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 md:gap-3">
               {MANUAL_METHODS.map((m) => (
                 <button
                   key={m}
                   type="button"
                   onClick={() => setMethod(m)}
                   className={cn(
-                    "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                    "flex-1 py-1.5 md:py-2.5 rounded-[2px] border text-xs md:text-sm font-medium transition-all active:scale-95",
                     method === m
                       ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
                       : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
@@ -209,19 +209,19 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           </div>
         )}
 
-        <p className="text-[10px] md:text-xs text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
+        <p className="text-[10px] md:text-sm text-[#4A6B7A]">Dejar en 0 o vacío si no hubo pago.</p>
 
         {/* Validez del abono */}
         <div>
-          <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider mb-1.5">
+          <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider mb-1.5 md:mb-2">
             Validez del abono
           </p>
-          <div className="flex gap-2 mb-2">
+          <div className="flex gap-2 md:gap-3 mb-2 md:mb-3">
             <button
               type="button"
               onClick={() => setValidityMode("days")}
               className={cn(
-                "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                "flex-1 py-1.5 md:py-2.5 rounded-[2px] border text-xs md:text-sm font-medium transition-all active:scale-95",
                 validityMode === "days"
                   ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
                   : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
@@ -233,7 +233,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
               type="button"
               onClick={() => setValidityMode("date")}
               className={cn(
-                "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                "flex-1 py-1.5 md:py-2.5 rounded-[2px] border text-xs md:text-sm font-medium transition-all active:scale-95",
                 validityMode === "date"
                   ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
                   : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
@@ -251,7 +251,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
                   type="button"
                   onClick={() => setValidityDays(d)}
                   className={cn(
-                    "flex-1 py-1.5 rounded-[2px] border text-xs font-medium transition-all active:scale-95",
+                    "flex-1 py-1.5 md:py-2.5 rounded-[2px] border text-xs md:text-sm font-medium transition-all active:scale-95",
                     validityDays === d
                       ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
                       : "border-[#1A4A63] text-[#6B8A99] hover:border-white/20",
@@ -268,9 +268,9 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
                 onChange={setExpiresAt}
                 allowFuture
                 showYearPicker={false}
-                className="w-full"
+                className="w-full [&_button]:md:h-14 [&_button]:md:text-base"
               />
-              <p className="text-[10px] text-[#4A6B7A]">
+              <p className="text-[10px] md:text-sm text-[#4A6B7A]">
                 Vence a las 23:59 hs del día seleccionado.
               </p>
             </div>
@@ -284,7 +284,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
           onChange={(e) => setNote(e.target.value)}
           placeholder="Motivo (requerido)"
           required
-          className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
+          className="w-full h-12 md:h-14 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
         />
 
         {error && <p className="text-xs md:text-sm text-[#E61919]">{error}</p>}
@@ -292,7 +292,7 @@ export function AdjustCreditsForm({ studentId, currentBalance }: Props) {
         <button
           type="submit"
           disabled={isPending || !amount || !note}
-          className="w-full uppercase h-12 rounded-[2px] bg-[#F78837] text-white text-xs md:text-sm hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
+          className="w-full uppercase h-12 md:h-14 rounded-[2px] bg-[#F78837] text-white text-xs md:text-base hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-40"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">

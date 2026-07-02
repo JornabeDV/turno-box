@@ -300,6 +300,7 @@ model Booking {
   status      BookingStatus @default(CONFIRMED)
   classDate   DateTime      // fecha del turno (se guarda a medianoche UTC del día)
   waitlistPos Int?          // posición en espera si status=WAITLISTED; null si CONFIRMED
+  attendedAt  DateTime?     // timestamp de toma de asistencia
   cancelledAt DateTime?     // timestamp de cancelación
   deletedAt   DateTime?     // soft delete
 

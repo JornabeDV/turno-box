@@ -124,10 +124,10 @@ export default async function HomePage() {
               </div>
             )}
             <div>
-              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl leading-none">
+              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl md:text-4xl leading-none">
                 Hola, {firstName}
               </h1>
-              <p className="text-sm text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+              <p className="text-sm md:text-lg text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
                 Listo para superar tus marcas hoy.
               </p>
             </div>
@@ -136,13 +136,13 @@ export default async function HomePage() {
         </div>
 
         {sub && (
-          <a href="/credits" className="flex-col w-max mt-4 inline-flex items-start">
-            <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
+          <a href="/credits" className="flex-col w-max mt-4 md:mt-6 inline-flex items-start">
+            <span className="text-[10px] md:text-sm font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] items-center gap-2 border border-[#1A4A63] px-2.5 py-1 md:px-3.5 md:py-1.5">
               {sub.remaining} {sub.remaining === 1 ? "CLASE" : "CLASES"}{" "}
               restantes
             </span>
             {daysLeft !== null && daysLeft <= 7 && (
-              <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] mt-4 items-center gap-2 border border-[#1A4A63] px-2.5 py-1">
+              <span className="text-[10px] md:text-sm font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] mt-4 md:mt-5 items-center gap-2 border border-[#1A4A63] px-2.5 py-1 md:px-3.5 md:py-1.5">
                 {daysLeft} {daysLeft === 1 ? "día" : "días"} para el
                 vencimiento
               </span>
@@ -153,7 +153,7 @@ export default async function HomePage() {
 
       {/* Noticias */}
       {announcements.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2 md:space-y-4">
           {announcements.map((a) => (
             <div
               key={a.id}
@@ -172,20 +172,20 @@ export default async function HomePage() {
                   />
                 </div>
               )}
-              <div className="p-3">
-                <div className="flex items-center gap-2 mb-1">
+              <div className="p-3 md:p-5">
+                <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
                   {a.pinned && (
-                    <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1 pt-0.5">
+                    <span className="text-[9px] md:text-sm font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1 pt-0.5 md:px-1.5 md:py-0.5">
                       Fijado
                     </span>
                   )}
                   <p
-                    className={`text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}
+                    className={`text-xs md:text-lg font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide ${a.pinned ? "text-[#F78837]" : "text-[#27C7B8]"}`}
                   >
                     {a.title}
                   </p>
                 </div>
-                <p className="text-xs text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
+                <p className="text-xs md:text-base text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
                   {a.body}
                 </p>
               </div>
@@ -197,21 +197,21 @@ export default async function HomePage() {
       {/* Próxima clase */}
       {nextBooked && (
         <div className="bg-[#0E2A38] border border-[#1A4A63] border-l-2 border-l-[#F78837]">
-          <div className="p-3 flex items-center justify-between gap-3">
+          <div className="p-3 md:p-5 flex items-center justify-between gap-3 md:gap-4">
             <div className="min-w-0">
-              <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] block">
+              <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] block">
                 Próxima clase
               </span>
-              <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-lg uppercase tracking-tight truncate">
+              <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-lg md:text-2xl uppercase tracking-tight truncate">
                 {nextBooked.name}
               </h3>
-              <span className="text-sm font-[family-name:var(--font-jetbrains)] text-[#EAEAEA] uppercase">
+              <span className="text-sm md:text-base font-[family-name:var(--font-jetbrains)] text-[#EAEAEA] uppercase">
                 {nextBooked.startTime} hrs
               </span>
             </div>
             <a
               href={`/classes/${nextBooked.id}?date=${today.toISOString().split("T")[0]}`}
-              className="inline-flex items-center px-3 py-2 bg-[#F78837] text-[#0A1F2A] text-xs font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide active:scale-[0.98] transition-transform shrink-0"
+              className="inline-flex items-center px-3 py-2 md:px-5 md:py-3 bg-[#F78837] text-[#0A1F2A] text-xs md:text-sm font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide active:scale-[0.98] transition-transform shrink-0"
             >
               Ver detalles
             </a>

@@ -7,8 +7,8 @@ import { DateInput } from "@/components/ui/DatePicker";
 import { updateProfileAction } from "@/actions/profile";
 
 const inputClass =
-  "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
-const labelClass = "text-xs font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]";
+  "w-full h-12 md:h-14 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
+const labelClass = "text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]";
 
 interface Props {
   name: string | null;
@@ -61,17 +61,17 @@ export function EditProfileForm({ name, birthDate }: Props) {
       </div>
 
       {error && (
-        <p className="text-xs text-[#E61919] border-l-2 border-[#E61919] bg-[#0A1F2A] px-3 py-2 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-xs md:text-sm text-[#E61919] border-l-2 border-[#E61919] bg-[#0A1F2A] px-3 py-2 md:px-4 md:py-2.5 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           {error}
         </p>
       )}
       {success && (
-        <p className="text-xs text-[#27C7B8] border-l-2 border-[#27C7B8] bg-[#0A1F2A] px-3 py-2 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-xs md:text-sm text-[#27C7B8] border-l-2 border-[#27C7B8] bg-[#0A1F2A] px-3 py-2 md:px-4 md:py-2.5 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           Perfil actualizado.
         </p>
       )}
 
-      <Button type="submit" variant="brand" size="md" fullWidth loading={isPending}>
+      <Button type="submit" variant="brand" size="lg" fullWidth loading={isPending}>
         Guardar cambios
       </Button>
     </form>

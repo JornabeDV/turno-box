@@ -68,7 +68,7 @@ export function BookingActions({
     return (
       <Button
         variant="danger"
-        size="md"
+        size="lg"
         fullWidth
         loading={isPending}
         onClick={handleCancel}
@@ -81,7 +81,7 @@ export function BookingActions({
     return (
       <Button
         variant="outline"
-        size="md"
+        size="lg"
         fullWidth
         loading={isPending}
         onClick={handleCancel}
@@ -94,7 +94,7 @@ export function BookingActions({
     return (
       <Button
         variant="outline"
-        size="md"
+        size="lg"
         fullWidth
         loading={isPending}
         onClick={handleBook}

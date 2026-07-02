@@ -68,14 +68,14 @@ export function PackCard({ pack, index = 0, disabled = false }: Props) {
 
   return (
     <div className="bg-[#0E2A38] border border-[#1A4A63] border-l-2" style={{ borderLeftColor: accentColor }}>
-      <div className="p-5">
+      <div className="p-5 md:p-8">
         {/* Header: nombre + badge */}
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg">
+        <div className="flex items-start justify-between mb-3 md:mb-4">
+          <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-lg md:text-2xl">
             {pack.name}
           </h3>
           <span
-            className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider px-1.5 py-0.5 border"
+            className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider px-1.5 py-0.5 md:px-2.5 md:py-1 border"
             style={{ color: accentColor, borderColor: `${accentColor}40` }}
           >
             {badgeLabel}
@@ -83,15 +83,15 @@ export function PackCard({ pack, index = 0, disabled = false }: Props) {
         </div>
 
         {/* Precio */}
-        <div className="mb-1">
-          <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-3xl uppercase tracking-tight">
+        <div className="mb-1 md:mb-2">
+          <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-3xl md:text-4xl uppercase tracking-tight">
             {priceFormatted.replace(pack.currency, "").trim()}
           </span>
         </div>
 
         {/* Validity */}
         {pack.validityDays && (
-          <p className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-4">
+          <p className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99] mb-4 md:mb-6">
             {pack.validityDays} días válido
           </p>
         )}
@@ -112,7 +112,7 @@ export function PackCard({ pack, index = 0, disabled = false }: Props) {
         <button
           onClick={handleBuy}
           disabled={isPending || disabled}
-          className="w-full h-12 bg-[#F78837] text-[#0A1F2A] font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm active:scale-[0.98] transition-transform disabled:opacity-50 disabled:pointer-events-none"
+          className="w-full h-12 md:h-14 bg-[#F78837] text-[#0A1F2A] font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm md:text-base active:scale-[0.98] transition-transform disabled:opacity-50 disabled:pointer-events-none"
         >
           {disabled ? (
             "No disponible"
