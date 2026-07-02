@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { TimePicker } from "@/components/ui/TimePicker";
-import { SelectInput } from "@/components/ui/Select";
+import { SelectInput, MultiSelectInput } from "@/components/ui/Select";
 import { createClassAction, updateClassAction, updateClassInstanceAction } from "@/actions/classes";
 
 const DAYS = [
@@ -70,6 +70,9 @@ export function ClassModal({
     gymClass?.disciplineId ?? "",
   );
   const [dayOfWeek, setDayOfWeek] = useState(gymClass?.dayOfWeek ?? "MONDAY");
+  const [selectedDays, setSelectedDays] = useState<string[]>(
+    gymClass ? [gymClass.dayOfWeek] : ["MONDAY"],
+  );
   const [coachId, setCoachId] = useState(gymClass?.coachId ?? "");
   const [startTime, setStartTime] = useState(gymClass?.startTime ?? "07:00");
   const [maxCapacity, setMaxCapacity] = useState(
@@ -94,8 +97,14 @@ export function ClassModal({
     if (!disciplineId) {
       errors.disciplineId = "Seleccioná una disciplina";
     }
-    if (!dayOfWeek) {
-      errors.dayOfWeek = "Seleccioná un día";
+    if (isEditing) {
+      if (!dayOfWeek) {
+        errors.dayOfWeek = "Seleccioná un día";
+      }
+    } else {
+      if (selectedDays.length === 0) {
+        errors.dayOfWeek = "Seleccioná al menos un día";
+      }
     }
     if (!startTime) {
       errors.startTime = "Seleccioná un horario de inicio";
@@ -111,11 +120,11 @@ export function ClassModal({
 
   const isFormValid =
     disciplineId !== "" &&
-    dayOfWeek !== "" &&
     startTime !== "" &&
     maxCapacity !== "" &&
     Number(maxCapacity) >= 1 &&
-    Number(maxCapacity) <= 100;
+    Number(maxCapacity) <= 100 &&
+    (isEditing ? dayOfWeek !== "" : selectedDays.length > 0);
 
   function handleClose() {
     setError(null);
@@ -132,7 +141,12 @@ export function ClassModal({
 
     const formData = new FormData(e.currentTarget);
     formData.set("disciplineId", disciplineId);
-    formData.set("dayOfWeek", dayOfWeek);
+    formData.delete("dayOfWeek");
+    if (isEditing) {
+      formData.set("dayOfWeek", dayOfWeek);
+    } else {
+      selectedDays.forEach((d) => formData.append("dayOfWeek", d));
+    }
     formData.set("coachId", coachId);
     formData.set("startTime", startTime);
     formData.set("endTime", addOneHour(startTime));
@@ -149,12 +163,19 @@ export function ClassModal({
           await updateClassAction(gymClass.id, formData);
           toast.success("Clase guardada");
         } else {
-          await createClassAction(formData);
-          toast.success("Clase creada");
+          const result = await createClassAction(formData);
+          if (result.created === 0) {
+            toast.info("Las clases seleccionadas ya existen para ese horario.");
+          } else if (result.skipped > 0) {
+            toast.success(`${result.created} clase(s) creada(s). ${result.skipped} omitida(s) por duplicado.`);
+          } else {
+            toast.success(`${result.created} clase(s) creada(s)`);
+          }
         }
         formRef.current?.reset();
         setDisciplineId(disciplines[0]?.id ?? "");
         setDayOfWeek("MONDAY");
+        setSelectedDays(["MONDAY"]);
         setStartTime("07:00");
         setCoachId("");
         setMaxCapacity("12");
@@ -198,26 +219,47 @@ export function ClassModal({
           error={fieldErrors.disciplineId}
         />
 
-        {!isInstanceEdit && (
-          <SelectInput
-            name="dayOfWeek"
-            value={dayOfWeek}
-            onChange={(v) => {
-              setDayOfWeek(v);
-              if (fieldErrors.dayOfWeek) {
-                setFieldErrors((prev) => {
-                  const next = { ...prev };
-                  delete next.dayOfWeek;
-                  return next;
-                });
-              }
-            }}
-            options={DAYS}
-            label="Día"
-            required
-            error={fieldErrors.dayOfWeek}
-          />
-        )}
+        {!isInstanceEdit &&
+          (isEditing ? (
+            <SelectInput
+              name="dayOfWeek"
+              value={dayOfWeek}
+              onChange={(v) => {
+                setDayOfWeek(v);
+                if (fieldErrors.dayOfWeek) {
+                  setFieldErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.dayOfWeek;
+                    return next;
+                  });
+                }
+              }}
+              options={DAYS}
+              label="Día"
+              required
+              error={fieldErrors.dayOfWeek}
+            />
+          ) : (
+            <MultiSelectInput
+              name="dayOfWeek"
+              values={selectedDays}
+              onChange={(v) => {
+                setSelectedDays(v);
+                if (fieldErrors.dayOfWeek) {
+                  setFieldErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.dayOfWeek;
+                    return next;
+                  });
+                }
+              }}
+              options={DAYS}
+              label="Días"
+              placeholder="Seleccioná los días"
+              required
+              error={fieldErrors.dayOfWeek}
+            />
+          ))}
 
         {/* Horario */}
         <TimePicker

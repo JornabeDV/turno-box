@@ -119,7 +119,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                       <span
                         key={d}
                         className={cn(
-                          "text-[10px] md:text-xs font-medium px-1.5 py-0.5 rounded-md",
+                          "text-[10px] md:text-sm font-medium px-1.5 py-0.5 rounded-md",
                           d === dayOfWeek
                             ? "bg-[#F78837]/15 text-[#F78837]"
                             : "bg-[#0E2A38] text-[#6B8A99]",
@@ -138,13 +138,13 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                     {coach.classCount === 1 ? "clase" : "clases"}
                   </span>
                   {coach.overrideCount > 0 && (
-                    <span className="text-[10px] md:text-xs text-[#F78837] tabular-nums">
-                      +{coach.overrideCount} puntual
-                      {coach.overrideCount === 1 ? "" : "es"}
+                    <span className="text-[10px] md:text-sm text-[#F78837] tabular-nums">
+                      +{coach.overrideCount} única
+                      {coach.overrideCount === 1 ? "" : "s"}
                     </span>
                   )}
                   {coach.todayAttendees > 0 && (
-                    <span className="text-[10px] md:text-xs text-[#27C7B8] tabular-nums">
+                    <span className="text-[10px] md:text-sm text-[#27C7B8] tabular-nums">
                       {coach.todayAttendees} hoy
                     </span>
                   )}

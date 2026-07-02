@@ -44,7 +44,7 @@ export function AttendeesList({
       {/* Cabecera */}
       <div className="flex items-center gap-2 mb-2 px-1">
         <span className={cn("size-1.5 rounded-full", accentDot[accent])} />
-        <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+        <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
           {title}
         </h3>
         <span

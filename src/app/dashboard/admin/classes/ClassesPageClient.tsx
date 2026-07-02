@@ -359,7 +359,7 @@ export function ClassesPageClient({
                           </div>
 
                           {/* Horario */}
-                          <p className="text-xs md:text-sm text-[#6B8A99] font-mono tabular-nums leading-none">
+                          <p className="text-xs md:text-base text-[#6B8A99] font-mono tabular-nums leading-none">
                             {formatTime(slot.startTime)}
                           </p>
 

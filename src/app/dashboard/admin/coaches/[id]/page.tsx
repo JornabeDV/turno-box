@@ -190,10 +190,10 @@ export default async function CoachDetailPage({ params }: Props) {
             </div>
             <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
               <div>
-                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
                   Profesor desde
                 </p>
-                <p className="text-xs md:text-sm text-[#EAEAEA] font-medium mt-0.5">
+                <p className="text-xs md:text-base text-[#EAEAEA] font-medium mt-0.5">
                   {new Date(coach.createdAt).toLocaleDateString("es-AR", {
                     day: "numeric",
                     month: "short",
@@ -202,10 +202,10 @@ export default async function CoachDetailPage({ params }: Props) {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
                   Clases
                 </p>
-                <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
+                <p className="text-xs md:text-base font-bold text-[#EAEAEA] mt-0.5">
                   {classes.length}
                   {upcomingOverrides.length > 0 && (
                     <span className="text-[#F78837] ml-1">
@@ -216,7 +216,7 @@ export default async function CoachDetailPage({ params }: Props) {
               </div>
               {totalTodayConfirmed > 0 && (
                 <div>
-                  <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                  <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
                     Alumnos hoy
                   </p>
                   <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
@@ -225,12 +225,12 @@ export default async function CoachDetailPage({ params }: Props) {
                 </div>
               )}
               <div>
-                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
                   Estado
                 </p>
                 <p
                   className={cn(
-                    "text-xs md:text-sm font-medium mt-0.5",
+                    "text-xs md:text-base font-medium mt-0.5",
                     coach.isActive ? "text-[#27C7B8]" : "text-[#6B8A99]",
                   )}
                 >
@@ -242,15 +242,15 @@ export default async function CoachDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Clases puntuales */}
+      {/* Clases únicas */}
       {upcomingOverrides.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-3 px-1">
             <span className="size-1.5 rounded-full bg-[#F78837]" />
-            <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
-              Clases puntuales asignadas
+            <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+              Clases únicas asignadas
             </h3>
-            <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-[#F78837]">
+            <span className="text-xs md:text-base font-mono font-bold tabular-nums text-[#F78837]">
               {upcomingOverrides.length}
             </span>
           </div>
@@ -271,14 +271,14 @@ export default async function CoachDetailPage({ params }: Props) {
                     style={{ backgroundColor: color ?? "#f97316" }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate">
+                    <p className="text-sm md:text-lg font-medium text-[#EAEAEA] truncate">
                       {disciplineName}
                     </p>
-                    <p className="text-xs md:text-sm text-[#6B8A99] font-mono tabular-nums">
+                    <p className="text-xs md:text-base text-[#6B8A99] font-mono tabular-nums">
                       {formatDate(o.date)} · {formatTime(start)} – {formatTime(end)}
                     </p>
                     {o.description && (
-                      <p className="text-xs text-[#4A6B7A] mt-0.5">{o.description}</p>
+                      <p className="text-xs md:text-sm text-[#4A6B7A] mt-0.5">{o.description}</p>
                     )}
                   </div>
                   <Link
@@ -298,10 +298,10 @@ export default async function CoachDetailPage({ params }: Props) {
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
           <span className="size-1.5 rounded-full bg-[#F78837]" />
-          <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
             Horario semanal
           </h3>
-          <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-[#F78837]">
+          <span className="text-xs md:text-base font-mono font-bold tabular-nums text-[#F78837]">
             {classes.length}
           </span>
         </div>
