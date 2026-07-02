@@ -16,6 +16,7 @@ type Gym = {
   address: string | null;
   phone: string | null;
   _count: { users: number };
+  admin: { id: string; email: string } | null;
 };
 
 interface Props {
