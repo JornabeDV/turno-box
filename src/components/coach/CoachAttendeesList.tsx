@@ -82,14 +82,14 @@ export function CoachAttendeesList({
         next.delete(bookingId);
         return next;
       });
-      if (result.success && result.data) {
+      if (result.success) {
         setAttendedMap((prev) => ({
           ...prev,
-          [bookingId]: !!result.data?.attendedAt,
+          [bookingId]: !!result.data.attendedAt,
         }));
         toast.success(result.data.attendedAt ? "Asistencia marcada" : "Asistencia desmarcada");
       } else {
-        toast.error(result.error ?? "No se pudo actualizar la asistencia");
+        toast.error(result.error);
       }
     });
   }
