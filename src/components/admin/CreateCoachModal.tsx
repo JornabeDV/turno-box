@@ -26,6 +26,7 @@ export function CreateCoachModal({ open, onClose }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -39,6 +40,14 @@ export function CreateCoachModal({ open, onClose }: Props) {
     e.preventDefault();
     setError(null);
     const formData = new FormData(e.currentTarget);
+
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
+    if (password !== confirmPassword) {
+      setError("Las contraseñas no coinciden.");
+      return;
+    }
 
     startTransition(async () => {
       const result = await createCoachAction(formData);
@@ -110,6 +119,31 @@ export function CreateCoachModal({ open, onClose }: Props) {
               tabIndex={-1}
             >
               {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="coach-confirm-password" className={labelClass}>
+            Confirmar contraseña
+          </label>
+          <div className="relative">
+            <input
+              id="coach-confirm-password"
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              required
+              minLength={6}
+              placeholder="Repetir contraseña"
+              className={passwordInputClass}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
             </button>
           </div>
         </div>

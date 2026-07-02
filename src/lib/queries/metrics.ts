@@ -97,22 +97,50 @@ export async function calculateMetricsReport(
       coach: { select: { id: true, name: true } },
       bookings: {
         where: { classDate: { gte: start, lte: end }, deletedAt: null },
-        select: { status: true, userId: true, user: { select: { gender: true, birthDate: true } } },
+        select: { status: true, classDate: true, userId: true, user: { select: { gender: true, birthDate: true } } },
       },
     },
   });
+
+  // ── Closures y overrides dentro del rango ──
+  const classIds = classes.map((c) => c.id);
+  const [gymClosures, classOverrides] = await Promise.all([
+    prisma.gymClosure.findMany({
+      where: { gymId, date: { gte: start, lte: end } },
+      select: { date: true },
+    }),
+    prisma.classOverride.findMany({
+      where: { gymClassId: { in: classIds }, date: { gte: start, lte: end } },
+      select: { gymClassId: true, date: true, isCancelled: true, maxCapacity: true },
+    }),
+  ]);
+
+  const dateKey = (d: Date) => d.toISOString().split("T")[0];
+
+  const closureDates = new Set(gymClosures.map((c) => dateKey(c.date)));
+  const overrideMap = new Map<string, (typeof classOverrides)[number]>();
+  for (const o of classOverrides) {
+    overrideMap.set(`${o.gymClassId}-${dateKey(o.date)}`, o);
+  }
 
   const totalBookings = classes.reduce((sum, c) => sum + confirmedCount(c.bookings), 0);
   const totalCancelled = classes.reduce((sum, c) => sum + c.bookings.filter((b) => b.status === "CANCELLED").length, 0);
 
   const daysInRange = eachDay(start, end);
 
-  // ── Capacidad total del período ──
+  // ── Capacidad total del período (respeta closures y overrides) ──
   let totalCapacity = 0;
   for (const day of daysInRange) {
+    const dateStr = dateKey(day);
+    if (closureDates.has(dateStr)) continue;
+
     const dow = getDayOfWeek(day);
     const dayClasses = classes.filter((c) => c.dayOfWeek === dow);
-    totalCapacity += dayClasses.reduce((sum, c) => sum + c.maxCapacity, 0);
+    for (const c of dayClasses) {
+      const override = overrideMap.get(`${c.id}-${dateStr}`);
+      if (override?.isCancelled) continue;
+      totalCapacity += override?.maxCapacity ?? c.maxCapacity;
+    }
   }
 
   // Helper: cuántas veces ocurre una clase en el período
@@ -120,21 +148,9 @@ export async function calculateMetricsReport(
     return daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
   }
 
-  // ── Ocupación = promedio de ocupación por clase-instance ──
-  // Cada clase ocurre N veces en el período. Como la query trae bookings
-  // acumulados de todo el rango, dividimos por N para obtener el promedio
-  // por instancia. Así la ocupación nunca supera el 100%.
-  let totalOccupancySum = 0;
-  let totalTemplates = 0;
-  for (const c of classes) {
-    const instances = classInstances(c);
-    const bookings = confirmedCount(c.bookings);
-    if (instances > 0) {
-      totalOccupancySum += (bookings / instances) / c.maxCapacity;
-      totalTemplates++;
-    }
-  }
-  const occupancyRate = totalTemplates > 0 ? Math.round((totalOccupancySum / totalTemplates) * 100) : 0;
+  // ── Ocupación global del período ──
+  // Se calcula como reservas confirmadas reales / capacidad total real del período.
+  const occupancyRate = totalCapacity > 0 ? Math.round((totalBookings / totalCapacity) * 100) : 0;
 
   const totalAll = totalBookings + totalCancelled;
   const cancellationRate = totalAll > 0 ? Math.round((totalCancelled / totalAll) * 100) : 0;
@@ -156,29 +172,51 @@ export async function calculateMetricsReport(
 
   const retentionRate = activeStudents > 0 ? Math.round(((activeStudents - atRiskCount) / activeStudents) * 100) : 0;
 
-  // ── Tendencia diaria: promedio de ocupación por clase ese día ──
-  const dailyTrend = daysInRange.map((day) => {
-    const dow = getDayOfWeek(day);
-    const dayClasses = classes.filter((c) => c.dayOfWeek === dow);
-    const dayCapacity = dayClasses.reduce((sum, c) => sum + c.maxCapacity, 0);
+  // ── Tendencia diaria: ocupación real por fecha ──
+  // Agrupamos las reservas confirmadas por classDate y las comparamos contra
+  // la capacidad real de ese día (templates + overrides - closures).
+  const bookingsByDate = new Map<string, number>();
+  for (const c of classes) {
+    for (const b of c.bookings) {
+      if (b.status !== "CONFIRMED") continue;
+      const key = dateKey(b.classDate);
+      bookingsByDate.set(key, (bookingsByDate.get(key) || 0) + 1);
+    }
+  }
 
-    // Distribuimos los bookings acumulados del mes uniformemente entre las
-    // ocurrencias de la clase en el período, para obtener un valor diario realista.
-    let dayBookings = 0;
-    let dayOccupancySum = 0;
-    for (const c of dayClasses) {
-      const instances = classInstances(c);
-      const avgBookingsPerInstance = instances > 0 ? confirmedCount(c.bookings) / instances : 0;
-      dayBookings += Math.round(avgBookingsPerInstance);
-      dayOccupancySum += avgBookingsPerInstance / c.maxCapacity;
+  const dailyTrend = daysInRange.map((day) => {
+    const dateStr = dateKey(day);
+
+    // Día de cierre del gym
+    if (closureDates.has(dateStr)) {
+      return {
+        date: dateStr,
+        label: String(day.getDate()),
+        bookings: 0,
+        capacity: 0,
+        occupancy: 0,
+      };
     }
 
+    const dow = getDayOfWeek(day);
+    const dayClasses = classes.filter((c) => c.dayOfWeek === dow);
+
+    let dayCapacity = 0;
+    for (const c of dayClasses) {
+      const override = overrideMap.get(`${c.id}-${dateStr}`);
+      if (override?.isCancelled) continue;
+      dayCapacity += override?.maxCapacity ?? c.maxCapacity;
+    }
+
+    const dayBookings = bookingsByDate.get(dateStr) || 0;
+    const occupancy = dayCapacity > 0 ? Math.round((dayBookings / dayCapacity) * 100) : 0;
+
     return {
-      date: day.toISOString().split("T")[0],
+      date: dateStr,
       label: String(day.getDate()),
       bookings: dayBookings,
       capacity: dayCapacity,
-      occupancy: dayClasses.length > 0 ? Math.round((dayOccupancySum / dayClasses.length) * 100) : 0,
+      occupancy,
     };
   });
 

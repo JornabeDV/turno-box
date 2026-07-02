@@ -14,11 +14,17 @@ async function requireAdmin() {
   return { userId: user.id, gymId: user.gymId };
 }
 
-const createCoachSchema = z.object({
-  name: z.string().min(1, "El nombre es requerido").max(100),
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-});
+const createCoachSchema = z
+  .object({
+    name: z.string().min(1, "El nombre es requerido").max(100),
+    email: z.string().email("Email inválido"),
+    password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+    confirmPassword: z.string().min(1, "Debes confirmar la contraseña"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden.",
+    path: ["confirmPassword"],
+  });
 
 export async function createCoachAction(formData: FormData): Promise<ActionResult> {
   const { gymId } = await requireAdmin();
@@ -27,6 +33,7 @@ export async function createCoachAction(formData: FormData): Promise<ActionResul
     name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
   });
 
   if (!parsed.success) {
