@@ -101,10 +101,14 @@ export async function getClassSlotsForDay(
     },
   });
 
-  // Obtener nombres de coaches que aparecen en overrides para mostrar correctamente
+  // Obtener nombres de coaches y disciplinas que aparecen en overrides para mostrar correctamente
   const overrideCoachIds = classes
     .flatMap((c) => c.overrides)
     .map((o) => o.coachId)
+    .filter(Boolean) as string[];
+  const overrideDisciplineIds = classes
+    .flatMap((c) => c.overrides)
+    .map((o) => o.disciplineId)
     .filter(Boolean) as string[];
 
   const coachNameMap = new Map<string, string>();
@@ -114,6 +118,15 @@ export async function getClassSlotsForDay(
       select: { id: true, name: true },
     });
     coaches.forEach((coach) => coachNameMap.set(coach.id, coach.name ?? "Sin nombre"));
+  }
+
+  const disciplineNameMap = new Map<string, string>();
+  if (overrideDisciplineIds.length > 0) {
+    const overrideDisciplines = await prisma.discipline.findMany({
+      where: { id: { in: overrideDisciplineIds } },
+      select: { id: true, name: true },
+    });
+    overrideDisciplines.forEach((d) => disciplineNameMap.set(d.id, d.name));
   }
 
   const mapped = classes
@@ -129,10 +142,11 @@ export async function getClassSlotsForDay(
       const effectiveMaxCapacity = override?.maxCapacity ?? c.maxCapacity;
       const availableSpots = Math.max(0, effectiveMaxCapacity - confirmedCount);
       const userBooking = c.bookings.find((b: Booking) => b.userId === userId);
+      const effectiveDisciplineId = override?.disciplineId ?? c.disciplineId;
 
       return {
         id: c.id,
-        name: c.discipline?.name ?? "Sin disciplina",
+        name: disciplineNameMap.get(effectiveDisciplineId) ?? c.discipline?.name ?? "Sin disciplina",
         description: override?.description ?? c.description,
         dayOfWeek: c.dayOfWeek,
         startTime: override?.startTime ?? c.startTime,
@@ -140,12 +154,12 @@ export async function getClassSlotsForDay(
         maxCapacity: effectiveMaxCapacity,
         color: override?.color ?? c.color,
         coachId: override?.coachId ?? c.coachId,
-        disciplineId: override?.disciplineId ?? c.disciplineId,
+        disciplineId: effectiveDisciplineId,
         coachName:
           override?.coachId != null
             ? coachNameMap.get(override.coachId) ?? null
             : c.coach?.name ?? null,
-        disciplineName: c.discipline?.name ?? null,
+        disciplineName: disciplineNameMap.get(effectiveDisciplineId) ?? c.discipline?.name ?? null,
         confirmedCount,
         availableSpots,
         isFull: availableSpots === 0,

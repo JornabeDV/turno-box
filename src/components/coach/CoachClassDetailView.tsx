@@ -50,6 +50,7 @@ interface Props {
   targetDate: Date;
   classDate: Date;
   effectiveCoachName: string | null;
+  effectiveDisciplineName: string | null;
   isCancelled: boolean;
   backHref: string;
 }
@@ -61,6 +62,7 @@ export function CoachClassDetailView({
   targetDate,
   classDate,
   effectiveCoachName,
+  effectiveDisciplineName,
   isCancelled,
   backHref,
 }: Props) {
@@ -90,7 +92,7 @@ export function CoachClassDetailView({
             />
             <div className="flex-1 min-w-0">
               <h2 className="text-xl md:text-3xl font-bold text-primary tracking-tight">
-                {gymClass.discipline?.name ?? "Sin disciplina"}
+                {effectiveDisciplineName ?? gymClass.discipline?.name ?? "Sin disciplina"}
               </h2>
               <p className="text-sm md:text-lg text-secondary mt-0.5 md:mt-1.5">
                 {formatDate(targetDate)} · {formatTime(effectiveStartTime)} –{" "}

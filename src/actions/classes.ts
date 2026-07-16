@@ -130,6 +130,7 @@ export async function updateClassAction(classId: string, formData: FormData) {
   });
 
   revalidatePath("/dashboard/admin/classes");
+  revalidatePath(`/dashboard/admin/classes/${classId}`);
   revalidatePath("/dashboard/coach");
   revalidatePath("/dashboard/admin/coaches");
   if (existing.coachId && existing.coachId !== parsed.coachId) {

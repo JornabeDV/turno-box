@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition, useEffect } from "react";
 import { toast } from "sonner";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
@@ -91,6 +91,20 @@ export function ClassModal({
   // Validación inline por campo
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
+  // Resetear el formulario a los valores actuales de la clase cada vez que se abre el modal
+  useEffect(() => {
+    if (open) {
+      setDisciplineId(gymClass?.disciplineId ?? disciplines[0]?.id ?? "");
+      setDayOfWeek(gymClass?.dayOfWeek ?? "MONDAY");
+      setSelectedDays(gymClass ? [gymClass.dayOfWeek] : ["MONDAY"]);
+      setCoachId(gymClass?.coachId ?? "");
+      setStartTime(gymClass?.startTime ?? "07:00");
+      setMaxCapacity(gymClass?.maxCapacity?.toString() ?? "12");
+      setError(null);
+      setFieldErrors({});
+    }
+  }, [open, gymClass, disciplines]);
+
   function validateForm(): boolean {
     const errors: Record<string, string> = {};
 
@@ -173,13 +187,6 @@ export function ClassModal({
           }
         }
         formRef.current?.reset();
-        setDisciplineId(disciplines[0]?.id ?? "");
-        setDayOfWeek("MONDAY");
-        setSelectedDays(["MONDAY"]);
-        setStartTime("07:00");
-        setCoachId("");
-        setMaxCapacity("12");
-        setFieldErrors({});
         handleClose();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error inesperado");
