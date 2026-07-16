@@ -19,7 +19,7 @@ export function SuperAdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden md:flex flex-col w-56 min-h-dvh border-r border-[#1A4A63] bg-[#0A1F2A] p-4 gap-1">
+    <aside className="hidden md:flex flex-col w-56 min-h-dvh border-r border-border bg-page p-4 gap-1">
       {/* Brand */}
       <div className="flex justify-center gap-1 px-2 py-3 mb-3">
         <span className="rounded-[2px] px-2 py-1.5 flex items-center self-start">
@@ -32,7 +32,7 @@ export function SuperAdminSidebar() {
       </div>
 
       <div className="px-3 py-2 mb-2">
-        <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-widest text-[#F78837]">
+        <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-widest text-brand">
           Super Admin
         </span>
       </div>
@@ -47,8 +47,8 @@ export function SuperAdminSidebar() {
               "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm sm:text-base font-medium transition-colors duration-150",
               "active:scale-[0.97] border",
               active
-                ? "bg-[#F78837]/10 text-[#F78837] border-[#F78837]/20"
-                : "text-[#6B8A99] border-transparent hover:text-[#EAEAEA] hover:bg-[#143D52]",
+                ? "bg-brand/10 text-brand border-brand/20"
+                : "text-secondary border-transparent hover:text-primary hover:bg-panel",
             )}
           >
             <Icon weight={active ? "fill" : "regular"} size={18} />

@@ -21,16 +21,16 @@ export default async function JoinPage({
   if (!gym) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-        <span className="text-4xl text-[#E61919] mb-4">✕</span>
-        <h1 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
+        <span className="text-4xl text-danger mb-4">✕</span>
+        <h1 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight mb-2">
           Gimnasio no encontrado
         </h1>
-        <p className="text-sm text-[#6B8A99] max-w-xs font-[family-name:var(--font-oswald)]">
+        <p className="text-sm text-secondary max-w-xs font-[family-name:var(--font-oswald)]">
           El link de invitación no es válido o el gimnasio ya no está activo.
         </p>
         <Link
           href="/auth/login"
-          className="mt-6 inline-flex items-center gap-1.5 text-xs text-[#6B8A99] hover:text-[#EAEAEA] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
+          className="mt-6 inline-flex items-center gap-1.5 text-xs text-secondary hover:text-primary transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
         >
           <ArrowLeftIcon size={13} />
           Ir al login
@@ -40,32 +40,32 @@ export default async function JoinPage({
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-[#0A1F2A] relative">
+    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-page relative">
       <div className="w-full max-w-sm relative">
         {/* Logo */}
         <div className="w-full mb-3 md:mb-8 flex justify-center">
-          <div className="w-24 h-24 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-2">
+          <div className="w-24 h-24 rounded-xl border border-border bg-card overflow-hidden flex items-center justify-center p-2">
             {gym.logoUrl ? (
               <img src={gym.logoUrl} alt={gym.name} className="w-full h-full object-contain" />
             ) : (
-              <Barbell size={40} className="text-[#F78837]" />
+              <Barbell size={40} className="text-brand" />
             )}
           </div>
         </div>
 
         {/* Título */}
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-6 text-center">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl mb-6 text-center">
           Unite a {gym.name}
         </h2>
 
         {/* Card */}
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-6">
+        <div className="bg-card border border-border p-6">
           <RegisterForm defaultGymId={gym.id} gymSlug={gym.slug} />
         </div>
 
-        <p className="text-center text-xs sm:text-sm text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-center text-xs sm:text-sm text-secondary mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           ¿Ya tenés cuenta?{" "}
-          <Link href={`/auth/login?gymSlug=${gym.slug}`} className="text-[#27C7B8] hover:text-[#20A898] transition-colors">
+          <Link href={`/auth/login?gymSlug=${gym.slug}`} className="text-success hover:text-success-hover transition-colors">
             Iniciá sesión
           </Link>
         </p>

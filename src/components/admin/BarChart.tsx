@@ -125,12 +125,12 @@ export function BarChart({ data }: { data: DataPoint[] }) {
       {/* Leyenda */}
       <div className="flex items-center justify-center gap-4 mt-2">
         <div className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-[2px] bg-[#27C7B8]" />
-          <span className="text-xs sm:text-base text-[#6B8A99]">Ingresos</span>
+          <span className="size-2.5 rounded-[2px] bg-success" />
+          <span className="text-xs sm:text-base text-secondary">Ingresos</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="size-2.5 rounded-[2px] bg-[#E61919]" />
-          <span className="text-xs sm:text-base text-[#6B8A99]">Egresos</span>
+          <span className="size-2.5 rounded-[2px] bg-danger" />
+          <span className="text-xs sm:text-base text-secondary">Egresos</span>
         </div>
       </div>
     </div>

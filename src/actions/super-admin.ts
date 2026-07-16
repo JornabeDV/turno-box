@@ -267,9 +267,18 @@ export async function updateGymAction(
       if (!wantsAdminUpdate) return;
 
       const normalizedEmail = adminEmail ? adminEmail.toLowerCase().trim() : undefined;
-      const existingAdmin = await tx.user.findFirst({
+      const existingAdmins = await tx.user.findMany({
         where: { gymId: id, role: "ADMIN" },
+        select: { id: true, email: true },
       });
+
+      if (existingAdmins.length > 1) {
+        throw new Error(
+          "El gimnasio tiene más de un admin. Unificá los admins antes de continuar."
+        );
+      }
+
+      const existingAdmin = existingAdmins[0] ?? null;
 
       if (normalizedEmail) {
         const emailConflict = await tx.user.findFirst({

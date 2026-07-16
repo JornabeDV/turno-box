@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
       }),
     ]);
 
-    console.log(`[RESET PASSWORD] Contraseña cambiada para ${resetToken.user.email}`);
+    console.log("[RESET PASSWORD] Contraseña cambiada exitosamente");
 
     return NextResponse.json({
       message: "Contraseña actualizada exitosamente",

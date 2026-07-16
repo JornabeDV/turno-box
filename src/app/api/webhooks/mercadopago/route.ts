@@ -109,7 +109,8 @@ export async function POST(req: NextRequest) {
       });
     }
   } catch (err) {
-    console.error("[MP Webhook]", err);
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[MP Webhook] Error procesando webhook:", msg);
   }
 
   return NextResponse.json({ ok: true });

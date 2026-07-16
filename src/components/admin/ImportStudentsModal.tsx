@@ -131,9 +131,9 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
       <div className="flex-1 overflow-y-auto min-h-0 -mx-6 px-6">
         {/* Error general */}
         {error && (
-          <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5 mb-4">
-            <WarningCircle size={15} className="text-[#E61919] shrink-0" />
-            <p className="text-xs text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+          <div className="flex items-center gap-2 border-l-2 border-danger bg-card px-3 py-2.5 mb-4">
+            <WarningCircle size={15} className="text-danger shrink-0" />
+            <p className="text-xs text-danger font-[family-name:var(--font-oswald)] uppercase tracking-wide">
               {error}
             </p>
           </div>
@@ -144,7 +144,7 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
           <div className="space-y-5 max-md:mt-4">
             <div className="flex items-center justify-between">
               <DownloadTemplateButton />
-              <p className="text-xs sm:text-sm text-[#4A6B7A]">Máx. 500 filas · .xlsx o .csv</p>
+              <p className="text-xs sm:text-sm text-muted">Máx. 500 filas · .xlsx o .csv</p>
             </div>
 
             <div
@@ -157,8 +157,8 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
               className={cn(
                 "border-2 border-dashed rounded-[2px] p-8 text-center transition-colors cursor-pointer",
                 dragOver
-                  ? "border-[#F78837] bg-[#F78837]/5"
-                  : "border-[#1A4A63] bg-[#0A1F2A] hover:border-[#6B8A99]"
+                  ? "border-brand bg-brand/5"
+                  : "border-border bg-page hover:border-secondary"
               )}
             >
               <input
@@ -173,25 +173,25 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
                   size={32}
                   className={cn(
                     "mx-auto mb-3",
-                    dragOver ? "text-[#F78837]" : "text-[#4A6B7A]"
+                    dragOver ? "text-brand" : "text-muted"
                   )}
                 />
-                <p className="text-sm sm:text-base text-[#EAEAEA] font-medium">
+                <p className="text-sm sm:text-base text-primary font-medium">
                   Arrastrá tu archivo acá o hacé clic para seleccionarlo
                 </p>
-                <p className="text-xs sm:text-sm text-[#4A6B7A] mt-1">
+                <p className="text-xs sm:text-sm text-muted mt-1">
                   Formatos soportados: .xlsx, .csv
                 </p>
               </label>
             </div>
 
-            <div className="bg-[#0A1F2A] border border-[#1A4A63] p-4 space-y-2">
-              <p className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider">
+            <div className="bg-page border border-border p-4 space-y-2">
+              <p className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider">
                 Columnas esperadas
               </p>
-              <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm text-[#4A6B7A]">
-                <span>• Nombre <span className="text-[#E61919]">*</span></span>
-                <span>• Email <span className="text-[#E61919]">*</span></span>
+              <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm text-muted">
+                <span>• Nombre <span className="text-danger">*</span></span>
+                <span>• Email <span className="text-danger">*</span></span>
                 <span>• Telefono</span>
                 <span>• Fecha Nacimiento</span>
                 <span>• Creditos Iniciales</span>
@@ -203,8 +203,8 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
         {/* Preview loading */}
         {previewLoading && (
           <div className="flex flex-col items-center justify-center py-12">
-            <Spinner size={32} className="text-[#F78837] animate-spin mb-3" />
-            <p className="text-sm text-[#6B8A99]">Analizando archivo...</p>
+            <Spinner size={32} className="text-brand animate-spin mb-3" />
+            <p className="text-sm text-secondary">Analizando archivo...</p>
           </div>
         )}
 
@@ -212,71 +212,71 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
         {preview && !result && !importing && (
           <div className="space-y-4">
             {invalidRows.length > 0 && (
-              <div className="flex items-start gap-2 border-l-2 border-[#F78837] bg-[#0E2A38] px-3 py-2.5">
-                <WarningCircle size={15} className="text-[#F78837] shrink-0 mt-0.5" />
-                <div className="text-xs text-[#F78837] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+              <div className="flex items-start gap-2 border-l-2 border-brand bg-card px-3 py-2.5">
+                <WarningCircle size={15} className="text-brand shrink-0 mt-0.5" />
+                <div className="text-xs text-brand font-[family-name:var(--font-oswald)] uppercase tracking-wide">
                   Tenés {invalidRows.length} fila{invalidRows.length !== 1 ? "s" : ""} con errores.
                   Corregí el archivo y volvé a subirlo.
                 </div>
               </div>
             )}
 
-            <div className="border border-[#1A4A63] overflow-hidden">
+            <div className="border border-border overflow-hidden">
               <div className="max-h-[45vh] overflow-y-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#0A1F2A] sticky top-0 z-10">
-                    <tr className="border-b border-[#1A4A63]">
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider w-10">
+                  <thead className="bg-page sticky top-0 z-10">
+                    <tr className="border-b border-border">
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider w-10">
                         #
                       </th>
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider">
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider">
                         Nombre
                       </th>
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider">
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider">
                         Email
                       </th>
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider hidden sm:table-cell">
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider hidden sm:table-cell">
                         Teléfono
                       </th>
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider hidden sm:table-cell">
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider hidden sm:table-cell">
                         Nac.
                       </th>
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider hidden sm:table-cell">
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider hidden sm:table-cell">
                         Créd.
                       </th>
-                      <th className="px-3 py-2 text-[#6B8A99] font-medium uppercase tracking-wider w-10"></th>
+                      <th className="px-3 py-2 text-secondary font-medium uppercase tracking-wider w-10"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#1A4A63]">
+                  <tbody className="divide-y divide-border">
                     {preview.map((row) => (
                       <tr
                         key={row.rowIndex}
                         className={cn(
                           "transition-colors",
-                          row.valid ? "hover:bg-white/[0.02]" : "bg-[#E61919]/5"
+                          row.valid ? "hover:bg-white/[0.02]" : "bg-danger/5"
                         )}
                       >
-                        <td className="px-3 py-2 text-[#4A6B7A] font-mono">
+                        <td className="px-3 py-2 text-muted font-mono">
                           {row.rowIndex}
                         </td>
-                        <td className="px-3 py-2 text-[#EAEAEA]">{row.nombre}</td>
-                        <td className="px-3 py-2 text-[#EAEAEA]">{row.email}</td>
-                        <td className="px-3 py-2 text-[#6B8A99] hidden sm:table-cell">
+                        <td className="px-3 py-2 text-primary">{row.nombre}</td>
+                        <td className="px-3 py-2 text-primary">{row.email}</td>
+                        <td className="px-3 py-2 text-secondary hidden sm:table-cell">
                           {row.telefono || "—"}
                         </td>
-                        <td className="px-3 py-2 text-[#6B8A99] hidden sm:table-cell">
+                        <td className="px-3 py-2 text-secondary hidden sm:table-cell">
                           {row.fechaNacimiento || "—"}
                         </td>
-                        <td className="px-3 py-2 text-[#6B8A99] hidden sm:table-cell">
+                        <td className="px-3 py-2 text-secondary hidden sm:table-cell">
                           {row.creditosIniciales ?? "—"}
                         </td>
                         <td className="px-3 py-2">
                           {row.valid ? (
-                            <CheckCircle size={14} className="text-[#27C7B8]" />
+                            <CheckCircle size={14} className="text-success" />
                           ) : (
                             <div className="group relative">
-                              <XCircle size={14} className="text-[#E61919] cursor-help" />
-                              <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block z-20 w-48 bg-[#0A1F2A] border border-[#1A4A63] p-2 text-[10px] text-[#E61919]">
+                              <XCircle size={14} className="text-danger cursor-help" />
+                              <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block z-20 w-48 bg-page border border-border p-2 text-[10px] text-danger">
                                 {row.errors.join(" ")}
                               </div>
                             </div>
@@ -294,9 +294,9 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
         {/* Importando */}
         {importing && (
           <div className="flex flex-col items-center justify-center py-16">
-            <Spinner size={40} className="text-[#F78837] animate-spin mb-4" />
-            <p className="text-sm text-[#6B8A99]">Creando cuentas y enviando invitaciones...</p>
-            <p className="text-xs text-[#4A6B7A] mt-1">No cierres esta ventana</p>
+            <Spinner size={40} className="text-brand animate-spin mb-4" />
+            <p className="text-sm text-secondary">Creando cuentas y enviando invitaciones...</p>
+            <p className="text-xs text-muted mt-1">No cierres esta ventana</p>
           </div>
         )}
 
@@ -304,53 +304,53 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
         {result && (
           <div className="space-y-4 max-sm:mt-4">
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-[#0A1F2A] border border-[#1A4A63] p-4 text-center">
-                <Users size={20} className="text-[#27C7B8] mx-auto mb-1" />
-                <p className="text-xl font-bold text-[#EAEAEA]">{result.created}</p>
-                <p className="text-[10px] text-[#6B8A99] uppercase tracking-wider">
+              <div className="bg-page border border-border p-4 text-center">
+                <Users size={20} className="text-success mx-auto mb-1" />
+                <p className="text-xl font-bold text-primary">{result.created}</p>
+                <p className="text-[10px] text-secondary uppercase tracking-wider">
                   Creados
                 </p>
               </div>
-              <div className="bg-[#0A1F2A] border border-[#1A4A63] p-4 text-center">
-                <Users size={20} className="text-[#6B8A99] mx-auto mb-1" />
-                <p className="text-xl font-bold text-[#EAEAEA]">{result.updated}</p>
-                <p className="text-[10px] text-[#6B8A99] uppercase tracking-wider">
+              <div className="bg-page border border-border p-4 text-center">
+                <Users size={20} className="text-secondary mx-auto mb-1" />
+                <p className="text-xl font-bold text-primary">{result.updated}</p>
+                <p className="text-[10px] text-secondary uppercase tracking-wider">
                   Actualizados
                 </p>
               </div>
-              <div className="bg-[#0A1F2A] border border-[#1A4A63] p-4 text-center">
-                <PaperPlaneTilt size={20} className="text-[#F78837] mx-auto mb-1" />
-                <p className="text-xl font-bold text-[#EAEAEA]">{result.invited}</p>
-                <p className="text-[10px] text-[#6B8A99] uppercase tracking-wider">
+              <div className="bg-page border border-border p-4 text-center">
+                <PaperPlaneTilt size={20} className="text-brand mx-auto mb-1" />
+                <p className="text-xl font-bold text-primary">{result.invited}</p>
+                <p className="text-[10px] text-secondary uppercase tracking-wider">
                   Invitados
                 </p>
               </div>
-              <div className="bg-[#0A1F2A] border border-[#1A4A63] p-4 text-center">
-                <XCircle size={20} className="text-[#E61919] mx-auto mb-1" />
-                <p className="text-xl font-bold text-[#EAEAEA]">{result.failed}</p>
-                <p className="text-[10px] text-[#6B8A99] uppercase tracking-wider">
+              <div className="bg-page border border-border p-4 text-center">
+                <XCircle size={20} className="text-danger mx-auto mb-1" />
+                <p className="text-xl font-bold text-primary">{result.failed}</p>
+                <p className="text-[10px] text-secondary uppercase tracking-wider">
                   Errores
                 </p>
               </div>
             </div>
 
             {result.errors.length > 0 && (
-              <div className="border border-[#1A4A63] overflow-hidden">
-                <div className="bg-[#0A1F2A] px-3 py-2 border-b border-[#1A4A63]">
-                  <p className="text-xs text-[#6B8A99] uppercase tracking-wider font-medium">
+              <div className="border border-border overflow-hidden">
+                <div className="bg-page px-3 py-2 border-b border-border">
+                  <p className="text-xs text-secondary uppercase tracking-wider font-medium">
                     Errores por fila
                   </p>
                 </div>
                 <div className="max-h-[30vh] overflow-y-auto">
                   <table className="w-full text-left text-xs">
-                    <tbody className="divide-y divide-[#1A4A63]">
+                    <tbody className="divide-y divide-border">
                       {result.errors.map((err, i) => (
                         <tr key={i} className="hover:bg-white/[0.02]">
-                          <td className="px-3 py-2 text-[#4A6B7A] font-mono w-12">
+                          <td className="px-3 py-2 text-muted font-mono w-12">
                             {err.rowIndex}
                           </td>
-                          <td className="px-3 py-2 text-[#EAEAEA]">{err.email}</td>
-                          <td className="px-3 py-2 text-[#E61919]">{err.reason}</td>
+                          <td className="px-3 py-2 text-primary">{err.email}</td>
+                          <td className="px-3 py-2 text-danger">{err.reason}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -363,7 +363,7 @@ export function ImportStudentsModal({ open, onOpenChange }: Props) {
       </div>
 
       {/* Footer actions */}
-      <div className="shrink-0 mt-5 pt-5 border-t border-[#1A4A63] flex items-right sm:justify-between gap-3">
+      <div className="shrink-0 mt-5 pt-5 border-t border-border flex items-right sm:justify-between gap-3">
         {!result && !preview && (
           <Button variant="outline" size="md" onClick={() => handleClose(false)} className="max-sm:w-full">
             Cancelar

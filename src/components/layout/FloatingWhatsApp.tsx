@@ -1,5 +1,7 @@
 interface WhatsAppLinkProps {
   phone: string;
+  userName?: string;
+  gymName?: string;
   message?: string;
 }
 
@@ -7,14 +9,29 @@ function cleanPhone(phone: string): string {
   return phone.replace(/\D/g, "");
 }
 
+function buildDefaultMessage(userName?: string, gymName?: string): string {
+  const name = userName?.trim();
+  const gym = gymName?.trim();
+  if (name && gym) {
+    return `Hola, soy ${name} de ${gym}. Te escribo desde la app con una consulta. ¿Me podés ayudar?`;
+  }
+  if (name) {
+    return `Hola, soy ${name}. Te escribo desde la app con una consulta. ¿Me podés ayudar?`;
+  }
+  return "Hola, te escribo desde la app con una consulta. ¿Me podés ayudar?";
+}
+
 export function WhatsAppLink({
   phone,
-  message = "Hola, tengo una consulta.",
+  userName,
+  gymName,
+  message,
 }: WhatsAppLinkProps) {
   const cleaned = cleanPhone(phone);
   if (!cleaned) return null;
 
-  const href = `https://wa.me/${cleaned}?text=${encodeURIComponent(message)}`;
+  const finalMessage = message?.trim() || buildDefaultMessage(userName, gymName);
+  const href = `https://wa.me/${cleaned}?text=${encodeURIComponent(finalMessage)}`;
 
   return (
     <a
@@ -22,7 +39,7 @@ export function WhatsAppLink({
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contactar por WhatsApp"
-      className="inline-flex items-center justify-center w-8 h-8 md:w-12 md:h-12 border border-[#1A4A63] bg-[#0E2A38] text-[#25D366] hover:text-[#128C7E] hover:border-[#25D366]/40 active:scale-95 transition-colors shrink-0"
+      className="inline-flex items-center justify-center w-8 h-8 md:w-12 md:h-12 border border-border bg-card text-[#25D366] hover:text-[#128C7E] hover:border-[#25D366]/40 active:scale-95 transition-colors shrink-0"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

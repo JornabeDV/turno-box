@@ -107,10 +107,10 @@ export default async function CoachesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             Admin
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Profesores
           </h2>
         </div>
@@ -134,8 +134,8 @@ export default async function CoachesPage() {
       </div>
 
       {coaches.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99]">No hay profesores registrados.</p>
+        <div className="bg-card border border-border px-4 py-16 text-center">
+          <p className="text-sm md:text-base text-secondary">No hay profesores registrados.</p>
         </div>
       ) : (
         <CoachesListClient

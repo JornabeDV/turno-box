@@ -46,12 +46,12 @@ export function ForgotPasswordForm({ gymSlug }: ForgotPasswordFormProps) {
   if (success) {
     return (
       <div className="flex flex-col gap-4 text-center">
-        <CheckCircle size={48} className="text-[#27C7B8] mx-auto" />
+        <CheckCircle size={48} className="text-success mx-auto" />
         <div>
-          <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
+          <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight mb-2">
             Email enviado
           </h3>
-          <p className="text-sm sm:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          <p className="text-sm sm:text-base text-secondary font-[family-name:var(--font-oswald)]">
             Si existe una cuenta con ese email, recibirás instrucciones para resetear tu contraseña.
           </p>
         </div>
@@ -74,23 +74,23 @@ export function ForgotPasswordForm({ gymSlug }: ForgotPasswordFormProps) {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* Email */}
       <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]">
+        <label htmlFor="email" className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]">
           Email
         </label>
         <div className="relative">
-          <Envelope size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]" />
+          <Envelope size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             id="email" name="email" type="email" autoComplete="email" required
             placeholder="email@alumno.com"
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-page border border-border px-10 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
         </div>
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5">
-          <WarningCircle size={15} className="text-[#E61919] shrink-0" />
-          <p className="text-xs text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">{error}</p>
+        <div className="flex items-center gap-2 border-l-2 border-danger bg-card px-3 py-2.5">
+          <WarningCircle size={15} className="text-danger shrink-0" />
+          <p className="text-xs text-danger font-[family-name:var(--font-oswald)] uppercase tracking-wide">{error}</p>
         </div>
       )}
 

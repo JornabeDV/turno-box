@@ -75,10 +75,10 @@ export function ClassCard({ slot, dateStr, index }: Props) {
   return (
     <div
       className={cn(
-        "bg-[#0E2A38] border border-[#1A4A63] p-4 press-scale animate-in",
+        "bg-card border border-border p-4 press-scale animate-in",
         staggerClass,
-        localBooking?.status === "CONFIRMED" && "border-l-2 border-l-[#27C7B8]",
-        localBooking?.status === "WAITLISTED" && "border-l-2 border-l-[#F78837]"
+        localBooking?.status === "CONFIRMED" && "border-l-2 border-l-success",
+        localBooking?.status === "WAITLISTED" && "border-l-2 border-l-brand"
       )}
     >
       {/* Fila superior: hora + badge de estado */}
@@ -88,11 +88,11 @@ export function ClassCard({ slot, dateStr, index }: Props) {
             className="size-2.5 shrink-0"
             style={{ backgroundColor: slot.color ?? "#F78837" }}
           />
-          <span className="font-[family-name:var(--font-jetbrains)] text-xs text-[#6B8A99] tabular-nums uppercase">
+          <span className="font-[family-name:var(--font-jetbrains)] text-xs text-secondary tabular-nums uppercase">
             {formatTime(slot.startTime)}
           </span>
-          <span className="text-[#4A6B7A] text-xs">—</span>
-          <span className="font-[family-name:var(--font-jetbrains)] text-xs text-[#4A6B7A] tabular-nums uppercase">
+          <span className="text-muted text-xs">—</span>
+          <span className="font-[family-name:var(--font-jetbrains)] text-xs text-muted tabular-nums uppercase">
             {formatTime(slot.endTime)}
           </span>
         </div>
@@ -100,12 +100,12 @@ export function ClassCard({ slot, dateStr, index }: Props) {
       </div>
 
       {/* Nombre de la clase */}
-      <h3 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] text-base uppercase tracking-tight mb-1">
+      <h3 className="font-[family-name:var(--font-oswald)] font-bold text-primary text-base uppercase tracking-tight mb-1">
         {slot.name}
       </h3>
 
       {/* Coach + cupos */}
-      <div className="flex items-center gap-3 text-xs text-[#6B8A99] mb-4">
+      <div className="flex items-center gap-3 text-xs text-secondary mb-4">
         {slot.coachName && (
           <span className="flex items-center gap-1">
             <UserIcon size={12} />
@@ -116,8 +116,8 @@ export function ClassCard({ slot, dateStr, index }: Props) {
           <ClockIcon size={12} />
           <span className={cn(
             "tabular-nums",
-            slot.availableSpots === 0 && "text-[#E61919]",
-            slot.availableSpots <= Math.ceil(slot.maxCapacity * 0.25) && slot.availableSpots > 0 && "text-[#F78837]"
+            slot.availableSpots === 0 && "text-danger",
+            slot.availableSpots <= Math.ceil(slot.maxCapacity * 0.25) && slot.availableSpots > 0 && "text-brand"
           )}>
             {slot.confirmedCount}/{slot.maxCapacity} cupos
           </span>

@@ -47,10 +47,10 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+            <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
               Admin
             </p>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
               Disciplinas
             </h2>
           </div>
@@ -66,8 +66,8 @@ export function DisciplinesPageClient({ disciplines }: Props) {
 
         {/* Lista */}
         {disciplines.length === 0 ? (
-          <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-            <p className="text-sm md:text-base text-[#6B8A99] mb-4">
+          <div className="bg-card border border-border px-4 py-16 text-center">
+            <p className="text-sm md:text-base text-secondary mb-4">
               No hay disciplinas creadas todavía.
             </p>
             <Button
@@ -79,7 +79,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
             </Button>
           </div>
         ) : (
-          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
+          <div className="bg-card border border-border overflow-hidden divide-y divide-border">
             {disciplines.map((d) => (
               <div
                 key={d.id}
@@ -92,9 +92,9 @@ export function DisciplinesPageClient({ disciplines }: Props) {
                   style={{ backgroundColor: d.color ?? "#f97316" }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm md:text-base font-medium text-[#EAEAEA]">{d.name}</p>
+                  <p className="text-sm md:text-base font-medium text-primary">{d.name}</p>
                   {d.description && (
-                    <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5 truncate">
+                    <p className="text-xs md:text-sm text-secondary mt-0.5 truncate">
                       {d.description}
                     </p>
                   )}
@@ -105,7 +105,7 @@ export function DisciplinesPageClient({ disciplines }: Props) {
                     e.stopPropagation();
                     setDeleteModal({ open: true, discipline: d });
                   }}
-                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0 cursor-pointer"
+                  className="size-8 rounded-[2px] flex items-center justify-center text-secondary hover:text-danger hover:bg-card transition-all shrink-0 cursor-pointer"
                 >
                   <TrashIcon
                     size={16}
@@ -134,8 +134,8 @@ export function DisciplinesPageClient({ disciplines }: Props) {
         size="md"
       >
         {deleteError && (
-          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs md:text-sm text-[#E61919]">{deleteError}</p>
+          <div className="mb-4 rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-danger">{deleteError}</p>
           </div>
         )}
         <div className="flex  max-md:flex-col gap-2 max-md:mt-6">

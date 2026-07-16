@@ -64,8 +64,8 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
 
   return (
     <>
-      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
-        <div className="divide-y divide-[#1A4A63]">
+      <div className="bg-card border border-border overflow-hidden">
+        <div className="divide-y divide-border">
           {coaches.map((coach, i) => {
             const initials = coach.name
               ? coach.name
@@ -92,8 +92,8 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                   className={cn(
                     "size-10 rounded-[2px] border flex items-center justify-center text-sm font-bold shrink-0",
                     coach.isActive
-                      ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
-                      : "bg-[#0A1F2A] border-[#1A4A63] text-[#4A6B7A]",
+                      ? "bg-brand/10 border-brand/20 text-brand"
+                      : "bg-page border-border text-muted",
                   )}
                 >
                   {initials}
@@ -104,13 +104,13 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                   <p
                     className={cn(
                       "text-sm md:text-base font-medium truncate leading-tight",
-                      coach.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
+                      coach.isActive ? "text-primary" : "text-secondary",
                     )}
                   >
                     {coach.name ?? "Sin nombre"}
                   </p>
                   {coach.role === "ADMIN" && (
-                    <p className="text-[10px] md:text-xs text-[#F78837] uppercase tracking-wider">
+                    <p className="text-[10px] md:text-xs text-brand uppercase tracking-wider">
                       Administrador
                     </p>
                   )}
@@ -119,7 +119,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                 {/* Días que enseña */}
                 <div className="hidden md:flex items-center gap-1 shrink-0">
                   {coach.teachingDays.length === 0 ? (
-                    <span className="text-xs md:text-sm text-[#4A6B7A]">Sin clases</span>
+                    <span className="text-xs md:text-sm text-muted">Sin clases</span>
                   ) : (
                     coach.teachingDays.map((d) => (
                       <span
@@ -127,8 +127,8 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                         className={cn(
                           "text-[10px] md:text-sm font-medium px-1.5 py-0.5 rounded-md",
                           d === dayOfWeek
-                            ? "bg-[#F78837]/15 text-[#F78837]"
-                            : "bg-[#0E2A38] text-[#6B8A99]",
+                            ? "bg-brand/15 text-brand"
+                            : "bg-card text-secondary",
                         )}
                       >
                         {DAY_LABELS[d]}
@@ -139,18 +139,18 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
 
                 {/* Clases totales + asistentes hoy */}
                 <div className="hidden sm:flex flex-col items-end shrink-0 min-w-[60px]">
-                  <span className="text-xs md:text-sm font-mono text-[#6B8A99] tabular-nums">
+                  <span className="text-xs md:text-sm font-mono text-secondary tabular-nums">
                     {coach.classCount}{" "}
                     {coach.classCount === 1 ? "clase" : "clases"}
                   </span>
                   {coach.overrideCount > 0 && (
-                    <span className="text-[10px] md:text-sm text-[#F78837] tabular-nums">
+                    <span className="text-[10px] md:text-sm text-brand tabular-nums">
                       +{coach.overrideCount} única
                       {coach.overrideCount === 1 ? "" : "s"}
                     </span>
                   )}
                   {coach.todayAttendees > 0 && (
-                    <span className="text-[10px] md:text-sm text-[#27C7B8] tabular-nums">
+                    <span className="text-[10px] md:text-sm text-success tabular-nums">
                       {coach.todayAttendees} hoy
                     </span>
                   )}
@@ -171,7 +171,7 @@ export function CoachesListClient({ coaches: initial, dayOfWeek }: Props) {
                         e.stopPropagation();
                         setConfirmDeleteId(coach.id);
                       }}
-                      className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
+                      className="size-8 rounded-[2px] flex items-center justify-center text-secondary cursor-pointer hover:text-danger hover:bg-card transition-all shrink-0"
                     >
                       <TrashIcon size={16} weight="bold" />
                     </button>

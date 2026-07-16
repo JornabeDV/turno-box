@@ -38,7 +38,7 @@ export function SuperAdminMobileNav() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center justify-center size-8 rounded-[2px] text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0E2A38] transition-all active:scale-90"
+        className="md:hidden flex items-center justify-center size-8 rounded-[2px] text-secondary hover:text-primary hover:bg-card transition-all active:scale-90"
         aria-label="Abrir menú"
       >
         <ListIcon size={20} />
@@ -57,7 +57,7 @@ export function SuperAdminMobileNav() {
             />
 
             <motion.div
-              className="relative w-72 max-w-[85vw] min-h-dvh bg-[#0A1F2A] border-r border-[#1A4A63] flex flex-col p-4 gap-1"
+              className="relative w-72 max-w-[85vw] min-h-dvh bg-page border-r border-border flex flex-col p-4 gap-1"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -75,7 +75,7 @@ export function SuperAdminMobileNav() {
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0E2A38] transition-all"
+                  className="size-8 rounded-[2px] flex items-center justify-center text-secondary hover:text-primary hover:bg-card transition-all"
                   aria-label="Cerrar menú"
                 >
                   <XIcon size={18} />
@@ -83,7 +83,7 @@ export function SuperAdminMobileNav() {
               </div>
 
               <div className="px-3 py-2 mb-2">
-                <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-widest text-[#F78837]">
+                <span className="text-[10px] font-[family-name:var(--font-jetbrains)] uppercase tracking-widest text-brand">
                   Super Admin
                 </span>
               </div>
@@ -98,11 +98,11 @@ export function SuperAdminMobileNav() {
                     key={href}
                     href={href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm font-medium transition-all duration-150",
+                      "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-sm font-medium transition-colors duration-150",
                       "active:scale-[0.97]",
                       active
-                        ? "bg-[#F78837]/10 text-[#F78837] border border-[#F78837]/20"
-                        : "text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0A1F2A]",
+                        ? "bg-brand/10 text-brand border border-brand/20"
+                        : "text-secondary hover:text-primary hover:bg-page",
                     )}
                   >
                     <Icon weight={active ? "fill" : "regular"} size={18} />

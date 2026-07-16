@@ -20,18 +20,18 @@ export default async function PacksPage({
 
   const { error, info } = await searchParams;
 
-  const [packs, gym] = await Promise.all([
+  const [packs, mpConfig] = await Promise.all([
     prisma.pack.findMany({
       where: { gymId: user.gymId, isActive: true },
       orderBy: [{ sortOrder: "asc" }, { credits: "asc" }],
     }),
-    prisma.gym.findUnique({
-      where: { id: user.gymId },
-      select: { mpAccessToken: true },
-    }),
+    prisma.$queryRaw<[{ mpConfigured: boolean }]>`
+      SELECT CASE WHEN "mpAccessToken" IS NOT NULL AND "mpAccessToken" <> '' THEN true ELSE false END as "mpConfigured"
+      FROM gyms WHERE id = ${user.gymId}
+    `,
   ]);
 
-  const mpConfigured = !!gym?.mpAccessToken;
+  const mpConfigured = mpConfig[0]?.mpConfigured ?? false;
 
   return (
     <section className="space-y-5 md:space-y-8 pt-4 md:pt-8">
@@ -40,21 +40,21 @@ export default async function PacksPage({
 
       {/* Header */}
       <div>
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl md:text-4xl">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl md:text-4xl">
           Comprar abonos
         </h2>
-        <p className="text-sm md:text-lg text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
+        <p className="text-sm md:text-lg text-secondary mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
           Seleccioná el plan que mejor se adapte a tu entrenamiento.
         </p>
       </div>
 
       {/* Estado de configuración de MP */}
       {!mpConfigured && (
-        <div className="bg-[#0E2A38] border border-[#F78837]/40 px-4 py-6 md:px-6 md:py-8">
-          <p className="text-sm md:text-base text-[#F78837] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <div className="bg-card border border-brand/40 px-4 py-6 md:px-6 md:py-8">
+          <p className="text-sm md:text-base text-brand font-[family-name:var(--font-oswald)] uppercase tracking-wide">
             Pagos online no disponibles
           </p>
-          <p className="text-xs md:text-sm text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-jetbrains)]">
+          <p className="text-xs md:text-sm text-secondary mt-1 md:mt-2 font-[family-name:var(--font-jetbrains)]">
             El gimnasio todavía no configuró Mercado Pago. Contactá a la administración para comprar abonos.
           </p>
         </div>
@@ -62,8 +62,8 @@ export default async function PacksPage({
 
       {/* Lista de packs */}
       {packs.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 md:px-6 md:py-20 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <div className="bg-card border border-border px-4 py-16 md:px-6 md:py-20 text-center">
+          <p className="text-sm md:text-base text-secondary font-[family-name:var(--font-oswald)] uppercase tracking-wide">
             No hay abonos disponibles en este momento.
           </p>
         </div>
@@ -80,13 +80,13 @@ export default async function PacksPage({
         </div>
       )}
       {/* Footer de seguridad */}
-      <div className="pt-4 md:pt-6 border-t border-[#1A4A63]">
+      <div className="pt-4 md:pt-6 border-t border-border">
         <div className="flex items-center justify-center gap-6 md:gap-8 mb-2 md:mb-3">
-          <CreditCard size={20} className="text-[#4A6B7A] md:size-7" />
-          <Fingerprint size={20} className="text-[#4A6B7A] md:size-7" />
-          <Lock size={20} className="text-[#4A6B7A] md:size-7" />
+          <CreditCard size={20} className="text-muted md:size-7" />
+          <Fingerprint size={20} className="text-muted md:size-7" />
+          <Lock size={20} className="text-muted md:size-7" />
         </div>
-        <p className="text-center text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
+        <p className="text-center text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-muted">
           Pagos seguros cifrados con SSL. Tus datos están protegidos.
         </p>
       </div>

@@ -60,23 +60,23 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
       <BackButton href="/profile" />
 
       <div>
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl md:text-4xl">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl md:text-4xl">
           Historial de turnos
         </h2>
-        <p className="text-sm md:text-lg text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
+        <p className="text-sm md:text-lg text-secondary mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
           Todos tus turnos y su estado
         </p>
       </div>
 
       {items.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 md:px-6 md:py-20 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <div className="bg-card border border-border px-4 py-16 md:px-6 md:py-20 text-center">
+          <p className="text-sm md:text-base text-secondary font-[family-name:var(--font-oswald)] uppercase tracking-wide">
             Aún no tenés turnos.
           </p>
         </div>
       ) : (
         <>
-          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
+          <div className="bg-card border border-border overflow-hidden divide-y divide-border">
             {items.map((b) => {
               const isPast = new Date(b.classDate) < today;
               return (
@@ -84,10 +84,10 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                   <span
                     className={cn(
                       "size-1.5 md:size-2 shrink-0",
-                      b.status === "CANCELLED" && "bg-[#4A6B7A]",
-                      b.status === "WAITLISTED" && "bg-[#F78837]",
+                      b.status === "CANCELLED" && "bg-muted",
+                      b.status === "WAITLISTED" && "bg-brand",
                       b.status === "CONFIRMED" && isPast && "bg-emerald-600",
-                      b.status === "CONFIRMED" && !isPast && "bg-[#27C7B8]",
+                      b.status === "CONFIRMED" && !isPast && "bg-success",
                     )}
                   />
                   <div className="flex-1 min-w-0">
@@ -95,13 +95,13 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                       className={cn(
                         "text-sm md:text-lg font-[family-name:var(--font-oswald)] font-bold uppercase tracking-tight truncate",
                         b.status === "CANCELLED"
-                          ? "text-[#4A6B7A] line-through"
-                          : "text-[#EAEAEA]",
+                          ? "text-muted line-through"
+                          : "text-primary",
                       )}
                     >
                       {b.class.discipline?.name ?? "Sin disciplina"}
                     </p>
-                    <p className="text-[11px] md:text-sm text-[#4A6B7A] tabular-nums font-[family-name:var(--font-jetbrains)]">
+                    <p className="text-[11px] md:text-sm text-muted tabular-nums font-[family-name:var(--font-jetbrains)]">
                       {new Date(b.classDate).toLocaleDateString("es-AR", {
                         day: "numeric",
                         month: "short",
@@ -117,9 +117,9 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
                     className={cn(
                       "text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider shrink-0",
                       b.status === "CONFIRMED" && isPast && "text-emerald-600",
-                      b.status === "CONFIRMED" && !isPast && "text-[#27C7B8]",
-                      b.status === "CANCELLED" && "text-[#4A6B7A]",
-                      b.status === "WAITLISTED" && "text-[#F78837]",
+                      b.status === "CONFIRMED" && !isPast && "text-success",
+                      b.status === "CANCELLED" && "text-muted",
+                      b.status === "WAITLISTED" && "text-brand",
                     )}
                   >
                     {b.status === "CONFIRMED" && isPast && "Asistió"}
@@ -135,7 +135,7 @@ export default async function BookingHistoryPage({ searchParams }: Props) {
           {hasMore && (
             <Link
               href={`/profile/bookings?limit=${nextLimit}`}
-              className="w-full flex items-center justify-center h-12 md:h-14 border border-[#1A4A63] text-sm md:text-base text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
+              className="w-full flex items-center justify-center h-12 md:h-14 border border-border text-sm md:text-base text-secondary hover:text-primary hover:border-secondary transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
             >
               Ver más
             </Link>

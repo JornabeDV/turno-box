@@ -19,13 +19,13 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: 
 
 export function Features() {
   return (
-    <section id="funciones" className="py-8 md:py-16 px-4 border-t border-[#1A4A63]">
+    <section id="funciones" className="py-8 md:py-16 px-4 border-t border-border">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
+          <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
             Todo lo que necesitás para tu gimnasio
           </h2>
-          <p className="mt-2 text-sm lg:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          <p className="mt-2 text-sm lg:text-base text-secondary font-[family-name:var(--font-oswald)]">
             En un solo lugar, sin integraciones complicadas.
           </p>
         </div>
@@ -36,13 +36,13 @@ export function Features() {
             return (
               <div
                 key={title}
-                className="border border-[#1A4A63] bg-[#0E2A38] p-5 hover:border-[#6B8A99] transition-colors"
+                className="border border-border bg-card p-5 hover:border-secondary transition-colors"
               >
-                {Icon && <Icon size={24} className="text-[#F78837] mb-3" />}
-                <h3 className="text-sm lg:text-base font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-1">
+                {Icon && <Icon size={24} className="text-brand mb-3" />}
+                <h3 className="text-sm lg:text-base font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight mb-1">
                   {title}
                 </h3>
-                <p className="text-xs lg:text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] leading-relaxed">
+                <p className="text-xs lg:text-sm text-secondary font-[family-name:var(--font-oswald)] leading-relaxed">
                   {desc}
                 </p>
               </div>

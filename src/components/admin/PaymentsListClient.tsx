@@ -69,10 +69,10 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             {month ? `${MONTHS[month - 1]} ` : ""}{year}
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Pagos de alumnos
           </h2>
         </div>
@@ -116,53 +116,53 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
       </div>
 
       {/* Tabla */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+      <div className="bg-card border border-border overflow-hidden">
         {isPending && items.length === 0 ? (
           <div className="px-4 py-10 text-center">
-            <span className="size-5 rounded-full border-2 border-[#F78837] border-t-transparent animate-spin inline-block" />
+            <span className="size-5 rounded-full border-2 border-brand border-t-transparent animate-spin inline-block" />
           </div>
         ) : items.length === 0 ? (
           <div className="px-4 py-10 text-center">
-            <p className="text-sm md:text-base text-[#6B8A99]">Sin pagos en este período.</p>
+            <p className="text-sm md:text-base text-secondary">Sin pagos en este período.</p>
           </div>
         ) : (
-          <div className="divide-y divide-[#1A4A63]">
+          <div className="divide-y divide-border">
             {items.map((p) => (
               <div key={p.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
                 <div className={cn(
                   "size-2 rounded-full shrink-0",
-                  p.status === "APPROVED" ? "bg-[#27C7B8]" :
-                  p.status === "PENDING" ? "bg-[#F78837]" :
-                  "bg-[#E61919]"
+                  p.status === "APPROVED" ? "bg-success" :
+                  p.status === "PENDING" ? "bg-brand" :
+                  "bg-danger"
                 )} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
+                  <p className="text-sm md:text-base font-medium text-primary truncate leading-tight">
                     {p.user.name ?? p.user.email}
                   </p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] md:text-xs text-[#4A6B7A]">
+                    <span className="text-[10px] md:text-xs text-muted">
                       {p.pack?.name ?? "Ajuste manual"}
                     </span>
                     {p.method && (
-                      <span className="text-[10px] md:text-xs text-[#6B8A99]">
+                      <span className="text-[10px] md:text-xs text-secondary">
                         · {p.method}
                       </span>
                     )}
                     <span className={cn(
                       "text-[10px] md:text-xs px-1.5 py-0.5 rounded-[2px] border",
                       p.provider === "MANUAL"
-                        ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
-                        : "bg-[#27C7B8]/10 border-[#27C7B8]/20 text-[#27C7B8]"
+                        ? "bg-brand/10 border-brand/20 text-brand"
+                        : "bg-success/10 border-success/20 text-success"
                     )}>
                       {p.provider === "MANUAL" ? "Manual" : "MP"}
                     </span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm md:text-base font-bold tabular-nums text-[#EAEAEA]">
+                  <p className="text-sm md:text-base font-bold tabular-nums text-primary">
                     {fmtMoney(p.amountPaid)}
                   </p>
-                  <p className="text-[10px] md:text-xs text-[#4A6B7A]">
+                  <p className="text-[10px] md:text-xs text-muted">
                     {p.creditsGranted > 0 ? `${p.creditsGranted} créd. · ` : ""}
                     {p.paidAt
                       ? new Date(p.paidAt).toLocaleDateString("es-AR")
@@ -176,25 +176,25 @@ export function PaymentsListClient({ initialItems, initialTotal, initialYear, in
 
         {/* Paginación */}
         {total > limit && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-[#1A4A63]">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-border">
             <button
               disabled={offset === 0 || isPending}
               onClick={() => setOffset((o) => Math.max(0, o - limit))}
               className={cn(
-                "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+                "size-9 rounded-[2px] border border-border bg-card flex items-center justify-center text-secondary hover:text-primary hover:border-brand transition-colors shrink-0",
                 (offset === 0 || isPending) && "opacity-30 pointer-events-none",
               )}
             >
               <CaretLeftIcon size={18} weight="bold" />
             </button>
-            <span className="text-xs md:text-sm text-[#4A6B7A]">
+            <span className="text-xs md:text-sm text-muted">
               {offset + 1} – {Math.min(offset + limit, total)} de {total}
             </span>
             <button
               disabled={offset + limit >= total || isPending}
               onClick={() => setOffset((o) => o + limit)}
               className={cn(
-                "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+                "size-9 rounded-[2px] border border-border bg-card flex items-center justify-center text-secondary hover:text-primary hover:border-brand transition-colors shrink-0",
                 (offset + limit >= total || isPending) && "opacity-30 pointer-events-none",
               )}
             >

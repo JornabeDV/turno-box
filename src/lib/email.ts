@@ -70,7 +70,7 @@ export async function sendWelcomeInvitationEmail(
       return false;
     }
 
-    console.log("[EMAIL SENT]", data);
+    console.log("[EMAIL SENT] ID:", data?.id ?? "unknown");
     return true;
   } catch (error) {
     console.error("[EMAIL SEND ERROR]", error);
@@ -140,7 +140,7 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string, us
       return false;
     }
 
-    console.log("[EMAIL SENT]", data);
+    console.log("[EMAIL SENT] ID:", data?.id ?? "unknown");
     return true;
   } catch (error) {
     console.error("[EMAIL SEND ERROR]", error);
@@ -295,7 +295,7 @@ export async function sendMetricsReportEmail(
       return false;
     }
 
-    console.log("[REPORT EMAIL SENT]", data);
+    console.log("[REPORT EMAIL SENT] ID:", data?.id ?? "unknown");
     return true;
   } catch (error) {
     console.error("[REPORT PDF/EMAIL ERROR]", error);

@@ -34,14 +34,14 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
 
   if (transactions.length === 0) {
     return (
-      <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-12 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+      <p className="text-xs md:text-sm text-muted text-center py-12 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
         Sin movimientos de créditos.
       </p>
     );
   }
 
   return (
-    <div className="divide-y divide-[#1A4A63]">
+    <div className="divide-y divide-border">
       {transactions.slice(0, visibleCount).map((tx) => {
         const typeLabel =
           tx.type === "ADJUSTMENT"
@@ -58,21 +58,21 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
 
         const typeColor =
           tx.type === "CONSUME" || tx.type === "EXPIRY"
-            ? "text-[#E61919]"
+            ? "text-danger"
             : tx.type === "PURCHASE"
-              ? "text-[#F78837]"
+              ? "text-brand"
               : tx.type === "ADJUSTMENT"
-                ? "text-[#EAEAEA]"
+                ? "text-primary"
                 : tx.type === "REFUND"
-                  ? "text-[#27C7B8]"
-                  : "text-[#EAEAEA]";
+                  ? "text-success"
+                  : "text-primary";
 
         const createdAt = new Date(tx.createdAt);
 
         return (
           <div
             key={tx.id}
-            className="group flex flex-col md:grid md:grid-cols-[4rem_1fr_10rem_10rem] gap-3 md:gap-5 px-4 md:px-6 py-4 md:py-5 hover:bg-[#0A1F2A]/60 transition-colors"
+            className="group flex flex-col md:grid md:grid-cols-[4rem_1fr_10rem_10rem] gap-3 md:gap-5 px-4 md:px-6 py-4 md:py-5 hover:bg-page/60 transition-colors"
           >
             {/* Icono + cantidad */}
             <div className="flex md:flex-col md:items-center gap-3 md:gap-1.5">
@@ -80,20 +80,20 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
                 className={cn(
                   "size-9 md:size-10 border flex items-center justify-center shrink-0",
                   tx.amount > 0
-                    ? "border-[#27C7B8]/30 bg-[#27C7B8]/10"
-                    : "border-[#E61919]/30 bg-[#E61919]/10",
+                    ? "border-success/30 bg-success/10"
+                    : "border-danger/30 bg-danger/10",
                 )}
               >
                 <span
                   className={cn(
                     "text-sm md:text-base font-bold leading-none font-[family-name:var(--font-oswald)]",
-                    tx.amount > 0 ? "text-[#27C7B8]" : "text-[#E61919]",
+                    tx.amount > 0 ? "text-success" : "text-danger",
                   )}
                 >
                   {tx.amount > 0 ? `+${tx.amount}` : tx.amount}
                 </span>
               </div>
-              <span className="md:hidden text-xs font-[family-name:var(--font-oswald)] uppercase tracking-wide text-[#6B8A99]">
+              <span className="md:hidden text-xs font-[family-name:var(--font-oswald)] uppercase tracking-wide text-secondary">
                 {typeLabel}
               </span>
             </div>
@@ -104,13 +104,13 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
                 <span className={typeColor}>{typeLabel}</span>
               </p>
               {tx.note && (
-                <p className="text-base md:text-sm text-[#6B8A99] truncate font-[family-name:var(--font-oswald)]">
+                <p className="text-base md:text-sm text-secondary truncate font-[family-name:var(--font-oswald)]">
                   {tx.note}
                 </p>
               )}
               {tx.payment && (
                 <div className="md:hidden flex items-center gap-2 mt-1 flex-wrap">
-                  <span className="text-sm font-semibold text-[#EAEAEA] font-[family-name:var(--font-jetbrains)] tabular-nums">
+                  <span className="text-sm font-semibold text-primary font-[family-name:var(--font-jetbrains)] tabular-nums">
                     {new Intl.NumberFormat("es-AR", {
                       style: "currency",
                       currency: tx.payment.currency,
@@ -118,12 +118,12 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
                     }).format(Number(tx.payment.amountPaid))}
                   </span>
                   {tx.payment.provider === "MANUAL" && (
-                    <span className="text-[11px] px-1.5 py-0.5 border border-[#1A4A63] text-[#6B8A99] font-[family-name:var(--font-jetbrains)]">
+                    <span className="text-[11px] px-1.5 py-0.5 border border-border text-secondary font-[family-name:var(--font-jetbrains)]">
                       MANUAL
                     </span>
                   )}
                   {tx.payment.provider === "MERCADOPAGO" && (
-                    <span className="text-[11px] px-1.5 py-0.5 border border-[#1A4A63] text-[#6B8A99] font-[family-name:var(--font-jetbrains)]">
+                    <span className="text-[11px] px-1.5 py-0.5 border border-border text-secondary font-[family-name:var(--font-jetbrains)]">
                       MP
                     </span>
                   )}
@@ -133,14 +133,14 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
 
             {/* Fecha */}
             <div className="hidden md:flex flex-col justify-center">
-              <p className="text-sm lg:text-base text-[#6B8A99] font-[family-name:var(--font-jetbrains)] tabular-nums">
+              <p className="text-sm lg:text-base text-secondary font-[family-name:var(--font-jetbrains)] tabular-nums">
                 {createdAt.toLocaleDateString("es-AR", {
                   day: "numeric",
                   month: "short",
                   year: "numeric",
                 })}
               </p>
-              <p className="text-xs lg:text-sm text-[#4A6B7A] font-[family-name:var(--font-jetbrains)] tabular-nums mt-0.5">
+              <p className="text-xs lg:text-sm text-muted font-[family-name:var(--font-jetbrains)] tabular-nums mt-0.5">
                 {createdAt.toLocaleTimeString("es-AR", {
                   hour: "2-digit",
                   minute: "2-digit",
@@ -152,7 +152,7 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
             <div className="hidden md:flex flex-col items-end justify-center text-right">
               {tx.payment ? (
                 <>
-                  <span className="text-sm lg:text-base font-semibold text-[#EAEAEA] font-[family-name:var(--font-jetbrains)] tabular-nums">
+                  <span className="text-sm lg:text-base font-semibold text-primary font-[family-name:var(--font-jetbrains)] tabular-nums">
                     {new Intl.NumberFormat("es-AR", {
                       style: "currency",
                       currency: tx.payment.currency,
@@ -161,26 +161,26 @@ export function CreditHistoryList({ transactions }: CreditHistoryListProps) {
                   </span>
                   <div className="flex items-center gap-1.5 mt-1">
                     {tx.payment.provider === "MANUAL" && (
-                      <span className="text-[11px] px-2 py-0.5 border border-[#1A4A63] text-[#6B8A99] font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
+                      <span className="text-[11px] px-2 py-0.5 border border-border text-secondary font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
                         Manual
                       </span>
                     )}
                     {tx.payment.provider === "MERCADOPAGO" && (
-                      <span className="text-[11px] px-2 py-0.5 border border-[#1A4A63] text-[#6B8A99] font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
+                      <span className="text-[11px] px-2 py-0.5 border border-border text-secondary font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
                         MercadoPago
                       </span>
                     )}
                   </div>
                 </>
               ) : (
-                <span className="text-sm text-[#4A6B7A] font-[family-name:var(--font-jetbrains)]">
+                <span className="text-sm text-muted font-[family-name:var(--font-jetbrains)]">
                   —
                 </span>
               )}
             </div>
 
             {/* Fecha en mobile */}
-            <div className="md:hidden text-xs text-[#4A6B7A] font-[family-name:var(--font-jetbrains)] tabular-nums">
+            <div className="md:hidden text-xs text-muted font-[family-name:var(--font-jetbrains)] tabular-nums">
               {createdAt.toLocaleDateString("es-AR", {
                 day: "numeric",
                 month: "short",

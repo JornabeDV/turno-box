@@ -21,10 +21,10 @@ export default async function SuperAdminGymsPage() {
       <div className="space-y-3">
         <BackButton href="/dashboard/super-admin" />
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             Super Admin
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Gimnasios
           </h2>
         </div>
@@ -33,7 +33,7 @@ export default async function SuperAdminGymsPage() {
       <div className="flex justify-end">
         <Link
           href="/dashboard/super-admin/gyms/new"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F78837] text-[#0A1F2A] text-xs md:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:bg-[#E07A2E] transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand text-page text-xs md:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:bg-brand-hover transition-colors"
         >
           + Crear gimnasio
         </Link>

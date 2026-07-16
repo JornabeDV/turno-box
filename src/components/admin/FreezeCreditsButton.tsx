@@ -96,8 +96,8 @@ export function FreezeCreditsButton({
       )}
 
       {error && !open && (
-        <div className="mt-2 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-          <p className="text-xs text-[#E61919]">{error}</p>
+        <div className="mt-2 rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+          <p className="text-xs text-danger">{error}</p>
         </div>
       )}
 
@@ -115,7 +115,7 @@ export function FreezeCreditsButton({
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider mb-1.5">
+            <label className="block text-[10px] md:text-xs text-muted uppercase tracking-wider mb-1.5">
               Motivo
             </label>
             <input
@@ -123,13 +123,13 @@ export function FreezeCreditsButton({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Ej: lesión, viaje, vacaciones..."
-              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
+              className="w-full h-12 bg-page border border-border rounded-[2px] px-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:border-brand/50 transition-colors"
             />
           </div>
 
           {error && (
-            <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-              <p className="text-xs text-[#E61919]">{error}</p>
+            <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+              <p className="text-xs text-danger">{error}</p>
             </div>
           )}
 

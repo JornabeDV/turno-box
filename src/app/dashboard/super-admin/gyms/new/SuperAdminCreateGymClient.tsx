@@ -16,10 +16,10 @@ import {
 } from "@phosphor-icons/react";
 
 const inputClass =
-  "w-full h-12 md:h-14 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+  "w-full h-12 md:h-14 rounded-[2px] bg-page border border-border px-3.5 md:px-4 text-sm md:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors";
 
 const labelClass =
-  "text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs md:text-sm font-medium text-secondary uppercase tracking-wider";
 
 export function SuperAdminCreateGymClient() {
   const router = useRouter();
@@ -69,8 +69,8 @@ export function SuperAdminCreateGymClient() {
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ── Datos del Gimnasio ── */}
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
-          <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+        <div className="bg-card border border-border p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
+          <h3 className="text-sm md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
             Datos del gimnasio
           </h3>
 
@@ -94,7 +94,7 @@ export function SuperAdminCreateGymClient() {
                 className={inputClass}
                 placeholder="crossfit-norte"
               />
-              <p className="text-[11px] md:text-sm text-[#4A6B7A]">
+              <p className="text-[11px] md:text-sm text-muted">
                 Solo letras minúsculas, números y guiones. Ej: crossfit-norte
               </p>
             </div>
@@ -120,8 +120,8 @@ export function SuperAdminCreateGymClient() {
         </div>
 
         {/* ── Datos del Admin ── */}
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
-          <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+        <div className="bg-card border border-border p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
+          <h3 className="text-sm md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
             Datos del administrador
           </h3>
 
@@ -161,7 +161,7 @@ export function SuperAdminCreateGymClient() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
@@ -183,7 +183,7 @@ export function SuperAdminCreateGymClient() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors"
                   tabIndex={-1}
                 >
                   {showConfirmPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
@@ -194,9 +194,9 @@ export function SuperAdminCreateGymClient() {
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5">
-            <WarningCircle size={15} className="text-[#E61919] shrink-0" />
-            <p className="text-xs md:text-sm text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+          <div className="flex items-center gap-2 border-l-2 border-danger bg-card px-3 py-2.5">
+            <WarningCircle size={15} className="text-danger shrink-0" />
+            <p className="text-xs md:text-sm text-danger font-[family-name:var(--font-oswald)] uppercase tracking-wide">
               {error}
             </p>
           </div>
@@ -216,27 +216,27 @@ export function SuperAdminCreateGymClient() {
 
       {/* ── Éxito: mostrar link de invitación ── */}
       {success && (
-        <div className="bg-[#0E2A38] border border-[#27C7B8]/30 p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
+        <div className="bg-card border border-success/30 p-5 md:p-6 lg:p-8 space-y-4 md:space-y-5">
           <div className="flex items-center gap-2">
-            <CheckCircle size={18} className="text-[#27C7B8] md:size-5" />
-            <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+            <CheckCircle size={18} className="text-success md:size-5" />
+            <h3 className="text-sm md:text-base font-semibold text-primary">
               Gimnasio creado exitosamente
             </h3>
           </div>
 
-          <p className="text-xs md:text-sm text-[#6B8A99]">
+          <p className="text-xs md:text-sm text-secondary">
             Compartí este link con los alumnos del gimnasio para que se
             registren automáticamente vinculados:
           </p>
 
           <div className="flex items-center gap-2 md:gap-3">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 md:gap-3 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 h-12 md:h-14 rounded-[2px]">
+              <div className="flex items-center gap-2 md:gap-3 bg-page border border-border px-3.5 md:px-4 h-12 md:h-14 rounded-[2px]">
                 <LinkIcon
                   size={14}
-                  className="text-[#4A6B7A] shrink-0 md:size-4"
+                  className="text-muted shrink-0 md:size-4"
                 />
-                <span className="text-sm md:text-base text-[#EAEAEA] truncate">
+                <span className="text-sm md:text-base text-primary truncate">
                   {typeof window !== "undefined"
                     ? `${window.location.origin}/join/${success.slug}`
                     : `/join/${success.slug}`}
@@ -250,7 +250,7 @@ export function SuperAdminCreateGymClient() {
               className="shrink-0"
             >
               {copied ? (
-                <Check size={16} className="text-[#27C7B8]" />
+                <Check size={16} className="text-success" />
               ) : (
                 <Copy size={16} />
               )}

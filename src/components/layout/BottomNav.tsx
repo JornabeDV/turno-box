@@ -17,7 +17,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 bg-[#0A1F2A] border-t border-[#1A4A63]"
+      className="fixed bottom-0 inset-x-0 z-50 bg-page border-t border-border"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="grid grid-cols-4 max-w-5xl mx-auto">
@@ -31,8 +31,8 @@ export function BottomNav() {
                 "flex flex-col items-center gap-1 md:gap-1.5 py-2.5 px-1 md:py-4 md:px-2 transition-all duration-150",
                 "active:scale-[0.97]",
                 active
-                  ? "bg-[#F78837] text-[#0A1F2A]"
-                  : "text-[#6B8A99] hover:text-[#EAEAEA]",
+                  ? "bg-brand text-page"
+                  : "text-secondary hover:text-primary",
               )}
             >
               <Icon

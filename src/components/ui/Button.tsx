@@ -8,17 +8,17 @@ type Size = "sm" | "md" | "lg";
 
 const variantStyles: Record<Variant, string> = {
   brand:
-    "bg-[#F78837] text-[#0A1F2A] hover:bg-[#E07A2E]",
+    "bg-brand text-page hover:bg-brand-hover",
   ghost:
-    "bg-transparent text-[#EAEAEA] hover:bg-[#143D52]",
+    "bg-transparent text-primary hover:bg-panel",
   danger:
-    "bg-transparent text-[#E61919] border border-[#E61919]/40 hover:bg-[#E61919]/10",
+    "bg-transparent text-danger border border-danger/40 hover:bg-danger/10",
   outline:
-    "bg-transparent text-[#EAEAEA] border border-[#1A4A63] hover:border-[#F78837] hover:text-[#F78837]",
+    "bg-transparent text-primary border border-border hover:border-brand hover:text-brand",
   success:
-    "bg-[#27C7B8] text-[#0A1F2A] hover:bg-[#20A898]",
+    "bg-success text-page hover:bg-success-hover",
   "outline-brand":
-    "bg-transparent text-[#F78837] border border-[#F78837] hover:bg-[#F78837] hover:text-[#0A1F2A]",
+    "bg-transparent text-brand border border-brand hover:bg-brand hover:text-page",
 };
 
 const sizeStyles: Record<Size, string> = {
@@ -56,7 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         "uppercase tracking-wide",
         "transition-all duration-150 ease-out",
         "active:scale-[0.98]",
-        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#F78837]",
+        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand",
         "disabled:opacity-50 disabled:pointer-events-none",
         variantStyles[variant],
         sizeStyles[size],

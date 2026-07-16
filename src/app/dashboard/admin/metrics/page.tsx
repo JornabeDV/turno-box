@@ -25,7 +25,7 @@ export default async function MetricsPage() {
   if (!res.success) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <p className="text-sm text-[#6B8A99]">Error al cargar métricas.</p>
+        <p className="text-sm text-secondary">Error al cargar métricas.</p>
       </div>
     );
   }

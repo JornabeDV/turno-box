@@ -16,10 +16,10 @@ export default async function SuperAdminCreateGymPage() {
       <div className="space-y-3">
         <BackButton href="/dashboard/super-admin/gyms" />
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             Super Admin
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Crear gimnasio
           </h2>
         </div>

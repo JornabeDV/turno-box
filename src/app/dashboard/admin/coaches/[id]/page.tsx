@@ -161,14 +161,14 @@ export default async function CoachDetailPage({ params }: Props) {
       <BackButton href="/dashboard/admin/coaches" />
 
       {/* Header */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
+      <div className="bg-card border border-border p-5">
         <div className="flex items-start gap-4">
           <div
             className={cn(
               "size-14 border flex items-center justify-center text-xl font-bold shrink-0",
               coach.isActive
-                ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
-                : "bg-[#0E2A38] border-[#1A4A63] text-[#4A6B7A]",
+                ? "bg-brand/10 border-brand/20 text-brand"
+                : "bg-card border-border text-muted",
             )}
           >
             {initials}
@@ -176,12 +176,12 @@ export default async function CoachDetailPage({ params }: Props) {
           <div className="flex-1 min-w-0">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
               <div className="min-w-0">
-                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight truncate">
+                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-primary tracking-tight truncate">
                   {coach.name ?? "Sin nombre"}
                 </h2>
-                <p className="text-sm md:text-base text-[#6B8A99] truncate">{coach.email}</p>
+                <p className="text-sm md:text-base text-secondary truncate">{coach.email}</p>
                 {coach.role === "ADMIN" && (
-                  <p className="text-[10px] md:text-xs text-[#F78837] uppercase tracking-wider">
+                  <p className="text-[10px] md:text-xs text-brand uppercase tracking-wider">
                     Administrador
                   </p>
                 )}
@@ -194,12 +194,12 @@ export default async function CoachDetailPage({ params }: Props) {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#1A4A63]">
+            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border">
               <div>
-                <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                   Profesor desde
                 </p>
-                <p className="text-xs md:text-base text-[#EAEAEA] font-medium mt-0.5">
+                <p className="text-xs md:text-base text-primary font-medium mt-0.5">
                   {new Date(coach.createdAt).toLocaleDateString("es-AR", {
                     day: "numeric",
                     month: "short",
@@ -208,13 +208,13 @@ export default async function CoachDetailPage({ params }: Props) {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                   Clases
                 </p>
-                <p className="text-xs md:text-base font-bold text-[#EAEAEA] mt-0.5">
+                <p className="text-xs md:text-base font-bold text-primary mt-0.5">
                   {classes.length}
                   {upcomingOverrides.length > 0 && (
-                    <span className="text-[#F78837] ml-1">
+                    <span className="text-brand ml-1">
                       +{upcomingOverrides.length}
                     </span>
                   )}
@@ -222,22 +222,22 @@ export default async function CoachDetailPage({ params }: Props) {
               </div>
               {totalTodayConfirmed > 0 && (
                 <div>
-                  <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+                  <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                     Alumnos hoy
                   </p>
-                  <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
+                  <p className="text-xs md:text-sm font-bold text-success mt-0.5">
                     {totalTodayConfirmed}
                   </p>
                 </div>
               )}
               <div>
-                <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                   Estado
                 </p>
                 <p
                   className={cn(
                     "text-xs md:text-base font-medium mt-0.5",
-                    coach.isActive ? "text-[#27C7B8]" : "text-[#6B8A99]",
+                    coach.isActive ? "text-success" : "text-secondary",
                   )}
                 >
                   {coach.isActive ? "Activo" : "Inactivo"}
@@ -252,15 +252,15 @@ export default async function CoachDetailPage({ params }: Props) {
       {upcomingOverrides.length > 0 && (
         <div>
           <div className="flex items-center gap-2 mb-3 px-1">
-            <span className="size-1.5 rounded-full bg-[#F78837]" />
-            <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+            <span className="size-1.5 rounded-full bg-brand" />
+            <h3 className="text-xs md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
               Clases únicas asignadas
             </h3>
-            <span className="text-xs md:text-base font-mono font-bold tabular-nums text-[#F78837]">
+            <span className="text-xs md:text-base font-mono font-bold tabular-nums text-brand">
               {upcomingOverrides.length}
             </span>
           </div>
-          <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
+          <div className="bg-card border border-border overflow-hidden divide-y divide-border">
             {upcomingOverrides.map((o) => {
               const start = o.startTime ?? o.gymClass.startTime;
               const end = o.endTime ?? o.gymClass.endTime;
@@ -277,19 +277,19 @@ export default async function CoachDetailPage({ params }: Props) {
                     style={{ backgroundColor: color ?? "#f97316" }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-lg font-medium text-[#EAEAEA] truncate">
+                    <p className="text-sm md:text-lg font-medium text-primary truncate">
                       {disciplineName}
                     </p>
-                    <p className="text-xs md:text-base text-[#6B8A99] font-mono tabular-nums">
+                    <p className="text-xs md:text-base text-secondary font-mono tabular-nums">
                       {formatDate(o.date)} · {formatTime(start)} – {formatTime(end)}
                     </p>
                     {o.description && (
-                      <p className="text-xs md:text-sm text-[#4A6B7A] mt-0.5">{o.description}</p>
+                      <p className="text-xs md:text-sm text-muted mt-0.5">{o.description}</p>
                     )}
                   </div>
                   <Link
                     href={`/dashboard/admin/classes/${o.gymClass.id}?date=${o.date.toISOString().slice(0, 10)}`}
-                    className="size-8 rounded-md flex items-center justify-center text-[#4A6B7A] hover:text-[#6B8A99] hover:bg-white/[0.04] transition-all shrink-0"
+                    className="size-8 rounded-md flex items-center justify-center text-muted hover:text-secondary hover:bg-white/[0.04] transition-all shrink-0"
                   >
                     <PencilSimpleIcon size={16} />
                   </Link>
@@ -303,25 +303,25 @@ export default async function CoachDetailPage({ params }: Props) {
       {/* Horario semanal */}
       <div>
         <div className="flex items-center gap-2 mb-3 px-1">
-          <span className="size-1.5 rounded-full bg-[#F78837]" />
-          <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <span className="size-1.5 rounded-full bg-brand" />
+          <h3 className="text-xs md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
             Horario semanal
           </h3>
-          <span className="text-xs md:text-base font-mono font-bold tabular-nums text-[#F78837]">
+          <span className="text-xs md:text-base font-mono font-bold tabular-nums text-brand">
             {classes.length}
           </span>
         </div>
 
         {Object.keys(grouped).length === 0 ? (
-          <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
-            <p className="text-sm md:text-base text-[#4A6B7A]">
+          <div className="bg-card border border-border px-4 py-10 text-center">
+            <p className="text-sm md:text-base text-muted">
               Este profesor no tiene clases asignadas.
             </p>
-            <p className="text-xs md:text-sm text-[#4A6B7A] mt-1">
+            <p className="text-xs md:text-sm text-muted mt-1">
               Podés asignarle clases desde{" "}
               <Link
                 href="/dashboard/admin/classes"
-                className="text-[#F78837] hover:text-[#F78837]"
+                className="text-brand hover:text-brand"
               >
                 Gestión de clases
               </Link>
@@ -338,18 +338,18 @@ export default async function CoachDetailPage({ params }: Props) {
                     <h4
                       className={cn(
                         "text-xs md:text-sm font-semibold uppercase tracking-wider",
-                        isToday ? "text-[#F78837]" : "text-[#6B8A99]",
+                        isToday ? "text-brand" : "text-secondary",
                       )}
                     >
                       {DAY_LABELS[day]}
                     </h4>
                     {isToday && (
-                      <span className="text-[10px] md:text-xs bg-[#F78837]/10 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
+                      <span className="text-[10px] md:text-xs bg-brand/10 text-brand px-1.5 py-0.5 rounded-full font-medium">
                         hoy
                       </span>
                     )}
                   </div>
-                  <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
+                  <div className="bg-card border border-border overflow-hidden divide-y divide-border">
                     {dayClasses.map((c) => {
                       const confirmed = c.bookings.filter(
                         (b) => b.status === "CONFIRMED",
@@ -368,10 +368,10 @@ export default async function CoachDetailPage({ params }: Props) {
                             style={{ backgroundColor: c.color ?? "#f97316" }}
                           />
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate">
+                            <p className="text-sm md:text-base font-medium text-primary truncate">
                               {c.discipline?.name ?? "Sin disciplina"}
                             </p>
-                            <p className="text-xs md:text-sm text-[#6B8A99] font-mono tabular-nums">
+                            <p className="text-xs md:text-sm text-secondary font-mono tabular-nums">
                               {formatTime(c.startTime)} –{" "}
                               {formatTime(c.endTime)}
                             </p>
@@ -382,28 +382,28 @@ export default async function CoachDetailPage({ params }: Props) {
                                 className={cn(
                                   "text-xs md:text-sm font-mono font-bold tabular-nums",
                                   pct >= 100
-                                    ? "text-[#E61919]"
+                                    ? "text-danger"
                                     : pct >= 75
-                                      ? "text-[#F78837]"
-                                      : "text-[#27C7B8]",
+                                      ? "text-brand"
+                                      : "text-success",
                                 )}
                               >
                                 {confirmed}/{c.maxCapacity}
                               </p>
                               {waitlisted > 0 && (
-                                <p className="text-[10px] md:text-xs text-[#F78837]">
+                                <p className="text-[10px] md:text-xs text-brand">
                                   +{waitlisted} espera
                                 </p>
                               )}
                             </div>
                           ) : (
-                            <span className="text-xs md:text-sm text-[#4A6B7A] font-mono shrink-0">
+                            <span className="text-xs md:text-sm text-muted font-mono shrink-0">
                               {c.maxCapacity} cupos
                             </span>
                           )}
                           <Link
                             href={`/dashboard/admin/classes/${c.id}`}
-                            className="size-8 rounded-md flex items-center justify-center text-[#4A6B7A] hover:text-[#6B8A99] hover:bg-white/[0.04] transition-all shrink-0"
+                            className="size-8 rounded-md flex items-center justify-center text-muted hover:text-secondary hover:bg-white/[0.04] transition-all shrink-0"
                           >
                             <PencilSimpleIcon size={16} />
                           </Link>

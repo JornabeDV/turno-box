@@ -42,7 +42,7 @@ export function TimePicker({
   return (
     <div className={cn("relative", className)} ref={ref}>
       {label && (
-        <label className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider block mb-1.5 font-[family-   name:var(--font-oswald)]">
+        <label className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider block mb-1.5 font-[family-   name:var(--font-oswald)]">
           {label}
         </label>
       )}
@@ -50,28 +50,28 @@ export function TimePicker({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA]",
+          "w-full h-12 bg-page border border-border px-3.5 text-sm sm:text-base text-primary",
           "flex items-center justify-between gap-2",
-          "focus:outline-none focus:border-[#F78837]",
-          "transition-colors hover:border-[#6B8A99]",
-          error && "border-[#E61919] focus:border-[#E61919]",
+          "focus:outline-none focus:border-brand",
+          "transition-colors hover:border-secondary",
+          error && "border-danger focus:border-danger",
         )}
       >
         <span className="flex items-center gap-2">
-          <Clock size={16} className="text-zinc-500" />
+          <Clock size={16} className="text-muted" />
           {value || "Seleccionar"}
         </span>
         <CaretDown
           size={14}
           className={cn(
-            "text-[#4A6B7A] transition-transform",
+            "text-muted transition-transform",
             open && "rotate-180",
           )}
         />
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+        <div className="absolute z-50 mt-1 w-full bg-card border border-border overflow-hidden">
           <div className="max-h-60 overflow-y-auto">
             {HOURS.map((hour) => (
               <button
@@ -82,17 +82,17 @@ export function TimePicker({
                   setOpen(false);
                 }}
                 className={cn(
-                  "w-full px-3.5 py-2 text-sm text-left hover:bg-[#143D52] transition-colors",
+                  "w-full px-3.5 py-2 text-sm text-left hover:bg-panel transition-colors",
                   "flex items-center gap-2",
                   value === hour
-                    ? "text-[#F78837] bg-[#F78837]/10"
-                    : "text-[#EAEAEA]",
+                    ? "text-brand bg-brand/10"
+                    : "text-primary",
                 )}
               >
                 <Clock
                   size={14}
                   className={
-                    value === hour ? "text-[#F78837]" : "text-[#4A6B7A]"
+                    value === hour ? "text-brand" : "text-muted"
                   }
                 />
                 {hour}
@@ -101,7 +101,7 @@ export function TimePicker({
           </div>
         </div>
       )}
-      {error && <p className="mt-1 text-xs text-[#E61919]">{error}</p>}
+      {error && <p className="mt-1 text-xs text-danger">{error}</p>}
     </div>
   );
 }

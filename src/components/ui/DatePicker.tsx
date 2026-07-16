@@ -130,7 +130,7 @@ export function DatePicker({
   return (
     <div className={cn("relative", className)} ref={ref}>
       {label && (
-        <label className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider block font-[family-name:var(--font-oswald)]">
+        <label className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider block font-[family-name:var(--font-oswald)]">
           {label}
         </label>
       )}
@@ -138,37 +138,37 @@ export function DatePicker({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          "w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3.5 text-sm text-[#EAEAEA]",
+          "w-full h-12 bg-page border border-border rounded-[2px] px-3.5 text-sm text-primary",
           "flex items-center justify-between gap-2",
-          "focus:outline-none focus:border-[#F78837]/50",
-          "transition-colors hover:border-[#6B8A99]",
-          !value && "text-[#4A6B7A]",
+          "focus:outline-none focus:border-brand/50",
+          "transition-colors hover:border-secondary",
+          !value && "text-muted",
         )}
       >
         <span className="flex items-center gap-2">
-          <CalendarIcon size={16} className="text-[#4A6B7A]" />
+          <CalendarIcon size={16} className="text-muted" />
           {value ? formatDisplay(parseLocalDate(value)) : "Seleccionar fecha"}
         </span>
         <CaretRightIcon
           size={14}
           className={cn(
-            "text-[#4A6B7A] rotate-90 transition-transform",
+            "text-muted rotate-90 transition-transform",
             open && "rotate-[-90deg]",
           )}
         />
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1 w-full bg-[#0E2A38] border border-[#1A4A63] p-3">
+        <div className="absolute z-50 mt-1 w-full bg-card border border-border p-3">
           {/* Year picker overlay */}
           {showYearPicker && yearOpen && (
-            <div className="absolute inset-0 z-10 bg-[#0E2A38] flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between px-3 pt-3 pb-2 border-b border-zinc-700 shrink-0">
-                <span className="text-sm font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)]">Seleccionar año</span>
+            <div className="absolute inset-0 z-10 bg-card flex flex-col overflow-hidden">
+              <div className="flex items-center justify-between px-3 pt-3 pb-2 border-b border-border shrink-0">
+                <span className="text-sm font-medium text-primary font-[family-name:var(--font-oswald)]">Seleccionar año</span>
                 <button
                   type="button"
                   onClick={() => setYearOpen(false)}
-                  className="text-[#6B8A99] hover:text-[#EAEAEA] transition-colors text-xs"
+                  className="text-secondary hover:text-primary transition-colors text-xs"
                 >
                   ✕
                 </button>
@@ -180,8 +180,8 @@ export function DatePicker({
                     type="button"
                     onClick={() => { setViewDate(new Date(y, month, 1)); setYearOpen(false); }}
                     className={cn(
-                      "w-full py-2 text-sm hover:bg-[#143D52] transition-colors text-center",
-                      y === year ? "text-[#F78837] bg-[#F78837]/10" : "text-[#EAEAEA]",
+                      "w-full py-2 text-sm hover:bg-panel transition-colors text-center",
+                      y === year ? "text-brand bg-brand/10" : "text-primary",
                     )}
                   >
                     {y}
@@ -196,31 +196,31 @@ export function DatePicker({
             <button
               type="button"
               onClick={prevMonth}
-              className="p-1 hover:bg-[#143D52] transition-colors"
+              className="p-1 hover:bg-panel transition-colors"
             >
-              <CaretLeftIcon size={16} className="text-[#6B8A99]" />
+              <CaretLeftIcon size={16} className="text-secondary" />
             </button>
             <div className="flex items-center gap-1">
-              <span className="text-sm font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)]">{months[month]}</span>
+              <span className="text-sm font-medium text-primary font-[family-name:var(--font-oswald)]">{months[month]}</span>
               {showYearPicker ? (
                 <button
                   type="button"
                   onClick={() => setYearOpen(!yearOpen)}
-                  className="text-sm font-medium text-[#EAEAEA] hover:text-[#F78837] transition-colors flex items-center gap-1"
+                  className="text-sm font-medium text-primary hover:text-brand transition-colors flex items-center gap-1"
                 >
                   {year}
                   <CaretDownIcon size={12} className={cn(yearOpen && "rotate-180")} />
                 </button>
               ) : (
-                <span className="text-sm font-medium text-[#EAEAEA]">{year}</span>
+                <span className="text-sm font-medium text-primary">{year}</span>
               )}
             </div>
             <button
               type="button"
               onClick={nextMonth}
-              className="p-1 hover:bg-[#143D52] transition-colors"
+              className="p-1 hover:bg-panel transition-colors"
             >
-              <CaretRightIcon size={16} className="text-[#6B8A99]" />
+              <CaretRightIcon size={16} className="text-secondary" />
             </button>
           </div>
 
@@ -229,7 +229,7 @@ export function DatePicker({
             {DAYS.map((d) => (
               <div
                 key={d}
-                className="text-[10px] font-medium text-[#6B8A99] text-center py-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider"
+                className="text-[10px] font-medium text-secondary text-center py-1 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider"
               >
                 {d}
               </div>
@@ -257,11 +257,11 @@ export function DatePicker({
                   className={cn(
                     "h-8 text-sm transition-colors",
                     disabled &&
-                      "text-[#4A6B7A] cursor-not-allowed hover:bg-transparent",
-                    !disabled && "hover:bg-[#143D52]",
+                      "text-muted cursor-not-allowed hover:bg-transparent",
+                    !disabled && "hover:bg-panel",
                     isSelected &&
-                      "bg-[#F78837] text-[#0A1F2A] hover:bg-[#E07A2E]",
-                    !isSelected && !disabled && "text-[#EAEAEA]",
+                      "bg-brand text-page hover:bg-brand-hover",
+                    !isSelected && !disabled && "text-primary",
                   )}
                 >
                   {day}

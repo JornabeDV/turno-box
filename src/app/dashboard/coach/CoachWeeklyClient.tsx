@@ -83,10 +83,10 @@ export function CoachWeeklyClient({
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <p className="text-xs md:text-base text-[#6B8A99] uppercase tracking-wider mb-0.5">
+        <p className="text-xs md:text-base text-secondary uppercase tracking-wider mb-0.5">
           Profesor
         </p>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
           Mis clases
         </h2>
       </div>
@@ -107,7 +107,7 @@ export function CoachWeeklyClient({
             <CaretLeftIcon size={20} weight="bold" />
           </Button>
         </Link>
-        <p className="text-lg md:text-xl font-medium text-[#EAEAEA] tabular-nums whitespace-nowrap">
+        <p className="text-lg md:text-xl font-medium text-primary tabular-nums whitespace-nowrap">
           {formatShortDate(weekStart)} –{" "}
           {formatShortDate(addDays(weekStart, 6))}
         </p>
@@ -122,8 +122,8 @@ export function CoachWeeklyClient({
 
       {/* Grid semanal */}
       {totalClasses === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99]">
+        <div className="bg-card border border-border px-4 py-16 text-center">
+          <p className="text-sm md:text-base text-secondary">
             No tenés clases asignadas esta semana.
           </p>
         </div>
@@ -146,22 +146,22 @@ export function CoachWeeklyClient({
                 >
                   {/* Cabecera del día */}
                   <div
-                    className={`rounded-[2px] ${isToday ? "bg-[#F78837]/15" : "bg-[#0E2A38]/40"}`}
+                    className={`rounded-[2px] ${isToday ? "bg-brand/15" : "bg-card/40"}`}
                   >
                     {/* Mobile */}
                     <div className="md:hidden flex items-center justify-between px-3 py-2.5">
                       <span
-                        className={`text-sm md:text-base font-semibold ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
+                        className={`text-sm md:text-base font-semibold ${isToday ? "text-brand" : "text-primary"}`}
                       >
                         {DAY_LABELS[dayKey]}
                         {isToday && (
-                          <span className="ml-2 text-[10px] bg-[#F78837]/20 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
+                          <span className="ml-2 text-[10px] bg-brand/20 text-brand px-1.5 py-0.5 rounded-full font-medium">
                             hoy
                           </span>
                         )}
                       </span>
                       <span
-                        className={`text-xs md:text-sm font-mono tabular-nums ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
+                        className={`text-xs md:text-sm font-mono tabular-nums ${isToday ? "text-brand" : "text-secondary"}`}
                       >
                         {date.toLocaleDateString("es-AR", {
                           day: "numeric",
@@ -172,12 +172,12 @@ export function CoachWeeklyClient({
                     {/* Desktop */}
                     <div className="hidden md:block text-center py-2">
                       <p
-                        className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isToday ? "text-[#F78837]" : "text-[#6B8A99]"}`}
+                        className={`text-[10px] lg:text-xs font-bold uppercase tracking-widest ${isToday ? "text-brand" : "text-secondary"}`}
                       >
                         {DAY_LABELS[dayKey].slice(0, 3)}
                       </p>
                       <p
-                        className={`text-base lg:text-lg font-semibold leading-tight ${isToday ? "text-[#F78837]" : "text-[#EAEAEA]"}`}
+                        className={`text-base lg:text-lg font-semibold leading-tight ${isToday ? "text-brand" : "text-primary"}`}
                       >
                         {date.getDate()}
                       </p>
@@ -187,7 +187,7 @@ export function CoachWeeklyClient({
                   {/* Cards de turnos */}
                   {slots.length === 0 ? (
                     <div className="hidden md:flex items-center justify-center py-6">
-                      <span className="text-xs lg:text-sm text-[#4A6B7A]">—</span>
+                      <span className="text-xs lg:text-sm text-muted">—</span>
                     </div>
                   ) : (
                     slots.map((slot: ClassSlot) => {
@@ -200,7 +200,7 @@ export function CoachWeeklyClient({
                         <Link
                           key={slot.id}
                           href={`${basePath}/${slot.id}?date=${isoDate(date)}`}
-                          className="bg-[#0E2A38] border border-[#1A4A63] p-3 flex flex-col gap-2.5"
+                          className="bg-card border border-border p-3 flex flex-col gap-2.5"
                         >
                           {/* Color + nombre */}
                           <div className="flex items-start gap-2">
@@ -210,33 +210,33 @@ export function CoachWeeklyClient({
                                 backgroundColor: slot.color ?? "#f97316",
                               }}
                             />
-                            <p className="text-sm lg:text-base font-semibold text-[#EAEAEA] leading-tight line-clamp-2">
+                            <p className="text-sm lg:text-base font-semibold text-primary leading-tight line-clamp-2">
                               {slot.name}
                             </p>
                           </div>
 
                           {/* Horario */}
-                          <p className="text-xs lg:text-sm text-[#6B8A99] font-mono tabular-nums leading-none">
+                          <p className="text-xs lg:text-sm text-secondary font-mono tabular-nums leading-none">
                             {formatTime(slot.startTime)}
                           </p>
 
                           {/* Ocupación */}
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs lg:text-sm text-[#6B8A99] tabular-nums font-medium">
+                              <span className="text-xs lg:text-sm text-secondary tabular-nums font-medium">
                                 {slot.confirmedCount}/{slot.maxCapacity}
                               </span>
                               <span
-                                className={`text-xs lg:text-sm font-semibold ${isFull ? "text-[#E61919]" : "text-[#27C7B8]"}`}
+                                className={`text-xs lg:text-sm font-semibold ${isFull ? "text-danger" : "text-success"}`}
                               >
                                 {isFull
                                   ? "Lleno"
                                   : `${slot.availableSpots} lib.`}
                               </span>
                             </div>
-                            <div className="h-1.5 bg-zinc-700/60 rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-panel/60 rounded-full overflow-hidden">
                               <div
-                                className={`h-full rounded-full transition-all ${isFull ? "bg-[#E61919]" : "bg-[#F78837]"}`}
+                                className={`h-full rounded-full transition-all ${isFull ? "bg-danger" : "bg-brand"}`}
                                 style={{ width: `${pct}%` }}
                               />
                             </div>

@@ -28,21 +28,17 @@ export async function POST(req: NextRequest) {
   }
 
   // Configuración
-  const config = {
-    resendConfigured: !!process.env.RESEND_API_KEY,
-    resendFrom: process.env.RESEND_FROM_EMAIL || "Box Turno <noreply@boxturno.com.ar>",
-    appUrl: process.env.NEXT_PUBLIC_URL || "no-configurado",
-  };
+  const resendConfigured = !!process.env.RESEND_API_KEY;
 
   // Buscar el admin por email para saber a qué gym pertenece
   const admin = await prisma.user.findFirst({
     where: { email: testEmail, role: "ADMIN", isActive: true },
-    select: { id: true, name: true, gymId: true, email: true },
+    select: { id: true, name: true, gymId: true },
   });
 
   if (!admin || !admin.gymId) {
     return NextResponse.json(
-      { error: "No se encontró un admin activo con ese email", email: testEmail },
+      { error: "No se encontró un admin activo con ese email" },
       { status: 404 }
     );
   }
@@ -73,8 +69,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    config,
-    admin: { id: admin.id, name: admin.name, email: admin.email, gymId: admin.gymId, gymName: gym.name },
+    resendConfigured,
+    admin: { id: admin.id, name: admin.name, gymId: admin.gymId, gymName: gym.name },
     period: periodLabel,
     emailSent: emailResult,
     reportKpis: report.kpis,

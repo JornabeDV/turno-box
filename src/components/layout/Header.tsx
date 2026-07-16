@@ -48,13 +48,13 @@ export async function Header({
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#1A4A63] bg-[#0A1F2A] safe-area-top">
+    <header className="sticky top-0 z-40 border-b border-border bg-page safe-area-top">
       <div className="flex h-14 md:h-16 items-center justify-between px-4 md:px-6 lg:px-8 max-w-5xl lg:max-w-6xl mx-auto">
         <div className="flex items-center gap-3">
           {mobileMenuSlot}
           {/* Nombre del box */}
           {gymName ? (
-            <span className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-xl md:text-2xl leading-none">
+            <span className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-xl md:text-2xl leading-none">
               {gymName}
             </span>
           ) : logoSrc ? (
@@ -64,7 +64,7 @@ export async function Header({
               className="h-7 md:h-9 w-auto"
             />
           ) : (
-            <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-[#F78837] uppercase tracking-tight text-4xl leading-none">
+            <h1 className="font-[family-name:var(--font-oswald)] font-bold italic text-brand uppercase tracking-tight text-4xl leading-none">
               Box Turno
             </h1>
           )}
@@ -73,7 +73,7 @@ export async function Header({
         <div className="flex items-center gap-3">
           {credits !== null && <CreditsBadge credits={credits} />}
           {session?.user && (
-            <span className="text-[11px] md:text-sm text-[#6B8A99] hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
+            <span className="text-[11px] md:text-sm text-secondary hidden sm:block font-[family-name:var(--font-jetbrains)] uppercase tracking-wide">
               {displayName ?? displayEmail}
             </span>
           )}

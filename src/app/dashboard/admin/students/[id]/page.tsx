@@ -99,14 +99,14 @@ export default async function StudentDetailPage({ params }: Props) {
       <BackButton href="/dashboard/admin/students" />
 
       {/* Header del alumno */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
+      <div className="bg-card border border-border p-5">
         <div className="flex items-start gap-4">
           <div
             className={cn(
               "size-12 md:size-14 border flex items-center justify-center text-lg md:text-xl font-bold shrink-0",
               student.isActive
-                ? "bg-[#F78837]/10 border-[#F78837]/20 text-[#F78837]"
-                : "bg-[#0E2A38] border-[#1A4A63] text-[#4A6B7A]",
+                ? "bg-brand/10 border-brand/20 text-brand"
+                : "bg-card border-border text-muted",
             )}
           >
             {initials}
@@ -114,10 +114,10 @@ export default async function StudentDetailPage({ params }: Props) {
           <div className="flex-1 min-w-0">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
               <div className="min-w-0">
-                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-[#EAEAEA] tracking-tight truncate">
+                <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-primary tracking-tight truncate">
                   {student.name ?? "Sin nombre"}
                 </h2>
-                <p className="text-sm md:text-base text-[#6B8A99] truncate">
+                <p className="text-sm md:text-base text-secondary truncate">
                   {student.email}
                 </p>
               </div>
@@ -138,12 +138,12 @@ export default async function StudentDetailPage({ params }: Props) {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:flex gap-y-3 gap-x-4 sm:items-start sm:gap-4 md:gap-6 mt-3 pt-3 border-t border-[#1A4A63]">
+            <div className="grid grid-cols-2 sm:flex gap-y-3 gap-x-4 sm:items-start sm:gap-4 md:gap-6 mt-3 pt-3 border-t border-border">
               <div>
-                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
                   Desde
                 </p>
-                <p className="text-xs md:text-sm text-[#EAEAEA] font-medium mt-0.5">
+                <p className="text-xs md:text-sm text-primary font-medium mt-0.5">
                   {new Date(student.createdAt).toLocaleDateString("es-AR", {
                     day: "numeric",
                     month: "short",
@@ -152,39 +152,39 @@ export default async function StudentDetailPage({ params }: Props) {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
                   Próximos turnos
                 </p>
                 <p
                   className={cn(
                     "text-xs md:text-sm font-bold mt-0.5",
-                    confirmedCount > 0 ? "text-[#27C7B8]" : "text-[#4A6B7A]",
+                    confirmedCount > 0 ? "text-success" : "text-muted",
                   )}
                 >
                   {confirmedCount}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
                   Estado
                 </p>
                 <p
                   className={cn(
                     "text-xs md:text-sm font-medium mt-0.5",
-                    student.isActive ? "text-[#27C7B8]" : "text-[#6B8A99]",
+                    student.isActive ? "text-success" : "text-secondary",
                   )}
                 >
                   {student.isActive ? "Activo" : "Inactivo"}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
                   Invitación
                 </p>
                 <p
                   className={cn(
                     "text-xs md:text-sm font-medium mt-0.5",
-                    student.invitedAt ? "text-[#6B8A99]" : "text-[#F78837]",
+                    student.invitedAt ? "text-secondary" : "text-brand",
                   )}
                 >
                   {student.invitedAt
@@ -194,10 +194,10 @@ export default async function StudentDetailPage({ params }: Props) {
               </div>
               {freezeStatus.isPaused && (
                 <div>
-                  <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+                  <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
                     Abono
                   </p>
-                  <p className="text-xs md:text-sm font-medium mt-0.5 text-[#F78837]">
+                  <p className="text-xs md:text-sm font-medium mt-0.5 text-brand">
                     Pausado
                   </p>
                 </div>
@@ -216,21 +216,21 @@ export default async function StudentDetailPage({ params }: Props) {
       {/* Próximos turnos */}
       <div>
         <div className="flex items-center gap-2 mb-2 px-1">
-          <span className="size-1.5 rounded-full bg-[#27C7B8]" />
-          <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <span className="size-1.5 rounded-full bg-success" />
+          <h3 className="text-xs md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
             Próximos turnos
           </h3>
-          <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-[#27C7B8]">
+          <span className="text-xs md:text-sm font-mono font-bold tabular-nums text-success">
             {upcoming.length}
           </span>
         </div>
-        <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+        <div className="bg-card border border-border overflow-hidden">
           {upcoming.length === 0 ? (
-            <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-8">
+            <p className="text-xs md:text-sm text-muted text-center py-8">
               Sin reservas próximas.
             </p>
           ) : (
-            <div className="divide-y divide-[#1A4A63]">
+            <div className="divide-y divide-border">
               {upcoming.map((b) => (
                 <div key={b.id} className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4">
                   <span
@@ -238,21 +238,21 @@ export default async function StudentDetailPage({ params }: Props) {
                     style={{ backgroundColor: b.class.color ?? "#f97316" }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate">
+                    <p className="text-sm md:text-base font-medium text-primary truncate">
                       {b.class.discipline?.name ?? "Sin disciplina"}
                     </p>
-                    <p className="text-xs md:text-sm text-[#4A6B7A]">
+                    <p className="text-xs md:text-sm text-muted">
                       {formatDate(b.classDate)} ·{" "}
                       {formatTime(b.class.startTime)}
                     </p>
                   </div>
                   {b.status === "WAITLISTED" && (
-                    <span className="text-xs md:text-sm text-[#F78837] font-medium shrink-0">
+                    <span className="text-xs md:text-sm text-brand font-medium shrink-0">
                       #{b.waitlistPos} espera
                     </span>
                   )}
                   {b.status === "CONFIRMED" && (
-                    <span className="text-xs md:text-sm text-[#27C7B8] font-medium shrink-0">
+                    <span className="text-xs md:text-sm text-success font-medium shrink-0">
                       Confirmado
                     </span>
                   )}
@@ -264,23 +264,23 @@ export default async function StudentDetailPage({ params }: Props) {
       </div>
 
       {/* Acceso a historiales */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <h3 className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider mb-3">
+      <div className="bg-card border border-border p-5">
+        <h3 className="text-xs md:text-sm font-semibold text-secondary uppercase tracking-wider mb-3">
           Historiales
         </h3>
         <div className="flex gap-3">
           <Link
             href={`/dashboard/admin/students/${id}/history/bookings`}
-            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-base text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+            className="flex-1 h-12 flex items-center justify-center gap-2 border border-border text-xs md:text-base text-secondary hover:text-primary hover:border-secondary transition-colors"
           >
-            <span className="size-1.5 rounded-full bg-[#27C7B8]" />
+            <span className="size-1.5 rounded-full bg-success" />
             Turnos
           </Link>
           <Link
             href={`/dashboard/admin/students/${id}/history/credits`}
-            className="flex-1 h-12 flex items-center justify-center gap-2 border border-[#1A4A63] text-xs md:text-base text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors"
+            className="flex-1 h-12 flex items-center justify-center gap-2 border border-border text-xs md:text-base text-secondary hover:text-primary hover:border-secondary transition-colors"
           >
-            <span className="size-1.5 rounded-full bg-[#F78837]" />
+            <span className="size-1.5 rounded-full bg-brand" />
             Créditos
           </Link>
         </div>

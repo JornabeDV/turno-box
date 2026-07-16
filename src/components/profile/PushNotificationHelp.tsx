@@ -71,14 +71,14 @@ export function PushNotificationHelp() {
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between text-left"
       >
-        <span className="flex items-center gap-2 text-xs md:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+        <span className="flex items-center gap-2 text-xs md:text-base text-secondary font-[family-name:var(--font-oswald)]">
           <QuestionIcon size={14} />
           ¿Cómo recibir notificaciones cuando la app está cerrada?
         </span>
         <CaretDownIcon
           size={14}
           className={cn(
-            "text-[#4A6B7A] transition-transform shrink-0",
+            "text-muted transition-transform shrink-0",
             open && "rotate-180"
           )}
         />
@@ -96,14 +96,14 @@ export function PushNotificationHelp() {
               <button
                 type="button"
                 onClick={() => setOs("android")}
-                className="flex-1 flex items-center justify-center gap-2 py-2 bg-[#0E2A38] border border-[#1A4A63] text-[#EAEAEA] text-xs md:text-sm hover:bg-[#143D52] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
+                className="flex-1 flex items-center justify-center gap-2 py-2 bg-card border border-border text-primary text-xs md:text-sm hover:bg-panel transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide"
               >
                 <AndroidLogoIcon size={14} /> Android
               </button>
               <button
                 type="button"
                 onClick={() => setOs("ios")}
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-xs md:text-sm hover:bg-zinc-700 transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-xs md:text-sm hover:bg-panel transition-colors"
               >
                 <AppleLogoIcon size={14} /> iPhone / iPad
               </button>
@@ -114,16 +114,16 @@ export function PushNotificationHelp() {
           {os !== "unknown" && (
             <div className="flex items-center gap-1.5">
               {os === "android"
-                ? <AndroidLogoIcon size={13} className="text-zinc-500" />
-                : <AppleLogoIcon size={13} className="text-zinc-500" />
+                ? <AndroidLogoIcon size={13} className="text-muted" />
+                : <AppleLogoIcon size={13} className="text-muted" />
               }
-              <span className="text-[11px] md:text-xs text-[#6B8A99] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+              <span className="text-[11px] md:text-xs text-secondary font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
                 {os === "android" ? "Instrucciones para Android" : "Instrucciones para iPhone / iPad"}
               </span>
               <button
                 type="button"
                 onClick={() => setOs("unknown")}
-                className="ml-auto text-[11px] md:text-sm text-[#4A6B7A] underline underline-offset-2 hover:text-[#6B8A99]"
+                className="ml-auto text-[11px] md:text-sm text-muted underline underline-offset-2 hover:text-secondary"
               >
                 cambiar
               </button>
@@ -135,12 +135,12 @@ export function PushNotificationHelp() {
             <ol className="space-y-3">
               {steps.map((s) => (
                 <li key={s.step} className="flex gap-3">
-                  <span className="size-5 md:size-6 bg-[#F78837]/10 border border-[#F78837]/20 text-[#F78837] text-[11px] md:text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 font-[family-name:var(--font-oswald)]">
+                  <span className="size-5 md:size-6 bg-brand/10 border border-brand/20 text-brand text-[11px] md:text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 font-[family-name:var(--font-oswald)]">
                     {s.step}
                   </span>
                   <div>
-                    <p className="text-xs md:text-sm font-medium text-[#EAEAEA] font-[family-name:var(--font-oswald)] uppercase tracking-tight">{s.title}</p>
-                    <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5 leading-relaxed font-[family-name:var(--font-oswald)]">{s.body}</p>
+                    <p className="text-xs md:text-sm font-medium text-primary font-[family-name:var(--font-oswald)] uppercase tracking-tight">{s.title}</p>
+                    <p className="text-xs md:text-sm text-secondary mt-0.5 leading-relaxed font-[family-name:var(--font-oswald)]">{s.body}</p>
                   </div>
                 </li>
               ))}

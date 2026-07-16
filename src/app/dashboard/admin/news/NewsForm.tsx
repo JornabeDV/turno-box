@@ -28,10 +28,10 @@ type FormState = {
 };
 
 const inputClass =
-  "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+  "w-full h-12 rounded-[2px] bg-page border border-border px-3.5 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors";
 
 const labelClass =
-  "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider";
 
 export function NewsForm({ announcement }: Props) {
   const router = useRouter();
@@ -137,7 +137,7 @@ export function NewsForm({ announcement }: Props) {
       {/* Header */}
       <div className="space-y-2">
         <BackButton href="/dashboard/admin/news" />
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
           {isEditing ? "Editar noticia" : "Nueva noticia"}
         </h2>
       </div>
@@ -166,7 +166,7 @@ export function NewsForm({ announcement }: Props) {
             onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))}
             required
             rows={5}
-            className="w-full rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 py-2.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] resize-none focus:outline-none focus:border-[#F78837] transition-colors"
+            className="w-full rounded-[2px] bg-page border border-border px-3.5 py-2.5 text-sm sm:text-base text-primary placeholder:text-muted resize-none focus:outline-none focus:border-brand transition-colors"
             placeholder="Escribí el contenido del aviso..."
           />
         </div>
@@ -183,7 +183,7 @@ export function NewsForm({ announcement }: Props) {
           />
 
           {imagePreview ? (
-            <div className="relative w-full aspect-video rounded-[2px] border border-[#1A4A63] overflow-hidden bg-[#0A1F2A]">
+            <div className="relative w-full aspect-video rounded-[2px] border border-border overflow-hidden bg-page">
               <img
                 src={imagePreview}
                 alt="Preview"
@@ -192,7 +192,7 @@ export function NewsForm({ announcement }: Props) {
               <button
                 type="button"
                 onClick={handleRemoveImage}
-                className="absolute top-2 right-2 size-7 rounded-full bg-[#0A1F2A]/80 text-[#EAEAEA] flex items-center justify-center hover:bg-[#E61919] transition-colors"
+                className="absolute top-2 right-2 size-7 rounded-full bg-page/80 text-primary flex items-center justify-center hover:bg-danger transition-colors"
               >
                 <XIcon size={14} weight="bold" />
               </button>
@@ -201,13 +201,13 @@ export function NewsForm({ announcement }: Props) {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full h-28 rounded-[2px] border border-dashed border-[#1A4A63] bg-[#0A1F2A] flex flex-col items-center justify-center gap-1.5 text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors cursor-pointer"
+              className="w-full h-28 rounded-[2px] border border-dashed border-border bg-page flex flex-col items-center justify-center gap-1.5 text-secondary hover:text-primary hover:border-brand transition-colors cursor-pointer"
             >
               <ImageIcon size={24} />
               <span className="text-xs sm:text-sm uppercase tracking-wider">
                 Hacé clic para subir una imagen
               </span>
-              <span className="text-[10px] sm:text-xs text-[#4A6B7A]">
+              <span className="text-[10px] sm:text-xs text-muted">
                 PNG, JPG o WEBP · Máx 5MB · Ratio 16:9 recomendado
               </span>
             </button>
@@ -240,7 +240,7 @@ export function NewsForm({ announcement }: Props) {
             onClick={() => setForm((f) => ({ ...f, pinned: !f.pinned }))}
             className={cn(
               "w-10 h-5.5 rounded-full transition-colors relative",
-              form.pinned ? "bg-[#F78837]" : "bg-zinc-700"
+              form.pinned ? "bg-brand" : "bg-panel"
             )}
           >
             <span
@@ -250,7 +250,7 @@ export function NewsForm({ announcement }: Props) {
               )}
             />
           </div>
-          <span className="text-sm md:text-base text-[#EAEAEA]">
+          <span className="text-sm md:text-base text-primary">
             Fijar al inicio
           </span>
         </label>
