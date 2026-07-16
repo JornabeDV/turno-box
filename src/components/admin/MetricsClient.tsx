@@ -65,17 +65,17 @@ function KpiCard({
   delay?: number;
 }) {
   const accentColor = {
-    orange: "text-[#F78837]",
-    teal: "text-[#27C7B8]",
-    rose: "text-[#E61919]",
-    zinc: "text-[#EAEAEA]",
+    orange: "text-brand",
+    teal: "text-success",
+    rose: "text-danger",
+    zinc: "text-primary",
   }[accent];
 
   const accentBg = {
-    orange: "bg-[#F78837]/10",
-    teal: "bg-[#27C7B8]/10",
-    rose: "bg-[#E61919]/10",
-    zinc: "bg-[#0E2A38]",
+    orange: "bg-brand/10",
+    teal: "bg-success/10",
+    rose: "bg-danger/10",
+    zinc: "bg-card",
   }[accent];
 
   return (
@@ -83,7 +83,7 @@ function KpiCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay, ease: [0.32, 0.72, 0, 1] }}
-      className="bg-[#0E2A38] border border-[#1A4A63] p-4 md:p-5"
+      className="bg-card border border-border p-4 md:p-5"
     >
       <div className="flex items-start justify-between mb-3">
         <div className={cn("size-9 rounded-[2px] flex items-center justify-center", accentBg, accentColor)}>
@@ -93,7 +93,7 @@ function KpiCard({
           <div
             className={cn(
               "flex items-center gap-1 text-xs font-bold tabular-nums",
-              change > 0 ? "text-[#27C7B8]" : change < 0 ? "text-[#E61919]" : "text-[#6B8A99]"
+              change > 0 ? "text-success" : change < 0 ? "text-danger" : "text-secondary"
             )}
           >
             {change > 0 ? <TrendUp size={12} /> : change < 0 ? <TrendDown size={12} /> : <Minus size={12} />}
@@ -103,8 +103,8 @@ function KpiCard({
         )}
       </div>
       <p className={cn("text-2xl md:text-3xl font-bold tabular-nums leading-none", accentColor)}>{value}</p>
-      <p className="text-xs md:text-sm text-[#6B8A99] mt-1.5 uppercase tracking-wider">{label}</p>
-      {changeLabel && <p className="text-[10px] text-[#4A6B7A] mt-0.5">{changeLabel}</p>}
+      <p className="text-xs md:text-sm text-secondary mt-1.5 uppercase tracking-wider">{label}</p>
+      {changeLabel && <p className="text-[10px] text-muted mt-0.5">{changeLabel}</p>}
     </motion.div>
   );
 }
@@ -129,11 +129,11 @@ function SectionCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay, ease: [0.32, 0.72, 0, 1] }}
-      className={cn("bg-[#0E2A38] border border-[#1A4A63]", className)}
+      className={cn("bg-card border border-border", className)}
     >
       <div className="px-4 md:px-5 pt-4 md:pt-5 pb-1">
-        <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider">{title}</h3>
-        {subtitle && <p className="text-xs md:text-sm text-[#4A6B7A] mt-0.5">{subtitle}</p>}
+        <h3 className="text-sm md:text-base font-semibold text-secondary uppercase tracking-wider">{title}</h3>
+        {subtitle && <p className="text-xs md:text-sm text-muted mt-0.5">{subtitle}</p>}
       </div>
       <div className="p-4 md:p-5 pt-3">{children}</div>
     </motion.div>
@@ -144,19 +144,19 @@ function SectionCard({
 
 function KpiSkeleton() {
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 md:p-5 animate-pulse">
-      <div className="size-9 rounded-[2px] bg-[#1A4A63]/40 mb-3" />
-      <div className="h-7 md:h-8 bg-[#1A4A63]/40 rounded w-16 mb-2" />
-      <div className="h-4 bg-[#1A4A63]/40 rounded w-24" />
+    <div className="bg-card border border-border p-4 md:p-5 animate-pulse">
+      <div className="size-9 rounded-[2px] bg-border/40 mb-3" />
+      <div className="h-7 md:h-8 bg-border/40 rounded w-16 mb-2" />
+      <div className="h-4 bg-border/40 rounded w-24" />
     </div>
   );
 }
 
 function ChartSkeleton() {
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 md:p-5 animate-pulse">
-      <div className="h-4 bg-[#1A4A63]/40 rounded w-32 mb-4" />
-      <div className="h-48 bg-[#1A4A63]/20 rounded" />
+    <div className="bg-card border border-border p-4 md:p-5 animate-pulse">
+      <div className="h-4 bg-border/40 rounded w-32 mb-4" />
+      <div className="h-48 bg-border/20 rounded" />
     </div>
   );
 }
@@ -205,17 +205,17 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
       >
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <div>
-            <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+            <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
               Análisis de datos
             </p>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
               Métricas
             </h2>
           </div>
 
           {/* Filtros de fecha */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-0.5 bg-[#0E2A38] border border-[#1A4A63] px-0.5 py-0.5 w-full sm:w-auto">
+            <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-0.5 bg-card border border-border px-0.5 py-0.5 w-full sm:w-auto">
               {PRESETS.map((p) => (
                 <button
                   key={p.days}
@@ -223,8 +223,8 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                   className={cn(
                     "w-full sm:w-auto px-1 sm:px-2 py-3 text-xs font-medium uppercase tracking-wider rounded-[2px] transition-all duration-150 whitespace-nowrap",
                     activePreset === p.days
-                      ? "bg-[#F78837] text-[#0A1F2A]"
-                      : "text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0A1F2A]"
+                      ? "bg-brand text-page"
+                      : "text-secondary hover:text-primary hover:bg-page"
                   )}
                 >
                   {p.label}
@@ -242,7 +242,7 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                 showYearPicker={false}
                 className="w-full sm:w-48"
               />
-              <span className="hidden sm:inline text-xs text-[#4A6B7A]">a</span>
+              <span className="hidden sm:inline text-xs text-muted">a</span>
               <DatePicker
                 value={endDate}
                 onChange={(v) => {
@@ -454,28 +454,28 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
                   {data.topClasses.map((c, i) => (
                     <div
                       key={c.id}
-                      className="flex items-center gap-3 p-3 bg-[#0A1F2A] border border-[#1A4A63]/60 hover:border-[#1A4A63] transition-colors"
+                      className="flex items-center gap-3 p-3 bg-page border border-border/60 hover:border-border transition-colors"
                     >
-                      <span className="text-xs font-bold text-[#4A6B7A] w-5 text-center tabular-nums">
+                      <span className="text-xs font-bold text-muted w-5 text-center tabular-nums">
                         {i + 1}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#EAEAEA] truncate">
+                        <p className="text-sm font-medium text-primary truncate">
                           {c.name}
                         </p>
-                        <p className="text-[10px] sm:text-sm text-[#4A6B7A] mt-0.5">
+                        <p className="text-[10px] sm:text-sm text-muted mt-0.5">
                           {c.time} {c.coach ? `· ${c.coach}` : ""}
                         </p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-sm font-bold text-[#EAEAEA] tabular-nums">{c.occupancy}%</p>
-                        <p className="text-[10px] sm:text-xs text-[#4A6B7A]">
+                        <p className="text-sm font-bold text-primary tabular-nums">{c.occupancy}%</p>
+                        <p className="text-[10px] sm:text-xs text-muted">
                           {c.bookings}/{c.capacity}
                         </p>
                       </div>
-                      <div className="w-20 h-1.5 bg-[#0E2A38] rounded-[1px] overflow-hidden shrink-0 hidden sm:block">
+                      <div className="w-20 h-1.5 bg-card rounded-[1px] overflow-hidden shrink-0 hidden sm:block">
                         <div
-                          className="h-full bg-[#F78837] rounded-[1px]"
+                          className="h-full bg-brand rounded-[1px]"
                           style={{ width: `${Math.min(100, c.occupancy)}%` }}
                         />
                       </div>
@@ -566,8 +566,8 @@ export function MetricsClient({ initialData, initialStart, initialEnd }: {
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <ChartBar size={32} className="text-[#1A4A63] mb-3" />
-      <p className="text-sm text-[#6B8A99]">{message}</p>
+      <ChartBar size={32} className="text-border mb-3" />
+      <p className="text-sm text-secondary">{message}</p>
     </div>
   );
 }

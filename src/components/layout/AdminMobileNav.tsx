@@ -82,7 +82,7 @@ export function AdminMobileNav({ logoSrc }: { logoSrc?: string }) {
       {/* Botón hamburguesa — solo mobile */}
       <button
         onClick={() => setOpen(true)}
-        className="md:hidden flex items-center justify-center size-8 rounded-[2px] text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0E2A38] transition-all active:scale-90"
+        className="md:hidden flex items-center justify-center size-8 rounded-[2px] text-secondary hover:text-primary hover:bg-card transition-all active:scale-90"
         aria-label="Abrir menú"
       >
         <ListIcon size={20} />
@@ -104,7 +104,7 @@ export function AdminMobileNav({ logoSrc }: { logoSrc?: string }) {
 
             {/* Panel */}
             <motion.div
-              className="relative w-72 max-w-[85vw] min-h-dvh bg-[#0A1F2A] border-r border-[#1A4A63] flex flex-col p-3 gap-1"
+              className="relative w-72 max-w-[85vw] min-h-dvh bg-page border-r border-border flex flex-col p-3 gap-1"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -112,7 +112,7 @@ export function AdminMobileNav({ logoSrc }: { logoSrc?: string }) {
             >
               {/* Header del drawer */}
               <div className="flex items-center justify-center px-2 py-2">
-                <div className="w-24 h-24 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-2">
+                <div className="w-24 h-24 rounded-xl border border-border bg-card overflow-hidden flex items-center justify-center p-2">
                   <img
                     src={logoSrc ?? "/icons/image.png?v=2"}
                     alt="Box Turno"
@@ -132,11 +132,11 @@ export function AdminMobileNav({ logoSrc }: { logoSrc?: string }) {
                     key={href}
                     href={href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-base font-medium transition-all duration-150",
+                      "flex items-center gap-3 px-3 py-2.5 rounded-[2px] text-base font-medium transition-colors duration-150",
                       "active:scale-[0.97]",
                       active
-                        ? "bg-[#F78837]/10 text-[#F78837] border border-[#F78837]/20"
-                        : "text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#0A1F2A]",
+                        ? "bg-brand/10 text-brand border border-brand/20"
+                        : "text-secondary hover:text-primary hover:bg-page",
                     )}
                   >
                     <Icon weight={active ? "fill" : "regular"} size={18} />

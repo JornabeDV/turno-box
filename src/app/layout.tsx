@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Oswald, JetBrains_Mono } from "next/font/google";
-import { Toaster } from "sonner";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemedToaster } from "@/components/theme/ThemedToaster";
 import "./globals.css";
 
 const oswald = Oswald({
@@ -60,23 +61,27 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-      </head>
-      <body className="min-h-dvh bg-[#0A1F2A] text-[#EAEAEA] antialiased">
-        <ServiceWorkerRegister />
-        {children}
-        <Toaster
-          position="top-center"
-          theme="dark"
-          toastOptions={{
-            style: {
-              background: "#0E2A38",
-              border: "1px solid #1A4A63",
-              borderRadius: "2px",
-              color: "#EAEAEA",
-              fontFamily: "var(--font-oswald), system-ui, sans-serif",
-            },
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const stored = localStorage.getItem('boxturno-theme');
+                  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const resolved = stored === 'light' || stored === 'dark' ? stored : (systemDark ? 'dark' : 'light');
+                  document.documentElement.setAttribute('data-theme', resolved);
+                } catch (e) {}
+              })();
+            `,
           }}
         />
+      </head>
+      <body className="min-h-dvh bg-page text-primary antialiased">
+        <ThemeProvider>
+          <ServiceWorkerRegister />
+          {children}
+          <ThemedToaster />
+        </ThemeProvider>
       </body>
     </html>
   );

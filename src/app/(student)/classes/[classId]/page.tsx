@@ -86,10 +86,10 @@ export default async function ClassDetailPage({
     (confirmedCount / gymClass.maxCapacity) * 100,
   );
   const spotsColor = isFull
-    ? "bg-[#E61919]"
+    ? "bg-danger"
     : availableSpots <= Math.ceil(gymClass.maxCapacity * 0.25)
-      ? "bg-[#F78837]"
-      : "bg-[#27C7B8]";
+      ? "bg-brand"
+      : "bg-success";
 
   const badgeVariant =
     userBooking?.status === "CONFIRMED"
@@ -111,7 +111,7 @@ export default async function ClassDetailPage({
             className="size-3 md:size-4 shrink-0"
             style={{ backgroundColor: gymClass.color ?? "#F78837" }}
           />
-          <h2 className="text-xl md:text-3xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
+          <h2 className="text-xl md:text-3xl font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight">
             {gymClass.discipline?.name ?? "Clase"}
           </h2>
         </div>
@@ -119,10 +119,10 @@ export default async function ClassDetailPage({
       </div>
 
       {/* Info de la clase */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-8 space-y-4 md:space-y-6">
+      <div className="bg-card border border-border p-5 md:p-8 space-y-4 md:space-y-6">
         {/* Fecha */}
-        <div className="flex items-center gap-2.5 md:gap-3 text-sm md:text-base text-[#EAEAEA]">
-          <CalendarIcon size={16} className="text-[#6B8A99] shrink-0 md:size-5" />
+        <div className="flex items-center gap-2.5 md:gap-3 text-sm md:text-base text-primary">
+          <CalendarIcon size={16} className="text-secondary shrink-0 md:size-5" />
           <span className="capitalize font-[family-name:var(--font-oswald)]">
             {displayDate.toLocaleDateString("es-AR", {
               weekday: "long",
@@ -134,21 +134,21 @@ export default async function ClassDetailPage({
         </div>
 
         {/* Horario */}
-        <div className="flex items-center gap-2.5 md:gap-3 text-sm md:text-base text-[#EAEAEA]">
-          <ClockIcon size={16} className="text-[#6B8A99] shrink-0 md:size-5" />
+        <div className="flex items-center gap-2.5 md:gap-3 text-sm md:text-base text-primary">
+          <ClockIcon size={16} className="text-secondary shrink-0 md:size-5" />
           <span className="font-[family-name:var(--font-jetbrains)] tabular-nums uppercase">
             {formatTime(gymClass.startTime)}
           </span>
-          <span className="text-[#4A6B7A]">—</span>
-          <span className="font-[family-name:var(--font-jetbrains)] tabular-nums text-[#6B8A99] uppercase">
+          <span className="text-muted">—</span>
+          <span className="font-[family-name:var(--font-jetbrains)] tabular-nums text-secondary uppercase">
             {formatTime(gymClass.endTime)}
           </span>
         </div>
 
         {/* Coach */}
         {gymClass.coach?.name && (
-          <div className="flex items-center gap-2.5 md:gap-3 text-sm md:text-base text-[#EAEAEA]">
-            <UserIcon size={16} className="text-[#6B8A99] shrink-0 md:size-5" />
+          <div className="flex items-center gap-2.5 md:gap-3 text-sm md:text-base text-primary">
+            <UserIcon size={16} className="text-secondary shrink-0 md:size-5" />
             <span className="font-[family-name:var(--font-oswald)]">{gymClass.coach.name}</span>
           </div>
         )}
@@ -156,27 +156,27 @@ export default async function ClassDetailPage({
         {/* Cupos */}
         <div className="space-y-2 md:space-y-3">
           <div className="flex items-center gap-2.5 md:gap-3">
-            <UsersIcon size={16} className="text-[#6B8A99] shrink-0 md:size-5" />
+            <UsersIcon size={16} className="text-secondary shrink-0 md:size-5" />
             <span
               className={cn(
                 "text-sm md:text-base tabular-nums font-medium font-[family-name:var(--font-jetbrains)] uppercase",
                 isFull
-                  ? "text-[#E61919]"
+                  ? "text-danger"
                   : availableSpots <= Math.ceil(gymClass.maxCapacity * 0.25)
-                    ? "text-[#F78837]"
-                    : "text-[#EAEAEA]",
+                    ? "text-brand"
+                    : "text-primary",
               )}
             >
               {confirmedCount} / {gymClass.maxCapacity} cupos
             </span>
             {!isFull && (
-              <span className="text-xs md:text-sm text-[#4A6B7A] font-[family-name:var(--font-oswald)]">
+              <span className="text-xs md:text-sm text-muted font-[family-name:var(--font-oswald)]">
                 · {availableSpots}{" "}
                 {availableSpots === 1 ? "lugar libre" : "lugares libres"}
               </span>
             )}
           </div>
-          <div className="h-1.5 md:h-2 w-full bg-[#0A1F2A] overflow-hidden">
+          <div className="h-1.5 md:h-2 w-full bg-page overflow-hidden">
             <div
               className={cn("h-full transition-all", spotsColor)}
               style={{ width: `${occupancyPct}%` }}
@@ -186,18 +186,18 @@ export default async function ClassDetailPage({
 
         {/* Descripción */}
         {gymClass.description && (
-          <p className="text-sm md:text-base text-[#6B8A99] leading-relaxed border-t border-[#1A4A63] pt-4 md:pt-6 font-[family-name:var(--font-oswald)]">
+          <p className="text-sm md:text-base text-secondary leading-relaxed border-t border-border pt-4 md:pt-6 font-[family-name:var(--font-oswald)]">
             {gymClass.description}
           </p>
         )}
       </div>
 
       {/* Ventana de cancelación */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-3.5 md:px-6 md:py-5 flex items-start gap-3 md:gap-4">
-        <InfoIcon size={16} className="text-[#6B8A99] shrink-0 mt-0.5 md:size-5" />
-        <p className="text-sm md:text-base text-[#6B8A99] leading-relaxed font-[family-name:var(--font-oswald)]">
+      <div className="bg-card border border-border px-4 py-3.5 md:px-6 md:py-5 flex items-start gap-3 md:gap-4">
+        <InfoIcon size={16} className="text-secondary shrink-0 mt-0.5 md:size-5" />
+        <p className="text-sm md:text-base text-secondary leading-relaxed font-[family-name:var(--font-oswald)]">
           Cancelá antes de las{" "}
-          <span className="text-[#EAEAEA] font-bold">
+          <span className="text-primary font-bold">
             {cancelDeadline.toLocaleTimeString("es-AR", {
               hour: "2-digit",
               minute: "2-digit",

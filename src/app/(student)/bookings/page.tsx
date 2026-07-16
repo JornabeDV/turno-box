@@ -42,21 +42,21 @@ export default async function BookingsPage() {
     <section className="pt-4 md:pt-8 space-y-4 md:space-y-6">
       <BackButton href="/" />
       <div className="mb-5 md:mb-7 md:pt-2">
-        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl md:text-4xl">
+        <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl md:text-4xl">
           Mis turnos
         </h2>
-        <p className="text-sm md:text-lg text-[#6B8A99] mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
+        <p className="text-sm md:text-lg text-secondary mt-1 md:mt-2 font-[family-name:var(--font-oswald)]">
           Próximas reservas confirmadas
         </p>
       </div>
 
       {bookings.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 md:py-24 text-center border border-[#1A4A63] bg-[#0E2A38]">
-          <CalendarBlank size={28} className="text-[#1A4A63] mb-3 md:mb-4 md:size-10" />
-          <p className="text-sm md:text-base font-[family-name:var(--font-oswald)] font-bold text-[#6B8A99] uppercase tracking-wide">
+        <div className="flex flex-col items-center justify-center py-20 md:py-24 text-center border border-border bg-card">
+          <CalendarBlank size={28} className="text-border mb-3 md:mb-4 md:size-10" />
+          <p className="text-sm md:text-base font-[family-name:var(--font-oswald)] font-bold text-secondary uppercase tracking-wide">
             Sin turnos próximos
           </p>
-          <p className="text-xs md:text-sm text-[#4A6B7A] mt-1 md:mt-2 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
+          <p className="text-xs md:text-sm text-muted mt-1 md:mt-2 font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
             Reservá una clase desde la pantalla de inicio
           </p>
         </div>

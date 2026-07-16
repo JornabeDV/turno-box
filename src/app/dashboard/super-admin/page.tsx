@@ -17,10 +17,10 @@ export default async function SuperAdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+        <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
           Super Admin
         </p>
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
           Panel General
         </h2>
       </div>
@@ -52,20 +52,20 @@ export default async function SuperAdminDashboardPage() {
         />
       </div>
 
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA] mb-2">
+      <div className="bg-card border border-border p-5">
+        <h3 className="text-sm md:text-base font-semibold text-primary mb-2">
           Acciones rápidas
         </h3>
         <div className="flex flex-wrap gap-3">
           <a
             href="/dashboard/super-admin/gyms/new"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#F78837] text-[#0A1F2A] text-xs sm:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:bg-[#E07A2E] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-brand text-page text-xs sm:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:bg-brand-hover transition-colors"
           >
             Crear nuevo gimnasio
           </a>
           <a
             href="/dashboard/super-admin/gyms"
-            className="inline-flex items-center gap-2 px-4 py-2.5 border border-[#1A4A63] text-[#EAEAEA] text-xs sm:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:border-[#F78837] hover:text-[#F78837] transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2.5 border border-border text-primary text-xs sm:text-sm font-medium uppercase tracking-wide rounded-[2px] hover:border-brand hover:text-brand transition-colors"
           >
             Ver gimnasios
           </a>

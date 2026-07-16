@@ -74,12 +74,12 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
   if (success) {
     return (
       <div className="flex flex-col gap-4 text-center">
-        <CheckCircle size={48} className="text-[#27C7B8] mx-auto" />
+        <CheckCircle size={48} className="text-success mx-auto" />
         <div>
-          <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight mb-2">
+          <h3 className="text-lg font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight mb-2">
             Contraseña cambiada
           </h3>
-          <p className="text-sm sm:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          <p className="text-sm sm:text-base text-secondary font-[family-name:var(--font-oswald)]">
             Tu contraseña ha sido actualizada exitosamente. Serás redirigido al
             login en unos segundos...
           </p>
@@ -107,14 +107,14 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="password"
-          className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]"
+          className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]"
         >
           Nueva contraseña
         </label>
         <div className="relative">
           <Lock
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
           />
           <input
             id="password"
@@ -124,12 +124,12 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
             required
             minLength={6}
             placeholder="••••••••"
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 pr-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-page border border-border px-10 pr-10 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
           <button
             type="button"
             onClick={() => setShowPwd((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#6B8A99] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-secondary transition-colors"
           >
             {showPwd ? <EyeSlash size={16} /> : <Eye size={16} />}
           </button>
@@ -140,14 +140,14 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="confirmPassword"
-          className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]"
+          className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]"
         >
           Confirmar contraseña
         </label>
         <div className="relative">
           <Lock
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
           />
           <input
             id="confirmPassword"
@@ -157,12 +157,12 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
             required
             minLength={6}
             placeholder="••••••••"
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 pr-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-page border border-border px-10 pr-10 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPwd((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#6B8A99] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-secondary transition-colors"
           >
             {showConfirmPwd ? <EyeSlash size={16} /> : <Eye size={16} />}
           </button>
@@ -170,9 +170,9 @@ export function ResetPasswordForm({ token, gymSlug }: ResetPasswordFormProps) {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5">
-          <WarningCircle size={15} className="text-[#E61919] shrink-0" />
-          <p className="text-xs text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <div className="flex items-center gap-2 border-l-2 border-danger bg-card px-3 py-2.5">
+          <WarningCircle size={15} className="text-danger shrink-0" />
+          <p className="text-xs text-danger font-[family-name:var(--font-oswald)] uppercase tracking-wide">
             {error}
           </p>
         </div>

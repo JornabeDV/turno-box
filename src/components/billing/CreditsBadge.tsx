@@ -14,10 +14,10 @@ export function CreditsBadge({ credits, href = "/credits" }: Props) {
         "inline-flex items-center gap-1.5 px-2.5 py-1 border text-[10px] transition-all active:scale-95",
         "font-[family-name:var(--font-oswald)] uppercase tracking-wide rounded-[4px]",
         isZero
-          ? "border-[#E61919]/40 text-[#E61919] hover:bg-[#E61919]/10"
+          ? "border-danger/40 text-danger hover:bg-danger/10"
           : isLow
-          ? "border-[#F78837]/40 text-[#F78837] hover:bg-[#F78837]/10"
-          : "border-[#27C7B8]/40 text-[#27C7B8] hover:bg-[#27C7B8]/10"
+          ? "border-brand/40 text-brand hover:bg-brand/10"
+          : "border-success/40 text-success hover:bg-success/10"
       )}
     >
       <span className="text-sm md:text-base">

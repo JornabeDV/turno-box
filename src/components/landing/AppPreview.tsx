@@ -18,26 +18,26 @@ export function AppPreview() {
   ];
 
   return (
-    <section className="py-8 md:py-16 px-4 border-t border-[#1A4A63]">
+    <section className="py-8 md:py-16 px-4 border-t border-border">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
+          <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl sm:text-3xl lg:text-4xl">
             Tu gimnasio, en una pantalla
           </h2>
-          <p className="mt-2 text-sm lg:text-base text-[#6B8A99] font-[family-name:var(--font-oswald)]">
+          <p className="mt-2 text-sm lg:text-base text-secondary font-[family-name:var(--font-oswald)]">
             Organizá clases, actividades y profesores desde un solo lugar.
           </p>
         </div>
 
         {/* Desktop screenshot */}
-        <div className="hidden sm:block max-w-5xl mx-auto border border-[#1A4A63] bg-[#0E2A38] overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-[#1A4A63]">
+        <div className="hidden sm:block max-w-5xl mx-auto border border-border bg-card overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
             <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#E61919]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#F78837]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#27C7B8]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-danger" />
+              <div className="w-2.5 h-2.5 rounded-full bg-brand" />
+              <div className="w-2.5 h-2.5 rounded-full bg-success" />
             </div>
-            <span className="text-[10px] lg:text-xs font-[family-name:var(--font-jetbrains)] text-[#4A6B7A] uppercase tracking-wider ml-2">
+            <span className="text-[10px] lg:text-xs font-[family-name:var(--font-jetbrains)] text-muted uppercase tracking-wider ml-2">
               Vista semanal de clases
             </span>
           </div>
@@ -56,14 +56,14 @@ export function AppPreview() {
                 key={slide.src}
                 className="snap-center shrink-0 w-[78%] first:pl-4 last:pr-4"
               >
-                <div className="border border-[#1A4A63] bg-[#0E2A38] overflow-hidden">
-                  <div className="flex items-center gap-2 px-3 py-2 border-b border-[#1A4A63]">
+                <div className="border border-border bg-card overflow-hidden">
+                  <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-[#E61919]" />
-                      <div className="w-2 h-2 rounded-full bg-[#F78837]" />
-                      <div className="w-2 h-2 rounded-full bg-[#27C7B8]" />
+                      <div className="w-2 h-2 rounded-full bg-danger" />
+                      <div className="w-2 h-2 rounded-full bg-brand" />
+                      <div className="w-2 h-2 rounded-full bg-success" />
                     </div>
-                    <span className="text-[10px] font-[family-name:var(--font-jetbrains)] text-[#4A6B7A] uppercase tracking-wider ml-1">
+                    <span className="text-[10px] font-[family-name:var(--font-jetbrains)] text-muted uppercase tracking-wider ml-1">
                       {slide.label}
                     </span>
                   </div>
@@ -83,7 +83,7 @@ export function AppPreview() {
               <div
                 key={slide.src + "-dot"}
                 className={`w-1.5 h-1.5 rounded-full ${
-                  i === 0 ? "bg-[#F78837]" : "bg-[#1A4A63]"
+                  i === 0 ? "bg-brand" : "bg-border"
                 }`}
               />
             ))}

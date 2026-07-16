@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
 
   const configCheck = {
     resendConfigured: !!process.env.RESEND_API_KEY,
-    resendFrom: process.env.RESEND_FROM_EMAIL,
     appUrl: process.env.NEXT_PUBLIC_URL,
   };
 
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
   const gyms = await prisma.gym.findMany({ select: { id: true, name: true } });
   console.log("[WEEKLY REPORT] Gyms found:", gyms.length);
 
-  const results: { gym: string; gymId: string; adminsFound: number; emails: string[]; sent: number; failed: number; errors: string[] }[] = [];
+  const results: { gym: string; gymId: string; adminsFound: number; sent: number; failed: number; errors: string[] }[] = [];
 
   for (const gym of gyms) {
     const admins = await prisma.user.findMany({
@@ -45,10 +44,10 @@ export async function POST(req: NextRequest) {
     });
 
     const emails = admins.map((a) => a.email).filter(Boolean) as string[];
-    console.log(`[WEEKLY REPORT] Gym "${gym.name}" (${gym.id}): ${admins.length} admins, ${emails.length} valid emails`);
+    console.log(`[WEEKLY REPORT] Gym "${gym.name}" (${gym.id}): ${admins.length} admins`);
 
     if (emails.length === 0) {
-      results.push({ gym: gym.name, gymId: gym.id, adminsFound: admins.length, emails: [], sent: 0, failed: 0, errors: ["No hay admins con email"] });
+      results.push({ gym: gym.name, gymId: gym.id, adminsFound: admins.length, sent: 0, failed: 0, errors: ["No hay admins con email"] });
       continue;
     }
 
@@ -63,22 +62,22 @@ export async function POST(req: NextRequest) {
         const ok = await sendMetricsReportEmail(email, gym.name, report);
         if (ok) {
           sent++;
-          console.log(`[WEEKLY REPORT] Email sent to ${email} for gym ${gym.name}`);
+          console.log(`[WEEKLY REPORT] Email sent for gym ${gym.name}`);
         } else {
           failed++;
-          errors.push(`Failed to send to ${email}`);
-          console.error(`[WEEKLY REPORT] Email failed to ${email} for gym ${gym.name}`);
+          errors.push(`Failed to send email`);
+          console.error(`[WEEKLY REPORT] Email failed for gym ${gym.name}`);
         }
       } catch (err) {
         failed++;
         const msg = err instanceof Error ? err.message : String(err);
-        errors.push(`Exception sending to ${email}: ${msg}`);
-        console.error(`[WEEKLY REPORT] Exception sending to ${email}:`, msg);
+        errors.push(`Exception sending email: ${msg}`);
+        console.error(`[WEEKLY REPORT] Exception sending for gym ${gym.name}:`, msg);
       }
     }
 
-    results.push({ gym: gym.name, gymId: gym.id, adminsFound: admins.length, emails, sent, failed, errors });
+    results.push({ gym: gym.name, gymId: gym.id, adminsFound: admins.length, sent, failed, errors });
   }
 
-  return NextResponse.json({ ok: true, period: periodLabel, config: configCheck, results });
+  return NextResponse.json({ ok: true, period: periodLabel, results });
 }

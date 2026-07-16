@@ -72,16 +72,16 @@ export default async function StudentCreditsHistoryPage({ params }: Props) {
     <div className="max-w-5xl space-y-6">
       <BackButton href={`/dashboard/admin/students/${id}`} />
 
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
-        <h2 className="text-base md:text-lg lg:text-xl font-bold text-[#EAEAEA] tracking-tight">
+      <div className="bg-card border border-border p-5">
+        <h2 className="text-base md:text-lg lg:text-xl font-bold text-primary tracking-tight">
           Historial de créditos
         </h2>
-        <p className="text-sm md:text-base text-[#6B8A99] mt-1">
+        <p className="text-sm md:text-base text-secondary mt-1">
           {student.name ?? student.email}
         </p>
       </div>
 
-      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+      <div className="bg-card border border-border overflow-hidden">
         <CreditHistoryList transactions={serializedTxs} />
       </div>
     </div>

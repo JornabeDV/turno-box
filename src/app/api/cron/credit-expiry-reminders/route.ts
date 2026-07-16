@@ -48,9 +48,9 @@ export async function POST(req: NextRequest) {
   const userIds1d = new Set(payments1d.map((p) => p.userId));
   const userIdsExpired = new Set(paymentsExpired.map((p) => p.userId));
 
-  const results3d: unknown[] = [];
-  const results1d: unknown[] = [];
-  const resultsExpired: unknown[] = [];
+  const results3d: boolean[] = [];
+  const results1d: boolean[] = [];
+  const resultsExpired: boolean[] = [];
 
   for (const userId of userIds3d) {
     const r = await sendPushToUser(userId, {
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       url: "/credits",
       tag: "credit-expiry-3d",
     });
-    results3d.push({ userId, ...r });
+    results3d.push(!!r);
   }
 
   for (const userId of userIds1d) {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       url: "/credits",
       tag: "credit-expiry-1d",
     });
-    results1d.push({ userId, ...r });
+    results1d.push(!!r);
   }
 
   for (const userId of userIdsExpired) {
@@ -79,13 +79,13 @@ export async function POST(req: NextRequest) {
       url: "/packs",
       tag: "credit-expired",
     });
-    resultsExpired.push({ userId, ...r });
+    resultsExpired.push(!!r);
   }
 
   return NextResponse.json({
     ok: true,
-    "3d": { users: userIds3d.size, payments: payments3d.length, results: results3d },
-    "1d": { users: userIds1d.size, payments: payments1d.length, results: results1d },
-    expired: { users: userIdsExpired.size, payments: paymentsExpired.length, results: resultsExpired },
+    "3d": { users: userIds3d.size, payments: payments3d.length, sent: results3d.filter(Boolean).length },
+    "1d": { users: userIds1d.size, payments: payments1d.length, sent: results1d.filter(Boolean).length },
+    expired: { users: userIdsExpired.size, payments: paymentsExpired.length, sent: resultsExpired.filter(Boolean).length },
   });
 }

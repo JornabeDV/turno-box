@@ -23,13 +23,13 @@ type Props = {
 };
 
 const accentDot: Record<Props["accent"], string> = {
-  emerald: "bg-[#27C7B8]",
-  orange: "bg-[#F78837]",
+  emerald: "bg-success",
+  orange: "bg-brand",
 };
 
 const accentCounter: Record<Props["accent"], string> = {
-  emerald: "text-[#27C7B8]",
-  orange: "text-[#F78837]",
+  emerald: "text-success",
+  orange: "text-brand",
 };
 
 export function AttendeesList({
@@ -44,7 +44,7 @@ export function AttendeesList({
       {/* Cabecera */}
       <div className="flex items-center gap-2 mb-2 px-1">
         <span className={cn("size-1.5 rounded-full", accentDot[accent])} />
-        <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+        <h3 className="text-xs md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
           {title}
         </h3>
         <span
@@ -57,13 +57,13 @@ export function AttendeesList({
         </span>
       </div>
 
-      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+      <div className="bg-card border border-border overflow-hidden">
         {bookings.length === 0 ? (
-          <p className="text-xs md:text-base text-[#4A6B7A] text-center py-8">
+          <p className="text-xs md:text-base text-muted text-center py-8">
             {emptyMessage ?? "Sin registros."}
           </p>
         ) : (
-          <div className="divide-y divide-[#1A4A63]">
+          <div className="divide-y divide-border">
             {bookings.map((b, i) => {
               const initials = b.user.name
                 ? b.user.name
@@ -84,26 +84,26 @@ export function AttendeesList({
                   )}
                 >
                   {/* Número / posición */}
-                  <span className="text-xs md:text-sm font-mono text-[#4A6B7A] w-5 text-right shrink-0">
+                  <span className="text-xs md:text-sm font-mono text-muted w-5 text-right shrink-0">
                     {b.status === "WAITLISTED"
                       ? `#${b.waitlistPos}`
                       : `${i + 1}`}
                   </span>
 
                   {/* Avatar */}
-                  <div className="size-8 md:size-9 rounded-[2px] bg-[#0E2A38] border border-[#1A4A63] flex items-center justify-center text-xs md:text-sm font-semibold text-[#EAEAEA] shrink-0">
+                  <div className="size-8 md:size-9 rounded-[2px] bg-card border border-border flex items-center justify-center text-xs md:text-sm font-semibold text-primary shrink-0">
                     {initials}
                   </div>
 
                   {/* Nombre + email */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
+                    <p className="text-sm md:text-base font-medium text-primary truncate leading-tight">
                       {b.user.name ?? "—"}
                     </p>
                   </div>
 
                   {/* Hora de reserva */}
-                  <span className="text-xs md:text-sm text-[#4A6B7A] font-mono shrink-0 hidden sm:block">
+                  <span className="text-xs md:text-sm text-muted font-mono shrink-0 hidden sm:block">
                     {new Date(b.createdAt).toLocaleTimeString("es-AR", {
                       hour: "2-digit",
                       minute: "2-digit",

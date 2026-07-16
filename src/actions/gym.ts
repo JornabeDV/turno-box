@@ -68,6 +68,11 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
     return { success: false, error: parsed.error.issues[0]?.message ?? "Datos inválidos" };
   }
 
+  const current = await prisma.gym.findUnique({
+    where: { id: user.gymId },
+    select: { mpAccessToken: true, mpWebhookSecret: true },
+  });
+
   await prisma.gym.update({
     where: { id: user.gymId },
     data: {
@@ -77,8 +82,8 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
       phone:             parsed.data.phone    || null,
       cancelWindowHours: parsed.data.cancelWindowHours,
       waitlistEnabled:   parsed.data.waitlistEnabled,
-      mpAccessToken:     parsed.data.mpAccessToken?.trim() || null,
-      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim() || null,
+      mpAccessToken:     parsed.data.mpAccessToken?.trim() || current?.mpAccessToken || null,
+      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim() || current?.mpWebhookSecret || null,
     },
   });
 

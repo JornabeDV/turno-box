@@ -44,14 +44,14 @@ export function BookingHistoryList({ bookings }: BookingHistoryListProps) {
 
   if (bookings.length === 0) {
     return (
-      <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-12">
+      <p className="text-xs md:text-sm text-muted text-center py-12">
         Sin turnos registrados.
       </p>
     );
   }
 
   return (
-    <div className="divide-y divide-[#1A4A63]">
+    <div className="divide-y divide-border">
       {bookings.slice(0, visibleCount).map((b) => {
         const isPast = new Date(b.classDate) < new Date();
         return (
@@ -59,10 +59,10 @@ export function BookingHistoryList({ bookings }: BookingHistoryListProps) {
             <span
               className={cn(
                 "size-1.5 rounded-full shrink-0",
-                b.status === "CANCELLED" && "bg-[#4A6B7A]",
-                b.status === "WAITLISTED" && "bg-[#F78837]",
+                b.status === "CANCELLED" && "bg-muted",
+                b.status === "WAITLISTED" && "bg-brand",
                 b.status === "CONFIRMED" && isPast && "bg-emerald-600",
-                b.status === "CONFIRMED" && !isPast && "bg-[#27C7B8]",
+                b.status === "CONFIRMED" && !isPast && "bg-success",
               )}
             />
             <div className="flex-1 min-w-0">
@@ -70,21 +70,21 @@ export function BookingHistoryList({ bookings }: BookingHistoryListProps) {
                 className={cn(
                   "text-sm md:text-base font-medium truncate",
                   b.status === "CANCELLED"
-                    ? "text-[#4A6B7A] line-through"
-                    : "text-[#EAEAEA]",
+                    ? "text-muted line-through"
+                    : "text-primary",
                 )}
               >
                 {b.class.discipline?.name ?? "Sin disciplina"}
               </p>
-              <p className="text-xs md:text-sm text-[#4A6B7A]">
+              <p className="text-xs md:text-sm text-muted">
                 {formatDate(b.classDate)} · {formatTime(b.class.startTime)}
                 {b.status === "WAITLISTED" && b.waitlistPos !== null && (
-                  <span className="ml-2 text-[#F78837]">
+                  <span className="ml-2 text-brand">
                     #{b.waitlistPos} en espera
                   </span>
                 )}
                 {b.status === "CANCELLED" && b.cancelledAt && (
-                  <span className="ml-2 text-[#4A6B7A]">
+                  <span className="ml-2 text-muted">
                     cancelado{" "}
                     {new Date(b.cancelledAt).toLocaleDateString("es-AR", {
                       day: "numeric",
@@ -99,9 +99,9 @@ export function BookingHistoryList({ bookings }: BookingHistoryListProps) {
               className={cn(
                 "text-xs md:text-sm font-medium shrink-0",
                 b.status === "CONFIRMED" && isPast && "text-emerald-600",
-                b.status === "CONFIRMED" && !isPast && "text-[#27C7B8]",
-                b.status === "CANCELLED" && "text-[#4A6B7A]",
-                b.status === "WAITLISTED" && "text-[#F78837]",
+                b.status === "CONFIRMED" && !isPast && "text-success",
+                b.status === "CANCELLED" && "text-muted",
+                b.status === "WAITLISTED" && "text-brand",
               )}
             >
               {b.status === "CONFIRMED" && isPast && "Asistió"}

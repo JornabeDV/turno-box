@@ -23,7 +23,7 @@ export default async function LoginPage({
   }
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-[#0A1F2A] relative">
+    <div className="min-h-dvh flex flex-col items-center justify-center p-4 bg-page relative">
       <div className="w-full max-w-sm relative">
         {/* Logo BoxTurno — solo si no hay gym seleccionado */}
         {!gym && (
@@ -35,7 +35,7 @@ export default async function LoginPage({
         {/* Logo del gym — cuando viene por gymSlug */}
         {gym && (
           <div className="flex flex-col items-center mb-6">
-            <div className="w-24 h-24 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-2 mb-3">
+            <div className="w-24 h-24 rounded-xl border border-border bg-card overflow-hidden flex items-center justify-center p-2 mb-3">
               {gym.logoUrl ? (
                 <img
                   src={gym.logoUrl}
@@ -43,13 +43,13 @@ export default async function LoginPage({
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <Barbell size={40} className="text-[#F78837]" />
+                <Barbell size={40} className="text-brand" />
               )}
             </div>
-            <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl text-center">
+            <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl text-center">
               {gym.name}
             </h2>
-            <p className="text-xs sm:text-sm text-[#6B8A99] font-[family-name:var(--font-oswald)] uppercase tracking-wide mt-0.5">
+            <p className="text-xs sm:text-sm text-secondary font-[family-name:var(--font-oswald)] uppercase tracking-wide mt-0.5">
               Ingresá a tu cuenta
             </p>
           </div>
@@ -57,24 +57,24 @@ export default async function LoginPage({
 
         {/* Título genérico — solo si no hay gym */}
         {!gym && (
-          <h2 className="font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight text-2xl mb-6 text-center">
+          <h2 className="font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight text-2xl mb-6 text-center">
             Ingresá como admin
           </h2>
         )}
 
         {/* Card */}
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-6">
+        <div className="bg-card border border-border p-6">
           <LoginForm preselectedGym={gym} />
         </div>
 
         {/* Footer */}
-        <p className="text-center text-xs sm:text-sm text-[#6B8A99] mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-center text-xs sm:text-sm text-secondary mt-6 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           {gym ? (
             <>
               ¿No tenés cuenta?{" "}
               <Link
                 href={`/join/${gym.slug}`}
-                className="text-[#27C7B8] hover:text-[#20A898] transition-colors"
+                className="text-success hover:text-success-hover transition-colors"
               >
                 Unite a {gym.name}
               </Link>
@@ -84,7 +84,7 @@ export default async function LoginPage({
               ¿Sos alumno?{" "}
               <Link
                 href="/gyms"
-                className="text-[#27C7B8] hover:text-[#20A898] transition-colors"
+                className="text-success hover:text-success-hover transition-colors"
               >
                 Seleccioná tu gimnasio para ingresar
               </Link>
@@ -94,7 +94,7 @@ export default async function LoginPage({
 
         {/* Legal footer */}
         <div className="mt-10 text-center space-y-1">
-          <p className="text-[10px] sm:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#4A6B7A]">
+          <p className="text-[10px] sm:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-muted">
             © 2026 Box Turno. Todos los derechos reservados.
           </p>
         </div>

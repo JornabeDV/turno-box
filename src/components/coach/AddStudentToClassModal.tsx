@@ -89,7 +89,7 @@ export function AddStudentToClassModal({ open, onClose, classId, dateStr }: Prop
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             placeholder="Buscar por nombre o email..."
-            className="flex-1 h-12 md:h-14 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors"
+            className="flex-1 h-12 md:h-14 rounded-[2px] bg-page border border-border px-3.5 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors"
           />
           <Button
             variant="outline"
@@ -102,18 +102,18 @@ export function AddStudentToClassModal({ open, onClose, classId, dateStr }: Prop
         </div>
 
         {results.length > 0 && !selected && (
-          <div className="bg-[#0A1F2A] border border-[#1A4A63] max-h-60 overflow-y-auto">
+          <div className="bg-page border border-border max-h-60 overflow-y-auto">
             {results.map((s) => (
               <button
                 key={s.id}
                 onClick={() => handleSelect(s)}
-                className="w-full text-left px-3.5 py-3 hover:bg-[#143D52] transition-colors border-b border-[#1A4A63] last:border-b-0"
+                className="w-full text-left px-3.5 py-3 hover:bg-panel transition-colors border-b border-border last:border-b-0"
               >
-                <p className="text-sm sm:text-base text-[#EAEAEA]">{s.name ?? "Sin nombre"}</p>
-                <p className="text-xs sm:text-sm text-[#6B8A99]">{s.email}</p>
+                <p className="text-sm sm:text-base text-primary">{s.name ?? "Sin nombre"}</p>
+                <p className="text-xs sm:text-sm text-secondary">{s.email}</p>
                 <p
                   className={`text-xs sm:text-sm mt-0.5 ${
-                    s.credits > 0 ? "text-[#27C7B8]" : "text-[#E61919]"
+                    s.credits > 0 ? "text-success" : "text-danger"
                   }`}
                 >
                   {s.credits} crédito{s.credits !== 1 ? "s" : ""}
@@ -124,12 +124,12 @@ export function AddStudentToClassModal({ open, onClose, classId, dateStr }: Prop
         )}
 
         {selected && (
-          <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
-            <p className="text-sm text-[#EAEAEA]">{selected.name ?? "Sin nombre"}</p>
-            <p className="text-xs text-[#6B8A99]">{selected.email}</p>
+          <div className="bg-card border border-border p-4">
+            <p className="text-sm text-primary">{selected.name ?? "Sin nombre"}</p>
+            <p className="text-xs text-secondary">{selected.email}</p>
             <p
               className={`text-xs mt-1 font-medium ${
-                selected.credits > 0 ? "text-[#27C7B8]" : "text-[#E61919]"
+                selected.credits > 0 ? "text-success" : "text-danger"
               }`}
             >
               {selected.credits} crédito{selected.credits !== 1 ? "s" : ""} disponible
@@ -137,7 +137,7 @@ export function AddStudentToClassModal({ open, onClose, classId, dateStr }: Prop
             </p>
             <button
               onClick={() => setSelected(null)}
-              className="text-xs text-[#F78837] mt-2 hover:underline"
+              className="text-xs text-brand mt-2 hover:underline"
             >
               Cambiar alumno
             </button>
@@ -145,8 +145,8 @@ export function AddStudentToClassModal({ open, onClose, classId, dateStr }: Prop
         )}
 
         {error && (
-          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
+          <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-danger">{error}</p>
           </div>
         )}
 

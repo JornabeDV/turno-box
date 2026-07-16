@@ -68,12 +68,12 @@ export function DaySelectorCompact({ initialDate, onChange, availableDays }: Pro
   const canGoNext = startIndex + VISIBLE_COUNT < weekDays.length;
 
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] p-3 md:p-5">
+    <div className="bg-card border border-border p-3 md:p-5">
       <div className="flex items-center justify-between mb-2 md:mb-3">
-        <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#6B8A99]">
+        <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-secondary">
           Próximos días
         </span>
-        <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#27C7B8]">
+        <span className="text-[10px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-success">
           {current.toLocaleDateString("es-AR", { month: "short" })}
         </span>
       </div>
@@ -85,8 +85,8 @@ export function DaySelectorCompact({ initialDate, onChange, availableDays }: Pro
           className={cn(
             "shrink-0 size-7 md:size-9 flex items-center justify-center transition-colors",
             canGoPrev
-              ? "text-[#6B8A99] hover:text-[#EAEAEA]"
-              : "text-[#1A4A63] cursor-default"
+              ? "text-secondary hover:text-primary"
+              : "text-border cursor-default"
           )}
           aria-label="Días anteriores"
         >
@@ -104,8 +104,8 @@ export function DaySelectorCompact({ initialDate, onChange, availableDays }: Pro
                 className={cn(
                   "flex-1 flex flex-col items-center gap-1 md:gap-1.5 py-2 md:py-3 transition-all duration-150 active:scale-[0.97]",
                   isSelected
-                    ? "bg-[#F78837] text-[#0A1F2A]"
-                    : "border border-[#1A4A63] text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99]"
+                    ? "bg-brand text-page"
+                    : "border border-border text-secondary hover:text-primary hover:border-secondary"
                 )}
               >
                 <span className="text-[9px] md:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wider">
@@ -114,7 +114,7 @@ export function DaySelectorCompact({ initialDate, onChange, availableDays }: Pro
                 <span
                   className={cn(
                     "text-sm md:text-lg font-[family-name:var(--font-oswald)] font-bold",
-                    isSelected ? "text-[#0A1F2A]" : "text-[#EAEAEA]"
+                    isSelected ? "text-page" : "text-primary"
                   )}
                 >
                   {date.getDate()}
@@ -130,8 +130,8 @@ export function DaySelectorCompact({ initialDate, onChange, availableDays }: Pro
           className={cn(
             "shrink-0 size-7 md:size-9 flex items-center justify-center transition-colors",
             canGoNext
-              ? "text-[#6B8A99] hover:text-[#EAEAEA]"
-              : "text-[#1A4A63] cursor-default"
+              ? "text-secondary hover:text-primary"
+              : "text-border cursor-default"
           )}
           aria-label="Días siguientes"
         >

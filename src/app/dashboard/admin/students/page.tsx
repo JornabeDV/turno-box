@@ -111,10 +111,10 @@ export default async function StudentsPage({ searchParams }: Props) {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             Admin
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Alumnos
           </h2>
         </div>
@@ -145,7 +145,7 @@ export default async function StudentsPage({ searchParams }: Props) {
       </div>
 
       {inactive > 0 && (
-        <p className="text-xs md:text-sm text-[#4A6B7A] px-1">
+        <p className="text-xs md:text-sm text-muted px-1">
           {inactive} {inactive === 1 ? "alumno inactivo" : "alumnos inactivos"}{" "}
           — no aparecen en reservas
         </p>

@@ -67,14 +67,14 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
       <div className="flex flex-col gap-2">
         <label
           htmlFor="email"
-          className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]"
+          className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]"
         >
           Email
         </label>
         <div className="relative">
           <Envelope
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
           />
           <input
             id="email"
@@ -85,7 +85,7 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email@alumno.com"
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-page border border-border px-10 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
         </div>
       </div>
@@ -95,13 +95,13 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
         <div className="flex items-center justify-between">
           <label
             htmlFor="password"
-            className="text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]"
+            className="text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]"
           >
             Contraseña
           </label>
           <Link
             href={preselectedGym ? `/forgot-password?gymSlug=${preselectedGym.slug}` : "/forgot-password"}
-            className="text-[11px] sm:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wide text-[#27C7B8] hover:text-[#20A898] transition-colors"
+            className="text-[11px] sm:text-xs font-[family-name:var(--font-jetbrains)] uppercase tracking-wide text-success hover:text-success-hover transition-colors"
           >
             Olvidaste tu contraseña?
           </Link>
@@ -109,7 +109,7 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
         <div className="relative">
           <Lock
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
           />
           <input
             id="password"
@@ -120,12 +120,12 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] px-10 pr-10 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
+            className="w-full h-12 bg-page border border-border px-10 pr-10 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]"
           />
           <button
             type="button"
             onClick={() => setShowPwd((v) => !v)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#6B8A99] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-secondary transition-colors"
           >
             {showPwd ? <EyeSlash size={16} /> : <Eye size={16} />}
           </button>
@@ -133,9 +133,9 @@ function LoginFormInner({ preselectedGym }: { preselectedGym: GymInfo | null }) 
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 border-l-2 border-[#E61919] bg-[#0E2A38] px-3 py-2.5">
-          <WarningCircle size={15} className="text-[#E61919] shrink-0" />
-          <p className="text-xs sm:text-sm text-[#E61919] font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <div className="flex items-center gap-2 border-l-2 border-danger bg-card px-3 py-2.5">
+          <WarningCircle size={15} className="text-danger shrink-0" />
+          <p className="text-xs sm:text-sm text-danger font-[family-name:var(--font-oswald)] uppercase tracking-wide">
             {error}
           </p>
         </div>

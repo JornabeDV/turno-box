@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 type Variant = "available" | "full" | "few" | "waitlist" | "cancelled" | "confirmed";
 
 const variantStyles: Record<Variant, string> = {
-  available: "bg-[#27C7B8]/10 text-[#27C7B8] border-[#27C7B8]/30",
-  confirmed: "bg-[#27C7B8]/10 text-[#27C7B8] border-[#27C7B8]/30",
-  few:       "bg-[#F78837]/10 text-[#F78837] border-[#F78837]/30",
-  full:      "bg-[#E61919]/10 text-[#E61919] border-[#E61919]/30",
-  waitlist:  "bg-[#F78837]/10 text-[#F78837] border-[#F78837]/30",
-  cancelled: "bg-[#1A4A63]/30 text-[#6B8A99] border-[#1A4A63]",
+  available: "bg-success/10 text-success border-success/30",
+  confirmed: "bg-success/10 text-success border-success/30",
+  few:       "bg-brand/10 text-brand border-brand/30",
+  full:      "bg-danger/10 text-danger border-danger/30",
+  waitlist:  "bg-brand/10 text-brand border-brand/30",
+  cancelled: "bg-border/30 text-secondary border-border",
 };
 
 const labels: Record<Variant, string> = {

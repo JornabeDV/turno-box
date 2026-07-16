@@ -18,14 +18,14 @@ export function OccupancyBar({
 
   // Color de la barra según ocupación
   const barColor =
-    pct >= 100 ? "bg-[#E61919]" : pct >= 75 ? "bg-[#F78837]" : "bg-[#27C7B8]";
+    pct >= 100 ? "bg-danger" : pct >= 75 ? "bg-brand" : "bg-success";
 
   const labelColor =
     pct >= 100
-      ? "text-[#E61919]"
+      ? "text-danger"
       : pct >= 75
-        ? "text-[#F78837]"
-        : "text-[#27C7B8]";
+        ? "text-brand"
+        : "text-success";
 
   if (large) {
     return (
@@ -41,26 +41,26 @@ export function OccupancyBar({
             >
               {confirmed}
             </span>
-            <span className="text-lg md:text-xl text-[#4A6B7A] font-mono">/{max}</span>
+            <span className="text-lg md:text-xl text-muted font-mono">/{max}</span>
           </div>
           <div className="text-right">
-            <p className="text-xs md:text-base text-[#6B8A99]">
+            <p className="text-xs md:text-base text-secondary">
               {available > 0 ? (
-                <span className="text-[#27C7B8]">
+                <span className="text-success">
                   {available} {available === 1 ? "cupo libre" : "cupos libres"}
                 </span>
               ) : (
-                <span className="text-[#E61919]">Completo</span>
+                <span className="text-danger">Completo</span>
               )}
             </p>
             {waitlisted > 0 && (
-              <p className="text-xs md:text-sm text-[#F78837]">{waitlisted} en espera</p>
+              <p className="text-xs md:text-sm text-brand">{waitlisted} en espera</p>
             )}
           </div>
         </div>
 
         {/* Barra */}
-        <div className="h-2.5 w-full rounded-full bg-[#1A4A63]/40 overflow-hidden">
+        <div className="h-2.5 w-full rounded-full bg-border/40 overflow-hidden">
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500",
@@ -71,7 +71,7 @@ export function OccupancyBar({
         </div>
 
         {/* Etiqueta % */}
-        <p className="text-xs md:text-sm text-[#4A6B7A] font-mono">
+        <p className="text-xs md:text-sm text-muted font-mono">
           {Math.round(pct)}% de ocupación
         </p>
       </div>
@@ -81,7 +81,7 @@ export function OccupancyBar({
   // Versión compacta — para la tabla del dashboard
   return (
     <div className="flex items-center gap-2 min-w-[80px]">
-      <div className="flex-1 h-1.5 rounded-full bg-[#1A4A63]/40 overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-border/40 overflow-hidden">
         <div
           className={cn("h-full rounded-full", barColor)}
           style={{ width: `${pct}%` }}

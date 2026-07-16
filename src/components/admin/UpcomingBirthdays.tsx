@@ -17,26 +17,26 @@ function formatBirthday(date: Date): string {
 export function UpcomingBirthdays({ birthdays }: Props) {
   if (birthdays.length === 0) {
     return (
-      <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
-        <p className="text-sm md:text-base text-[#6B8A99]">No hay cumpleaños próximos.</p>
+      <div className="bg-card border border-border px-4 py-10 text-center">
+        <p className="text-sm md:text-base text-secondary">No hay cumpleaños próximos.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
-      <div className="divide-y divide-[#1A4A63]">
+    <div className="bg-card border border-border overflow-hidden">
+      <div className="divide-y divide-border">
         {birthdays.map((b) => (
           <div key={b.id} className="flex items-center gap-3 px-4 md:px-5 py-3.5 md:py-4">
             {/* Nombre */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
+              <p className="text-sm md:text-base font-medium text-primary truncate leading-tight">
                 {b.name ?? b.email}
               </p>
             </div>
 
             {/* Fecha */}
-            <span className="text-xs md:text-sm font-mono text-[#6B8A99] tabular-nums shrink-0">
+            <span className="text-xs md:text-sm font-mono text-secondary tabular-nums shrink-0">
               {formatBirthday(b.birthDate)}
             </span>
 
@@ -45,8 +45,8 @@ export function UpcomingBirthdays({ birthdays }: Props) {
               className={[
                 "text-[10px] md:text-xs font-semibold px-2 py-0.5 rounded-full shrink-0",
                 b.daysUntil === 0
-                  ? "bg-[#F78837]/20 text-[#F78837]"
-                  : "bg-[#0E2A38] text-[#6B8A99]",
+                  ? "bg-brand/20 text-brand"
+                  : "bg-card text-secondary",
               ].join(" ")}
             >
               {b.daysUntil === 0 ? "¡Hoy!" : `en ${b.daysUntil}d`}

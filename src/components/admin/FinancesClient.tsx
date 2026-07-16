@@ -203,10 +203,10 @@ export function FinancesClient({
       {/* Header + filtros de período */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <p className="text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm font-medium text-secondary uppercase tracking-wider mb-0.5">
             {MONTHS[month - 1]} {year}
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Finanzas
           </h2>
         </div>
@@ -277,16 +277,16 @@ export function FinancesClient({
       </div>
 
       {/* Gráfico */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
+      <div className="bg-card border border-border p-4">
         <div className="flex items-center justify-between gap-3 mb-3">
-          <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider">
+          <h3 className="text-xs md:text-sm font-medium font-semibold text-secondary uppercase tracking-wider">
             Ingresos vs Egresos ({year})
           </h3>
           {isMobile && (
             <button
               type="button"
               onClick={() => setShowFullYear((v) => !v)}
-              className="text-[10px] md:text-xs font-medium text-[#6B8A99] hover:text-[#F78837] transition-colors uppercase tracking-wider"
+              className="text-[10px] md:text-xs font-medium text-secondary hover:text-brand transition-colors uppercase tracking-wider"
             >
               {showFullYear ? "Ver 6 meses" : "Ver año completo"}
             </button>
@@ -306,7 +306,7 @@ export function FinancesClient({
       {/* Movimientos */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
-          <h3 className="text-xs md:text-sm font-medium font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+          <h3 className="text-xs md:text-sm font-medium font-semibold text-secondary uppercase tracking-wider flex-1">
             Movimientos
           </h3>
           <div className="flex items-center gap-2">
@@ -338,19 +338,19 @@ export function FinancesClient({
           </div>
         </div>
 
-        <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+        <div className="bg-card border border-border overflow-hidden">
           {isPending && items.length === 0 ? (
             <div className="px-4 py-10 text-center">
-              <span className="size-5 rounded-full border-2 border-[#F78837] border-t-transparent animate-spin inline-block" />
+              <span className="size-5 rounded-full border-2 border-brand border-t-transparent animate-spin inline-block" />
             </div>
           ) : items.length === 0 ? (
             <div className="px-4 py-10 text-center">
-              <p className="text-sm md:text-base text-[#6B8A99]">
+              <p className="text-sm md:text-base text-secondary">
                 Sin movimientos en este período.
               </p>
             </div>
           ) : (
-            <div className="divide-y divide-[#1A4A63]">
+            <div className="divide-y divide-border">
               {items.map((tx) => (
                 <div
                   key={tx.id}
@@ -359,25 +359,25 @@ export function FinancesClient({
                   <div
                     className={cn(
                       "size-2 rounded-full shrink-0 mt-1.5",
-                      tx.type === "INCOME" ? "bg-[#27C7B8]" : "bg-[#E61919]",
+                      tx.type === "INCOME" ? "bg-success" : "bg-danger",
                     )}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
+                    <p className="text-sm md:text-base font-medium text-primary truncate leading-tight">
                       {tx.description || tx.category}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                      <span className="text-[10px] md:text-xs font-medium text-[#4A6B7A] uppercase tracking-wider">
+                      <span className="text-[10px] md:text-xs font-medium text-muted uppercase tracking-wider">
                         {tx.category}
                       </span>
                       {tx.method && (
-                        <span className="text-[10px] md:text-xs font-medium text-[#6B8A99]">
+                        <span className="text-[10px] md:text-xs font-medium text-secondary">
                           · {tx.method}
                         </span>
                       )}
                     </div>
                     {tx.user && (
-                      <p className="text-[10px] md:text-xs font-medium text-[#6B8A99] mt-0.5">
+                      <p className="text-[10px] md:text-xs font-medium text-secondary mt-0.5">
                         {tx.user.name ?? tx.user.email}
                       </p>
                     )}
@@ -387,14 +387,14 @@ export function FinancesClient({
                       className={cn(
                         "text-sm md:text-base font-bold tabular-nums",
                         tx.type === "INCOME"
-                          ? "text-[#27C7B8]"
-                          : "text-[#E61919]",
+                          ? "text-success"
+                          : "text-danger",
                       )}
                     >
                       {tx.type === "INCOME" ? "+" : "-"}
                       {fmtMoney(tx.amount)}
                     </p>
-                    <p className="text-[10px] md:text-xs font-medium text-[#4A6B7A]">
+                    <p className="text-[10px] md:text-xs font-medium text-muted">
                       {new Date(tx.date).toLocaleDateString("es-AR")}
                     </p>
                   </div>
@@ -402,7 +402,7 @@ export function FinancesClient({
                     {!tx.paymentId && (
                       <button
                         onClick={() => handleDelete(tx.id, !!tx.paymentId)}
-                        className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all"
+                        className="size-8 rounded-[2px] flex items-center justify-center text-secondary cursor-pointer hover:text-danger hover:bg-card transition-all"
                         title="Eliminar"
                       >
                         <TrashIcon size={16} weight="bold" />
@@ -416,25 +416,25 @@ export function FinancesClient({
 
           {/* Paginación */}
           {total > limit && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-[#1A4A63]">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-border">
               <button
                 disabled={offset === 0 || isPending}
                 onClick={() => setOffset((o) => Math.max(0, o - limit))}
                 className={cn(
-                  "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+                  "size-9 rounded-[2px] border border-border bg-card flex items-center justify-center text-secondary hover:text-primary hover:border-brand transition-colors shrink-0",
                   (offset === 0 || isPending) && "opacity-30 pointer-events-none",
                 )}
               >
                 <CaretLeftIcon size={18} weight="bold" />
               </button>
-              <span className="text-xs md:text-sm font-medium text-[#4A6B7A]">
+              <span className="text-xs md:text-sm font-medium text-muted">
                 {offset + 1} – {Math.min(offset + limit, total)} de {total}
               </span>
               <button
                 disabled={offset + limit >= total || isPending}
                 onClick={() => setOffset((o) => o + limit)}
                 className={cn(
-                  "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+                  "size-9 rounded-[2px] border border-border bg-card flex items-center justify-center text-secondary hover:text-primary hover:border-brand transition-colors shrink-0",
                   (offset + limit >= total || isPending) && "opacity-30 pointer-events-none",
                 )}
               >
@@ -472,7 +472,7 @@ export function FinancesClient({
           }}
         >
           <div>
-            <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
               Categoría
             </label>
             <SelectInput
@@ -484,7 +484,7 @@ export function FinancesClient({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
               Monto
             </label>
             <input
@@ -515,7 +515,7 @@ export function FinancesClient({
                 setAmountDisplay(display);
                 setAmountValue(numeric);
               }}
-              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50"
+              className="w-full h-12 bg-page border border-border rounded-[2px] px-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:border-brand/50"
             />
             <input type="hidden" name="amount" value={amountValue} />
           </div>
@@ -531,7 +531,7 @@ export function FinancesClient({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
               Método de pago
             </label>
             <SelectInput
@@ -546,14 +546,14 @@ export function FinancesClient({
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-[#4A6B7A] uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-muted uppercase tracking-wider mb-1">
               Descripción
             </label>
             <input
               name="description"
               type="text"
               placeholder="Opcional"
-              className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] px-3 text-sm text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50"
+              className="w-full h-12 bg-page border border-border rounded-[2px] px-3 text-sm text-primary placeholder:text-muted focus:outline-none focus:border-brand/50"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -594,21 +594,21 @@ function MetricCard({
   color: "teal" | "rose" | "zinc";
 }) {
   const colorClass = {
-    teal: "text-[#27C7B8]",
-    rose: "text-[#E61919]",
-    zinc: "text-[#EAEAEA]",
+    teal: "text-success",
+    rose: "text-danger",
+    zinc: "text-primary",
   }[color];
 
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] p-4">
+    <div className="bg-card border border-border p-4">
       <div className="flex items-start justify-between mb-2">
-        <span className="text-xs md:text-sm font-medium text-[#4A6B7A] uppercase tracking-wider">
+        <span className="text-xs md:text-sm font-medium text-muted uppercase tracking-wider">
           {label}
         </span>
-        {icon === "up" && <TrendUp size={14} className="text-[#27C7B8]" />}
-        {icon === "down" && <TrendDown size={14} className="text-[#E61919]" />}
-        {icon === "wallet" && <Wallet size={14} className="text-[#6B8A99]" />}
-        {icon === "list" && <ListDashes size={14} className="text-[#6B8A99]" />}
+        {icon === "up" && <TrendUp size={14} className="text-success" />}
+        {icon === "down" && <TrendDown size={14} className="text-danger" />}
+        {icon === "wallet" && <Wallet size={14} className="text-secondary" />}
+        {icon === "list" && <ListDashes size={14} className="text-secondary" />}
       </div>
       <p
         className={cn("text-lg md:text-xl font-bold tabular-nums", colorClass)}
@@ -619,7 +619,7 @@ function MetricCard({
         <p
           className={cn(
             "text-xs sm:text-sm font-medium mt-1",
-            change >= 0 ? "text-[#27C7B8]" : "text-[#E61919]",
+            change >= 0 ? "text-success" : "text-danger",
           )}
         >
           {change >= 0 ? "+" : ""}

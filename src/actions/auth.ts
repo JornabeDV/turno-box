@@ -39,7 +39,7 @@ export async function registerAction(
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    return { success: false, error: "Ya existe una cuenta con ese email." };
+    return { success: false, error: "No se pudo completar el registro. Si ya tenés una cuenta, intentá iniciar sesión." };
   }
 
   const passwordHash = await bcrypt.hash(password, 12);

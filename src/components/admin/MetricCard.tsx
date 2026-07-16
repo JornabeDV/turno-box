@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 type Accent = "orange" | "emerald" | "rose" | "zinc";
 
 const accentStyles: Record<Accent, string> = {
-  orange: "text-[#F78837]",
-  emerald: "text-[#27C7B8]",
-  rose: "text-[#E61919]",
-  zinc: "text-[#EAEAEA]",
+  orange: "text-brand",
+  emerald: "text-success",
+  rose: "text-danger",
+  zinc: "text-primary",
 };
 
 type Props = {
@@ -101,7 +101,7 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        "bg-[#0E2A38] border border-[#1A4A63] p-3 md:p-4 lg:p-5 animate-in md:flex items-center justify-start gap-3 md:gap-4",
+        "bg-card border border-border p-3 md:p-4 lg:p-5 animate-in md:flex items-center justify-start gap-3 md:gap-4",
         large && "col-span-2 md:col-span-4 flex items-center gap-4",
         className,
       )}
@@ -109,10 +109,10 @@ export function MetricCard({
       <div
         className={cn(
           "size-9 md:size-10 rounded-[2px] flex items-center justify-center shrink-0",
-          accent === "orange" && "bg-[#F78837]/10 text-[#F78837]",
-          accent === "emerald" && "bg-[#27C7B8]/10 text-[#27C7B8]",
-          accent === "rose" && "bg-[#E61919]/10 text-[#E61919]",
-          accent === "zinc" && "bg-[#0E2A38] text-[#6B8A99]",
+          accent === "orange" && "bg-brand/10 text-brand",
+          accent === "emerald" && "bg-success/10 text-success",
+          accent === "rose" && "bg-danger/10 text-danger",
+          accent === "zinc" && "bg-card text-secondary",
         )}
       >
         {icons[icon]}
@@ -127,7 +127,7 @@ export function MetricCard({
         >
           {value}
         </p>
-        <p className="text-xs md:text-sm text-[#6B8A99] mt-1">{label}</p>
+        <p className="text-xs md:text-sm text-secondary mt-1">{label}</p>
       </div>
     </div>
   );

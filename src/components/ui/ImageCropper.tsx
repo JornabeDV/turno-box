@@ -87,16 +87,16 @@ export function ImageCropper({
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] bg-[#0A1F2A] flex flex-col">
+    <div className="fixed inset-0 z-[9999] bg-page flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 h-14 border-b border-[#1A4A63] shrink-0">
-        <span className="text-sm font-medium text-[#EAEAEA] uppercase tracking-wider">
+      <div className="flex items-center justify-between px-4 h-14 border-b border-border shrink-0">
+        <span className="text-sm font-medium text-primary uppercase tracking-wider">
           Ajustar imagen
         </span>
         <button
           type="button"
           onClick={onCancel}
-          className="size-8 flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+          className="size-8 flex items-center justify-center text-secondary hover:text-primary transition-colors"
         >
           <XIcon size={20} weight="bold" />
         </button>
@@ -115,9 +115,9 @@ export function ImageCropper({
           showGrid={false}
           cropShape="rect"
           style={{
-            containerStyle: { background: "#0A1F2A" },
+            containerStyle: { background: "var(--bg-page)" },
             cropAreaStyle: {
-              border: "2px solid #F78837",
+              border: "2px solid var(--brand)",
               color: "rgba(10, 31, 42, 0.6)",
             },
           }}
@@ -125,9 +125,9 @@ export function ImageCropper({
       </div>
 
       {/* Controls */}
-      <div className="px-4 py-4 border-t border-[#1A4A63] space-y-4 shrink-0">
+      <div className="px-4 py-4 border-t border-border space-y-4 shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-xs text-[#6B8A99] uppercase tracking-wider shrink-0">
+          <span className="text-xs text-secondary uppercase tracking-wider shrink-0">
             Zoom
           </span>
           <input
@@ -137,7 +137,7 @@ export function ImageCropper({
             step={0.1}
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
-            className="flex-1 accent-[#F78837] h-1.5 bg-[#1A4A63] rounded-full appearance-none cursor-pointer"
+            className="flex-1 accent-brand h-1.5 bg-border rounded-full appearance-none cursor-pointer"
           />
         </div>
 

@@ -40,8 +40,8 @@ export function ResendInvitationButton({
     >
       {sent ? (
         <>
-          <CheckCircle size={14} className="text-[#27C7B8]" />
-          <span className="text-[#27C7B8]">Enviado</span>
+          <CheckCircle size={14} className="text-success" />
+          <span className="text-success">Enviado</span>
         </>
       ) : (
         <>

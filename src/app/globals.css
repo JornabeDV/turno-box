@@ -14,38 +14,123 @@
   --font-display: var(--font-oswald), system-ui, sans-serif;
 
   /* ── Superficies ── */
-  --color-surface-900: #0A1F2A;   /* fondo de página (Ocean Obsidian) */
-  --color-surface-800: #0E2A38;   /* cards / containers (Deep Teal) */
-  --color-surface-700: #143D52;   /* hover / panel (Panel Teal) */
-  --color-surface-600: #1A4A63;   /* bordes visibles (Border Teal) */
+  --color-page:   var(--bg-page);
+  --color-card:   var(--bg-card);
+  --color-panel:  var(--bg-panel);
 
   /* ── Texto ── */
-  --color-text-primary:   #EAEAEA;   /* phosphor white */
-  --color-text-secondary: #6B8A99;   /* muted terminal */
-  --color-text-muted:     #4A6B7A;   /* placeholder / disabled */
+  --color-primary:   var(--text-primary);
+  --color-secondary: var(--text-secondary);
+  --color-muted:     var(--text-muted);
+
+  /* ── Bordes ── */
+  --color-border: var(--border-default);
 
   /* ── Acento naranja (acción, energía) ── */
-  --color-brand:        #F78837;   /* Tangerine Tango */
-  --color-brand-hover:  #E07A2E;   /* pressed / hover */
-  --color-brand-subtle: #2A1A0A;   /* fondo de badge naranja */
-  --color-brand-dim:    #5C3A1A;   /* borde sutil naranja */
+  --color-brand:        var(--brand);
+  --color-brand-hover:  var(--brand-hover);
+  --color-brand-subtle: var(--brand-subtle);
+  --color-brand-dim:    var(--brand-dim);
 
   /* ── Acento teal (éxito, utilidad) ── */
-  --color-success:        #27C7B8;   /* Teal Tide */
-  --color-success-subtle: #0A2A28;   /* fondo de badge teal */
-  --color-success-dim:    #1A5A52;   /* borde sutil teal */
+  --color-success:        var(--success);
+  --color-success-hover:  var(--success-hover);
+  --color-success-subtle: var(--success-subtle);
+  --color-success-dim:    var(--success-dim);
 
   /* ── Estados ── */
-  --color-warning:        #F59E0B;   /* amber — pocos cupos */
-  --color-warning-subtle: #1C1408;
-  --color-danger:         #E61919;   /* aviation red */
-  --color-danger-subtle:  #2A0A0A;
+  --color-warning:        var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-danger:         var(--danger);
+  --color-danger-hover:   var(--danger-hover);
+  --color-danger-subtle:  var(--danger-subtle);
+
+  /* ── Overlay ── */
+  --color-overlay: var(--overlay);
 
   /* ── Border radius (rigidez mecánica) ── */
   --radius-sm:  2px;
   --radius-md:  4px;
   --radius-lg:  4px;
   --radius-xl:  4px;
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ── Light Mode (default) ────────────────────────────────────────────────────── */
+:root {
+  /* ── Superficies ── */
+  --bg-page:   #F7F5F2;   /* papel técnico */
+  --bg-card:   #FFFFFF;   /* tarjeta elevada */
+  --bg-panel:  #F0EDE8;   /* hover / panel */
+
+  /* ── Texto ── */
+  --text-primary:   #0F172A;   /* carbon ink */
+  --text-secondary: #5A6B75;   /* gris técnico */
+  --text-muted:     #94A3B8;   /* placeholder / disabled */
+
+  /* ── Bordes ── */
+  --border-default: #D4DDE2;   /* teal muy apagado */
+
+  /* ── Acento naranja ── */
+  --brand:        #F78837;
+  --brand-hover:  #E56E1A;
+  --brand-subtle: #FFF2E8;
+  --brand-dim:    #F7C9A8;
+
+  /* ── Acento teal ── */
+  --success:        #27C7B8;
+  --success-hover:  #1FA89C;
+  --success-subtle: #E6F9F6;
+  --success-dim:    #A8E3DA;
+
+  /* ── Estados ── */
+  --warning:        #F59E0B;
+  --warning-subtle: #FEF6E4;
+  --danger:         #E61919;
+  --danger-hover:   #C71515;
+  --danger-subtle:  #FCEBEB;
+
+  /* ── Overlay ── */
+  --overlay: rgba(0, 0, 0, 0.8);
+}
+
+/* ── Dark Mode (Tactical Telemetry) ──────────────────────────────────────────── */
+[data-theme="dark"] {
+  /* ── Superficies ── */
+  --bg-page:   #0A1F2A;   /* Ocean Obsidian */
+  --bg-card:   #0E2A38;   /* Deep Teal */
+  --bg-panel:  #143D52;   /* Panel Teal */
+
+  /* ── Texto ── */
+  --text-primary:   #EAEAEA;   /* phosphor white */
+  --text-secondary: #6B8A99;   /* muted terminal */
+  --text-muted:     #4A6B7A;   /* placeholder / disabled */
+
+  /* ── Bordes ── */
+  --border-default: #1A4A63;   /* Border Teal */
+
+  /* ── Acento naranja ── */
+  --brand:        #F78837;   /* Tangerine Tango */
+  --brand-hover:  #E07A2E;   /* pressed / hover */
+  --brand-subtle: #2A1A0A;   /* fondo de badge naranja */
+  --brand-dim:    #5C3A1A;   /* borde sutil naranja */
+
+  /* ── Acento teal ── */
+  --success:        #27C7B8;   /* Teal Tide */
+  --success-hover:  #20A898;
+  --success-subtle: #0A2A28;   /* fondo de badge teal */
+  --success-dim:    #1A5A52;   /* borde sutil teal */
+
+  /* ── Estados ── */
+  --warning:        #F59E0B;
+  --warning-subtle: #1C1408;
+  --danger:         #E61919;   /* aviation red */
+  --danger-hover:   #C71515;
+  --danger-subtle:  #2A0A0A;
+
+  /* ── Overlay ── */
+  --overlay: rgba(0, 0, 0, 0.8);
 }
 
 /* ── Reset & base ──────────────────────────────────────────────────────────── */
@@ -60,8 +145,8 @@ html {
 }
 
 body {
-  background-color: #0A1F2A;
-  color: #EAEAEA;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   font-family: var(--font-oswald), system-ui, sans-serif;
   font-weight: 400;
   min-height: 100dvh;
@@ -72,8 +157,8 @@ body {
 
 /* ── Scrollbar mínimo (webkit) ─────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: #0A1F2A; }
-::-webkit-scrollbar-thumb { background: #1A4A63; border-radius: 0; }
+::-webkit-scrollbar-track { background: var(--bg-page); }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 0; }
 
 /* ── Safe area iOS ─────────────────────────────────────────────────────────── */
 .safe-area-top {
@@ -115,60 +200,60 @@ body {
 
 /* ── Utilidades de borde terminal ──────────────────────────────────────────── */
 .border-terminal {
-  border: 1px solid #1A4A63;
+  border: 1px solid var(--border-default);
 }
 
 .border-terminal-t {
-  border-top: 1px solid #1A4A63;
+  border-top: 1px solid var(--border-default);
 }
 
 .border-terminal-b {
-  border-bottom: 1px solid #1A4A63;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .border-terminal-l {
-  border-left: 1px solid #1A4A63;
+  border-left: 1px solid var(--border-default);
 }
 
 .border-terminal-r {
-  border-right: 1px solid #1A4A63;
+  border-right: 1px solid var(--border-default);
 }
 
 /* ── Acento lateral ────────────────────────────────────────────────────────── */
 .border-accent-left-brand {
-  border-left: 2px solid #F78837;
+  border-left: 2px solid var(--brand);
 }
 
 .border-accent-left-success {
-  border-left: 2px solid #27C7B8;
+  border-left: 2px solid var(--success);
 }
 
 .border-accent-left-danger {
-  border-left: 2px solid #E61919;
+  border-left: 2px solid var(--danger);
 }
 
 /* ── Tarjeta base (anti-glass) ─────────────────────────────────────────────── */
 .panel-card {
-  background: #0E2A38;
-  border: 1px solid #1A4A63;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
 }
 
 /* ── Input base ────────────────────────────────────────────────────────────── */
 .input-terminal {
-  background: #0A1F2A;
-  border: 1px solid #1A4A63;
-  color: #EAEAEA;
+  background: var(--bg-page);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
   border-radius: 2px;
   transition: border-color 150ms ease-out;
 }
 
 .input-terminal::placeholder {
-  color: #4A6B7A;
+  color: var(--text-muted);
 }
 
 .input-terminal:focus {
   outline: none;
-  border-color: #F78837;
+  border-color: var(--brand);
 }
 
 /* ── Tipografía display ────────────────────────────────────────────────────── */

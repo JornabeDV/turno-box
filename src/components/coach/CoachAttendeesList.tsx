@@ -31,13 +31,13 @@ interface Props {
 }
 
 const accentDot: Record<Props["accent"], string> = {
-  emerald: "bg-[#27C7B8]",
-  orange: "bg-[#F78837]",
+  emerald: "bg-success",
+  orange: "bg-brand",
 };
 
 const accentCounter: Record<Props["accent"], string> = {
-  emerald: "text-[#27C7B8]",
-  orange: "text-[#F78837]",
+  emerald: "text-success",
+  orange: "text-brand",
 };
 
 export function CoachAttendeesList({
@@ -101,7 +101,7 @@ export function CoachAttendeesList({
       {/* Cabecera */}
       <div className="flex items-center gap-2 mb-2 md:mb-3 px-1">
         <span className={cn("size-1.5 rounded-full", accentDot[accent])} />
-        <h3 className="text-xs md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+        <h3 className="text-xs md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
           {title}
         </h3>
         <span
@@ -114,13 +114,13 @@ export function CoachAttendeesList({
         </span>
       </div>
 
-      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+      <div className="bg-card border border-border overflow-hidden">
         {visibleBookings.length === 0 ? (
-          <p className="text-xs md:text-base text-[#4A6B7A] text-center py-8 md:py-10">
+          <p className="text-xs md:text-base text-muted text-center py-8 md:py-10">
             {emptyMessage ?? "Sin registros."}
           </p>
         ) : (
-          <div className="divide-y divide-[#1A4A63]">
+          <div className="divide-y divide-border">
             {visibleBookings.map((b, i) => {
               const initials = b.user.name
                 ? b.user.name
@@ -141,21 +141,21 @@ export function CoachAttendeesList({
                   )}
                 >
                   {/* Posición / espera */}
-                  <span className="text-xs md:text-base font-mono text-[#4A6B7A] w-5 md:w-6 text-left shrink-0">
+                  <span className="text-xs md:text-base font-mono text-muted w-5 md:w-6 text-left shrink-0">
                     {b.status === "WAITLISTED" ? `#${b.waitlistPos}` : `${i + 1}`}
                   </span>
 
                   {/* Avatar */}
-                  <div className="size-8 md:size-11 rounded-[2px] bg-[#0E2A38] border border-[#1A4A63] flex items-center justify-center text-xs md:text-base font-semibold text-[#EAEAEA] shrink-0">
+                  <div className="size-8 md:size-11 rounded-[2px] bg-card border border-border flex items-center justify-center text-xs md:text-base font-semibold text-primary shrink-0">
                     {initials}
                   </div>
 
                   {/* Nombre + email */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm md:text-lg font-medium text-[#EAEAEA] truncate leading-tight">
+                    <p className="text-sm md:text-lg font-medium text-primary truncate leading-tight">
                       {b.user.name ?? "—"}
                     </p>
-                    <p className="text-xs md:text-sm text-[#4A6B7A] truncate">{b.user.email}</p>
+                    <p className="text-xs md:text-sm text-muted truncate">{b.user.email}</p>
                   </div>
 
                   {/* Créditos */}
@@ -163,7 +163,7 @@ export function CoachAttendeesList({
                     <p
                       className={cn(
                         "text-xs md:text-base font-mono font-medium",
-                        b.credits > 0 ? "text-[#27C7B8]" : "text-[#E61919]"
+                        b.credits > 0 ? "text-success" : "text-danger"
                       )}
                     >
                       {b.credits} crédito{b.credits !== 1 ? "s" : ""}
@@ -171,7 +171,7 @@ export function CoachAttendeesList({
                   </div>
 
                   {/* Hora de reserva */}
-                  <span className="text-xs md:text-base text-[#4A6B7A] font-mono shrink-0 hidden sm:block">
+                  <span className="text-xs md:text-base text-muted font-mono shrink-0 hidden sm:block">
                     {new Date(b.createdAt).toLocaleTimeString("es-AR", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -186,8 +186,8 @@ export function CoachAttendeesList({
                     className={cn(
                       "size-8 md:size-10 cursor-pointer rounded-[2px] flex items-center justify-center transition-all active:scale-90 disabled:opacity-40 shrink-0 border",
                       attendedMap[b.id]
-                        ? "bg-[#27C7B8] border-[#27C7B8] text-[#0A1F2A]"
-                        : "border-[#1A4A63] text-[#6B8A99] hover:border-[#27C7B8] hover:text-[#27C7B8]"
+                        ? "bg-success border-success text-page"
+                        : "border-border text-secondary hover:border-success hover:text-success"
                     )}
                     aria-label={attendedMap[b.id] ? "Desmarcar asistencia" : "Marcar asistencia"}
                   >
@@ -203,7 +203,7 @@ export function CoachAttendeesList({
                     disabled={isPending}
                     className={cn(
                       "size-8 md:size-10 cursor-pointer rounded-[2px] flex items-center justify-center transition-all active:scale-90 disabled:opacity-40 shrink-0 border",
-                      "border-[#1A4A63] text-[#6B8A99] hover:border-[#E61919] hover:text-[#E61919]"
+                      "border-border text-secondary hover:border-danger hover:text-danger"
                     )}
                     aria-label="Eliminar alumno"
                   >

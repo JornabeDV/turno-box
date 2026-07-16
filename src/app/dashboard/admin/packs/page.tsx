@@ -44,10 +44,10 @@ export default async function AdminPacksPage() {
     <div className="space-y-6">
       <div className="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             Admin
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Abonos
           </h2>
         </div>
@@ -60,14 +60,14 @@ export default async function AdminPacksPage() {
       {globalFreeze.isPaused && globalFreeze.freeze && (
         <div className={cn(
           "flex items-center gap-3 px-4 py-3 border",
-          "bg-[#F78837]/10 border-[#F78837]/20"
+          "bg-brand/10 border-brand/20"
         )}>
-          <span className="size-2 rounded-full bg-[#F78837] animate-pulse" />
+          <span className="size-2 rounded-full bg-brand animate-pulse" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm sm:text-base font-medium text-[#EAEAEA]">
+            <p className="text-sm sm:text-base font-medium text-primary">
               Abonos pausados masivamente
             </p>
-            <p className="text-xs sm:text-sm text-[#6B8A99]">
+            <p className="text-xs sm:text-sm text-secondary">
               {globalFreeze.freeze.reason} — desde el{" "}
               {globalFreeze.freeze.startedAt.toLocaleDateString("es-AR", {
                 day: "numeric",
@@ -80,8 +80,8 @@ export default async function AdminPacksPage() {
 
       {/* Lista de abonos */}
       {packs.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99] mb-4">
+        <div className="bg-card border border-border px-4 py-16 text-center">
+          <p className="text-sm md:text-base text-secondary mb-4">
             No hay abonos creados todavía.
           </p>
           <AddPackButton />

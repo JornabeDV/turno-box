@@ -60,29 +60,29 @@ export function StudentsList({
       <div className="relative">
         <MagnifyingGlassIcon
           size={15}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] pointer-events-none"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
         />
         <input
           type="search"
           placeholder="Buscar por nombre o email…"
           defaultValue={query}
           onChange={(e) => handleSearch(e.target.value)}
-          className="w-full h-12 bg-[#0A1F2A] border border-[#1A4A63] rounded-[2px] pl-9 pr-4 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837]/50 transition-colors"
+          className="w-full h-12 bg-page border border-border rounded-[2px] pl-9 pr-4 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand/50 transition-colors"
         />
       </div>
 
       {/* Lista */}
       {students.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-12 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99]">
+        <div className="bg-card border border-border px-4 py-12 text-center">
+          <p className="text-sm md:text-base text-secondary">
             {query
               ? "Sin resultados para esa búsqueda."
               : "No hay alumnos registrados."}
           </p>
         </div>
       ) : (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
-          <div className="divide-y divide-[#1A4A63]">
+        <div className="bg-card border border-border overflow-hidden">
+          <div className="divide-y divide-border">
             {students.map((s, i) => {
               const initials = s.name
                 ? s.name
@@ -109,8 +109,8 @@ export function StudentsList({
                     className={cn(
                       "size-9 md:size-10 rounded-[2px] border flex items-center justify-center text-xs md:text-sm font-semibold shrink-0",
                       s.isActive
-                        ? "bg-[#0E2A38] border-[#1A4A63] text-[#EAEAEA]"
-                        : "bg-[#0A1F2A] border-[#1A4A63] text-[#4A6B7A]",
+                        ? "bg-card border-border text-primary"
+                        : "bg-page border-border text-muted",
                     )}
                   >
                     {initials}
@@ -121,7 +121,7 @@ export function StudentsList({
                     <p
                       className={cn(
                         "text-sm md:text-base font-medium truncate leading-tight",
-                        s.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
+                        s.isActive ? "text-primary" : "text-secondary",
                       )}
                     >
                       {s.name ?? "Sin nombre"}
@@ -132,7 +132,7 @@ export function StudentsList({
                   <span
                     className={cn(
                       "text-xs md:text-sm font-mono tabular-nums shrink-0 hidden sm:block",
-                      s.upcomingCount > 0 ? "text-[#27C7B8]" : "text-[#4A6B7A]",
+                      s.upcomingCount > 0 ? "text-success" : "text-muted",
                     )}
                   >
                     {s.upcomingCount > 0
@@ -142,7 +142,7 @@ export function StudentsList({
 
                   {/* Badge inactivo */}
                   {!s.isActive && (
-                    <span className="text-[10px] md:text-xs font-medium px-2 py-0.5 rounded-full bg-[#0E2A38] text-[#6B8A99] shrink-0 hidden md:block">
+                    <span className="text-[10px] md:text-xs font-medium px-2 py-0.5 rounded-full bg-card text-secondary shrink-0 hidden md:block">
                       Inactivo
                     </span>
                   )}
@@ -167,19 +167,19 @@ export function StudentsList({
           <Link
             href={buildLink(currentPage - 1, query)}
             className={cn(
-              "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+              "size-9 rounded-[2px] border border-border bg-card flex items-center justify-center text-secondary hover:text-primary hover:border-brand transition-colors shrink-0",
               currentPage <= 1 && "pointer-events-none opacity-30",
             )}
           >
             <CaretLeftIcon size={18} weight="bold" />
           </Link>
-          <span className="text-xs md:text-sm text-[#6B8A99] tabular-nums">
+          <span className="text-xs md:text-sm text-secondary tabular-nums">
             Página {currentPage} de {totalPages}
           </span>
           <Link
             href={buildLink(currentPage + 1, query)}
             className={cn(
-              "size-9 rounded-[2px] border border-[#1A4A63] bg-[#0E2A38] flex items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#F78837] transition-colors shrink-0",
+              "size-9 rounded-[2px] border border-border bg-card flex items-center justify-center text-secondary hover:text-primary hover:border-brand transition-colors shrink-0",
               currentPage >= totalPages && "pointer-events-none opacity-30",
             )}
           >

@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/Button";
 import { updateGymAction } from "@/actions/super-admin";
 
 const inputClass =
-  "w-full h-12 md:h-14 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+  "w-full h-12 md:h-14 rounded-[2px] bg-page border border-border px-3.5 md:px-4 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors";
 
 const labelClass =
-  "text-xs sm:text-sm md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs sm:text-sm md:text-sm font-medium text-secondary uppercase tracking-wider";
 
 interface Props {
   open: boolean;
@@ -93,7 +93,7 @@ export function EditGymModal({ open, onClose, gym }: Props) {
             defaultValue={gym.slug}
             className={inputClass}
           />
-          <p className="text-[11px] md:text-sm text-[#4A6B7A]">
+          <p className="text-[11px] md:text-sm text-muted">
             Solo letras minúsculas, números y guiones. Ej: crossfit-norte
           </p>
         </div>
@@ -126,8 +126,8 @@ export function EditGymModal({ open, onClose, gym }: Props) {
           </div>
         </div>
 
-        <div className="border-t border-[#1A4A63] pt-4 md:pt-5 space-y-4 md:space-y-5">
-          <p className="text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider">
+        <div className="border-t border-border pt-4 md:pt-5 space-y-4 md:space-y-5">
+          <p className="text-xs md:text-sm font-medium text-secondary uppercase tracking-wider">
             Administrador del gimnasio
           </p>
 
@@ -162,7 +162,7 @@ export function EditGymModal({ open, onClose, gym }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#EAEAEA] transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors p-1"
                   aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                   {showPassword ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
@@ -186,7 +186,7 @@ export function EditGymModal({ open, onClose, gym }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#EAEAEA] transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors p-1"
                   aria-label={showConfirmPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                   {showConfirmPassword ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
@@ -197,8 +197,8 @@ export function EditGymModal({ open, onClose, gym }: Props) {
         </div>
 
         {error && (
-          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
+          <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-danger">{error}</p>
           </div>
         )}
 

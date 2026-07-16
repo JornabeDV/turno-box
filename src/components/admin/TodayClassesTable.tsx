@@ -27,8 +27,8 @@ export function TodayClassesTable({
 }: Props) {
   if (classes.length === 0) {
     return (
-      <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-10 text-center">
-        <p className="text-sm md:text-base text-[#6B8A99]">
+      <div className="bg-card border border-border px-4 py-10 text-center">
+        <p className="text-sm md:text-base text-secondary">
           No hay clases programadas para hoy.
         </p>
       </div>
@@ -38,8 +38,8 @@ export function TodayClassesTable({
   const dateParam = classDate.toISOString().split("T")[0];
 
   return (
-    <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
-      <div className="divide-y divide-[#1A4A63]">
+    <div className="bg-card border border-border overflow-hidden">
+      <div className="divide-y divide-border">
         {classes.map((c) => {
           const confirmed = c.bookings.filter(
             (b) => b.status === "CONFIRMED",
@@ -61,17 +61,17 @@ export function TodayClassesTable({
               />
 
               {/* Hora */}
-              <span className="font-mono text-xs md:text-sm text-[#6B8A99] w-14 shrink-0 tabular-nums">
+              <span className="font-mono text-xs md:text-sm text-secondary w-14 shrink-0 tabular-nums">
                 {formatTime(c.startTime)}
               </span>
 
               {/* Nombre + coach */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm md:text-base font-medium text-[#EAEAEA] truncate leading-tight">
+                <p className="text-sm md:text-base font-medium text-primary truncate leading-tight">
                   {c.name}
                 </p>
                 {c.coach?.name && (
-                  <p className="text-[11px] md:text-sm text-[#4A6B7A] truncate">
+                  <p className="text-[11px] md:text-sm text-muted truncate">
                     {c.coach.name}
                   </p>
                 )}
@@ -87,19 +87,19 @@ export function TodayClassesTable({
               </div>
 
               {/* Cupos en mobile (sin barra) */}
-              <span className="font-mono text-xs md:text-sm text-[#6B8A99] sm:hidden tabular-nums shrink-0">
+              <span className="font-mono text-xs md:text-sm text-secondary sm:hidden tabular-nums shrink-0">
                 {confirmed}/{c.maxCapacity}
               </span>
 
               {waitlisted > 0 && (
-                <span className="text-[10px] md:text-xs text-[#F78837] shrink-0 hidden md:block">
+                <span className="text-[10px] md:text-xs text-brand shrink-0 hidden md:block">
                   +{waitlisted}
                 </span>
               )}
 
               <ArrowRightIcon
                 size={14}
-                className="text-[#4A6B7A] group-hover:text-[#6B8A99] transition-colors shrink-0"
+                className="text-muted group-hover:text-secondary transition-colors shrink-0"
               />
             </Link>
           );

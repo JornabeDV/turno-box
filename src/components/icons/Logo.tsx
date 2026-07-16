@@ -11,7 +11,7 @@ export function Logo({ className }: { className?: string }) {
       />
 
       {/* Tagline */}
-      <p className="font-[family-name:var(--font-oswald)] text-[#27C7B8] uppercase tracking-[0.1em] text-sm mt-1.5">
+      <p className="font-[family-name:var(--font-oswald)] text-success uppercase tracking-[0.1em] text-sm mt-1.5">
         Reservá tu entrenamiento
       </p>
     </div>

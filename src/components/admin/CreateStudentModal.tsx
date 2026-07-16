@@ -9,10 +9,10 @@ import { DateInput } from "@/components/ui/DatePicker";
 import { createStudentAction } from "@/actions/students";
 
 const inputClass =
-  "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+  "w-full h-12 rounded-[2px] bg-page border border-border px-3.5 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors";
 
 const labelClass =
-  "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider";
 
 interface Props {
   open: boolean;
@@ -61,7 +61,7 @@ export function CreateStudentModal({ open, onClose }: Props) {
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
           <label htmlFor="student-name" className={labelClass}>
-            Nombre <span className="text-[#E61919]">*</span>
+            Nombre <span className="text-danger">*</span>
           </label>
           <input
             id="student-name"
@@ -76,7 +76,7 @@ export function CreateStudentModal({ open, onClose }: Props) {
 
         <div className="space-y-1.5">
           <label htmlFor="student-email" className={labelClass}>
-            Email <span className="text-[#E61919]">*</span>
+            Email <span className="text-danger">*</span>
           </label>
           <input
             id="student-email"
@@ -129,8 +129,8 @@ export function CreateStudentModal({ open, onClose }: Props) {
         </div>
 
         {error && (
-          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
+          <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-danger">{error}</p>
           </div>
         )}
 

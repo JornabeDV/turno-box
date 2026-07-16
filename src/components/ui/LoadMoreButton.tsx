@@ -25,11 +25,11 @@ export function LoadMoreButton({ nextLimit, basePath }: Props) {
     <button
       onClick={handleClick}
       disabled={isPending}
-      className="w-full flex items-center justify-center h-12 border border-[#1A4A63] text-sm text-[#6B8A99] hover:text-[#EAEAEA] hover:border-[#6B8A99] transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide disabled:opacity-50"
+      className="w-full flex items-center justify-center h-12 border border-border text-sm text-secondary hover:text-primary hover:border-secondary transition-colors font-[family-name:var(--font-oswald)] uppercase tracking-wide disabled:opacity-50"
     >
       {isPending ? (
         <span className="flex items-center gap-2">
-          <span className="size-3.5 rounded-full border-2 border-[#6B8A99] border-t-transparent animate-spin" />
+          <span className="size-3.5 rounded-full border-2 border-secondary border-t-transparent animate-spin" />
           Cargando…
         </span>
       ) : (

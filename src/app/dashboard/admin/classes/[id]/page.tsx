@@ -131,23 +131,23 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
 
       {/* Alertas de override o cierre */}
       {gymClosure && (
-        <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-4 py-3">
-          <p className="text-sm font-semibold text-[#E61919]">
+        <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-4 py-3">
+          <p className="text-sm font-semibold text-danger">
             Gimnasio cerrado el {formatDate(targetDate)}
             {gymClosure.reason ? ` — ${gymClosure.reason}` : ""}
           </p>
         </div>
       )}
       {classOverride?.isCancelled && (
-        <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-4 py-3">
-          <p className="text-sm font-semibold text-[#E61919]">
+        <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-4 py-3">
+          <p className="text-sm font-semibold text-danger">
             Esta clase está cancelada para el {formatDate(targetDate)}
           </p>
         </div>
       )}
 
       {/* Header de la clase */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5">
+      <div className="bg-card border border-border p-5">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             <span
@@ -155,17 +155,17 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
               style={{ backgroundColor: gymClass.color ?? "#f97316" }}
             />
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
                 {gymClass.discipline?.name ?? "Sin disciplina"}
               </h2>
-              <p className="text-sm md:text-base text-[#6B8A99] mt-0.5">
+              <p className="text-sm md:text-base text-secondary mt-0.5">
                 {DAY_LABELS[gymClass.dayOfWeek]} · {formatDate(targetDate)} ·{" "}
                 {formatTime(effectiveStartTime)} –{" "}
                 {formatTime(effectiveEndTime)}
                 {effectiveCoachName && ` · ${effectiveCoachName}`}
               </p>
               {effectiveDescription && (
-                <p className="text-xs md:text-sm text-[#4A6B7A] mt-1.5">
+                <p className="text-xs md:text-sm text-muted mt-1.5">
                   {effectiveDescription}
                 </p>
               )}
@@ -196,46 +196,46 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
         </div>
 
         {/* Stats rápidos */}
-        <div className="grid grid-cols-2 sm:flex sm:items-center gap-4 mb-4 pt-3 border-t border-[#1A4A63]">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-4 mb-4 pt-3 border-t border-border">
           <div>
-            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
               Capacidad
             </p>
-            <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-primary mt-0.5">
               {effectiveMaxCapacity} cupos
             </p>
           </div>
           <div>
-            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
               Confirmados
             </p>
-            <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-success mt-0.5">
               {confirmed.length}
             </p>
           </div>
           <div>
-            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
               Presentes
             </p>
-            <p className="text-xs md:text-sm font-bold text-[#27C7B8] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-success mt-0.5">
               {attendedCount}
             </p>
           </div>
           {waitlisted.length > 0 && (
             <div>
-              <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+              <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
                 En espera
               </p>
-              <p className="text-xs md:text-sm font-bold text-[#F78837] mt-0.5">
+              <p className="text-xs md:text-sm font-bold text-brand mt-0.5">
                 {waitlisted.length}
               </p>
             </div>
           )}
           <div>
-            <p className="text-[10px] md:text-xs text-[#4A6B7A] uppercase tracking-wider">
+            <p className="text-[10px] md:text-xs text-muted uppercase tracking-wider">
               Disponibles
             </p>
-            <p className="text-xs md:text-sm font-bold text-[#EAEAEA] mt-0.5">
+            <p className="text-xs md:text-sm font-bold text-primary mt-0.5">
               {Math.max(0, effectiveMaxCapacity - confirmed.length)}
             </p>
           </div>

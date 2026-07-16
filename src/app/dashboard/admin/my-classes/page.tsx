@@ -96,7 +96,7 @@ export default async function AdminMyClassesPage({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             {coach?.gym?.logoUrl && (
-              <div className="shrink-0 w-20 h-20 rounded-xl border border-[#1A4A63] bg-[#0E2A38] overflow-hidden flex items-center justify-center p-1.5">
+              <div className="shrink-0 w-20 h-20 rounded-xl border border-border bg-card overflow-hidden flex items-center justify-center p-1.5">
                 <img
                   src={coach.gym.logoUrl}
                   alt="Logo del gimnasio"
@@ -105,10 +105,10 @@ export default async function AdminMyClassesPage({
               </div>
             )}
             <div>
-              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-[#F78837] uppercase tracking-tight text-3xl md:text-4xl leading-none">
+              <h1 className="font-[family-name:var(--font-oswald)] font-bold text-brand uppercase tracking-tight text-3xl md:text-4xl leading-none">
                 Hola, {firstName}
               </h1>
-              <p className="text-sm md:text-base text-[#6B8A99] mt-1 font-[family-name:var(--font-oswald)]">
+              <p className="text-sm md:text-base text-secondary mt-1 font-[family-name:var(--font-oswald)]">
                 Estas son tus clases de la semana.
               </p>
             </div>

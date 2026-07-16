@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       AND EXTRACT(DAY FROM "birthDate") = ${day}
   `;
 
-  const results: { userId: string; name: string; pushResult: unknown }[] = [];
+  const results: { sent: boolean }[] = [];
 
   for (const student of birthdays) {
     const firstName = student.name?.split(" ")[0] ?? "Campeón";
@@ -41,12 +41,12 @@ export async function POST(req: NextRequest) {
       tag: `birthday-${today.getFullYear()}`,
     });
 
-    results.push({ userId: student.id, name: firstName, pushResult });
+    results.push({ sent: !!pushResult });
   }
 
   return NextResponse.json({
     ok: true,
     total: birthdays.length,
-    results,
+    sent: results.filter((r) => r.sent).length,
   });
 }

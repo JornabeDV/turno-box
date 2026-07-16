@@ -43,7 +43,7 @@ export function PacksListClient({ packs }: Props) {
 
   return (
     <>
-      <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden divide-y divide-[#1A4A63]">
+      <div className="bg-card border border-border overflow-hidden divide-y divide-border">
         {packs.map((pack) => (
           <div
             key={pack.id}
@@ -55,14 +55,14 @@ export function PacksListClient({ packs }: Props) {
               className={cn(
                 "size-10 rounded-[2px] border flex flex-col items-center justify-center shrink-0",
                 pack.isActive
-                  ? "bg-[#F78837]/10 border-[#F78837]/20"
-                  : "bg-[#0A1F2A] border-[#1A4A63]",
+                  ? "bg-brand/10 border-brand/20"
+                  : "bg-page border-border",
               )}
             >
               <span
                 className={cn(
                   "text-base font-black leading-none",
-                  pack.isActive ? "text-[#F78837]" : "text-[#4A6B7A]",
+                  pack.isActive ? "text-brand" : "text-muted",
                 )}
               >
                 {pack.credits}
@@ -74,12 +74,12 @@ export function PacksListClient({ packs }: Props) {
               <p
                 className={cn(
                   "text-sm md:text-base font-medium truncate",
-                  pack.isActive ? "text-[#EAEAEA]" : "text-[#6B8A99]",
+                  pack.isActive ? "text-primary" : "text-secondary",
                 )}
               >
                 {pack.name}
               </p>
-              <p className="text-xs md:text-sm text-[#4A6B7A] font-mono tabular-nums">
+              <p className="text-xs md:text-sm text-muted font-mono tabular-nums">
                 {new Intl.NumberFormat("es-AR", {
                   style: "currency",
                   currency: pack.currency,
@@ -93,10 +93,10 @@ export function PacksListClient({ packs }: Props) {
 
             {/* Alumnos activos */}
             <div className="text-right shrink-0 hidden sm:block">
-              <p className="text-xs md:text-sm font-mono font-bold text-[#EAEAEA] tabular-nums">
+              <p className="text-xs md:text-sm font-mono font-bold text-primary tabular-nums">
                 {pack.activeUsers}
               </p>
-              <p className="text-xs md:text-sm text-[#4A6B7A]">activos</p>
+              <p className="text-xs md:text-sm text-muted">activos</p>
             </div>
 
             {/* Toggle */}
@@ -113,7 +113,7 @@ export function PacksListClient({ packs }: Props) {
                 e.stopPropagation();
                 setConfirmDeleteId(pack.id);
               }}
-              className="size-8 rounded-[2px] flex items-center justify-center text-[#6B8A99] cursor-pointer hover:text-[#E61919] hover:bg-[#0E2A38] transition-all shrink-0"
+              className="size-8 rounded-[2px] flex items-center justify-center text-secondary cursor-pointer hover:text-danger hover:bg-card transition-all shrink-0"
             >
               <TrashIcon size={16} weight="bold" />
             </button>

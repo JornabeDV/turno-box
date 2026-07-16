@@ -11,6 +11,7 @@ import { changePasswordAction, updateProfileAction } from "@/actions/profile";
 import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash, UploadSimple, X } from "@phosphor-icons/react";
 import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
 import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
+import { ThemeSelector } from "@/components/theme/ThemeSelector";
 import { testPushNotificationAction } from "@/actions/push-test";
 
 function TestPushButton() {
@@ -37,7 +38,7 @@ function TestPushButton() {
   }
 
   return (
-    <div className="pt-2 border-t border-[#1A4A63] mt-2">
+    <div className="pt-2 border-t border-border mt-2">
       <div className="flex items-center gap-3">
         <Button
           type="button"
@@ -52,8 +53,8 @@ function TestPushButton() {
           <span
             className={
               result.success && result.result && result.result.sent > 0
-                ? "text-xs text-[#27C7B8]"
-                : "text-xs text-[#F78837]"
+                ? "text-xs text-success"
+                : "text-xs text-brand"
             }
           >
             {result.success && result.result && result.result.sent > 0
@@ -64,25 +65,25 @@ function TestPushButton() {
       </div>
 
       {result && (
-        <div className="mt-3 bg-[#0A1F2A] border border-[#1A4A63] p-3 rounded-[2px] font-mono text-xs text-[#6B8A99] overflow-x-auto">
+        <div className="mt-3 bg-page border border-border p-3 rounded-[2px] font-mono text-xs text-secondary overflow-x-auto">
           <pre>{JSON.stringify(result, null, 2)}</pre>
         </div>
       )}
 
       {result?.success && result.result && (
-        <div className="mt-2 space-y-1 text-xs text-[#6B8A99]">
+        <div className="mt-2 space-y-1 text-xs text-secondary">
           {result.result.subscriptionsFound === 0 && (
-            <p className="text-[#F78837]">
+            <p className="text-brand">
               ⚠️ No hay suscripciones guardadas para tu usuario. Activá el toggle de arriba.
             </p>
           )}
           {result.result.subscriptionsFound > 0 && result.result.sent === 0 && (
-            <p className="text-[#F78837]">
+            <p className="text-brand">
               ⚠️ Hay {result.result.subscriptionsFound} suscripción/es pero ninguna llegó. Revisá que el navegador permita notificaciones y que el service worker esté activo.
             </p>
           )}
           {result.result.errors > 0 && (
-            <p className="text-[#F78837]">
+            <p className="text-brand">
               ⚠️ Hubo {result.result.errors} error/es al enviar.
               {result.result.details && result.result.details[0]?.statusCode && (
                 <> Código HTTP: <strong>{result.result.details[0].statusCode}</strong>.</>
@@ -95,7 +96,7 @@ function TestPushButton() {
             </p>
           )}
           {!result.result.vapidReady && (
-            <p className="text-red-400">
+            <p className="text-danger">
               ❌ Las claves VAPID no están configuradas. Revisá las variables de entorno.
             </p>
           )}
@@ -114,22 +115,22 @@ type GymSettings = {
   cancelWindowHours: number;
   waitlistEnabled: boolean;
   slug: string;
-  mpAccessToken: string | null;
-  mpWebhookSecret: string | null;
 };
 
 const inputClass =
-  "w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors";
+  "w-full h-12 rounded-[2px] bg-page border border-border px-3.5 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors";
 
 const labelClass =
-  "text-xs sm:text-sm font-medium text-[#6B8A99] uppercase tracking-wider";
+  "text-xs sm:text-sm font-medium text-secondary uppercase tracking-wider";
 
 export function SettingsClient({
   gym,
+  mpConfigured,
   adminName,
   adminEmail,
 }: {
   gym: GymSettings;
+  mpConfigured: boolean;
   adminName: string;
   adminEmail: string;
 }) {
@@ -145,15 +146,14 @@ export function SettingsClient({
     phone: gym.phone ?? "",
     cancelWindowHours: String(gym.cancelWindowHours),
     waitlistEnabled: gym.waitlistEnabled,
-    mpAccessToken: gym.mpAccessToken ?? "",
-    mpWebhookSecret: gym.mpWebhookSecret ?? "",
+    mpAccessToken: "",
+    mpWebhookSecret: "",
   });
 
   const webhookUrl =
     typeof window !== "undefined"
       ? `${window.location.origin}/api/webhooks/mercadopago?gymId=${gym.id}`
       : `/api/webhooks/mercadopago?gymId=${gym.id}`;
-  const mpConfigured = !!form.mpAccessToken.trim();
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(gym.logoUrl);
@@ -245,9 +245,9 @@ export function SettingsClient({
             }
           });
         }}
-        className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4"
+        className="bg-card border border-border p-5 space-y-4"
       >
-            <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+            <h3 className="text-sm md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
           Datos del administrador
         </h3>
         <div className="space-y-1.5">
@@ -271,7 +271,7 @@ export function SettingsClient({
             className={cn(inputClass, "opacity-60 cursor-not-allowed")}
             placeholder="admin@ejemplo.com"
           />
-          <p className="text-xs md:text-base text-[#6B8A99]">
+          <p className="text-xs md:text-base text-secondary">
             El email no se puede modificar.
           </p>
         </div>
@@ -290,8 +290,8 @@ export function SettingsClient({
 
       {/* ── Configuración del Gimnasio ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
-            <h3 className="text-sm md:text-base font-semibold text-[#6B8A99] uppercase tracking-wider flex-1">
+        <div className="bg-card border border-border p-5 space-y-4">
+            <h3 className="text-sm md:text-base font-semibold text-secondary uppercase tracking-wider flex-1">
             Datos del gimnasio
           </h3>
 
@@ -364,7 +364,7 @@ export function SettingsClient({
                     <img
                       src={logoPreview}
                       alt="Logo preview"
-                      className="h-16 w-16 md:h-20 md:w-20 object-contain rounded-[2px] border border-[#1A4A63] bg-[#0A1F2A] p-1"
+                      className="h-16 w-16 md:h-20 md:w-20 object-contain rounded-[2px] border border-border bg-page p-1"
                     />
                     <button
                       type="button"
@@ -374,14 +374,14 @@ export function SettingsClient({
                         setForm((f) => ({ ...f, logoUrl: "" }));
                         if (fileInputRef.current) fileInputRef.current.value = "";
                       }}
-                      className="absolute -top-1.5 -right-1.5 bg-[#F78837] text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute -top-1.5 -right-1.5 bg-brand text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                       title="Quitar logo"
                     >
                       <X size={12} weight="bold" />
                     </button>
                   </div>
                 ) : (
-                  <div className="h-16 w-16 md:h-20 md:w-20 rounded-[2px] border border-dashed border-[#4A6B7A] bg-[#0A1F2A] flex items-center justify-center text-[#4A6B7A]">
+                  <div className="h-16 w-16 md:h-20 md:w-20 rounded-[2px] border border-dashed border-muted bg-page flex items-center justify-center text-muted">
                     <span className="text-[10px] text-center leading-tight">Sin logo</span>
                   </div>
                 )}
@@ -397,7 +397,7 @@ export function SettingsClient({
                 </Button>
               </div>
 
-              <p className="text-xs text-[#6B8A99]">
+              <p className="text-xs text-secondary">
                 Formatos: PNG, JPG, WEBP, SVG. Máximo 2MB.
               </p>
             </div>
@@ -405,8 +405,8 @@ export function SettingsClient({
         </div>
 
         {/* ── Sección: Reservas ───────────────────────────────────────────── */}
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
-          <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">Reservas</h3>
+        <div className="bg-card border border-border p-5 space-y-4">
+          <h3 className="text-sm md:text-base font-semibold text-primary">Reservas</h3>
 
           {/* Ventana de cancelación */}
           <div className="space-y-1.5 md:flex items-center justify-between">
@@ -414,7 +414,7 @@ export function SettingsClient({
               <label className={labelClass}>
                 Ventana de cancelación con reembolso
               </label>
-              <p className="text-xs md:text-sm text-[#6B8A99]">
+              <p className="text-xs md:text-sm text-secondary">
                 El alumno puede cancelar y recuperar su crédito si faltan al menos
                 este tiempo para que comience la clase.
               </p>
@@ -436,10 +436,10 @@ export function SettingsClient({
           {/* Lista de espera */}
           <div className="flex items-center justify-between py-1">
             <div>
-              <p className="text-sm md:text-base text-[#EAEAEA] font-medium">
+              <p className="text-sm md:text-base text-primary font-medium">
                 Lista de espera
               </p>
-              <p className="text-xs md:text-sm text-[#6B8A99] mt-0.5">
+              <p className="text-xs md:text-sm text-secondary mt-0.5">
                 Cuando está activa, los alumnos pueden anotarse en espera si la
                 clase está llena.
               </p>
@@ -459,24 +459,24 @@ export function SettingsClient({
         </div>
 
         {/* ── Sección: Mercado Pago ───────────────────────────────────────── */}
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
+        <div className="bg-card border border-border p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+            <h3 className="text-sm md:text-base font-semibold text-primary">
               Mercado Pago
             </h3>
             <span
               className={cn(
                 "text-[10px] uppercase tracking-wider px-2 py-0.5 border",
                 mpConfigured
-                  ? "text-[#27C7B8] border-[#27C7B8]/40 bg-[#27C7B8]/10"
-                  : "text-[#F78837] border-[#F78837]/40 bg-[#F78837]/10"
+                  ? "text-success border-success/40 bg-success/10"
+                  : "text-brand border-brand/40 bg-brand/10"
               )}
             >
               {mpConfigured ? "Configurado" : "No configurado"}
             </span>
           </div>
 
-          <p className="text-xs md:text-sm text-[#6B8A99]">
+          <p className="text-xs md:text-sm text-secondary">
             Configurá la cuenta de Mercado Pago del gimnasio para que los alumnos
             compren abonos online y el dinero ingrese directamente a tu cuenta.
           </p>
@@ -494,8 +494,8 @@ export function SettingsClient({
               type="password"
               autoComplete="off"
             />
-            <p className="text-xs text-[#6B8A99]">
-              Lo encontrás en Mercado Pago → Tu negocio → Configuración → Credenciales de producción.
+            <p className="text-xs text-secondary">
+              Lo encontrás en Mercado Pago → Tu negocio → Configuración → Integraciones → Tus Integraciones → Credenciales de producción.
             </p>
           </div>
 
@@ -512,7 +512,7 @@ export function SettingsClient({
               type="password"
               autoComplete="off"
             />
-            <p className="text-xs text-[#6B8A99]">
+            <p className="text-xs text-secondary">
               Secreto que configurás en Mercado Pago para validar que las notificaciones sean reales.
             </p>
           </div>
@@ -521,9 +521,9 @@ export function SettingsClient({
             <label className={labelClass}>URL del webhook</label>
             <div className="flex items-center gap-2">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 h-12 rounded-[2px]">
-                  <LinkIcon size={14} className="text-[#4A6B7A] shrink-0" />
-                  <span className="text-sm md:text-base text-[#EAEAEA] truncate">
+                <div className="flex items-center gap-2 bg-page border border-border px-3.5 h-12 rounded-[2px]">
+                  <LinkIcon size={14} className="text-muted shrink-0" />
+                  <span className="text-sm md:text-base text-primary truncate">
                     {webhookUrl}
                   </span>
                 </div>
@@ -544,7 +544,7 @@ export function SettingsClient({
                 <Copy size={16} />
               </Button>
             </div>
-            <p className="text-xs text-[#6B8A99]">
+            <p className="text-xs text-secondary">
               Copiá esta URL en Mercado Pago → Tu negocio → Configuración → Notificaciones.
             </p>
           </div>
@@ -565,22 +565,22 @@ export function SettingsClient({
       </form>
 
       {/* ── Sección: Invitar alumnos ────────────────────────────────────── */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
+      <div className="bg-card border border-border p-5 space-y-4">
         <div className="flex items-center gap-2">
-          <LinkIcon size={16} className="text-[#F78837]" />
-          <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+          <LinkIcon size={16} className="text-brand" />
+          <h3 className="text-sm md:text-base font-semibold text-primary">
             Invitar alumnos
           </h3>
         </div>
-        <p className="text-xs md:text-sm text-[#6B8A99]">
+        <p className="text-xs md:text-sm text-secondary">
           Compartí este link con tus alumnos para que se registren y queden
           automáticamente vinculados a tu gimnasio.
         </p>
         <div className="flex items-center gap-2">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 h-12 rounded-[2px]">
-              <LinkIcon size={14} className="text-[#4A6B7A] shrink-0" />
-              <span className="text-sm md:text-base text-[#EAEAEA] truncate">
+            <div className="flex items-center gap-2 bg-page border border-border px-3.5 h-12 rounded-[2px]">
+              <LinkIcon size={14} className="text-muted shrink-0" />
+              <span className="text-sm md:text-base text-primary truncate">
                 {inviteUrl}
               </span>
             </div>
@@ -592,7 +592,7 @@ export function SettingsClient({
             className="shrink-0"
           >
             {copied ? (
-              <Check size={16} className="text-[#27C7B8]" />
+              <Check size={16} className="text-success" />
             ) : (
               <Copy size={16} />
             )}
@@ -604,8 +604,8 @@ export function SettingsClient({
       </div>
 
       {/* ── Sección: Notificaciones ─────────────────────────────────────── */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4">
-        <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">Notificaciones</h3>
+      <div className="bg-card border border-border p-5 space-y-4">
+        <h3 className="text-sm md:text-base font-semibold text-primary">Notificaciones</h3>
         <PushNotificationToggle />
         <PushNotificationHelp />
 
@@ -613,14 +613,22 @@ export function SettingsClient({
         <TestPushButton />
       </div>
 
+      {/* ── Sección: Apariencia ───────────────────────────────────────── */}
+      <div className="bg-card border border-border p-5 space-y-4">
+        <h3 className="text-sm md:text-base font-semibold text-primary">
+          Apariencia
+        </h3>
+        <ThemeSelector />
+      </div>
+
       {/* ── Sección: Cambiar contraseña ─────────────────────────────────── */}
       <form
         onSubmit={handlePasswordSubmit}
-        className="bg-[#0E2A38] border border-[#1A4A63] p-5 space-y-4"
+        className="bg-card border border-border p-5 space-y-4"
       >
         <div className="flex items-center gap-2">
-          <Lock size={16} className="text-[#F78837]" />
-          <h3 className="text-sm md:text-base font-semibold text-[#EAEAEA]">
+          <Lock size={16} className="text-brand" />
+          <h3 className="text-sm md:text-base font-semibold text-primary">
             Cambiar contraseña
           </h3>
         </div>
@@ -646,7 +654,7 @@ export function SettingsClient({
                 onClick={() =>
                   setShowPassword((s) => ({ ...s, current: !s.current }))
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
                 tabIndex={-1}
               >
                 {showPassword.current ? <EyeSlash size={18} /> : <Eye size={18} />}
@@ -674,7 +682,7 @@ export function SettingsClient({
                 onClick={() =>
                   setShowPassword((s) => ({ ...s, next: !s.next }))
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
                 tabIndex={-1}
               >
                 {showPassword.next ? <EyeSlash size={18} /> : <Eye size={18} />}
@@ -702,7 +710,7 @@ export function SettingsClient({
                 onClick={() =>
                   setShowPassword((s) => ({ ...s, confirm: !s.confirm }))
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B8A99] hover:text-[#EAEAEA] transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
                 tabIndex={-1}
               >
                 {showPassword.confirm ? <EyeSlash size={18} /> : <Eye size={18} />}

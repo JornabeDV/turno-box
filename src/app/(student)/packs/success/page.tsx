@@ -47,17 +47,17 @@ export default async function PaymentSuccessPage({
 
   return (
     <section className="px-4 pt-16 pb-24 flex flex-col items-center text-center gap-6">
-      <div className="size-20 border border-[#27C7B8]/30 bg-[#27C7B8]/10 flex items-center justify-center">
-        <CheckCircle size={32} className="text-[#27C7B8]" weight="bold" />
+      <div className="size-20 border border-success/30 bg-success/10 flex items-center justify-center">
+        <CheckCircle size={32} className="text-success" weight="bold" />
       </div>
 
       <div>
-        <h2 className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-[#EAEAEA] uppercase tracking-tight">
+        <h2 className="text-2xl font-[family-name:var(--font-oswald)] font-bold text-primary uppercase tracking-tight">
           Pago aprobado
         </h2>
-        <p className="text-[#6B8A99] mt-2 font-[family-name:var(--font-oswald)]">
+        <p className="text-secondary mt-2 font-[family-name:var(--font-oswald)]">
           Se acreditaron{" "}
-          <span className="text-[#27C7B8] font-bold">
+          <span className="text-success font-bold">
             {payment.creditsGranted} clase{payment.creditsGranted !== 1 ? "s" : ""}
           </span>
           {payment.pack ? ` de ${payment.pack.name}` : ""} a tu cuenta.
@@ -66,7 +66,7 @@ export default async function PaymentSuccessPage({
 
       <Link
         href="/"
-        className="px-6 py-3 bg-[#F78837] text-[#0A1F2A] font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm hover:bg-[#E07A2E] transition-colors active:scale-[0.98]"
+        className="px-6 py-3 bg-brand text-page font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm hover:bg-brand-hover transition-colors active:scale-[0.98]"
       >
         Reservar una clase
       </Link>

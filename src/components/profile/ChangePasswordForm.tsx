@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { changePasswordAction } from "@/actions/profile";
 
 const inputClass =
-  "w-full h-12 md:h-14 bg-[#0A1F2A] border border-[#1A4A63] px-3.5 md:px-4 pr-10 md:pr-12 text-sm md:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
-const labelClass = "text-xs md:text-sm font-medium text-[#6B8A99] uppercase tracking-wider font-[family-name:var(--font-oswald)]";
+  "w-full h-12 md:h-14 bg-page border border-border px-3.5 md:px-4 pr-10 md:pr-12 text-sm md:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
+const labelClass = "text-xs md:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]";
 
 function PasswordField({
   id,
@@ -39,7 +39,7 @@ function PasswordField({
         <button
           type="button"
           onClick={() => setShow((v) => !v)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A6B7A] hover:text-[#6B8A99] transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-secondary transition-colors"
         >
           {show ? <EyeSlash size={16} className="md:size-5" /> : <Eye size={16} className="md:size-5" />}
         </button>
@@ -94,12 +94,12 @@ export function ChangePasswordForm() {
       />
 
       {error && (
-        <p className="text-xs md:text-sm text-[#E61919] border-l-2 border-[#E61919] bg-[#0A1F2A] px-3 py-2 md:px-4 md:py-2.5 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-xs md:text-sm text-danger border-l-2 border-danger bg-page px-3 py-2 md:px-4 md:py-2.5 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           {error}
         </p>
       )}
       {success && (
-        <p className="text-xs md:text-sm text-[#27C7B8] border-l-2 border-[#27C7B8] bg-[#0A1F2A] px-3 py-2 md:px-4 md:py-2.5 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+        <p className="text-xs md:text-sm text-success border-l-2 border-success bg-page px-3 py-2 md:px-4 md:py-2.5 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
           Contraseña actualizada.
         </p>
       )}

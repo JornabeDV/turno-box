@@ -34,7 +34,7 @@ export function RemoveAttendeeButton({ bookingId }: { bookingId: string }) {
       <button
         onClick={() => setOpen(true)}
         disabled={isPending}
-        className="size-8 cursor-pointer rounded-[2px] flex items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#E61919]/10 transition-all active:scale-90 disabled:opacity-40"
+        className="size-8 cursor-pointer rounded-[2px] flex items-center justify-center text-secondary hover:text-danger hover:bg-danger/10 transition-all active:scale-90 disabled:opacity-40"
       >
         {isPending ? (
           <span className="size-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
@@ -56,8 +56,8 @@ export function RemoveAttendeeButton({ bookingId }: { bookingId: string }) {
         size="sm"
       >
         {error && (
-          <div className="mb-4 rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-3 py-2">
-            <p className="text-xs md:text-sm text-[#E61919]">{error}</p>
+          <div className="mb-4 rounded-[2px] bg-danger/10 border border-danger/20 px-3 py-2">
+            <p className="text-xs md:text-sm text-danger">{error}</p>
           </div>
         )}
         <div className="flex max-md:flex-col gap-2 max-md:mt-6">

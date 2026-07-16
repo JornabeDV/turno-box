@@ -82,8 +82,8 @@ export function DuplicateDayForm({ classesByDay }: Props) {
 
   if (result) {
     return (
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-8 text-center space-y-4">
-        <div className="size-14 bg-[#27C7B8]/10 border border-[#27C7B8]/20 flex items-center justify-center mx-auto">
+      <div className="bg-card border border-border p-8 text-center space-y-4">
+        <div className="size-14 bg-success/10 border border-success/20 flex items-center justify-center mx-auto">
           <svg
             width="22"
             height="22"
@@ -98,12 +98,12 @@ export function DuplicateDayForm({ classesByDay }: Props) {
           </svg>
         </div>
         <div>
-          <p className="text-xl md:text-2xl font-bold text-[#EAEAEA]">
+          <p className="text-xl md:text-2xl font-bold text-primary">
             {result.created}{" "}
             {result.created === 1 ? "clase creada" : "clases creadas"}
           </p>
           {result.skipped > 0 && (
-            <p className="text-xs md:text-sm text-[#6B8A99] mt-1">
+            <p className="text-xs md:text-sm text-secondary mt-1">
               {result.skipped}{" "}
               {result.skipped === 1 ? "clase ya existía" : "clases ya existían"}{" "}
               y fueron omitidas
@@ -112,7 +112,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
         </div>
         <Link
           href="/dashboard/admin/classes"
-          className="inline-flex items-center gap-1.5 text-sm text-[#F78837] hover:text-[#F78837] transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm text-brand hover:text-brand transition-colors"
         >
           Ver todas las clases →
         </Link>
@@ -124,7 +124,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
     <div className="space-y-7">
       {/* ── Día origen ── */}
       <div>
-        <p className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider mb-3 px-1">
+        <p className="text-xs md:text-sm font-semibold text-secondary uppercase tracking-wider mb-3 px-1">
           Día origen
         </p>
         <div className="flex gap-2 flex-wrap">
@@ -138,17 +138,17 @@ export function DuplicateDayForm({ classesByDay }: Props) {
                 className={cn(
                   "flex flex-col items-center gap-0.5 px-3.5 py-2.5 rounded-[2px] border text-sm font-medium transition-all active:scale-95",
                   isSelected
-                    ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
+                    ? "bg-brand/10 border-orange-500/40 text-brand"
                     : count > 0
-                      ? "border-[#1A4A63] text-[#EAEAEA] hover:border-white/20 hover:bg-white/[0.03]"
-                      : "border-[#1A4A63] text-[#4A6B7A] hover:border-white/10",
+                      ? "border-border text-primary hover:border-white/20 hover:bg-white/[0.03]"
+                      : "border-border text-muted hover:border-white/10",
                 )}
               >
                 {label}
                 <span
                   className={cn(
                     "text-[10px] md:text-xs font-mono tabular-nums",
-                    isSelected ? "text-[#F78837]" : "text-[#4A6B7A]",
+                    isSelected ? "text-brand" : "text-muted",
                   )}
                 >
                   {count}
@@ -161,23 +161,23 @@ export function DuplicateDayForm({ classesByDay }: Props) {
 
       {/* ── Preview clases del día origen ── */}
       {sourceDay && (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] overflow-hidden">
+        <div className="bg-card border border-border overflow-hidden">
           {sourceClasses.length === 0 ? (
-            <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-8">
+            <p className="text-xs md:text-sm text-muted text-center py-8">
               Este día no tiene clases para copiar.
             </p>
           ) : (
-            <div className="divide-y divide-[#1A4A63]">
+            <div className="divide-y divide-border">
               {sourceClasses.map((c, i) => (
                 <div key={i} className="flex items-center gap-3 px-4 md:px-5 py-2.5 md:py-3">
                   <span
                     className="size-1.5 rounded-full shrink-0"
                     style={{ backgroundColor: c.color ?? "#f97316" }}
                   />
-                  <span className="text-sm md:text-base text-[#EAEAEA] flex-1 truncate">
+                  <span className="text-sm md:text-base text-primary flex-1 truncate">
                     {c.name}
                   </span>
-                  <span className="text-xs md:text-sm font-mono text-[#6B8A99] shrink-0 tabular-nums">
+                  <span className="text-xs md:text-sm font-mono text-secondary shrink-0 tabular-nums">
                     {formatTime(c.startTime)} – {formatTime(c.endTime)}
                   </span>
                 </div>
@@ -191,12 +191,12 @@ export function DuplicateDayForm({ classesByDay }: Props) {
       {sourceDay && sourceClasses.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3 px-1">
-            <p className="text-xs md:text-sm font-semibold text-[#6B8A99] uppercase tracking-wider">
+            <p className="text-xs md:text-sm font-semibold text-secondary uppercase tracking-wider">
               Copiar a
             </p>
             <button
               onClick={toggleAll}
-              className="text-xs md:text-sm text-[#6B8A99] hover:text-[#EAEAEA] transition-colors"
+              className="text-xs md:text-sm text-secondary hover:text-primary transition-colors"
             >
               {DAYS.filter((d) => d.key !== sourceDay).every((d) =>
                 targetDays.has(d.key),
@@ -222,8 +222,8 @@ export function DuplicateDayForm({ classesByDay }: Props) {
                     className={cn(
                       "flex flex-col items-center gap-0.5 px-3.5 py-2.5 rounded-[2px] border text-sm font-medium transition-all active:scale-95",
                       checked
-                        ? "bg-[#F78837]/10 border-orange-500/40 text-[#F78837]"
-                        : "border-[#1A4A63] text-[#EAEAEA] hover:border-white/20 hover:bg-white/[0.03]",
+                        ? "bg-brand/10 border-orange-500/40 text-brand"
+                        : "border-border text-primary hover:border-white/20 hover:bg-white/[0.03]",
                     )}
                   >
                     {label}
@@ -231,7 +231,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
                       <span
                         className={cn(
                           "text-[10px] md:text-xs font-mono tabular-nums",
-                          checked ? "text-[#F78837]" : "text-[#4A6B7A]",
+                          checked ? "text-brand" : "text-muted",
                         )}
                       >
                         {existing}
@@ -247,20 +247,20 @@ export function DuplicateDayForm({ classesByDay }: Props) {
 
       {/* ── Resumen + submit ── */}
       {targetDays.size > 0 && sourceClasses.length > 0 && (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] p-4 flex items-center justify-between gap-4">
-          <p className="text-sm md:text-base text-[#EAEAEA] leading-snug">
+        <div className="bg-card border border-border p-4 flex items-center justify-between gap-4">
+          <p className="text-sm md:text-base text-primary leading-snug">
             Se crearán hasta{" "}
-            <span className="font-bold text-[#F78837] tabular-nums">
+            <span className="font-bold text-brand tabular-nums">
               {totalToCreate}
             </span>{" "}
             {totalToCreate === 1 ? "clase" : "clases"} en{" "}
-            <span className="font-bold text-[#EAEAEA]">{targetDays.size}</span>{" "}
+            <span className="font-bold text-primary">{targetDays.size}</span>{" "}
             {targetDays.size === 1 ? "día" : "días"}
           </p>
           <button
             onClick={handleSubmit}
             disabled={isPending}
-            className="px-5 py-2 rounded-[2px] bg-[#F78837] text-white text-sm font-semibold hover:bg-[#E07A2E] active:scale-95 transition-all disabled:opacity-50 shrink-0"
+            className="px-5 py-2 rounded-[2px] bg-brand text-white text-sm font-semibold hover:bg-brand-hover active:scale-95 transition-all disabled:opacity-50 shrink-0"
           >
             {isPending ? (
               <span className="flex items-center gap-2">
@@ -274,7 +274,7 @@ export function DuplicateDayForm({ classesByDay }: Props) {
         </div>
       )}
 
-      {error && <p className="text-xs md:text-sm text-[#E61919] px-1">{error}</p>}
+      {error && <p className="text-xs md:text-sm text-danger px-1">{error}</p>}
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function LoadMoreList<T>({
 
   if (items.length === 0) {
     return (
-      <p className="text-xs md:text-sm text-[#4A6B7A] text-center py-12 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
+      <p className="text-xs md:text-sm text-muted text-center py-12 font-[family-name:var(--font-oswald)] uppercase tracking-wide">
         {emptyMessage}
       </p>
     );
@@ -35,7 +35,7 @@ export function LoadMoreList<T>({
     <>
       {items.slice(0, visibleCount).map((item, index) => renderItem(item, index))}
       {hasMore && (
-        <div className="py-5 flex justify-center border-t border-[#1A4A63]">
+        <div className="py-5 flex justify-center border-t border-border">
           <Button
             variant="outline"
             size="md"

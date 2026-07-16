@@ -162,10 +162,10 @@ export function ClassesPageClient({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs md:text-sm text-[#6B8A99] uppercase tracking-wider mb-0.5">
+          <p className="text-xs md:text-sm text-secondary uppercase tracking-wider mb-0.5">
             Admin
           </p>
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
             Clases
           </h2>
         </div>
@@ -191,7 +191,7 @@ export function ClassesPageClient({
             <CaretLeftIcon size={20} weight="bold" />
           </Button>
         </Link>
-        <p className="text-lg md:text-xl font-medium text-[#EAEAEA] tabular-nums whitespace-nowrap">
+        <p className="text-lg md:text-xl font-medium text-primary tabular-nums whitespace-nowrap">
           {formatWeekRange(weekStart, addDays(weekStart, 6))}
         </p>
         <Link
@@ -205,8 +205,8 @@ export function ClassesPageClient({
 
       {/* Grid semanal */}
       {totalClasses === 0 && disciplines.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99] mb-4">
+        <div className="bg-card border border-border px-4 py-16 text-center">
+          <p className="text-sm md:text-base text-secondary mb-4">
             No hay clases creadas todavía.
           </p>
           <Button
@@ -237,21 +237,21 @@ export function ClassesPageClient({
                 >
                   {/* Cabecera del día */}
                   <div
-                    className={`rounded-[2px] ${isToday ? "bg-[#F78837]/15" : closure ? "bg-[#E61919]/15" : "bg-[#0E2A38]/40"}`}
+                    className={`rounded-[2px] ${isToday ? "bg-brand/15" : closure ? "bg-danger/15" : "bg-card/40"}`}
                   >
                     {/* Mobile */}
                     <div className="md:hidden flex items-center justify-between px-3 py-2.5">
                       <span
-                        className={`text-sm md:text-base font-semibold ${isToday ? "text-[#F78837]" : closure ? "text-[#E61919]" : "text-[#EAEAEA]"}`}
+                        className={`text-sm md:text-base font-semibold ${isToday ? "text-brand" : closure ? "text-danger" : "text-primary"}`}
                       >
                         {DAY_LABELS[dayKey]}
                         {isToday && (
-                          <span className="ml-2 text-[10px] md:text-xs bg-[#F78837]/20 text-[#F78837] px-1.5 py-0.5 rounded-full font-medium">
+                          <span className="ml-2 text-[10px] md:text-xs bg-brand/20 text-brand px-1.5 py-0.5 rounded-full font-medium">
                             hoy
                           </span>
                         )}
                         {closure && (
-                          <span className="ml-2 size-2 rounded-full bg-[#E61919]" />
+                          <span className="ml-2 size-2 rounded-full bg-danger" />
                         )}
                       </span>
                       <div className="flex items-center gap-2">
@@ -259,7 +259,7 @@ export function ClassesPageClient({
                           <button
                             onClick={() => askOpenDay(date)}
                             disabled={pendingClosure}
-                            className="text-[#E61919] hover:text-[#ff4444] disabled:opacity-50 cursor-pointer"
+                            className="text-danger hover:text-danger disabled:opacity-50 cursor-pointer"
                             title="Reabrir día"
                           >
                             <LockSimpleOpenIcon size={16} />
@@ -268,14 +268,14 @@ export function ClassesPageClient({
                           <button
                             onClick={() => askCloseDay(date)}
                             disabled={pendingClosure}
-                            className="text-[#6B8A99] hover:text-[#EAEAEA] disabled:opacity-50 cursor-pointer"
+                            className="text-secondary hover:text-primary disabled:opacity-50 cursor-pointer"
                             title="Cerrar día"
                           >
                             <LockSimpleIcon size={16} />
                           </button>
                         )}
                         <span
-                          className={`text-xs md:text-sm font-mono tabular-nums ${isToday ? "text-[#F78837]" : closure ? "text-[#E61919]" : "text-[#6B8A99]"}`}
+                          className={`text-xs md:text-sm font-mono tabular-nums ${isToday ? "text-brand" : closure ? "text-danger" : "text-secondary"}`}
                         >
                           {date.toLocaleDateString("es-AR", {
                             day: "numeric",
@@ -291,7 +291,7 @@ export function ClassesPageClient({
                           <button
                             onClick={() => askOpenDay(date)}
                             disabled={pendingClosure}
-                            className="text-[#E61919] hover:text-[#ff4444] disabled:opacity-50 p-1 cursor-pointer"
+                            className="text-danger hover:text-danger disabled:opacity-50 p-1 cursor-pointer"
                             title="Reabrir día"
                           >
                             <LockSimpleOpenIcon size={14} />
@@ -300,7 +300,7 @@ export function ClassesPageClient({
                           <button
                             onClick={() => askCloseDay(date)}
                             disabled={pendingClosure}
-                            className="text-[#4A6B7A] hover:text-[#EAEAEA] disabled:opacity-50 p-1 cursor-pointer"
+                            className="text-muted hover:text-primary disabled:opacity-50 p-1 cursor-pointer"
                             title="Cerrar día"
                           >
                             <LockSimpleIcon size={14} />
@@ -308,12 +308,12 @@ export function ClassesPageClient({
                         )}
                       </div>
                       <p
-                        className={`text-[10px] md:text-xs font-bold uppercase tracking-widest ${isToday ? "text-[#F78837]" : closure ? "text-[#E61919]" : "text-[#6B8A99]"}`}
+                        className={`text-[10px] md:text-xs font-bold uppercase tracking-widest ${isToday ? "text-brand" : closure ? "text-danger" : "text-secondary"}`}
                       >
                         {DAY_LABELS[dayKey].slice(0, 3)}
                       </p>
                       <p
-                        className={`text-base font-semibold leading-tight ${isToday ? "text-[#F78837]" : closure ? "text-[#E61919]" : "text-[#EAEAEA]"}`}
+                        className={`text-base font-semibold leading-tight ${isToday ? "text-brand" : closure ? "text-danger" : "text-primary"}`}
                       >
                         {date.getDate()}
                       </p>
@@ -324,13 +324,13 @@ export function ClassesPageClient({
                   {/* Cards de turnos */}
                   {closure ? (
                     <div className="flex items-center justify-center py-6">
-                      <span className="text-xs sm:text-sm text-[#E61919] font-medium text-center px-2">
+                      <span className="text-xs sm:text-sm text-danger font-medium text-center px-2">
                         {closure.reason || "Cerrado"}
                       </span>
                     </div>
                   ) : slots.length === 0 ? (
                     <div className="flex items-center justify-center py-6">
-                      <span className="text-xs md:text-sm text-[#4A6B7A]">—</span>
+                      <span className="text-xs md:text-sm text-muted">—</span>
                     </div>
                   ) : (
                     slots.map((slot: ClassSlot) => {
@@ -343,7 +343,7 @@ export function ClassesPageClient({
                         <Link
                           key={slot.id}
                           href={`/dashboard/admin/classes/${slot.id}?date=${isoDate(date)}`}
-                          className="bg-[#0E2A38] border border-[#1A4A63] p-3 flex flex-col gap-2.5"
+                          className="bg-card border border-border p-3 flex flex-col gap-2.5"
                         >
                           {/* Color + nombre */}
                           <div className="flex items-start gap-2">
@@ -353,33 +353,33 @@ export function ClassesPageClient({
                                 backgroundColor: slot.color ?? "#f97316",
                               }}
                             />
-                            <p className="text-sm md:text-base font-semibold text-[#EAEAEA] leading-tight line-clamp-2">
+                            <p className="text-sm md:text-base font-semibold text-primary leading-tight line-clamp-2">
                               {slot.name}
                             </p>
                           </div>
 
                           {/* Horario */}
-                          <p className="text-xs md:text-base text-[#6B8A99] font-mono tabular-nums leading-none">
+                          <p className="text-xs md:text-base text-secondary font-mono tabular-nums leading-none">
                             {formatTime(slot.startTime)}
                           </p>
 
                           {/* Ocupación */}
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
-                              <span className="text-xs md:text-sm text-[#6B8A99] tabular-nums font-medium">
+                              <span className="text-xs md:text-sm text-secondary tabular-nums font-medium">
                                 {slot.confirmedCount}/{slot.maxCapacity}
                               </span>
                               <span
-                                className={`text-xs md:text-sm font-semibold ${isFull ? "text-[#E61919]" : "text-[#27C7B8]"}`}
+                                className={`text-xs md:text-sm font-semibold ${isFull ? "text-danger" : "text-success"}`}
                               >
                                 {isFull
                                   ? "Lleno"
                                   : `${slot.availableSpots} lib.`}
                               </span>
                             </div>
-                            <div className="h-1.5 bg-zinc-700/60 rounded-full overflow-hidden">
+                            <div className="h-1.5 bg-panel/60 rounded-full overflow-hidden">
                               <div
-                                className={`h-full rounded-full transition-all ${isFull ? "bg-[#E61919]" : "bg-[#F78837]"}`}
+                                className={`h-full rounded-full transition-all ${isFull ? "bg-danger" : "bg-brand"}`}
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
@@ -420,7 +420,7 @@ export function ClassesPageClient({
       >
         {confirmAction === "close" && (
           <div className="mb-4 max-sm:mt-4">
-            <label htmlFor="closureReason" className="block text-xs sm:text-sm text-[#6B8A99] uppercase tracking-wider mb-1.5">
+            <label htmlFor="closureReason" className="block text-xs sm:text-sm text-secondary uppercase tracking-wider mb-1.5">
               Motivo del cierre
             </label>
             <input
@@ -429,7 +429,7 @@ export function ClassesPageClient({
               value={closureReason}
               onChange={(e) => setClosureReason(e.target.value)}
               placeholder="Ej: Feriado, mantenimiento..."
-              className="w-full h-12 rounded-[2px] bg-[#0A1F2A] border border-[#1A4A63] px-3.5 text-sm sm:text-base text-[#EAEAEA] placeholder:text-[#4A6B7A] focus:outline-none focus:border-[#F78837] transition-colors"
+              className="w-full h-12 rounded-[2px] bg-page border border-border px-3.5 text-sm sm:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors"
             />
           </div>
         )}

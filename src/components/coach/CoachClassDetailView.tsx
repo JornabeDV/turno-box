@@ -81,7 +81,7 @@ export function CoachClassDetailView({
       <BackButton href={backHref} />
 
       {/* Header de la clase */}
-      <div className="bg-[#0E2A38] border border-[#1A4A63] p-5 md:p-8">
+      <div className="bg-card border border-border p-5 md:p-8">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 md:gap-6 mb-4 md:mb-6">
           <div className="flex items-start gap-3 md:gap-4 flex-1 min-w-0">
             <span
@@ -89,16 +89,16 @@ export function CoachClassDetailView({
               style={{ backgroundColor: effectiveColor ?? "#f97316" }}
             />
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl md:text-3xl font-bold text-[#EAEAEA] tracking-tight">
+              <h2 className="text-xl md:text-3xl font-bold text-primary tracking-tight">
                 {gymClass.discipline?.name ?? "Sin disciplina"}
               </h2>
-              <p className="text-sm md:text-lg text-[#6B8A99] mt-0.5 md:mt-1.5">
+              <p className="text-sm md:text-lg text-secondary mt-0.5 md:mt-1.5">
                 {formatDate(targetDate)} · {formatTime(effectiveStartTime)} –{" "}
                 {formatTime(effectiveEndTime)}
                 {effectiveCoachName && ` · ${effectiveCoachName}`}
               </p>
               {effectiveDescription && (
-                <p className="text-xs md:text-sm text-[#4A6B7A] mt-1.5 md:mt-2">
+                <p className="text-xs md:text-sm text-muted mt-1.5 md:mt-2">
                   {effectiveDescription}
                 </p>
               )}
@@ -116,24 +116,24 @@ export function CoachClassDetailView({
 
         {/* Resumen */}
         {!isCancelled && (
-          <div className="grid grid-cols-3 gap-3 md:gap-5 mb-4 md:mb-6 pt-3 md:pt-5 border-t border-[#1A4A63]">
+          <div className="grid grid-cols-3 gap-3 md:gap-5 mb-4 md:mb-6 pt-3 md:pt-5 border-t border-border">
             <div>
-              <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+              <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                 Confirmados
               </p>
-              <p className="text-sm md:text-lg font-bold text-[#EAEAEA] mt-0.5 md:mt-1">{confirmed.length}</p>
+              <p className="text-sm md:text-lg font-bold text-primary mt-0.5 md:mt-1">{confirmed.length}</p>
             </div>
             <div>
-              <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+              <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                 Presentes
               </p>
-              <p className="text-sm md:text-lg font-bold text-[#27C7B8] mt-0.5 md:mt-1">{attendedCount}</p>
+              <p className="text-sm md:text-lg font-bold text-success mt-0.5 md:mt-1">{attendedCount}</p>
             </div>
             <div>
-              <p className="text-[10px] md:text-sm text-[#4A6B7A] uppercase tracking-wider">
+              <p className="text-[10px] md:text-sm text-muted uppercase tracking-wider">
                 Capacidad
               </p>
-              <p className="text-sm md:text-lg font-bold text-[#EAEAEA] mt-0.5 md:mt-1">
+              <p className="text-sm md:text-lg font-bold text-primary mt-0.5 md:mt-1">
                 {effectiveMaxCapacity}
               </p>
             </div>
@@ -141,8 +141,8 @@ export function CoachClassDetailView({
         )}
 
         {isCancelled ? (
-          <div className="rounded-[2px] bg-[#E61919]/10 border border-[#E61919]/20 px-4 py-3 md:px-6 md:py-4">
-            <p className="text-sm md:text-base font-semibold text-[#E61919]">
+          <div className="rounded-[2px] bg-danger/10 border border-danger/20 px-4 py-3 md:px-6 md:py-4">
+            <p className="text-sm md:text-base font-semibold text-danger">
               Esta clase está cancelada para el {formatDate(targetDate)}
             </p>
           </div>

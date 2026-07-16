@@ -26,10 +26,10 @@ export function NewsListClient({ announcements: initial }: Props) {
 
   function statusLabel(item: Announcement) {
     if (item.expiresAt && item.expiresAt < now)
-      return { label: "Vencida", cls: "text-[#4A6B7A]" };
+      return { label: "Vencida", cls: "text-muted" };
     if (item.publishAt > now)
-      return { label: "Programada", cls: "text-[#F78837]" };
-    return { label: "Activa", cls: "text-[#27C7B8]" };
+      return { label: "Programada", cls: "text-brand" };
+    return { label: "Activa", cls: "text-success" };
   }
 
   function handleDelete() {
@@ -49,13 +49,13 @@ export function NewsListClient({ announcements: initial }: Props) {
   return (
     <>
       {items.length === 0 ? (
-        <div className="bg-[#0E2A38] border border-[#1A4A63] px-4 py-16 text-center">
-          <p className="text-sm md:text-base text-[#6B8A99]">
+        <div className="bg-card border border-border px-4 py-16 text-center">
+          <p className="text-sm md:text-base text-secondary">
             No hay noticias todavía.
           </p>
         </div>
       ) : (
-        <div className="space-y-2 md:space-y-0 md:bg-[#0E2A38] md:border md:border-[#1A4A63] md:overflow-hidden md:divide-y md:divide-[#1A4A63]">
+        <div className="space-y-2 md:space-y-0 md:bg-card md:border md:border-border md:overflow-hidden md:divide-y md:divide-border">
           {items.map((item) => {
             const { label, cls } = statusLabel(item);
             return (
@@ -67,9 +67,9 @@ export function NewsListClient({ announcements: initial }: Props) {
                 className="group cursor-pointer hover:bg-white/[0.03] transition-colors"
               >
                 {/* Mobile layout */}
-                <div className="md:hidden border border-[#1A4A63] overflow-hidden bg-[#0E2A38]">
+                <div className="md:hidden border border-border overflow-hidden bg-card">
                   {item.imageUrl ? (
-                    <div className="w-full aspect-video overflow-hidden bg-[#0A1F2A]">
+                    <div className="w-full aspect-video overflow-hidden bg-page">
                       <img
                         src={item.imageUrl}
                         alt=""
@@ -77,14 +77,14 @@ export function NewsListClient({ announcements: initial }: Props) {
                       />
                     </div>
                   ) : (
-                    <div className="w-full aspect-video overflow-hidden bg-[#0A1F2A] flex items-center justify-center">
-                      <ImageIcon size={32} className="text-[#4A6B7A]" />
+                    <div className="w-full aspect-video overflow-hidden bg-page flex items-center justify-center">
+                      <ImageIcon size={32} className="text-muted" />
                     </div>
                   )}
                   <div className="p-3">
                     <div className="flex items-center gap-2 mb-1">
                       {item.pinned && (
-                        <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-[#F78837] border border-[#F78837]/30 px-1 pt-0.5">
+                        <span className="text-[9px] font-[family-name:var(--font-jetbrains)] uppercase tracking-wider text-brand border border-brand/30 px-1 pt-0.5">
                           Fijado
                         </span>
                       )}
@@ -92,13 +92,13 @@ export function NewsListClient({ announcements: initial }: Props) {
                         {label}
                       </span>
                     </div>
-                    <p className="text-sm font-semibold text-[#EAEAEA]">
+                    <p className="text-sm font-semibold text-primary">
                       {item.title}
                     </p>
-                    <p className="text-xs text-[#6B8A99] mt-0.5 leading-relaxed">
+                    <p className="text-xs text-secondary mt-0.5 leading-relaxed">
                       {item.body}
                     </p>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-2 text-[11px] text-[#4A6B7A]">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-2 text-[11px] text-muted">
                       <span>
                         {item.publishAt.toLocaleDateString("es-AR", {
                           timeZone: "UTC",
@@ -125,7 +125,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                           e.stopPropagation();
                           router.push(`/dashboard/admin/news/${item.id}/edit`);
                         }}
-                        className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#143D52] transition-all"
+                        className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-secondary hover:text-primary hover:bg-panel transition-all"
                       >
                         <PencilSimpleIcon size={16} weight="bold" />
                       </button>
@@ -134,7 +134,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                           e.stopPropagation();
                           setConfirmDeleteId(item.id);
                         }}
-                        className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all"
+                        className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-secondary hover:text-danger hover:bg-card transition-all"
                       >
                         <TrashIcon size={16} weight="bold" />
                       </button>
@@ -149,7 +149,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                     {item.pinned ? (
                       <PushPinIcon
                         size={15}
-                        className="text-[#F78837]"
+                        className="text-brand"
                         weight="fill"
                       />
                     ) : (
@@ -159,7 +159,7 @@ export function NewsListClient({ announcements: initial }: Props) {
 
                   {/* Thumbnail */}
                   {item.imageUrl ? (
-                    <div className="shrink-0 w-14 h-14 rounded-[2px] border border-[#1A4A63] overflow-hidden bg-[#0A1F2A]">
+                    <div className="shrink-0 w-14 h-14 rounded-[2px] border border-border overflow-hidden bg-page">
                       <img
                         src={item.imageUrl}
                         alt=""
@@ -167,22 +167,22 @@ export function NewsListClient({ announcements: initial }: Props) {
                       />
                     </div>
                   ) : (
-                    <div className="shrink-0 w-14 h-14 rounded-[2px] border border-[#1A4A63] bg-[#0A1F2A] flex items-center justify-center">
-                      <ImageIcon size={20} className="text-[#4A6B7A]" />
+                    <div className="shrink-0 w-14 h-14 rounded-[2px] border border-border bg-page flex items-center justify-center">
+                      <ImageIcon size={20} className="text-muted" />
                     </div>
                   )}
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-base md:text-lg font-semibold text-[#EAEAEA] truncate">
+                    <p className="text-base md:text-lg font-semibold text-primary truncate">
                       {item.title}
                     </p>
-                    <p className="text-sm text-[#6B8A99] mt-0.5 line-clamp-2">
+                    <p className="text-sm text-secondary mt-0.5 line-clamp-2">
                       {item.body}
                     </p>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5 text-sm">
                       <span className={cls}>{label}</span>
-                      <span className="text-[#4A6B7A]">
+                      <span className="text-muted">
                         {item.publishAt.toLocaleDateString("es-AR", {
                           timeZone: "UTC",
                           day: "numeric",
@@ -191,7 +191,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                         })}
                       </span>
                       {item.expiresAt && (
-                        <span className="text-[#4A6B7A]">
+                        <span className="text-muted">
                           · vence{" "}
                           {item.expiresAt.toLocaleDateString("es-AR", {
                             timeZone: "UTC",
@@ -211,7 +211,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                         e.stopPropagation();
                         router.push(`/dashboard/admin/news/${item.id}/edit`);
                       }}
-                      className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#EAEAEA] hover:bg-[#143D52] transition-all"
+                      className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-secondary hover:text-primary hover:bg-panel transition-all"
                     >
                       <PencilSimpleIcon size={16} weight="bold" />
                     </button>
@@ -220,7 +220,7 @@ export function NewsListClient({ announcements: initial }: Props) {
                         e.stopPropagation();
                         setConfirmDeleteId(item.id);
                       }}
-                      className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-[#6B8A99] hover:text-[#E61919] hover:bg-[#0E2A38] transition-all"
+                      className="size-8 rounded-[2px] flex cursor-pointer items-center justify-center text-secondary hover:text-danger hover:bg-card transition-all"
                     >
                       <TrashIcon size={16} weight="bold" />
                     </button>

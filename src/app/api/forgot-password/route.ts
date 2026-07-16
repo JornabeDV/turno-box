@@ -55,10 +55,10 @@ export async function POST(req: NextRequest) {
     const emailSent = await sendPasswordResetEmail(email, resetUrl, user.name || undefined);
 
     if (!emailSent) {
-      console.error(`[FORGOT PASSWORD] Error enviando email a ${email}`);
+      console.error("[FORGOT PASSWORD] Error enviando email");
       // No devolvemos error al usuario por seguridad (no revelar si el email existe)
     } else {
-      console.log(`[FORGOT PASSWORD] Email enviado a ${email}`);
+      console.log("[FORGOT PASSWORD] Email enviado");
     }
 
     return NextResponse.json({

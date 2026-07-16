@@ -74,7 +74,7 @@ async function dispatchToSubs(subs: RawSub[], payload: PushPayload): Promise<Pus
         if (e.statusCode === 404 || e.statusCode === 410) {
           expired.push(sub.id);
         } else {
-          console.error("[push] sendNotification failed:", e.statusCode, e.message, e.body);
+          console.error("[push] sendNotification failed:", e.statusCode, e.message);
         }
         return { ok: false, statusCode: e.statusCode };
       }
