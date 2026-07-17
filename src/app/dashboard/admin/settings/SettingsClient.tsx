@@ -6,105 +6,13 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { SelectInput } from "@/components/ui/Select";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { updateGymSettingsAction } from "@/actions/gym";
 import { changePasswordAction, updateProfileAction } from "@/actions/profile";
-import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash, UploadSimple, X } from "@phosphor-icons/react";
+import { Copy, Check, Lock, Link as LinkIcon, Eye, EyeSlash, UploadSimple, X, WarningCircle } from "@phosphor-icons/react";
 import { PushNotificationToggle } from "@/components/profile/PushNotificationToggle";
 import { PushNotificationHelp } from "@/components/profile/PushNotificationHelp";
 import { ThemeSelector } from "@/components/theme/ThemeSelector";
-import { testPushNotificationAction } from "@/actions/push-test";
-
-function TestPushButton() {
-  const [result, setResult] = useState<{
-    success: boolean;
-    error?: string;
-    result?: {
-      subscriptionsFound: number;
-      sent: number;
-      expired: number;
-      errors: number;
-      vapidReady: boolean;
-      details?: { subscriptionId: string; statusCode?: number; message?: string }[];
-    };
-  } | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleTest() {
-    setLoading(true);
-    setResult(null);
-    const res = await testPushNotificationAction();
-    setResult(res as typeof result);
-    setLoading(false);
-  }
-
-  return (
-    <div className="pt-2 border-t border-border mt-2">
-      <div className="flex items-center gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          size="md"
-          onClick={handleTest}
-          loading={loading}
-        >
-          🔔 Probar notificación push
-        </Button>
-        {result && (
-          <span
-            className={
-              result.success && result.result && result.result.sent > 0
-                ? "text-xs text-success"
-                : "text-xs text-brand"
-            }
-          >
-            {result.success && result.result && result.result.sent > 0
-              ? "Notificación enviada"
-              : result.error || "No se pudo enviar"}
-          </span>
-        )}
-      </div>
-
-      {result && (
-        <div className="mt-3 bg-page border border-border p-3 rounded-[2px] font-mono text-xs text-secondary overflow-x-auto">
-          <pre>{JSON.stringify(result, null, 2)}</pre>
-        </div>
-      )}
-
-      {result?.success && result.result && (
-        <div className="mt-2 space-y-1 text-xs text-secondary">
-          {result.result.subscriptionsFound === 0 && (
-            <p className="text-brand">
-              ⚠️ No hay suscripciones guardadas para tu usuario. Activá el toggle de arriba.
-            </p>
-          )}
-          {result.result.subscriptionsFound > 0 && result.result.sent === 0 && (
-            <p className="text-brand">
-              ⚠️ Hay {result.result.subscriptionsFound} suscripción/es pero ninguna llegó. Revisá que el navegador permita notificaciones y que el service worker esté activo.
-            </p>
-          )}
-          {result.result.errors > 0 && (
-            <p className="text-brand">
-              ⚠️ Hubo {result.result.errors} error/es al enviar.
-              {result.result.details && result.result.details[0]?.statusCode && (
-                <> Código HTTP: <strong>{result.result.details[0].statusCode}</strong>.</>
-              )}
-              {result.result.details && result.result.details[0]?.message && (
-                <span className="block mt-1 break-words">
-                  Mensaje: {result.result.details[0].message}
-                </span>
-              )}
-            </p>
-          )}
-          {!result.result.vapidReady && (
-            <p className="text-danger">
-              ❌ Las claves VAPID no están configuradas. Revisá las variables de entorno.
-            </p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 type GymSettings = {
   id: string;
@@ -115,6 +23,11 @@ type GymSettings = {
   cancelWindowHours: number;
   waitlistEnabled: boolean;
   slug: string;
+  mpAccessToken: string | null;
+  mpWebhookSecret: string | null;
+  mpEnabled: boolean;
+  bankAlias: string | null;
+  bankAccountHolder: string | null;
 };
 
 const inputClass =
@@ -146,8 +59,11 @@ export function SettingsClient({
     phone: gym.phone ?? "",
     cancelWindowHours: String(gym.cancelWindowHours),
     waitlistEnabled: gym.waitlistEnabled,
-    mpAccessToken: "",
-    mpWebhookSecret: "",
+    mpAccessToken: gym.mpAccessToken ?? "",
+    mpWebhookSecret: gym.mpWebhookSecret ?? "",
+    mpEnabled: gym.mpEnabled,
+    bankAlias: gym.bankAlias ?? "",
+    bankAccountHolder: gym.bankAccountHolder ?? "",
   });
 
   const webhookUrl =
@@ -172,6 +88,11 @@ export function SettingsClient({
     confirm: false,
   });
 
+  const [showSecret, setShowSecret] = useState({
+    mpAccessToken: false,
+    mpWebhookSecret: false,
+  });
+
   // Invite link state
   const [copied, setCopied] = useState(false);
   const inviteUrl =
@@ -186,6 +107,7 @@ export function SettingsClient({
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     fd.set("waitlistEnabled", form.waitlistEnabled ? "true" : "false");
+    fd.set("mpEnabled", form.mpEnabled ? "true" : "false");
 
     startTransition(async () => {
       const res = await updateGymSettingsAction(fd);
@@ -478,47 +400,63 @@ export function SettingsClient({
 
           <p className="text-xs md:text-sm text-secondary">
             Configurá la cuenta de Mercado Pago del gimnasio para que los alumnos
-            compren abonos online y el dinero ingrese directamente a tu cuenta.
+            compren abonos online. Si desactivás el link de pago, el alumno verá tu
+            alias de transferencia y podrá contactarte por WhatsApp para coordinar.
           </p>
 
           <div className="space-y-1.5">
-            <label className={labelClass}>Access Token de producción</label>
-            <input
-              name="mpAccessToken"
-              value={form.mpAccessToken}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, mpAccessToken: e.target.value }))
-              }
-              className={inputClass}
-              placeholder="APP_USR-..."
-              type="password"
-              autoComplete="off"
-            />
+            <label className={cn(labelClass, "inline-flex items-center gap-1.5")}>
+              Access Token de producción
+              <Tooltip
+                content="Es la clave privada que permite a la app crear links de pago y consultar el estado de los pagos en tu cuenta de Mercado Pago."
+                position="top"
+              >
+                <span className="cursor-pointer text-brand">
+                  <WarningCircle size={14} weight="regular" />
+                </span>
+              </Tooltip>
+            </label>
+            <div className="relative">
+              <input
+                name="mpAccessToken"
+                value={form.mpAccessToken}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, mpAccessToken: e.target.value }))
+                }
+                className={cn(inputClass, "pr-10")}
+                placeholder="APP_USR-..."
+                type={showSecret.mpAccessToken ? "text" : "password"}
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowSecret((s) => ({ ...s, mpAccessToken: !s.mpAccessToken }))
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
+                tabIndex={-1}
+                aria-label={showSecret.mpAccessToken ? "Ocultar access token" : "Mostrar access token"}
+              >
+                {showSecret.mpAccessToken ? <EyeSlash size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             <p className="text-xs text-secondary">
               Lo encontrás en Mercado Pago → Tu negocio → Configuración → Integraciones → Tus Integraciones → Credenciales de producción.
             </p>
           </div>
 
           <div className="space-y-1.5">
-            <label className={labelClass}>Webhook Secret (opcional)</label>
-            <input
-              name="mpWebhookSecret"
-              value={form.mpWebhookSecret}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, mpWebhookSecret: e.target.value }))
-              }
-              className={inputClass}
-              placeholder="Secreto para validar notificaciones"
-              type="password"
-              autoComplete="off"
-            />
-            <p className="text-xs text-secondary">
-              Secreto que configurás en Mercado Pago para validar que las notificaciones sean reales.
-            </p>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className={labelClass}>URL del webhook</label>
+            <label className={cn(labelClass, "inline-flex items-center gap-1.5")}>
+              URL del webhook
+              <Tooltip
+                content="Mercado Pago envía una notificación a esta URL cada vez que un pago cambia de estado (aprobado, rechazado, etc.). La app la usa para acreditar los créditos automáticamente."
+                position="top"
+              >
+                <span className="cursor-pointer text-brand">
+                  <WarningCircle size={14} weight="regular" />
+                </span>
+              </Tooltip>
+            </label>
             <div className="flex items-center gap-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 bg-page border border-border px-3.5 h-12 rounded-[2px]">
@@ -531,6 +469,7 @@ export function SettingsClient({
               <Button
                 type="button"
                 variant="outline"
+                size="sm"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(webhookUrl);
@@ -545,7 +484,105 @@ export function SettingsClient({
               </Button>
             </div>
             <p className="text-xs text-secondary">
-              Copiá esta URL en Mercado Pago → Tu negocio → Configuración → Notificaciones.
+              Copiá esta URL en Mercado Pago → Tu negocio → Configuración → Notificaciones → Webhooks.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className={cn(labelClass, "inline-flex items-center gap-1.5")}>
+              Webhook Secret (opcional)
+              <Tooltip
+                content="Es la firma que Mercado Pago envía con cada notificación. La app la usa para confirmar que el aviso de pago realmente vino de Mercado Pago."
+                position="top"
+              >
+                <span className="cursor-pointer text-brand">
+                  <WarningCircle size={14} weight="regular" />
+                </span>
+              </Tooltip>
+            </label>
+            <div className="relative">
+              <input
+                name="mpWebhookSecret"
+                value={form.mpWebhookSecret}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, mpWebhookSecret: e.target.value }))
+                }
+                className={cn(inputClass, "pr-10")}
+                placeholder="Secreto para validar notificaciones"
+                type={showSecret.mpWebhookSecret ? "text" : "password"}
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  setShowSecret((s) => ({ ...s, mpWebhookSecret: !s.mpWebhookSecret }))
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
+                tabIndex={-1}
+                aria-label={showSecret.mpWebhookSecret ? "Ocultar webhook secret" : "Mostrar webhook secret"}
+              >
+                {showSecret.mpWebhookSecret ? <EyeSlash size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <p className="text-xs text-secondary">
+              Lo encontrás en Mercado Pago → Tu negocio → Configuración → Notificaciones → Webhooks. Creá una suscripción con la URL de arriba, seleccioná &quot;Pagos&quot; y copiá el &quot;Secret&quot; que te muestra el panel.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between py-1 border-t border-border pt-4">
+            <div>
+              <p className="text-sm md:text-base text-primary font-medium">
+                Aceptar pagos con link de Mercado Pago
+              </p>
+              <p className="text-xs md:text-sm text-secondary mt-0.5">
+                {mpConfigured
+                  ? "Si está activo, el alumno paga directo por el link de MP. Si lo desactivás, paga por transferencia/WhatsApp."
+                  : "Primero tenés que cargar el Access Token de Mercado Pago para habilitar esta opción."}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant={form.mpEnabled ? "danger" : "success"}
+              size="md"
+              onClick={() =>
+                setForm((f) => ({ ...f, mpEnabled: !f.mpEnabled }))
+              }
+              className="shrink-0 ml-4"
+              disabled={!mpConfigured}
+            >
+              {form.mpEnabled ? "Desactivar" : "Activar"}
+            </Button>
+          </div>
+
+          <div className="space-y-1.5 border-t border-border pt-4">
+            <label className={labelClass}>Alias bancario / CBU / CVU</label>
+            <input
+              name="bankAlias"
+              value={form.bankAlias}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, bankAlias: e.target.value }))
+              }
+              className={inputClass}
+              placeholder="ej. alias.box.turno.mp"
+            />
+            <p className="text-xs text-secondary">
+              Se muestra a los alumnos cuando los pagos online están desactivados. Si dejás este campo vacío, no se mostrará el alias.
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className={labelClass}>Titular de la cuenta</label>
+            <input
+              name="bankAccountHolder"
+              value={form.bankAccountHolder}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, bankAccountHolder: e.target.value }))
+              }
+              className={inputClass}
+              placeholder="ej. Juan Pérez"
+            />
+            <p className="text-xs text-secondary">
+              Nombre del titular de la cuenta asociada al alias. Se muestra al alumno para que valide a quién transfiere.
             </p>
           </div>
         </div>
@@ -608,9 +645,6 @@ export function SettingsClient({
         <h3 className="text-sm md:text-base font-semibold text-primary">Notificaciones</h3>
         <PushNotificationToggle />
         <PushNotificationHelp />
-
-        {/* Test push */}
-        <TestPushButton />
       </div>
 
       {/* ── Sección: Apariencia ───────────────────────────────────────── */}

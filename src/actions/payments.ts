@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Preference } from "mercadopago";
-import { getMpAccessToken, createMpClient } from "@/lib/mercadopago";
+import { createMpClient } from "@/lib/mercadopago";
 import type { ActionResult } from "@/types";
 
 async function requireStudent() {
@@ -25,13 +25,17 @@ export async function createCheckoutAction(
   });
   if (!pack) return { success: false, error: "Abono no encontrado." };
 
-  const mpAccessToken = await getMpAccessToken(gymId);
-  if (!mpAccessToken) {
+  const gym = await prisma.gym.findUnique({
+    where: { id: gymId },
+    select: { mpAccessToken: true, mpEnabled: true },
+  });
+  if (!gym?.mpAccessToken?.trim() || !gym.mpEnabled) {
     return {
       success: false,
-      error: "El gimnasio no tiene Mercado Pago configurado.",
+      error: "El gimnasio no tiene habilitado los pagos online.",
     };
   }
+  const mpAccessToken = gym.mpAccessToken.trim();
 
   const validityDays = pack.validityDays ?? 30;
   const expiresAt = new Date(Date.now() + validityDays * 86_400_000);
