@@ -122,6 +122,8 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   const effectiveCoachId = classOverride?.coachId ?? gymClass.coachId;
   const effectiveDescription = classOverride?.description ?? gymClass.description;
   const effectiveColor = classOverride?.color ?? gymClass.color;
+  const effectiveDisciplineId = classOverride?.disciplineId ?? gymClass.disciplineId;
+  const effectiveDisciplineName = disciplines.find((d) => d.id === effectiveDisciplineId)?.name ?? gymClass.discipline?.name ?? "Sin disciplina";
   const effectiveCoachName = coaches.find((c) => c.id === effectiveCoachId)?.name ?? gymClass.coach?.name ?? null;
 
   return (
@@ -152,11 +154,11 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
           <div className="flex items-start gap-3 flex-1 min-w-0">
             <span
               className="size-3 rounded-full mt-1.5 shrink-0"
-              style={{ backgroundColor: gymClass.color ?? "#f97316" }}
+              style={{ backgroundColor: effectiveColor ?? "#f97316" }}
             />
             <div className="flex-1 min-w-0">
               <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary tracking-tight">
-                {gymClass.discipline?.name ?? "Sin disciplina"}
+                {effectiveDisciplineName}
               </h2>
               <p className="text-sm md:text-base text-secondary mt-0.5">
                 {DAY_LABELS[gymClass.dayOfWeek]} · {formatDate(targetDate)} ·{" "}

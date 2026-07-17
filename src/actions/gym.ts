@@ -16,6 +16,9 @@ const gymSettingsSchema = z.object({
   waitlistEnabled:    z.boolean(),
   mpAccessToken:      z.string().max(500).optional().or(z.literal("")),
   mpWebhookSecret:    z.string().max(500).optional().or(z.literal("")),
+  mpEnabled:          z.enum(["true", "false"]).optional().transform((v) => v === "true"),
+  bankAlias:          z.string().max(100).optional().or(z.literal("")),
+  bankAccountHolder: z.string().max(100).optional().or(z.literal("")),
 });
 
 async function getAdminUser() {
@@ -62,6 +65,9 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
     waitlistEnabled:   formData.get("waitlistEnabled") === "true",
     mpAccessToken:     formData.get("mpAccessToken"),
     mpWebhookSecret:   formData.get("mpWebhookSecret"),
+    mpEnabled:         formData.get("mpEnabled"),
+    bankAlias:         formData.get("bankAlias"),
+    bankAccountHolder: formData.get("bankAccountHolder"),
   });
 
   if (!parsed.success) {
@@ -70,7 +76,7 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
 
   const current = await prisma.gym.findUnique({
     where: { id: user.gymId },
-    select: { mpAccessToken: true, mpWebhookSecret: true },
+    select: { mpAccessToken: true, mpWebhookSecret: true, mpEnabled: true, bankAlias: true, bankAccountHolder: true },
   });
 
   await prisma.gym.update({
@@ -82,8 +88,11 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
       phone:             parsed.data.phone    || null,
       cancelWindowHours: parsed.data.cancelWindowHours,
       waitlistEnabled:   parsed.data.waitlistEnabled,
-      mpAccessToken:     parsed.data.mpAccessToken?.trim() || current?.mpAccessToken || null,
-      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim() || current?.mpWebhookSecret || null,
+      mpAccessToken:     parsed.data.mpAccessToken?.trim() || null,
+      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim() || null,
+      mpEnabled:         parsed.data.mpEnabled ?? current?.mpEnabled ?? true,
+      bankAlias:         parsed.data.bankAlias?.trim() || null,
+      bankAccountHolder: parsed.data.bankAccountHolder?.trim() || null,
     },
   });
 

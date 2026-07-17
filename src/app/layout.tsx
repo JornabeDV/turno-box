@@ -55,6 +55,7 @@ export default function RootLayout({
     <html
       lang="es"
       data-scroll-behavior="smooth"
+      suppressHydrationWarning
       className={`${oswald.variable} ${jetbrainsMono.variable}`}
     >
       <head>

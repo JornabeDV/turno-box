@@ -49,6 +49,7 @@ export default async function CoachClassDetailPage({
         description: true,
         coachId: true,
         coach: { select: { name: true } },
+        disciplineId: true,
         discipline: { select: { name: true } },
       },
     }),
@@ -94,6 +95,13 @@ export default async function CoachClassDetailPage({
       ? gymClass.coach?.name ?? null
       : null;
 
+  const effectiveDisciplineId = classOverride?.disciplineId ?? gymClass.disciplineId;
+  const effectiveDiscipline = await prisma.discipline.findUnique({
+    where: { id: effectiveDisciplineId },
+    select: { name: true },
+  });
+  const effectiveDisciplineName = effectiveDiscipline?.name ?? gymClass.discipline?.name ?? "Sin disciplina";
+
   const userIds = [...new Set(bookings.map((b) => b.user.id))];
   const creditBalances = await prisma.userCreditBalance.findMany({
     where: { userId: { in: userIds }, gymId: user.gymId },
@@ -116,6 +124,7 @@ export default async function CoachClassDetailPage({
       targetDate={targetDate}
       classDate={classDate}
       effectiveCoachName={effectiveCoachName}
+      effectiveDisciplineName={effectiveDisciplineName}
       isCancelled={isCancelled}
       backHref="/dashboard/coach"
     />

@@ -79,6 +79,9 @@ model Gym {
   timezone        String   @default("America/Argentina/Buenos_Aires")
   mpAccessToken   String?  // Access Token de producción de Mercado Pago
   mpWebhookSecret String?  // Secreto para validar firma de webhooks
+  mpEnabled       Boolean  @default(true) // true: links de pago MP activos; false: pago por transferencia/WhatsApp
+  bankAlias       String?  // Alias bancario / CVU / CBU para transferencias
+  bankAccountHolder String? // Titular de la cuenta bancaria / alias para que el alumno valide la transferencia
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

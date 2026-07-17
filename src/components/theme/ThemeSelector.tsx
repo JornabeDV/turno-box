@@ -23,7 +23,7 @@ export function ThemeSelector() {
             type="button"
             onClick={() => setTheme(option.value)}
             className={cn(
-              "px-4 py-2 text-xs sm:text-sm font-medium uppercase tracking-wider border transition-colors",
+              "px-4 py-2 cursor-pointer text-xs sm:text-sm font-medium uppercase tracking-wider border transition-colors",
               theme === option.value
                 ? "bg-brand/10 text-brand border-brand"
                 : "bg-card text-secondary border-border hover:text-primary hover:border-secondary"

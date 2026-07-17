@@ -2,7 +2,6 @@
 
 import { useTransition } from "react";
 import { createCheckoutAction } from "@/actions/payments";
-import { CheckCircle } from "@phosphor-icons/react";
 
 type SerializedPack = {
   id: string;
@@ -16,14 +15,67 @@ type SerializedPack = {
 
 type Props = {
   pack: SerializedPack;
-  index?: number;
   disabled?: boolean;
+  redirectToWhatsApp?: boolean;
+  phone?: string | null;
+  gymName?: string | null;
+  bankAlias?: string | null;
+  bankAccountHolder?: string | null;
+  studentName?: string | null;
 };
 
-export function PackCard({ pack, index = 0, disabled = false }: Props) {
+function cleanPhone(phone: string): string {
+  return phone.replace(/\D/g, "");
+}
+
+function buildWhatsAppMessage(
+  pack: SerializedPack,
+  gymName?: string | null,
+  bankAlias?: string | null,
+  bankAccountHolder?: string | null,
+  studentName?: string | null
+): string {
+  const price = new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: pack.currency,
+    maximumFractionDigits: 0,
+  }).format(Number(pack.price));
+  const gym = gymName ? ` de ${gymName.trim()}` : "";
+  const alias = bankAlias?.trim();
+  const holder = bankAccountHolder?.trim();
+  const student = studentName?.trim();
+  const studentText = student ? `Soy ${student}. ` : "";
+
+  if (alias) {
+    const holderText = holder ? ` (a nombre de ${holder})` : "";
+    return `Hola${gym}. ${studentText}Quiero comprar el abono "${pack.name.trim()}" (${pack.credits} clases) por ${price}. Te transfiero al alias ${alias}${holderText} y te adjunto el comprobante. ¿Me podés cargar el abono?`;
+  }
+
+  return `Hola${gym}. ${studentText}Quiero comprar el abono "${pack.name.trim()}" (${pack.credits} clases) por ${price}. ¿Me pasás los datos para coordinar el pago?`;
+}
+
+export function PackCard({
+  pack,
+  disabled = false,
+  redirectToWhatsApp = false,
+  phone = null,
+  gymName = null,
+  bankAlias = null,
+  bankAccountHolder = null,
+  studentName = null,
+}: Props) {
   const [isPending, startTransition] = useTransition();
 
   function handleBuy() {
+    if (redirectToWhatsApp) {
+      if (!phone) return;
+      const cleaned = cleanPhone(phone);
+      if (!cleaned) return;
+      const href = `https://wa.me/${cleaned}?text=${encodeURIComponent(buildWhatsAppMessage(pack, gymName, bankAlias, bankAccountHolder, studentName))}`;
+      window.open(href, "_blank", "noopener,noreferrer");
+      return;
+    }
+
     startTransition(async () => {
       const res = await createCheckoutAction(pack.id);
       if (res.success) {
@@ -54,17 +106,13 @@ export function PackCard({ pack, index = 0, disabled = false }: Props) {
     badgeLabel = `${pack.credits} clases`;
   }
 
-  // Features mock basados en el pack (en producción vendrían de la DB)
-  // const features = isPro
-  //   ? [
-  //       `${pack.credits} units included`,
-  //       "Performance review",
-  //       "Nutrition guide access",
-  //     ]
-  //   : [
-  //       "Professional coaching",
-  //       "Priority access",
-  //     ];
+  const buttonText = disabled
+    ? "No disponible"
+    : redirectToWhatsApp
+      ? "Pagar por WhatsApp"
+      : isPending
+        ? "Procesando..."
+        : "Seleccionar Plan";
 
   return (
     <div className="bg-card border border-border border-l-2" style={{ borderLeftColor: accentColor }}>
@@ -114,15 +162,13 @@ export function PackCard({ pack, index = 0, disabled = false }: Props) {
           disabled={isPending || disabled}
           className="w-full h-12 md:h-14 bg-brand text-page font-[family-name:var(--font-oswald)] font-bold uppercase tracking-wide text-sm md:text-base active:scale-[0.98] transition-transform disabled:opacity-50 disabled:pointer-events-none"
         >
-          {disabled ? (
-            "No disponible"
-          ) : isPending ? (
+          {isPending && !redirectToWhatsApp ? (
             <span className="flex items-center justify-center gap-2">
               <span className="size-4 rounded-full border-2 border-page border-t-transparent animate-spin" />
               Procesando...
             </span>
           ) : (
-            "Seleccionar Plan"
+            buttonText
           )}
         </button>
       </div>
