@@ -5,6 +5,7 @@ import {
   CacheableResponsePlugin,
   ExpirationPlugin,
   NetworkFirst,
+  NetworkOnly,
   Serwist,
   StaleWhileRevalidate,
 } from "serwist";
@@ -68,18 +69,11 @@ const serwist = new Serwist({
         ],
       }),
     },
-    // Imágenes externas (Cloudinary): red primero para no servir versiones rotas/desactualizadas
+    // Imágenes externas (Cloudinary): nunca cacheadas para evitar imágenes rotas/desactualizadas
     {
       matcher: ({ request, url }) =>
         request.destination === "image" && url.origin !== self.location.origin,
-      handler: new NetworkFirst({
-        cacheName: "external-images",
-        networkTimeoutSeconds: 5,
-        plugins: [
-          new CacheableResponsePlugin({ statuses: [200] }),
-          new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 7 }),
-        ],
-      }),
+      handler: new NetworkOnly(),
     },
   ],
   fallbacks: {
@@ -95,6 +89,21 @@ const serwist = new Serwist({
 });
 
 serwist.addEventListeners();
+
+// Limpieza de cachés viejas de imágenes para eliminar versiones cacheadas rotas
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((name) => name === "images" || name === "external-images")
+            .map((name) => caches.delete(name))
+        )
+      )
+  );
+});
 
 // ── Push Notifications ────────────────────────────────────────────────────────
 
