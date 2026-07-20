@@ -37,6 +37,7 @@ interface Props {
   weekStartStr: string;
   discipline?: string;
   basePath?: string;
+  detailPath?: string;
   backLabel?: string;
 }
 
@@ -49,6 +50,7 @@ export function CoachWeeklyClient({
   weekStartStr,
   discipline,
   basePath = "/dashboard/coach",
+  detailPath = `${basePath}/classes`,
   backLabel = "Mis clases",
 }: Props) {
   const weekStart = parseLocalDate(weekStartStr);
@@ -199,7 +201,7 @@ export function CoachWeeklyClient({
                       return (
                         <Link
                           key={slot.id}
-                          href={`${basePath}/${slot.id}?date=${isoDate(date)}`}
+                          href={`${detailPath}/${slot.id}?date=${isoDate(date)}`}
                           className="bg-card border border-border p-3 flex flex-col gap-2.5"
                         >
                           {/* Color + nombre */}

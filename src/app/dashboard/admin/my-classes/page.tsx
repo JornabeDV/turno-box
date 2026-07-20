@@ -125,6 +125,7 @@ export default async function AdminMyClassesPage({
         weekStartStr={weekParam}
         discipline={discipline}
         basePath="/dashboard/admin/my-classes"
+        detailPath="/dashboard/coach/classes"
       />
     </div>
   );
