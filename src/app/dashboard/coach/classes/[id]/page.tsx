@@ -116,6 +116,8 @@ export default async function CoachClassDetailPage({
     credits: creditsByUser.get(b.user.id) ?? 0,
   }));
 
+  const backHref = user.role === "ADMIN" ? "/dashboard/admin/my-classes" : "/dashboard/coach";
+
   return (
     <CoachClassDetailView
       gymClass={gymClass}
@@ -126,7 +128,7 @@ export default async function CoachClassDetailPage({
       effectiveCoachName={effectiveCoachName}
       effectiveDisciplineName={effectiveDisciplineName}
       isCancelled={isCancelled}
-      backHref="/dashboard/coach"
+      backHref={backHref}
     />
   );
 }
