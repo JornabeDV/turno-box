@@ -5,6 +5,7 @@ import { MetricsClient } from "@/components/admin/MetricsClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Métricas" };
+export const dynamic = "force-dynamic";
 
 export default async function MetricsPage() {
   const session = await auth();

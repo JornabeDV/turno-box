@@ -143,6 +143,8 @@ export async function bookClassAction(
     revalidatePath("/");
     revalidatePath("/bookings");
     revalidatePath("/classes/[classId]");
+    revalidatePath("/dashboard/admin");
+    revalidatePath("/dashboard/admin/metrics");
 
     // Notificación push (no bloquea la respuesta)
     const pushBody =
@@ -231,6 +233,8 @@ function revalidateBookingPaths(classId: string, userId?: string) {
   revalidatePath("/dashboard/coach");
   revalidatePath(`/dashboard/coach/classes/${classId}`);
   revalidatePath(`/dashboard/admin/classes/${classId}`);
+  revalidatePath("/dashboard/admin");
+  revalidatePath("/dashboard/admin/metrics");
   if (userId) revalidatePath(`/dashboard/admin/students/${userId}`);
 }
 
