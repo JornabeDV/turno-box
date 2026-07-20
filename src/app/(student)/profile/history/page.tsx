@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { BackButton } from "@/components/ui/BackButton";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
+import { GYM_TIMEZONE } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Historial de abonos" };
@@ -21,31 +22,39 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
   const { limit: limitParam } = await searchParams;
   const limit = Math.max(PAGE_SIZE, Math.min(200, Number(limitParam) || PAGE_SIZE));
 
-  const transactions = await prisma.creditTransaction.findMany({
-    where: {
-      userId,
-      gymId,
-      type: { in: ["PURCHASE", "ADJUSTMENT"] },
-    },
-    orderBy: { createdAt: "desc" },
-    take: limit + 1,
-    select: {
-      id: true,
-      type: true,
-      amount: true,
-      note: true,
-      createdAt: true,
-      expiresAt: true,
-      payment: {
-        select: {
-          amountPaid: true,
-          currency: true,
-          paidAt: true,
-          pack: { select: { name: true } },
+  const [gym, transactions] = await Promise.all([
+    prisma.gym.findUnique({
+      where: { id: gymId },
+      select: { timezone: true },
+    }),
+    prisma.creditTransaction.findMany({
+      where: {
+        userId,
+        gymId,
+        type: { in: ["PURCHASE", "ADJUSTMENT"] },
+      },
+      orderBy: { createdAt: "desc" },
+      take: limit + 1,
+      select: {
+        id: true,
+        type: true,
+        amount: true,
+        note: true,
+        createdAt: true,
+        expiresAt: true,
+        payment: {
+          select: {
+            amountPaid: true,
+            currency: true,
+            paidAt: true,
+            pack: { select: { name: true } },
+          },
         },
       },
-    },
-  });
+    }),
+  ]);
+
+  const timezone = gym?.timezone ?? GYM_TIMEZONE;
 
   const hasMore  = transactions.length > limit;
   const entries  = transactions.slice(0, limit);
@@ -115,12 +124,14 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
                     <p className="text-[11px] md:text-sm text-muted tabular-nums mt-0.5 md:mt-1 font-[family-name:var(--font-jetbrains)]">
                       {(tx.payment?.paidAt ?? tx.createdAt).toLocaleDateString("es-AR", {
                         day: "numeric", month: "short", year: "numeric",
+                        timeZone: timezone,
                       })}
                       {tx.expiresAt && (
                         <span className="ml-2 text-muted">
                           · vence{" "}
                           {tx.expiresAt.toLocaleDateString("es-AR", {
                             day: "numeric", month: "short", year: "numeric",
+                            timeZone: timezone,
                           })}
                         </span>
                       )}
