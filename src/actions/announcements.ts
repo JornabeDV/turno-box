@@ -82,8 +82,9 @@ export async function createAnnouncementAction(
       });
     }
   } catch (err) {
-    // Si falla la imagen, la noticia igual se creó. No es crítico.
-    console.error("Error al subir imagen de noticia:", err);
+    // Si la imagen falla, no dejamos la noticia creada con imagen rota.
+    await prisma.announcement.delete({ where: { id: announcement.id } }).catch(() => {});
+    return { success: false, error: err instanceof Error ? err.message : "Error al subir la imagen." };
   }
 
   revalidatePath("/");

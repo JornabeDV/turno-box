@@ -56,14 +56,28 @@ const serwist = new Serwist({
         ],
       }),
     },
-    // Imágenes
+    // Imágenes locales del sitio (favicons, icons, etc.)
     {
-      matcher: ({ request }) => request.destination === "image",
+      matcher: ({ request, url }) =>
+        request.destination === "image" && url.origin === self.location.origin,
       handler: new StaleWhileRevalidate({
-        cacheName: "images",
+        cacheName: "local-images",
         plugins: [
           new CacheableResponsePlugin({ statuses: [0, 200] }),
           new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 30 }),
+        ],
+      }),
+    },
+    // Imágenes externas (Cloudinary): red primero para no servir versiones rotas/desactualizadas
+    {
+      matcher: ({ request, url }) =>
+        request.destination === "image" && url.origin !== self.location.origin,
+      handler: new NetworkFirst({
+        cacheName: "external-images",
+        networkTimeoutSeconds: 5,
+        plugins: [
+          new CacheableResponsePlugin({ statuses: [200] }),
+          new ExpirationPlugin({ maxEntries: 60, maxAgeSeconds: 60 * 60 * 24 * 7 }),
         ],
       }),
     },
