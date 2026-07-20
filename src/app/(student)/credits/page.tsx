@@ -12,7 +12,7 @@ import {
   Wallet,
 } from "@phosphor-icons/react/dist/ssr";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
-import { cn } from "@/lib/utils";
+import { cn, GYM_TIMEZONE } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Mis créditos" };
@@ -51,7 +51,11 @@ export default async function CreditsPage({ searchParams }: Props) {
 
   const now = new Date();
 
-  const [balance, activePayments, transactions] = await Promise.all([
+  const [gym, balance, activePayments, transactions] = await Promise.all([
+    prisma.gym.findUnique({
+      where: { id: gymId },
+      select: { timezone: true },
+    }),
     prisma.userCreditBalance.findUnique({
       where: { userId_gymId: { userId, gymId } },
       select: { availableCredits: true },
@@ -109,6 +113,8 @@ export default async function CreditsPage({ searchParams }: Props) {
       },
     }),
   ]);
+
+  const timezone = gym?.timezone ?? GYM_TIMEZONE;
 
   const hasMore = transactions.length > limit;
   const visibleTransactions = transactions.slice(0, limit);
