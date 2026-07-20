@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { toClassDate, formatTime, formatDate } from "@/lib/utils";
+import { toClassDate, formatTime, formatDate, getTodayInGymTimezone } from "@/lib/utils";
 import { ToggleCoachButton } from "@/components/admin/ToggleCoachButton";
 import { EditCoachButton } from "@/components/admin/EditCoachButton";
 import { BackButton } from "@/components/ui/BackButton";
@@ -43,6 +43,22 @@ const DAY_ORDER = [
   "SUNDAY",
 ];
 
+function isoDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function nextDateForDayOfWeek(dayOfWeek: string, from: Date): Date {
+  const dayIndex = DAY_ORDER.indexOf(dayOfWeek);
+  if (dayIndex === -1) return from;
+  const fromDay = from.getDay();
+  // Convertir JS getDay() (Domingo=0) a índice de DAY_ORDER (Lunes=0)
+  const jsDayIndex = (fromDay + 6) % 7;
+  const diff = (dayIndex - jsDayIndex + 7) % 7;
+  const result = new Date(from);
+  result.setDate(result.getDate() + diff);
+  return result;
+}
+
 export default async function CoachDetailPage({ params }: Props) {
   const { id } = await params;
 
@@ -66,6 +82,8 @@ export default async function CoachDetailPage({ params }: Props) {
   });
 
   if (!coach) notFound();
+
+  const backHref = `/dashboard/admin/coaches/${id}`;
 
   const today = toClassDate(new Date());
   const dayOfWeek = [
@@ -268,9 +286,10 @@ export default async function CoachDetailPage({ params }: Props) {
               const color = o.color ?? o.gymClass.color;
               const disciplineName = o.gymClass.discipline?.name ?? "Sin disciplina";
               return (
-                <div
+                <Link
                   key={o.id}
-                  className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4"
+                  href={`/dashboard/admin/classes/${o.gymClass.id}?date=${o.date.toISOString().slice(0, 10)}&back=${encodeURIComponent(backHref)}`}
+                  className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4 group hover:bg-white/[0.02] transition-colors"
                 >
                   <span
                     className="size-2 rounded-full shrink-0"
@@ -287,13 +306,10 @@ export default async function CoachDetailPage({ params }: Props) {
                       <p className="text-xs md:text-sm text-muted mt-0.5">{o.description}</p>
                     )}
                   </div>
-                  <Link
-                    href={`/dashboard/admin/classes/${o.gymClass.id}?date=${o.date.toISOString().slice(0, 10)}`}
-                    className="size-8 rounded-md flex items-center justify-center text-muted hover:text-secondary hover:bg-white/[0.04] transition-all shrink-0"
-                  >
+                  <span className="size-8 rounded-md flex items-center justify-center text-muted group-hover:text-secondary group-hover:bg-white/[0.04] transition-all shrink-0">
                     <PencilSimpleIcon size={16} />
-                  </Link>
-                </div>
+                  </span>
+                </Link>
               );
             })}
           </div>
@@ -359,9 +375,10 @@ export default async function CoachDetailPage({ params }: Props) {
                       ).length;
                       const pct = Math.round((confirmed / c.maxCapacity) * 100);
                       return (
-                        <div
+                        <Link
                           key={c.id}
-                          className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4"
+                          href={`/dashboard/admin/classes/${c.id}?date=${isoDate(nextDateForDayOfWeek(c.dayOfWeek, getTodayInGymTimezone()))}&back=${encodeURIComponent(backHref)}`}
+                          className="flex items-center gap-3 px-4 md:px-5 py-3 md:py-4 group hover:bg-white/[0.02] transition-colors"
                         >
                           <span
                             className="size-2 rounded-full shrink-0"
@@ -401,13 +418,10 @@ export default async function CoachDetailPage({ params }: Props) {
                               {c.maxCapacity} cupos
                             </span>
                           )}
-                          <Link
-                            href={`/dashboard/admin/classes/${c.id}`}
-                            className="size-8 rounded-md flex items-center justify-center text-muted hover:text-secondary hover:bg-white/[0.04] transition-all shrink-0"
-                          >
+                          <span className="size-8 rounded-md flex items-center justify-center text-muted group-hover:text-secondary group-hover:bg-white/[0.04] transition-all shrink-0">
                             <PencilSimpleIcon size={16} />
-                          </Link>
-                        </div>
+                          </span>
+                        </Link>
                       );
                     })}
                   </div>

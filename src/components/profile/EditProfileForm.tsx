@@ -4,24 +4,34 @@ import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { DateInput } from "@/components/ui/DatePicker";
+import { SelectInput } from "@/components/ui/Select";
 import { updateProfileAction } from "@/actions/profile";
 
 const inputClass =
   "w-full h-12 md:h-14 bg-page border border-border px-3.5 md:px-4 text-sm md:text-base text-primary placeholder:text-muted focus:outline-none focus:border-brand transition-colors rounded-[2px] font-[family-name:var(--font-oswald)]";
 const labelClass = "text-xs md:text-sm font-medium text-secondary uppercase tracking-wider font-[family-name:var(--font-oswald)]";
 
+const genderOptions = [
+  { value: "MALE", label: "Masculino" },
+  { value: "FEMALE", label: "Femenino" },
+  { value: "OTHER", label: "Otro" },
+  { value: "PREFER_NOT_TO_SAY", label: "Prefiero no decir" },
+];
+
 interface Props {
   name: string | null;
   birthDate: string | null;
+  gender: string | null;
 }
 
-export function EditProfileForm({ name, birthDate }: Props) {
+export function EditProfileForm({ name, birthDate, gender: initialGender }: Props) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [error, setError]   = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [birthDateValue, setBirthDateValue] = useState(birthDate ?? "");
+  const [gender, setGender] = useState(initialGender ?? "");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -58,6 +68,17 @@ export function EditProfileForm({ name, birthDate }: Props) {
       <div className="space-y-1.5">
         <label className={labelClass}>Fecha de nacimiento</label>
         <DateInput name="birthDate" value={birthDateValue} onChange={setBirthDateValue} />
+      </div>
+
+      <div className="space-y-1.5">
+        <SelectInput
+          name="gender"
+          label="Género"
+          value={gender}
+          onChange={setGender}
+          options={genderOptions}
+          placeholder="Seleccioná una opción"
+        />
       </div>
 
       {error && (

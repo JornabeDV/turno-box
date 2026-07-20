@@ -56,7 +56,7 @@ export default async function ProfilePage() {
   const [user, hasPasswordRow, statsThisMonth, statsTotal, allBookingDates] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { name: true, email: true, birthDate: true },
+      select: { name: true, email: true, birthDate: true, gender: true },
     }),
 
     prisma.$queryRaw<[{ hasPassword: boolean }]>`
@@ -122,6 +122,7 @@ export default async function ProfilePage() {
           <EditProfileForm
             name={user.name}
             birthDate={user.birthDate ? user.birthDate.toISOString().split("T")[0] : null}
+            gender={user.gender}
           />
         </div>
       </div>

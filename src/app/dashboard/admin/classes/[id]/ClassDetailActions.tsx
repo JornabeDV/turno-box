@@ -24,6 +24,16 @@ interface Props {
   date?: string; // fecha puntual si se navegó desde el calendario semanal
 }
 
+const DAY_LABELS: Record<string, string> = {
+  MONDAY: "lunes",
+  TUESDAY: "martes",
+  WEDNESDAY: "miércoles",
+  THURSDAY: "jueves",
+  FRIDAY: "viernes",
+  SATURDAY: "sábado",
+  SUNDAY: "domingo",
+};
+
 export function ClassDetailActions({ classData, coaches, disciplines, date }: Props) {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
@@ -116,7 +126,7 @@ export function ClassDetailActions({ classData, coaches, disciplines, date }: Pr
         open={deleteOpen}
         onOpenChange={(o) => !o && setDeleteOpen(false)}
         title="Eliminar clase de todas las semanas"
-        description="¿Eliminar esta clase de todos los días viernes? Las reservas existentes quedarán en el historial."
+        description={`¿Eliminar esta clase de todos los días ${DAY_LABELS[classData.dayOfWeek] ?? classData.dayOfWeek.toLowerCase()}? Las reservas existentes quedarán en el historial.`}
         size="md"
       >
         {deleteError && (

@@ -362,6 +362,16 @@ export async function updateClassInstanceAction(
 
   const existing = await prisma.gymClass.findFirst({
     where: { id: classId, gymId, deletedAt: null },
+    select: {
+      id: true,
+      description: true,
+      startTime: true,
+      endTime: true,
+      maxCapacity: true,
+      color: true,
+      coachId: true,
+      disciplineId: true,
+    },
   });
   if (!existing) throw new Error("Clase no encontrada.");
 
@@ -380,11 +390,37 @@ export async function updateClassInstanceAction(
   const classDate = new Date(dateStr);
   classDate.setUTCHours(0, 0, 0, 0);
 
-  await prisma.classOverride.upsert({
-    where: { gymClassId_date: { gymClassId: classId, date: classDate } },
-    update: { ...parsed, isCancelled: false },
-    create: { gymClassId: classId, date: classDate, isCancelled: false, ...parsed },
-  });
+  // Si el override termina siendo idéntico a la clase base, lo eliminamos
+  // para que la instancia vuelva a comportarse como la clase semanal estándar.
+  const isSameCoach = !parsed.coachId && !existing.coachId
+    ? true
+    : parsed.coachId === existing.coachId;
+  const isSameDescription = !parsed.description && !existing.description
+    ? true
+    : parsed.description === existing.description;
+  const isSameColor = !parsed.color && !existing.color
+    ? true
+    : parsed.color === existing.color;
+  const isRedundant =
+    isSameCoach &&
+    isSameDescription &&
+    isSameColor &&
+    parsed.startTime === existing.startTime &&
+    parsed.endTime === existing.endTime &&
+    parsed.maxCapacity === existing.maxCapacity &&
+    parsed.disciplineId === existing.disciplineId;
+
+  if (isRedundant) {
+    await prisma.classOverride.deleteMany({
+      where: { gymClassId: classId, date: classDate },
+    });
+  } else {
+    await prisma.classOverride.upsert({
+      where: { gymClassId_date: { gymClassId: classId, date: classDate } },
+      update: { ...parsed, isCancelled: false },
+      create: { gymClassId: classId, date: classDate, isCancelled: false, ...parsed },
+    });
+  }
 
   revalidatePath("/dashboard/admin/classes");
   revalidatePath(`/dashboard/admin/classes/${classId}`);
