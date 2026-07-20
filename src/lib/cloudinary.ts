@@ -52,10 +52,6 @@ export async function uploadAnnouncementImage(
         public_id: announcementId,
         overwrite: true,
         resource_type: "image",
-        transformation: [
-          { width: 1200, height: 630, crop: "limit" },
-          { quality: "auto", fetch_format: "auto" },
-        ],
       },
       (error, result) => {
         if (error || !result) {
