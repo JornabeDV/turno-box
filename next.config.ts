@@ -24,7 +24,7 @@ function buildCsp(): string {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     `img-src 'self' data: blob: ${cloudinaryImageDomain}`,
-    "connect-src 'self'",
+    `connect-src 'self' ${cloudinaryImageDomain}`,
     "manifest-src 'self'",
     "worker-src 'self' blob:",
     "frame-ancestors 'none'",
