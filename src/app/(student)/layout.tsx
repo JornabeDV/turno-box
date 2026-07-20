@@ -24,10 +24,10 @@ export default async function StudentLayout({
   }
 
   return (
-    <div className="flex flex-col min-h-dvh">
+    <div className="relative flex flex-col min-h-dvh">
       <Header showCredits logoSrc={logoSrc} gymName={gymName} />
       <main
-        className="flex-1 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto w-full px-4 md:pb-28 pb-[calc(5rem+env(safe-area-inset-bottom))]"
+        className="relative flex-1 min-h-0 max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto w-full px-4 md:pb-28 pb-[calc(5rem+env(safe-area-inset-bottom))]"
       >
         {/* padding dinámico para que el contenido no quede detrás de la BottomNav + safe area iOS */}
         {children}

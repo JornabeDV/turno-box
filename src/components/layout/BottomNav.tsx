@@ -17,8 +17,8 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 bg-page border-t border-border"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      className="fixed bottom-0 left-0 right-0 z-50 w-full bg-page border-t border-border"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="grid grid-cols-4 max-w-5xl mx-auto">
         {NAV_ITEMS.map(({ href, label, Icon }) => {

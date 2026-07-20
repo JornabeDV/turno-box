@@ -4,8 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { DateInput } from "@/components/ui/DatePicker";
+import { SelectInput } from "@/components/ui/Select";
 import { WarningCircle, CheckCircle, Eye, EyeSlash, User, Envelope, Lock } from "@phosphor-icons/react";
 import { registerAction } from "@/actions/auth";
+
+const genderOptions = [
+  { value: "MALE", label: "Masculino" },
+  { value: "FEMALE", label: "Femenino" },
+  { value: "OTHER", label: "Otro" },
+  { value: "PREFER_NOT_TO_SAY", label: "Prefiero no decir" },
+];
 
 type RegisterFormProps = {
   defaultGymId?: string;
@@ -20,6 +28,7 @@ export function RegisterForm({ defaultGymId, gymSlug }: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [birthDate, setBirthDate] = useState("");
+  const [gender, setGender] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -142,6 +151,19 @@ export function RegisterForm({ defaultGymId, gymSlug }: RegisterFormProps) {
           Fecha de nacimiento
         </label>
         <DateInput name="birthDate" value={birthDate} onChange={setBirthDate} minAge={10} />
+      </div>
+
+      {/* Gender */}
+      <div className="flex flex-col gap-2">
+        <SelectInput
+          name="gender"
+          label="Género"
+          value={gender}
+          onChange={setGender}
+          options={genderOptions}
+          placeholder="Seleccioná una opción"
+          required
+        />
       </div>
 
       {error && (

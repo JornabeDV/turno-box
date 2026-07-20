@@ -5,6 +5,9 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import type { ActionResult } from "@/types";
+import { Gender } from "@prisma/client";
+
+const genderValues: Gender[] = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"];
 
 // ── Actualizar nombre y fecha de nacimiento ───────────────────────────────────
 export async function updateProfileAction(formData: FormData): Promise<ActionResult> {
@@ -14,13 +17,15 @@ export async function updateProfileAction(formData: FormData): Promise<ActionRes
   const name      = String(formData.get("name") ?? "").trim();
   const birthRaw  = formData.get("birthDate");
   const birthDate = birthRaw ? new Date(String(birthRaw)) : null;
+  const genderRaw = String(formData.get("gender") ?? "").trim() || null;
+  const gender: Gender | null = genderRaw && genderValues.includes(genderRaw as Gender) ? (genderRaw as Gender) : null;
 
   if (!name) return { success: false, error: "El nombre es obligatorio." };
   if (birthDate && isNaN(birthDate.getTime())) return { success: false, error: "Fecha inválida." };
 
   await prisma.user.update({
     where: { id: session.user.id },
-    data: { name, birthDate },
+    data: { name, birthDate, gender },
   });
 
   revalidatePath("/profile");

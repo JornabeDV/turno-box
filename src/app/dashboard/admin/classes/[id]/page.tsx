@@ -20,7 +20,7 @@ const DAY_LABELS: Record<string, string> = {
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ date?: string }>;
+  searchParams: Promise<{ date?: string; back?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ClassDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
-  const { date } = await searchParams;
+  const { date, back } = await searchParams;
 
   const session = await auth();
   const user = session?.user as
@@ -129,7 +129,7 @@ export default async function ClassDetailPage({ params, searchParams }: Props) {
   return (
     <div className="max-w-5xl space-y-6">
       {/* Back */}
-      <BackButton href="/dashboard/admin/classes" />
+      <BackButton href={back ?? "/dashboard/admin/classes"} />
 
       {/* Alertas de override o cierre */}
       {gymClosure && (

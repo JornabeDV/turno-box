@@ -162,15 +162,23 @@ body {
 
 /* ── Safe area iOS ─────────────────────────────────────────────────────────── */
 .safe-area-top {
+  padding-top: constant(safe-area-inset-top, 0px);
   padding-top: env(safe-area-inset-top, 0px);
 }
 
 .bottom-nav-safe {
+  padding-bottom: constant(safe-area-inset-bottom, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .main-student-safe {
+  padding-bottom: calc(7rem + constant(safe-area-inset-bottom, 0px));
   padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* Fallback para asegurar que el body siempre ocupe la pantalla completa en iOS */
+html, body {
+  min-height: 100dvh;
 }
 
 /* ── Animaciones ───────────────────────────────────────────────────────────── */

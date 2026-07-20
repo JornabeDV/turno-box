@@ -5,12 +5,15 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import type { ActionResult } from "@/types";
 
+const genderValues = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"] as const;
+
 const registerSchema = z.object({
   name: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   email: z.string().email("Email inválido"),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   confirmPassword: z.string().min(6, "Debes repetir la contraseña"),
   birthDate: z.string().min(1, "La fecha de nacimiento es requerida"),
+  gender: z.enum(genderValues, { message: "Seleccioná una opción de género" }),
   gymId: z.string().optional(),
 });
 
@@ -23,6 +26,7 @@ export async function registerAction(
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
     birthDate: formData.get("birthDate"),
+    gender: formData.get("gender"),
     gymId: formData.get("gymId"),
   };
 
@@ -31,7 +35,7 @@ export async function registerAction(
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { name, email, password, confirmPassword, birthDate, gymId: formGymId } = parsed.data;
+  const { name, email, password, confirmPassword, birthDate, gender, gymId: formGymId } = parsed.data;
 
   if (password !== confirmPassword) {
     return { success: false, error: "Las contraseñas no coinciden" };
@@ -54,7 +58,7 @@ export async function registerAction(
   }
 
   await prisma.user.create({
-    data: { name, email, passwordHash, role: "STUDENT", gymId, birthDate: new Date(birthDate) },
+    data: { name, email, passwordHash, role: "STUDENT", gymId, birthDate: new Date(birthDate), gender },
   });
 
   return { success: true, data: undefined };
