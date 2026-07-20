@@ -243,6 +243,7 @@ export default async function CreditsPage({ searchParams }: Props) {
                         {sub.paidAt?.toLocaleDateString("es-AR", {
                           day: "numeric",
                           month: "short",
+                          timeZone: timezone,
                         }) ?? "—"}
                       </p>
                     </div>
@@ -287,6 +288,7 @@ export default async function CreditsPage({ searchParams }: Props) {
                         {sub.expiresAt.toLocaleDateString("es-AR", {
                           day: "numeric",
                           month: "short",
+                          timeZone: timezone,
                         })}
                       </p>
                     )}
@@ -377,6 +379,7 @@ export default async function CreditsPage({ searchParams }: Props) {
                         {tx.booking.classDate.toLocaleDateString("es-AR", {
                           day: "numeric",
                           month: "short",
+                          timeZone: "UTC",
                         })}
                         {tx.booking.class?.startTime &&
                           ` · ${tx.booking.class.startTime} hrs`}
@@ -405,6 +408,7 @@ export default async function CreditsPage({ searchParams }: Props) {
                         year: "numeric",
                         hour: "2-digit",
                         minute: "2-digit",
+                        timeZone: timezone,
                       })}
                     </p>
                   </div>
