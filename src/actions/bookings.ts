@@ -18,6 +18,11 @@ export async function bookClassAction(
   const userId    = session.user.id;
   const gymId     = (session.user as { gymId?: string }).gymId;
   const classDate = toClassDate(new Date(dateStr));
+  const today     = toClassDate(new Date());
+
+  if (classDate < today) {
+    return { success: false, error: "No se pueden reservar clases en fechas pasadas." };
+  }
 
   if (!gymId) return { success: false, error: "Sin gimnasio asignado." };
 

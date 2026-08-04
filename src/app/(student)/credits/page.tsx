@@ -394,11 +394,6 @@ export default async function CreditsPage({ searchParams }: Props) {
                         }).format(Number(tx.payment.amountPaid))}
                       </p>
                     )}
-                    {isAdjustment && tx.note && (
-                      <p className="text-[11px] md:text-sm text-secondary truncate mt-0.5 md:mt-1 font-[family-name:var(--font-oswald)]">
-                        {tx.note}
-                      </p>
-                    )}
 
                     {/* Fecha */}
                     <p className="text-[10px] md:text-xs text-muted mt-1 md:mt-1.5 font-[family-name:var(--font-jetbrains)] tabular-nums">

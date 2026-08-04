@@ -23,8 +23,6 @@ type GymSettings = {
   cancelWindowHours: number;
   waitlistEnabled: boolean;
   slug: string;
-  mpAccessToken: string | null;
-  mpWebhookSecret: string | null;
   mpEnabled: boolean;
   bankAlias: string | null;
   bankAccountHolder: string | null;
@@ -59,8 +57,6 @@ export function SettingsClient({
     phone: gym.phone ?? "",
     cancelWindowHours: String(gym.cancelWindowHours),
     waitlistEnabled: gym.waitlistEnabled,
-    mpAccessToken: gym.mpAccessToken ?? "",
-    mpWebhookSecret: gym.mpWebhookSecret ?? "",
     mpEnabled: gym.mpEnabled,
     bankAlias: gym.bankAlias ?? "",
     bankAccountHolder: gym.bankAccountHolder ?? "",
@@ -86,11 +82,6 @@ export function SettingsClient({
     current: false,
     next: false,
     confirm: false,
-  });
-
-  const [showSecret, setShowSecret] = useState({
-    mpAccessToken: false,
-    mpWebhookSecret: false,
   });
 
   // Invite link state
@@ -419,26 +410,12 @@ export function SettingsClient({
             <div className="relative">
               <input
                 name="mpAccessToken"
-                value={form.mpAccessToken}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, mpAccessToken: e.target.value }))
-                }
-                className={cn(inputClass, "pr-10")}
-                placeholder="APP_USR-..."
-                type={showSecret.mpAccessToken ? "text" : "password"}
+                defaultValue=""
+                className={inputClass}
+                placeholder="Dejá en blanco para mantener el actual; escribí uno nuevo para cambiarlo"
+                type="password"
                 autoComplete="off"
               />
-              <button
-                type="button"
-                onClick={() =>
-                  setShowSecret((s) => ({ ...s, mpAccessToken: !s.mpAccessToken }))
-                }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
-                tabIndex={-1}
-                aria-label={showSecret.mpAccessToken ? "Ocultar access token" : "Mostrar access token"}
-              >
-                {showSecret.mpAccessToken ? <EyeSlash size={18} /> : <Eye size={18} />}
-              </button>
             </div>
             <p className="text-xs text-secondary">
               Lo encontrás en Mercado Pago → Tu negocio → Configuración → Integraciones → Tus Integraciones → Credenciales de producción.
@@ -503,26 +480,12 @@ export function SettingsClient({
             <div className="relative">
               <input
                 name="mpWebhookSecret"
-                value={form.mpWebhookSecret}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, mpWebhookSecret: e.target.value }))
-                }
-                className={cn(inputClass, "pr-10")}
-                placeholder="Secreto para validar notificaciones"
-                type={showSecret.mpWebhookSecret ? "text" : "password"}
+                defaultValue=""
+                className={inputClass}
+                placeholder="Dejá en blanco para mantener el actual; escribí uno nuevo para cambiarlo"
+                type="password"
                 autoComplete="off"
               />
-              <button
-                type="button"
-                onClick={() =>
-                  setShowSecret((s) => ({ ...s, mpWebhookSecret: !s.mpWebhookSecret }))
-                }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors cursor-pointer"
-                tabIndex={-1}
-                aria-label={showSecret.mpWebhookSecret ? "Ocultar webhook secret" : "Mostrar webhook secret"}
-              >
-                {showSecret.mpWebhookSecret ? <EyeSlash size={18} /> : <Eye size={18} />}
-              </button>
             </div>
             <p className="text-xs text-secondary">
               Lo encontrás en Mercado Pago → Tu negocio → Configuración → Notificaciones → Webhooks. Creá una suscripción con la URL de arriba, seleccioná &quot;Pagos&quot; y copiá el &quot;Secret&quot; que te muestra el panel.

@@ -116,11 +116,6 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
                         ? "Carga Administrativa"
                         : tx.payment?.pack?.name ?? "Compra de pack"}
                     </p>
-                    {isAdjustment && tx.note && (
-                      <p className="text-[11px] md:text-sm text-secondary truncate mt-0.5 md:mt-1 font-[family-name:var(--font-oswald)]">
-                        {tx.note}
-                      </p>
-                    )}
                     <p className="text-[11px] md:text-sm text-muted tabular-nums mt-0.5 md:mt-1 font-[family-name:var(--font-jetbrains)]">
                       {(tx.payment?.paidAt ?? tx.createdAt).toLocaleDateString("es-AR", {
                         day: "numeric", month: "short", year: "numeric",

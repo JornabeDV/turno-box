@@ -44,16 +44,22 @@ export async function approvePaymentIfValid(
 
   if (mpStatus !== "approved") return false;
 
-  // Acreditar créditos en una transacción atómica
-  await prisma.$transaction(async (tx) => {
-    await tx.payment.update({
-      where: { id: paymentId },
+  // Acreditar créditos solo si el pago sigue PENDING, de forma atómica
+  const result = await prisma.$transaction(async (tx) => {
+    // updateMany con status=PENDING actúa como bloqueo: solo un proceso gana
+    const updated = await tx.payment.updateMany({
+      where: { id: paymentId, status: "PENDING" },
       data: {
         status:            "APPROVED",
         providerPaymentId: mpPaymentId,
         paidAt:            new Date(),
       },
     });
+
+    if (updated.count === 0) {
+      // Otro proceso ya acreditó este pago
+      return { credited: false };
+    }
 
     await tx.$executeRaw`
       INSERT INTO user_credit_balances (id, "userId", "gymId", "availableCredits", version, "updatedAt")
@@ -90,7 +96,9 @@ export async function approvePaymentIfValid(
         date: new Date(),
       },
     });
+
+    return { credited: true };
   });
 
-  return true;
+  return result.credited;
 }
