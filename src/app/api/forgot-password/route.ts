@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -8,8 +9,29 @@ const forgotPasswordSchema = z.object({
   email: z.string().email(),
 });
 
+function getClientIp(req: NextRequest): string {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0]?.trim() ?? "unknown";
+  }
+  return "unknown";
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit por IP para mitigar enumeración de emails y spam.
+    const ip = getClientIp(req);
+    const rateLimit = checkRateLimit(`forgot-password:${ip}`, {
+      windowMs: 15 * 60 * 1000,
+      maxRequests: 5,
+    });
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { message: "Demasiados intentos. Probá más tarde." },
+        { status: 429 }
+      );
+    }
+
     const body = await req.json();
     const parsed = forgotPasswordSchema.safeParse(body);
     if (!parsed.success) {

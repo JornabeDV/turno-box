@@ -17,11 +17,13 @@
  * configurada en el archivo de entorno (.env).
  */
 
-const { PrismaClient } = require('@prisma/client');
+// Registra el loader de tsx para poder importar archivos TypeScript
+// del proyecto (p. ej. src/lib/prisma.ts) y reutilizar el singleton.
+require('tsx');
+
+const { prisma } = require('../src/lib/prisma');
 const bcrypt = require('bcryptjs');
 const readline = require('readline');
-
-const prisma = new PrismaClient();
 
 const rl = readline.createInterface({
   input: process.stdin,

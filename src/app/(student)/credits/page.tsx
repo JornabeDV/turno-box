@@ -6,7 +6,6 @@ import { BackButton } from "@/components/ui/BackButton";
 import Link from "next/link";
 import {
   Clock,
-  WarningCircle,
   Minus,
   Plus,
   Wallet,
@@ -392,11 +391,6 @@ export default async function CreditsPage({ searchParams }: Props) {
                           currency: tx.payment.currency,
                           maximumFractionDigits: 0,
                         }).format(Number(tx.payment.amountPaid))}
-                      </p>
-                    )}
-                    {isAdjustment && tx.note && (
-                      <p className="text-[11px] md:text-sm text-secondary truncate mt-0.5 md:mt-1 font-[family-name:var(--font-oswald)]">
-                        {tx.note}
                       </p>
                     )}
 

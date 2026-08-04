@@ -14,7 +14,7 @@ export default async function AdminSettingsPage() {
   if (!user?.id || user.role !== "ADMIN") redirect("/");
   if (!user.gymId) redirect("/");
 
-  const [gym, currentUser] = await Promise.all([
+  const [gym, mpConfig, currentUser] = await Promise.all([
     prisma.gym.findUnique({
       where: { id: user.gymId },
       select: {
@@ -26,12 +26,14 @@ export default async function AdminSettingsPage() {
         cancelWindowHours: true,
         waitlistEnabled: true,
         slug: true,
-        mpAccessToken: true,
-        mpWebhookSecret: true,
         mpEnabled: true,
         bankAlias: true,
         bankAccountHolder: true,
       },
+    }),
+    prisma.gym.findUnique({
+      where: { id: user.gymId },
+      select: { mpAccessToken: true },
     }),
     prisma.user.findUnique({
       where: { id: user.id },
@@ -39,6 +41,8 @@ export default async function AdminSettingsPage() {
     }),
   ]);
   if (!gym) redirect("/");
+
+  const mpConfigured = Boolean(mpConfig?.mpAccessToken?.trim());
 
   return (
     <div className="space-y-6">
@@ -52,7 +56,7 @@ export default async function AdminSettingsPage() {
       </div>
       <SettingsClient
         gym={gym}
-        mpConfigured={Boolean(gym?.mpAccessToken?.trim())}
+        mpConfigured={mpConfigured}
         adminName={currentUser?.name ?? ""}
         adminEmail={currentUser?.email ?? ""}
       />

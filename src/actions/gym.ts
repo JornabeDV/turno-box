@@ -88,8 +88,12 @@ export async function updateGymSettingsAction(formData: FormData): Promise<Actio
       phone:             parsed.data.phone    || null,
       cancelWindowHours: parsed.data.cancelWindowHours,
       waitlistEnabled:   parsed.data.waitlistEnabled,
-      mpAccessToken:     parsed.data.mpAccessToken?.trim() || null,
-      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim() || null,
+      mpAccessToken:     parsed.data.mpAccessToken?.trim()
+        ? parsed.data.mpAccessToken.trim()
+        : (current?.mpAccessToken ?? null),
+      mpWebhookSecret:   parsed.data.mpWebhookSecret?.trim()
+        ? parsed.data.mpWebhookSecret.trim()
+        : (current?.mpWebhookSecret ?? null),
       mpEnabled:         parsed.data.mpEnabled ?? current?.mpEnabled ?? true,
       bankAlias:         parsed.data.bankAlias?.trim() || null,
       bankAccountHolder: parsed.data.bankAccountHolder?.trim() || null,

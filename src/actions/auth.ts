@@ -48,7 +48,7 @@ export async function registerAction(
 
   const passwordHash = await bcrypt.hash(password, 12);
 
-  let gymId = formGymId ?? null;
+  const gymId = formGymId ?? null;
 
   if (gymId) {
     const gymExists = await prisma.gym.findUnique({ where: { id: gymId } });
@@ -64,50 +64,3 @@ export async function registerAction(
   return { success: true, data: undefined };
 }
 
-const emailSchema = z.string().email("Email inválido");
-
-export async function lookupGymForEmailAction(
-  formData: FormData
-): Promise<
-  ActionResult<{
-    gym: {
-      id: string;
-      name: string;
-      logoUrl: string | null;
-      slug: string;
-    } | null;
-    hasAccount: boolean;
-  }>
-> {
-  const rawEmail = formData.get("email");
-  const parsed = emailSchema.safeParse(rawEmail);
-  if (!parsed.success) {
-    return { success: false, error: "Email inválido" };
-  }
-
-  const email = parsed.data.toLowerCase().trim();
-
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: {
-      id: true,
-      role: true,
-      gymId: true,
-    },
-  });
-
-  if (!user) {
-    return { success: true, data: { gym: null, hasAccount: false } };
-  }
-
-  if (!user.gymId) {
-    return { success: true, data: { gym: null, hasAccount: true } };
-  }
-
-  const gym = await prisma.gym.findUnique({
-    where: { id: user.gymId },
-    select: { id: true, name: true, logoUrl: true, slug: true },
-  });
-
-  return { success: true, data: { gym, hasAccount: true } };
-}

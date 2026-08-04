@@ -216,6 +216,17 @@ export async function previewImportAction(
   }
 }
 
+const BATCH_SIZE = 50;
+
+type ImportCandidate = {
+  rowIndex: number;
+  nombre: string;
+  email: string;
+  telefono: string | null;
+  birthDate: Date | undefined;
+  credits: number | undefined;
+};
+
 export async function importStudentsAction(
   formData: FormData
 ): Promise<ActionResult<ImportResult>> {
@@ -251,9 +262,12 @@ export async function importStudentsAction(
   };
 
   const seenEmails = new Set<string>();
+  const candidates: ImportCandidate[] = [];
 
+  // 1. Parsear y validar todas las filas una sola vez
   for (let i = 0; i < rawRows.length; i++) {
     const row = rawRows[i];
+    const rowIndex = i + 2;
 
     const nombre =
       normalizeName(
@@ -270,8 +284,6 @@ export async function importStudentsAction(
     const credits = parseCredits(
       row["creditos_iniciales"] ?? row["Créditos Iniciales"] ?? row["creditos"] ?? row["Creditos"] ?? row["credits"]
     );
-
-    const rowIndex = i + 2;
 
     if (!email || !nombre) {
       result.failed++;
@@ -294,142 +306,194 @@ export async function importStudentsAction(
     }
     seenEmails.add(email);
 
-    try {
-      const existing = await prisma.user.findUnique({
-        where: { email },
-        select: { id: true, gymId: true, role: true },
-      });
+    candidates.push({ rowIndex, nombre, email, telefono, birthDate, credits });
+  }
 
+  if (candidates.length === 0) {
+    revalidatePath("/dashboard/admin/students");
+    return { success: true, data: result };
+  }
+
+  // 2. Precargar usuarios existentes en una sola query
+  const existingUsers = await prisma.user.findMany({
+    where: { email: { in: candidates.map((c) => c.email) } },
+    select: { id: true, email: true, gymId: true, role: true },
+  });
+  const existingByEmail = new Map(existingUsers.map((u) => [u.email, u]));
+
+  const expiresAt = new Date(Date.now() + 30 * 86_400_000);
+  const now = new Date();
+
+  // 3. Procesar en lotes para reducir transacciones
+  for (let i = 0; i < candidates.length; i += BATCH_SIZE) {
+    const batch = candidates.slice(i, i + BATCH_SIZE);
+    const batchCreates: Array<ImportCandidate & { userId: string; passwordHash: string }> = [];
+    const batchUpdates: Array<ImportCandidate & { userId: string }> = [];
+
+    // Preparar hash de contraseñas fuera de la transacción (bcrypt es CPU-bound)
+    for (const candidate of batch) {
+      const existing = existingByEmail.get(candidate.email);
       if (existing && existing.gymId && existing.gymId !== gymId) {
         result.failed++;
         result.errors.push({
-          rowIndex,
-          email,
+          rowIndex: candidate.rowIndex,
+          email: candidate.email,
           reason: "Email ya registrado en otro gimnasio",
         });
         continue;
       }
 
-      let userId: string;
       const randomPassword = crypto.randomBytes(32).toString("hex");
       const passwordHash = await bcrypt.hash(randomPassword, 12);
 
       if (existing) {
-        // Update existing user (same gym or orphan)
-        await prisma.user.update({
-          where: { id: existing.id },
-          data: {
-            name: nombre,
-            gymId,
-            phone: telefono,
-            birthDate: birthDate || undefined,
-            role: existing.role === "STUDENT" ? undefined : "STUDENT",
-          },
-        });
-        userId = existing.id;
+        batchUpdates.push({ ...candidate, userId: existing.id });
         result.updated++;
       } else {
-        const created = await prisma.user.create({
-          data: {
-            name: nombre,
-            email,
-            passwordHash,
-            role: "STUDENT",
-            gymId,
-            phone: telefono,
-            birthDate: birthDate || undefined,
-          },
-        });
-        userId = created.id;
+        batchCreates.push({ ...candidate, userId: crypto.randomUUID(), passwordHash });
         result.created++;
       }
+    }
 
-      // Initial credits
-      if (credits && credits > 0) {
-        await prisma.$transaction(async (tx: Tx) => {
-          const current = await tx.userCreditBalance.findUnique({
-            where: { userId_gymId: { userId, gymId } },
-            select: { availableCredits: true, version: true },
-          });
+    if (batchCreates.length === 0 && batchUpdates.length === 0) continue;
 
-          const newBalance = (current?.availableCredits ?? 0) + credits;
-
-          await tx.userCreditBalance.upsert({
-            where: { userId_gymId: { userId, gymId } },
-            create: { userId, gymId, availableCredits: newBalance, version: 1 },
-            update: { availableCredits: newBalance, version: { increment: 1 } },
-          });
-
-          const payment = await tx.payment.create({
-            data: {
-              gymId,
-              userId,
-              packId: null,
-              creditsGranted: credits,
-              amountPaid: 0,
-              currency: "ARS",
-              provider: "MANUAL",
-              status: "APPROVED",
-              paidAt: new Date(),
-              expiresAt: new Date(Date.now() + 30 * 86_400_000),
-            },
-          });
-
-          await tx.creditTransaction.create({
-            data: {
-              userId,
-              gymId,
-              type: "ADJUSTMENT",
-              amount: credits,
-              note: "Créditos iniciales — migración",
-              paymentId: payment.id,
-            },
-          });
-
-          await tx.gymTransaction.create({
-            data: {
-              gymId,
-              type: "INCOME",
-              category: "Migración",
-              amount: 0,
-              description: `Migración inicial — ${credits} crédito${credits !== 1 ? "s" : ""}`,
-              method: "EFECTIVO",
-              userId,
-              paymentId: payment.id,
-              registeredBy: adminUserId,
-              date: new Date(),
-            },
-          });
+    // 4. Una sola transacción por lote
+    await prisma.$transaction(async (tx: Tx) => {
+      if (batchCreates.length > 0) {
+        await tx.user.createMany({
+          data: batchCreates.map((c) => ({
+            id: c.userId,
+            name: c.nombre,
+            email: c.email,
+            passwordHash: c.passwordHash,
+            role: "STUDENT" as const,
+            gymId,
+            phone: c.telefono,
+            birthDate: c.birthDate || undefined,
+          })),
         });
       }
 
-      // Generate invitation token (7 days)
-      const token = crypto.randomBytes(32).toString("hex");
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      for (const c of batchUpdates) {
+        await tx.user.update({
+          where: { id: c.userId },
+          data: {
+            name: c.nombre,
+            gymId,
+            phone: c.telefono,
+            birthDate: c.birthDate || undefined,
+            role: existingByEmail.get(c.email)?.role === "STUDENT" ? undefined : "STUDENT",
+          },
+        });
+      }
 
-      await prisma.passwordResetToken.create({
-        data: { userId, token, expiresAt },
-      });
+      // Procesar créditos iniciales en batch
+      const withCredits = [...batchCreates, ...batchUpdates].filter((c) => c.credits && c.credits > 0);
+      if (withCredits.length > 0) {
+        const balances = await tx.userCreditBalance.findMany({
+          where: {
+            userId: { in: withCredits.map((c) => c.userId) },
+            gymId,
+          },
+          select: { userId: true, availableCredits: true },
+        });
+        const balanceByUser = new Map(balances.map((b) => [b.userId, b.availableCredits]));
 
-      // Send invitation email
-      const resetUrl = `${process.env.NEXT_PUBLIC_URL}/reset-password/${token}`;
-      await sendWelcomeInvitationEmail(email, resetUrl, gym.name, nombre);
+        await tx.userCreditBalance.createMany({
+          data: withCredits
+            .filter((c) => !balanceByUser.has(c.userId))
+            .map((c) => ({
+              userId: c.userId,
+              gymId,
+              availableCredits: c.credits!,
+              version: 1,
+            })),
+          skipDuplicates: true,
+        });
 
-      // Mark invitedAt
-      await prisma.user.update({
-        where: { id: userId },
-        data: { invitedAt: new Date() },
-      });
+        for (const c of withCredits) {
+          if (balanceByUser.has(c.userId)) {
+            await tx.userCreditBalance.update({
+              where: { userId_gymId: { userId: c.userId, gymId } },
+              data: {
+                availableCredits: { increment: c.credits! },
+                version: { increment: 1 },
+              },
+            });
+          }
+        }
 
-      result.invited++;
-    } catch (err) {
-      console.error(`[IMPORT] Error en fila ${rowIndex}:`, err);
-      result.failed++;
-      result.errors.push({
-        rowIndex,
-        email,
-        reason: "Error interno al procesar la fila",
-      });
+        const paymentData = withCredits.map((c) => ({
+          id: crypto.randomUUID(),
+          gymId,
+          userId: c.userId,
+          packId: null,
+          creditsGranted: c.credits!,
+          amountPaid: 0,
+          currency: "ARS" as const,
+          provider: "MANUAL" as const,
+          status: "APPROVED" as const,
+          paidAt: now,
+          expiresAt,
+        }));
+        await tx.payment.createMany({ data: paymentData });
+
+        await tx.creditTransaction.createMany({
+          data: paymentData.map((p) => ({
+            userId: p.userId,
+            gymId,
+            type: "ADJUSTMENT" as const,
+            amount: p.creditsGranted,
+            note: "Créditos iniciales — migración",
+            paymentId: p.id,
+          })),
+        });
+
+        await tx.gymTransaction.createMany({
+          data: paymentData.map((p) => ({
+            gymId,
+            type: "INCOME" as const,
+            category: "Migración",
+            amount: 0,
+            description: `Migración inicial — ${p.creditsGranted} crédito${p.creditsGranted !== 1 ? "s" : ""}`,
+            method: "EFECTIVO" as const,
+            userId: p.userId,
+            paymentId: p.id,
+            registeredBy: adminUserId,
+            date: now,
+          })),
+        });
+      }
+    });
+
+    // 5. Tokens y emails fuera de la transacción (no bloquean la base de datos)
+    for (const c of [...batchCreates, ...batchUpdates]) {
+      try {
+        const token = crypto.randomBytes(32).toString("hex");
+        const tokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+        await prisma.passwordResetToken.create({
+          data: { userId: c.userId, token, expiresAt: tokenExpiresAt },
+        });
+
+        const resetUrl = `${process.env.NEXT_PUBLIC_URL}/reset-password/${token}`;
+        await sendWelcomeInvitationEmail(c.email, resetUrl, gym.name, c.nombre);
+
+        await prisma.user.update({
+          where: { id: c.userId },
+          data: { invitedAt: new Date() },
+        });
+
+        result.invited++;
+      } catch (err) {
+        console.error(`[IMPORT] Error enviando invitación para ${c.email}:`, err);
+        result.failed++;
+        result.errors.push({
+          rowIndex: c.rowIndex,
+          email: c.email,
+          reason: "Error al enviar invitación",
+        });
+      }
     }
   }
 

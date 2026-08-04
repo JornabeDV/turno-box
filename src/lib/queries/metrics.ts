@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 
 const DAY_ORDER = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"] as const;
 const DAY_LABELS: Record<string, string> = {
@@ -51,8 +52,16 @@ const AGE_RANGE_LABELS: Record<string, string> = {
   UNKNOWN: "Sin especificar",
 };
 
-function confirmedCount(bookings: { status: string }[]): number {
-  return bookings.filter((b) => b.status === "CONFIRMED").length;
+type BookingStatusCounts = {
+  CONFIRMED: number;
+  CANCELLED: number;
+  WAITLISTED: number;
+};
+
+const EMPTY_COUNTS: BookingStatusCounts = { CONFIRMED: 0, CANCELLED: 0, WAITLISTED: 0 };
+
+function confirmedFromCounts(counts: BookingStatusCounts): number {
+  return counts.CONFIRMED;
 }
 
 export type MetricsReport = {
@@ -86,6 +95,7 @@ export async function calculateMetricsReport(
   end: Date,
   periodLabel: string
 ): Promise<MetricsReport> {
+  // ── Templates de clases (sin reservas) ──
   const classes = await prisma.gymClass.findMany({
     where: { gymId, isActive: true, deletedAt: null },
     select: {
@@ -95,10 +105,6 @@ export async function calculateMetricsReport(
       maxCapacity: true,
       discipline: { select: { id: true, name: true, color: true } },
       coach: { select: { id: true, name: true } },
-      bookings: {
-        where: { classDate: { gte: start, lte: end }, deletedAt: null },
-        select: { status: true, classDate: true, userId: true, user: { select: { gender: true, birthDate: true } } },
-      },
     },
   });
 
@@ -123,8 +129,76 @@ export async function calculateMetricsReport(
     overrideMap.set(`${o.gymClassId}-${dateKey(o.date)}`, o);
   }
 
-  const totalBookings = classes.reduce((sum, c) => sum + confirmedCount(c.bookings), 0);
-  const totalCancelled = classes.reduce((sum, c) => sum + c.bookings.filter((b) => b.status === "CANCELLED").length, 0);
+  // ── Reservas agregadas por (classId, classDate, status) en una sola query ──
+  // Esto reemplaza traer todos los bookings con include/user a memoria.
+  const bookingRows = classIds.length > 0
+    ? await prisma.$queryRaw<{ classId: string; classDate: Date; status: string; count: number }[]>`
+        SELECT b."classId",
+               b."classDate"::date AS "classDate",
+               b.status::text      AS status,
+               COUNT(*)::int       AS count
+        FROM bookings b
+        WHERE b."classId" IN (${Prisma.join(classIds)})
+          AND b."classDate" >= ${start}
+          AND b."classDate" <= ${end}
+          AND b."deletedAt" IS NULL
+        GROUP BY b."classId", b."classDate"::date, b.status
+      `
+    : [];
+
+  const bookingCounts = new Map<string, Map<string, BookingStatusCounts>>();
+  const bookingsByDate = new Map<string, number>();
+
+  for (const row of bookingRows) {
+    let byDate = bookingCounts.get(row.classId);
+    if (!byDate) {
+      byDate = new Map<string, BookingStatusCounts>();
+      bookingCounts.set(row.classId, byDate);
+    }
+
+    const key = dateKey(row.classDate);
+    let counts = byDate.get(key);
+    if (!counts) {
+      counts = { ...EMPTY_COUNTS };
+      byDate.set(key, counts);
+    }
+
+    const status = row.status as keyof BookingStatusCounts;
+    if (status in counts) {
+      counts[status] = Number(row.count);
+    }
+
+    if (status === "CONFIRMED") {
+      bookingsByDate.set(key, (bookingsByDate.get(key) || 0) + Number(row.count));
+    }
+  }
+
+  function classCounts(classId: string): Map<string, BookingStatusCounts> {
+    return bookingCounts.get(classId) ?? new Map<string, BookingStatusCounts>();
+  }
+
+  function classConfirmed(classId: string): number {
+    let sum = 0;
+    for (const counts of classCounts(classId).values()) sum += counts.CONFIRMED;
+    return sum;
+  }
+
+  function classCancelled(classId: string): number {
+    let sum = 0;
+    for (const counts of classCounts(classId).values()) sum += counts.CANCELLED;
+    return sum;
+  }
+
+  function classTotal(classId: string): number {
+    let sum = 0;
+    for (const counts of classCounts(classId).values()) {
+      sum += counts.CONFIRMED + counts.CANCELLED + counts.WAITLISTED;
+    }
+    return sum;
+  }
+
+  const totalBookings = classes.reduce((sum, c) => sum + classConfirmed(c.id), 0);
+  const totalCancelled = classes.reduce((sum, c) => sum + classCancelled(c.id), 0);
 
   const daysInRange = eachDay(start, end);
 
@@ -144,7 +218,7 @@ export async function calculateMetricsReport(
   }
 
   // Helper: cuántas veces ocurre una clase en el período
-  function classInstances(c: typeof classes[number]) {
+  function classInstances(c: (typeof classes)[number]) {
     return daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
   }
 
@@ -155,8 +229,14 @@ export async function calculateMetricsReport(
   const totalAll = totalBookings + totalCancelled;
   const cancellationRate = totalAll > 0 ? Math.round((totalCancelled / totalAll) * 100) : 0;
 
-  const [activeStudents, atRiskCount] = await Promise.all([
-    prisma.user.count({ where: { gymId, role: "STUDENT", isActive: true } }),
+  // ── Alumnos activos y datos demográficos agregados desde SQL ──
+  // En lugar de traer todos los bookings con usuario incluido, obtenemos una
+  // agregación por usuario (género, fecha de nacimiento, status y cantidad).
+  const [activeStudentsRaw, atRiskCount, demoRows] = await Promise.all([
+    prisma.user.findMany({
+      where: { gymId, role: "STUDENT", isActive: true },
+      select: { birthDate: true },
+    }),
     prisma.user.count({
       where: {
         gymId, role: "STUDENT", isActive: true,
@@ -168,22 +248,30 @@ export async function calculateMetricsReport(
         },
       },
     }),
+    classIds.length > 0
+      ? prisma.$queryRaw<{ userId: string; gender: string | null; birthDate: Date | null; status: string; count: number }[]>`
+          SELECT b."userId",
+                 u.gender::text    AS gender,
+                 u."birthDate"     AS "birthDate",
+                 b.status::text    AS status,
+                 COUNT(*)::int     AS count
+          FROM bookings b
+          JOIN users u ON u.id = b."userId"
+          WHERE b."classId" IN (${Prisma.join(classIds)})
+            AND b."classDate" >= ${start}
+            AND b."classDate" <= ${end}
+            AND b."deletedAt" IS NULL
+          GROUP BY b."userId", u.gender, u."birthDate", b.status
+        `
+      : [],
   ]);
 
+  const activeStudents = activeStudentsRaw.length;
   const retentionRate = activeStudents > 0 ? Math.round(((activeStudents - atRiskCount) / activeStudents) * 100) : 0;
 
   // ── Tendencia diaria: ocupación real por fecha ──
   // Agrupamos las reservas confirmadas por classDate y las comparamos contra
   // la capacidad real de ese día (templates + overrides - closures).
-  const bookingsByDate = new Map<string, number>();
-  for (const c of classes) {
-    for (const b of c.bookings) {
-      if (b.status !== "CONFIRMED") continue;
-      const key = dateKey(b.classDate);
-      bookingsByDate.set(key, (bookingsByDate.get(key) || 0) + 1);
-    }
-  }
-
   const dailyTrend = daysInRange.map((day) => {
     const dateStr = dateKey(day);
 
@@ -226,7 +314,7 @@ export async function calculateMetricsReport(
     const d = c.discipline; if (!d) continue;
     const existing = disciplineMap.get(d.id) || { id: d.id, name: d.name, color: d.color, bookings: 0, capacity: 0, occupancySum: 0, instances: 0 };
     const dowCount = daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * dowCount;
     if (dowCount > 0) {
@@ -246,7 +334,7 @@ export async function calculateMetricsReport(
     const coachName = c.coach?.name ?? "Sin profesor";
     const existing = coachMap.get(coachId) || { id: coachId, name: coachName, bookings: 0, capacity: 0, occupancySum: 0, instances: 0 };
     const dowCount = daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * dowCount;
     if (dowCount > 0) {
@@ -260,15 +348,14 @@ export async function calculateMetricsReport(
     .sort((a, b) => b.occupancy - a.occupancy);
 
   // ── Por género ──
+  // Se calcula a partir de la agregación demográfica por usuario y status.
   const genderCounts: Record<string, number> = {};
   let genderTotal = 0;
-  for (const c of classes) {
-    for (const b of c.bookings) {
-      if (b.status !== "CONFIRMED") continue;
-      const g = b.user?.gender ?? "UNKNOWN";
-      genderCounts[g] = (genderCounts[g] || 0) + 1;
-      genderTotal++;
-    }
+  for (const row of demoRows) {
+    if (row.status !== "CONFIRMED") continue;
+    const g = row.gender ?? "UNKNOWN";
+    genderCounts[g] = (genderCounts[g] || 0) + Number(row.count);
+    genderTotal += Number(row.count);
   }
   const genderLabels: Record<string, string> = {
     MALE: "Masculino", FEMALE: "Femenino", OTHER: "Otro",
@@ -287,7 +374,7 @@ export async function calculateMetricsReport(
     const h = parseHour(c.startTime);
     const existing = hourMap.get(h) || { hour: h, bookings: 0, capacity: 0, occupancySum: 0, instances: 0 };
     const dowCount = daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * dowCount;
     if (dowCount > 0) {
@@ -307,7 +394,7 @@ export async function calculateMetricsReport(
   for (const c of classes) {
     const existing = dowMap.get(c.dayOfWeek) || { day: c.dayOfWeek, bookings: 0, capacity: 0, occupancySum: 0, instances: 0 };
     const dowCount = daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * dowCount;
     if (dowCount > 0) {
@@ -332,7 +419,7 @@ export async function calculateMetricsReport(
       time: c.startTime, coach: c.coach?.name || null, bookings: 0, capacity: 0, occupancy: 0,
     };
     const dowCount = daysInRange.filter((day) => getDayOfWeek(day) === c.dayOfWeek).length;
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * dowCount;
     if (dowCount > 0) {
@@ -357,7 +444,7 @@ export async function calculateMetricsReport(
       bookings: 0, capacity: 0, occupancySum: 0, instances: 0,
     };
     const instances = classInstances(c);
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * instances;
     if (instances > 0) {
@@ -382,7 +469,7 @@ export async function calculateMetricsReport(
       bookings: 0, capacity: 0, occupancySum: 0, instances: 0,
     };
     const instances = classInstances(c);
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * instances;
     if (instances > 0) {
@@ -408,7 +495,7 @@ export async function calculateMetricsReport(
       bookings: 0, capacity: 0, occupancySum: 0, instances: 0,
     };
     const instances = classInstances(c);
-    const confirmed = confirmedCount(c.bookings);
+    const confirmed = classConfirmed(c.id);
     existing.bookings += confirmed;
     existing.capacity += c.maxCapacity * instances;
     if (instances > 0) {
@@ -426,8 +513,8 @@ export async function calculateMetricsReport(
   for (const c of classes) {
     const h = parseHour(c.startTime);
     const existing = hourCancelMap.get(h) || { hour: h, label: `${String(h).padStart(2, "0")}:00`, total: 0, cancelled: 0 };
-    existing.total += c.bookings.length;
-    existing.cancelled += c.bookings.filter((b) => b.status === "CANCELLED").length;
+    existing.total += classTotal(c.id);
+    existing.cancelled += classCancelled(c.id);
     hourCancelMap.set(h, existing);
   }
   const byHourCancellation = Array.from(hourCancelMap.values())
@@ -435,27 +522,22 @@ export async function calculateMetricsReport(
     .map((h) => ({ ...h, rate: h.total > 0 ? Math.round((h.cancelled / h.total) * 100) : 0 }));
 
   // ── Por rango de edad ──
+  // Usamos la agregación demográfica: por cada usuario sabemos su fecha de
+  // nacimiento y cuántas reservas confirmadas hizo en el período.
   const ageRangeBookings: Record<string, number> = {};
   const ageRangeStudents = new Map<string, Set<string>>();
-  for (const c of classes) {
-    for (const b of c.bookings) {
-      if (b.status !== "CONFIRMED") continue;
-      const birthDate = b.user?.birthDate;
-      const age = birthDate ? getAge(birthDate) : null;
-      const range = getAgeRange(age);
-      ageRangeBookings[range] = (ageRangeBookings[range] || 0) + 1;
-      if (!ageRangeStudents.has(range)) ageRangeStudents.set(range, new Set());
-      ageRangeStudents.get(range)!.add(b.userId);
-    }
+  for (const row of demoRows) {
+    if (row.status !== "CONFIRMED") continue;
+    const age = row.birthDate ? getAge(row.birthDate) : null;
+    const range = getAgeRange(age);
+    ageRangeBookings[range] = (ageRangeBookings[range] || 0) + Number(row.count);
+    if (!ageRangeStudents.has(range)) ageRangeStudents.set(range, new Set());
+    ageRangeStudents.get(range)!.add(row.userId);
   }
 
   // También traer distribución de TODOS los alumnos activos (incluyendo los que no reservaron)
-  const allActiveStudents = await prisma.user.findMany({
-    where: { gymId, role: "STUDENT", isActive: true },
-    select: { birthDate: true },
-  });
   const totalStudentsByRange: Record<string, number> = {};
-  for (const s of allActiveStudents) {
+  for (const s of activeStudentsRaw) {
     const age = s.birthDate ? getAge(s.birthDate) : null;
     const range = getAgeRange(age);
     totalStudentsByRange[range] = (totalStudentsByRange[range] || 0) + 1;
@@ -467,7 +549,7 @@ export async function calculateMetricsReport(
       range,
       label: AGE_RANGE_LABELS[range],
       bookings: ageRangeBookings[range] || 0,
-      students: totalStudentsByRange[range] || 0,
+      students: ageRangeStudents.get(range)?.size ?? 0,
     }));
 
   return {
