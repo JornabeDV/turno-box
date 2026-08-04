@@ -219,6 +219,7 @@ export function FinancesClient({
             }}
             options={MONTHS.map((m, i) => ({ value: String(i + 1), label: m }))}
             className="w-32"
+            classNameButton="sm:!h-14"
           />
           <Select
             value={String(year)}
@@ -231,6 +232,7 @@ export function FinancesClient({
               (_, i) => initialYear - 2 + i,
             ).map((y) => ({ value: String(y), label: String(y) }))}
             className="w-24"
+            classNameButton="sm:!h-14"
           />
           <Button
             variant="brand"

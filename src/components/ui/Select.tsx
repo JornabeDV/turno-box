@@ -17,6 +17,7 @@ interface SelectProps {
   label?: string;
   error?: string;
   className?: string;
+  classNameButton?: string;
 }
 
 export function Select({
@@ -27,6 +28,7 @@ export function Select({
   label,
   error,
   className,
+  classNameButton,
 }: SelectProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -54,6 +56,7 @@ export function Select({
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
+          classNameButton,
           "w-full h-12 bg-page border border-border px-3.5 text-xs sm:text-base text-primary",
           "flex items-center justify-between gap-2",
           "focus:outline-none focus:border-brand",
