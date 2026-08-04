@@ -146,6 +146,10 @@ model User {
   passwordResetTokens PasswordResetToken[]
   creditFreezes CreditFreeze[]
 
+  @@index([gymId])
+  @@index([gymId, isActive])
+  @@index([gymId, role])
+  @@index([gymId, role, isActive])
   @@map("users")
 }
 
@@ -168,6 +172,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
   @@map("accounts")
 }
 
@@ -179,6 +184,7 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("sessions")
 }
 
@@ -201,8 +207,8 @@ model PasswordResetToken {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token])
   @@index([userId])
+  @@index([userId, used])
   @@map("password_reset_tokens")
 }
 
@@ -256,6 +262,8 @@ model GymClass {
 
   @@index([gymId, dayOfWeek])
   @@index([gymId, isActive])
+  @@index([gymId, dayOfWeek, isActive, deletedAt])
+  @@index([coachId, gymId, isActive, deletedAt])
   @@map("gym_classes")
 }
 
@@ -280,6 +288,7 @@ model ClassOverride {
 
   @@unique([gymClassId, date])
   @@index([gymClassId])
+  @@index([coachId, date, isCancelled])
   @@map("class_overrides")
 }
 
@@ -320,7 +329,9 @@ model Booking {
   // Restricción: un usuario no puede tener dos bookings para la misma clase el mismo día
   @@unique([userId, classId, classDate])
   @@index([classId, classDate, status]) // consulta frecuente: cupos disponibles
+  @@index([classId, classDate, deletedAt, status]) // cupos + soft-delete
   @@index([userId, classDate])          // consulta frecuente: mis turnos del día
+  @@index([userId, classDate, deletedAt, status]) // historial + soft-delete
   @@map("bookings")
 }
 
@@ -380,8 +391,12 @@ model Payment {
   gymTransaction  GymTransaction?
 
   @@index([userId, gymId])
+  @@index([userId, gymId, status, expiresAt])
   @@index([providerPaymentId])
   @@index([gymId, status])
+  @@index([gymId, createdAt])
+  @@index([gymId, paidAt])
+  @@index([status, expiresAt])
   @@map("payments")
 }
 
@@ -421,6 +436,7 @@ model CreditTransaction {
 
   @@index([userId, gymId, createdAt])
   @@index([bookingId])
+  @@index([paymentId])
   @@map("credit_transactions")
 }
 
@@ -447,6 +463,7 @@ model GymTransaction {
 
   @@index([gymId, date])
   @@index([gymId, type])
+  @@index([gymId, date, type])
   @@map("gym_transactions")
 }
 

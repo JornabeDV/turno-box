@@ -399,7 +399,7 @@ async function runCancelBooking(
   }
 
   return { success: true, data: undefined };
-  } catch (e: unknown) {
+  } catch {
     return { success: false, error: "Error al cancelar." };
   }
 }

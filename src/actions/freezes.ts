@@ -24,6 +24,37 @@ function buildPaymentSnapshots(payments: { id: string; expiresAt: Date | null }[
   return snapshots;
 }
 
+function groupUpdatesByDate(
+  snapshots: Record<string, { originalExpiresAt: string | null }>,
+  pauseDurationMs: number
+): Map<string, string[]> {
+  const groups = new Map<string, string[]>();
+  for (const [paymentId, snapshot] of Object.entries(snapshots)) {
+    if (!snapshot.originalExpiresAt) continue;
+    const originalExpiresAt = new Date(snapshot.originalExpiresAt);
+    const newExpiresAt = new Date(originalExpiresAt.getTime() + pauseDurationMs);
+    const key = newExpiresAt.toISOString();
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(paymentId);
+  }
+  return groups;
+}
+
+async function applyResumeUpdates(
+  tx: Tx,
+  snapshots: Record<string, { originalExpiresAt: string | null }>,
+  pauseDurationMs: number
+): Promise<number> {
+  const groups = groupUpdatesByDate(snapshots, pauseDurationMs);
+  for (const [dateStr, paymentIds] of groups.entries()) {
+    await tx.payment.updateMany({
+      where: { id: { in: paymentIds } },
+      data: { expiresAt: new Date(dateStr) },
+    });
+  }
+  return Array.from(groups.values()).reduce((sum, ids) => sum + ids.length, 0);
+}
+
 // ── Pausar créditos de un alumno ─────────────────────────────────────────────
 export async function pauseStudentCreditsAction(
   studentId: string,
@@ -73,9 +104,9 @@ export async function pauseStudentCreditsAction(
     });
 
     // Congelar: setear expiresAt = null (se restaura al reanudar)
-    for (const p of activePayments) {
-      await tx.payment.update({
-        where: { id: p.id },
+    if (activePayments.length > 0) {
+      await tx.payment.updateMany({
+        where: { id: { in: activePayments.map((p) => p.id) } },
         data: { expiresAt: null },
       });
     }
@@ -108,16 +139,7 @@ export async function resumeStudentCreditsAction(
       data: { endedAt },
     });
 
-    for (const [paymentId, snapshot] of Object.entries(snapshots)) {
-      if (!snapshot.originalExpiresAt) continue;
-      const originalExpiresAt = new Date(snapshot.originalExpiresAt);
-      const newExpiresAt = new Date(originalExpiresAt.getTime() + pauseDurationMs);
-
-      await tx.payment.update({
-        where: { id: paymentId },
-        data: { expiresAt: newExpiresAt },
-      });
-    }
+    await applyResumeUpdates(tx, snapshots, pauseDurationMs);
   });
 
   revalidatePath(`/dashboard/admin/students/${studentId}`);
@@ -163,9 +185,9 @@ export async function pauseAllCreditsAction(
       },
     });
 
-    for (const p of activePayments) {
-      await tx.payment.update({
-        where: { id: p.id },
+    if (activePayments.length > 0) {
+      await tx.payment.updateMany({
+        where: { id: { in: activePayments.map((p) => p.id) } },
         data: { expiresAt: null },
       });
     }
@@ -199,17 +221,7 @@ export async function resumeAllCreditsAction(): Promise<ActionResult<{ affectedC
       data: { endedAt },
     });
 
-    for (const [paymentId, snapshot] of Object.entries(snapshots)) {
-      if (!snapshot.originalExpiresAt) continue;
-      const originalExpiresAt = new Date(snapshot.originalExpiresAt);
-      const newExpiresAt = new Date(originalExpiresAt.getTime() + pauseDurationMs);
-
-      await tx.payment.update({
-        where: { id: paymentId },
-        data: { expiresAt: newExpiresAt },
-      });
-      restoredCount++;
-    }
+    restoredCount = await applyResumeUpdates(tx, snapshots, pauseDurationMs);
   });
 
   revalidatePath("/dashboard/admin/students");

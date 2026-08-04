@@ -48,7 +48,7 @@ export async function registerAction(
 
   const passwordHash = await bcrypt.hash(password, 12);
 
-  let gymId = formGymId ?? null;
+  const gymId = formGymId ?? null;
 
   if (gymId) {
     const gymExists = await prisma.gym.findUnique({ where: { id: gymId } });

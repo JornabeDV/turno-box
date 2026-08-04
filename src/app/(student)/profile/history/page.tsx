@@ -82,7 +82,6 @@ export default async function CreditsHistoryPage({ searchParams }: Props) {
           <div className="bg-card border border-border overflow-hidden divide-y divide-border">
             {entries.map((tx) => {
               const isAdjustment = tx.type === "ADJUSTMENT";
-              const isPurchase   = tx.type === "PURCHASE";
 
               return (
                 <div key={tx.id} className="flex items-center gap-3 md:gap-4 px-4 py-3.5 md:px-6 md:py-5">

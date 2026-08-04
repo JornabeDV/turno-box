@@ -6,7 +6,6 @@ import { BackButton } from "@/components/ui/BackButton";
 import Link from "next/link";
 import {
   Clock,
-  WarningCircle,
   Minus,
   Plus,
   Wallet,

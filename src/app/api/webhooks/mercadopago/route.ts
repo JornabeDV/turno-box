@@ -32,16 +32,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
+  // Validación obligatoria de firma del webhook. Sin secreto configurado o sin
+  // cabecera de firma no procesamos el evento, evitando acreditaciones falsas.
   const xSignature = req.headers.get("x-signature") ?? "";
   const xRequestId = req.headers.get("x-request-id") ?? "";
   const dataId = req.nextUrl.searchParams.get("data.id") ?? event?.data?.id ?? "";
 
   const webhookSecret = await getMpWebhookSecret(gymId);
-  if (webhookSecret && xSignature) {
-    if (!validateMpSignature(webhookSecret, xSignature, xRequestId, String(dataId))) {
-      console.error(`[MP Webhook] Firma inválida para gym ${gymId}`);
-      return NextResponse.json({ ok: true });
-    }
+  if (!webhookSecret || !xSignature) {
+    console.error(`[MP Webhook] Rechazado: falta secreto o firma para gym ${gymId}`);
+    return NextResponse.json({ ok: true });
+  }
+
+  if (!validateMpSignature(webhookSecret, xSignature, xRequestId, String(dataId))) {
+    console.error(`[MP Webhook] Firma inválida para gym ${gymId}`);
+    return NextResponse.json({ ok: true });
   }
 
   if (event.type !== "payment" || !event.data?.id) {

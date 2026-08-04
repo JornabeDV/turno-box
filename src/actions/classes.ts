@@ -287,41 +287,53 @@ export async function deleteClassInstanceAction(
 
   if (bookings.length > 0) {
     const userIds = [...new Set(bookings.map((b) => b.userId))];
+    const confirmedBookings = bookings.filter((b) => b.status === "CONFIRMED");
 
     await prisma.$transaction(async (tx) => {
-      for (const booking of bookings) {
-        // Cancelar reserva
-        await tx.booking.update({
-          where: { id: booking.id },
-          data: { status: "CANCELLED", cancelledAt: new Date() },
-        });
+      // Cancelar todas las reservas de la instancia en una sola query
+      await tx.booking.updateMany({
+        where: { id: { in: bookings.map((b) => b.id) } },
+        data: { status: "CANCELLED", cancelledAt: new Date() },
+      });
 
-        // Reembolsar crédito solo si estaba CONFIRMED
-        if (booking.status === "CONFIRMED") {
-          await tx.$executeRaw`
-            UPDATE user_credit_balances
-            SET "availableCredits" = "availableCredits" + 1,
-                "version"           = "version" + 1,
-                "updatedAt"        = now()
-            WHERE "userId" = ${booking.userId} AND "gymId" = ${gymId}
-          `;
+      if (confirmedBookings.length > 0) {
+        // Reembolsar créditos agrupados por usuario para reducir round-trips
+        const refundsByUser = new Map<string, number>();
+        for (const b of confirmedBookings) {
+          refundsByUser.set(b.userId, (refundsByUser.get(b.userId) ?? 0) + 1);
+        }
 
-          const consumeTx = await tx.creditTransaction.findFirst({
-            where: { bookingId: booking.id, type: "CONSUME" },
-            select: { paymentId: true },
-          });
-
-          await tx.creditTransaction.create({
+        for (const [userId, count] of refundsByUser.entries()) {
+          await tx.userCreditBalance.updateMany({
+            where: { userId, gymId },
             data: {
-              userId: booking.userId,
-              gymId,
-              type: "REFUND",
-              amount: +1,
-              bookingId: booking.id,
-              ...(consumeTx?.paymentId ? { paymentId: consumeTx.paymentId } : {}),
+              availableCredits: { increment: count },
+              version: { increment: 1 },
             },
           });
         }
+
+        // Obtener todos los CONSUME de una sola vez para mantener trazabilidad
+        const consumeTxs = await tx.creditTransaction.findMany({
+          where: {
+            bookingId: { in: confirmedBookings.map((b) => b.id) },
+            type: "CONSUME",
+          },
+          select: { bookingId: true, paymentId: true },
+        });
+
+        const consumeByBooking = new Map(consumeTxs.map((c) => [c.bookingId, c.paymentId]));
+
+        await tx.creditTransaction.createMany({
+          data: confirmedBookings.map((b) => ({
+            userId: b.userId,
+            gymId,
+            type: "REFUND" as const,
+            amount: 1,
+            bookingId: b.id,
+            paymentId: consumeByBooking.get(b.id) ?? null,
+          })),
+        });
       }
     });
 
